@@ -1,9 +1,3 @@
-/**
- * PLATFORM KELAS ONLINE PERADABAN ISLAM AZHARIYAH
- * Interactive Presentation Engine & Motion Choreography
- * Yayasan Umi Ely
- */
-
 const DeckEngine = (() => {
   // State
   let currentSlide = 1;
@@ -72,31 +66,52 @@ const DeckEngine = (() => {
     setTimeout(() => playTone(783.99, 'sine', 0.25, 0.12), 160);
   }
 
-  // DOM Elements
-  const slides = document.querySelectorAll('.slide-card');
-  const navSlideCurrent = document.getElementById('navSlideCurrent');
-  const navSlideTotal = document.getElementById('navSlideTotal');
-  const navSlideTitle = document.getElementById('navSlideTitle');
-  const deckProgressFill = document.getElementById('deckProgressFill');
-  const dockDotsStrip = document.getElementById('dockDotsStrip');
-  const btnPrevSlide = document.getElementById('btnPrevSlide');
-  const btnNextSlide = document.getElementById('btnNextSlide');
-  const btnAudioToggle = document.getElementById('btnAudioToggle');
-  const audioIcon = document.getElementById('audioIcon');
-  const btnAutoplayToggle = document.getElementById('btnAutoplayToggle');
-  const autoplayIcon = document.getElementById('autoplayIcon');
-  const btnOverviewToggle = document.getElementById('btnOverviewToggle');
-  const btnFullscreenToggle = document.getElementById('btnFullscreenToggle');
-  const fullscreenIcon = document.getElementById('fullscreenIcon');
-  const overviewModal = document.getElementById('overviewModal');
-  const btnCloseOverview = document.getElementById('btnCloseOverview');
-  const slideOverviewGrid = document.getElementById('slideOverviewGrid');
-  const toastBox = document.getElementById('toastBox');
-  const toastMessage = document.getElementById('toastMessage');
+  // DOM Elements (Cached on Init)
+  let slides = [];
+  let navSlideCurrent = null;
+  let navSlideTotal = null;
+  let navSlideTitle = null;
+  let deckProgressFill = null;
+  let dockDotsStrip = null;
+  let btnPrevSlide = null;
+  let btnNextSlide = null;
+  let btnAudioToggle = null;
+  let audioIcon = null;
+  let btnAutoplayToggle = null;
+  let autoplayIcon = null;
+  let btnOverviewToggle = null;
+  let btnFullscreenToggle = null;
+  let fullscreenIcon = null;
+  let overviewModal = null;
+  let btnCloseOverview = null;
+  let slideOverviewGrid = null;
+  let toastBox = null;
+  let toastMessage = null;
 
-  // Initialize (Instant 0ms Start & Hash Restoration)
+  // Initialize
   function init() {
+    slides = document.querySelectorAll('.slide-card');
     totalSlides = slides.length;
+    navSlideCurrent = document.getElementById('navSlideCurrent');
+    navSlideTotal = document.getElementById('navSlideTotal');
+    navSlideTitle = document.getElementById('navSlideTitle');
+    deckProgressFill = document.getElementById('deckProgressFill');
+    dockDotsStrip = document.getElementById('dockDotsStrip');
+    btnPrevSlide = document.getElementById('btnPrevSlide');
+    btnNextSlide = document.getElementById('btnNextSlide');
+    btnAudioToggle = document.getElementById('btnAudioToggle');
+    audioIcon = document.getElementById('audioIcon');
+    btnAutoplayToggle = document.getElementById('btnAutoplayToggle');
+    autoplayIcon = document.getElementById('autoplayIcon');
+    btnOverviewToggle = document.getElementById('btnOverviewToggle');
+    btnFullscreenToggle = document.getElementById('btnFullscreenToggle');
+    fullscreenIcon = document.getElementById('fullscreenIcon');
+    overviewModal = document.getElementById('overviewModal');
+    btnCloseOverview = document.getElementById('btnCloseOverview');
+    slideOverviewGrid = document.getElementById('slideOverviewGrid');
+    toastBox = document.getElementById('toastBox');
+    toastMessage = document.getElementById('toastMessage');
+
     if (navSlideTotal) navSlideTotal.textContent = String(totalSlides).padStart(2, '0');
 
     buildDockDots();
@@ -104,7 +119,7 @@ const DeckEngine = (() => {
     bindEvents();
     bindMockupEvents();
 
-    // Check if URL has hash (e.g., #slide-3 or #3)
+    // Check URL Hash
     let initialSlide = 1;
     const hash = window.location.hash.replace('#', '');
     if (hash) {
@@ -124,9 +139,10 @@ const DeckEngine = (() => {
     slides.forEach((slide, index) => {
       const slideNum = index + 1;
       const dot = document.createElement('div');
-      dot.className = `dock-dot ${slideNum === 1 ? 'active' : ''}`;
+      dot.className = `dock-dot ${slideNum === currentSlide ? 'active' : ''}`;
       dot.title = `Slide ${slideNum}: ${slide.dataset.slideTitle || ''}`;
-      dot.addEventListener('click', () => {
+      dot.addEventListener('click', (e) => {
+        e.stopPropagation();
         goToSlide(slideNum);
       });
       dockDotsStrip.appendChild(dot);
@@ -141,13 +157,14 @@ const DeckEngine = (() => {
       const slideNum = index + 1;
       const title = slide.dataset.slideTitle || `Slide ${slideNum}`;
       const thumb = document.createElement('div');
-      thumb.className = `grid-slide-thumb ${slideNum === 1 ? 'current' : ''}`;
+      thumb.className = `grid-slide-thumb ${slideNum === currentSlide ? 'current' : ''}`;
       thumb.dataset.slideIndex = slideNum;
       thumb.innerHTML = `
         <div class="thumb-num">Slide ${String(slideNum).padStart(2, '0')}</div>
         <div class="thumb-title">${title}</div>
       `;
-      thumb.addEventListener('click', () => {
+      thumb.addEventListener('click', (e) => {
+        e.stopPropagation();
         goToSlide(slideNum);
         closeOverviewModal();
       });
@@ -159,21 +176,20 @@ const DeckEngine = (() => {
   function updateSlideView(newIndex, playSound = true) {
     if (newIndex < 1 || newIndex > totalSlides) return;
 
+    currentSlide = newIndex;
+
     slides.forEach((slide, idx) => {
       const slideNum = idx + 1;
-      if (slideNum === newIndex) {
+      if (slideNum === currentSlide) {
         slide.classList.add('active');
-        slide.classList.remove('prev-out');
-      } else if (slideNum < newIndex) {
-        slide.classList.remove('active');
-        slide.classList.add('prev-out');
       } else {
         slide.classList.remove('active');
-        slide.classList.remove('prev-out');
       }
     });
 
-    currentSlide = newIndex;
+    try {
+      history.replaceState(null, null, `#slide-${currentSlide}`);
+    } catch(e) {}
 
     // Update Nav Bar
     if (navSlideCurrent) navSlideCurrent.textContent = String(currentSlide).padStart(2, '0');
@@ -208,7 +224,6 @@ const DeckEngine = (() => {
       }
     });
 
-    // Sound
     if (playSound) {
       playSlideChime();
     }
@@ -219,7 +234,7 @@ const DeckEngine = (() => {
     if (currentSlide < totalSlides) {
       goToSlide(currentSlide + 1);
     } else {
-      goToSlide(1); // loop back
+      goToSlide(1);
     }
   }
 
@@ -240,59 +255,52 @@ const DeckEngine = (() => {
 
   // Event Listeners
   function bindEvents() {
-    // Buttons
-    if (btnPrevSlide) btnPrevSlide.addEventListener('click', prevSlide);
-    if (btnNextSlide) btnNextSlide.addEventListener('click', nextSlide);
+    if (btnPrevSlide) btnPrevSlide.onclick = () => prevSlide();
+    if (btnNextSlide) btnNextSlide.onclick = () => nextSlide();
 
     const btnStartDeck = document.getElementById('btnStartDeck');
-    if (btnStartDeck) btnStartDeck.addEventListener('click', nextSlide);
+    if (btnStartDeck) btnStartDeck.onclick = () => nextSlide();
 
-    // Audio Toggle
     if (btnAudioToggle) {
-      btnAudioToggle.addEventListener('click', () => {
+      btnAudioToggle.onclick = () => {
         isAudioEnabled = !isAudioEnabled;
         if (audioIcon) {
           audioIcon.className = isAudioEnabled ? 'ph ph-speaker-high' : 'ph ph-speaker-slash';
         }
-        const tooltip = btnAudioToggle.querySelector('.btn-tooltip');
-        if (tooltip) tooltip.textContent = isAudioEnabled ? 'Sound: ON' : 'Sound: OFF';
         showToast(isAudioEnabled ? 'Suara efek diaktifkan' : 'Suara efek dinonaktifkan');
         if (isAudioEnabled) playTone(600, 'sine', 0.15, 0.1);
-      });
+      };
     }
 
-    // Autoplay Toggle
     if (btnAutoplayToggle) {
-      btnAutoplayToggle.addEventListener('click', toggleAutoplay);
+      btnAutoplayToggle.onclick = () => toggleAutoplay();
     }
 
-    // Overview Modal
     if (btnOverviewToggle) {
-      btnOverviewToggle.addEventListener('click', toggleOverviewModal);
+      btnOverviewToggle.onclick = () => toggleOverviewModal();
     }
     if (btnCloseOverview) {
-      btnCloseOverview.addEventListener('click', closeOverviewModal);
+      btnCloseOverview.onclick = () => closeOverviewModal();
     }
     if (overviewModal) {
-      overviewModal.addEventListener('click', (e) => {
+      overviewModal.onclick = (e) => {
         if (e.target === overviewModal) closeOverviewModal();
-      });
+      };
     }
 
-    // Fullscreen Toggle
     if (btnFullscreenToggle) {
-      btnFullscreenToggle.addEventListener('click', toggleFullscreen);
+      btnFullscreenToggle.onclick = () => toggleFullscreen();
     }
 
-    // Keyboard Shortcuts
-    window.addEventListener('keydown', (e) => {
-      // Don't trigger if typing in an input
+    // Direct Window Keyboard Listener (Space, Arrows, Shortcuts)
+    window.onkeydown = (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
       switch (e.key) {
+        case ' ':
+        case 'Spacebar':
         case 'ArrowRight':
         case 'ArrowDown':
-        case ' ':
         case 'PageDown':
           e.preventDefault();
           nextSlide();
@@ -334,14 +342,13 @@ const DeckEngine = (() => {
           closeOverviewModal();
           break;
         default:
-          // Direct number jumping
           if (e.key >= '1' && e.key <= '9') {
             const num = parseInt(e.key, 10);
             if (num <= totalSlides) goToSlide(num);
           }
           break;
       }
-    });
+    };
 
     // Touch Swipe Gestures
     const stage = document.getElementById('presentationStage');
@@ -354,22 +361,13 @@ const DeckEngine = (() => {
       stage.addEventListener('touchend', (e) => {
         const touchEndX = e.changedTouches[0].screenX;
         const touchEndY = e.changedTouches[0].screenY;
-        handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
+        const diffX = touchEndX - touchStartX;
+        const diffY = touchEndY - touchStartY;
+        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+          if (diffX < 0) nextSlide();
+          else prevSlide();
+        }
       }, { passive: true });
-    }
-  }
-
-  function handleSwipe(x1, y1, x2, y2) {
-    const diffX = x2 - x1;
-    const diffY = y2 - y1;
-    const minDistance = 50;
-
-    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > minDistance) {
-      if (diffX < 0) {
-        nextSlide(); // Swipe Left -> Next
-      } else {
-        prevSlide(); // Swipe Right -> Prev
-      }
     }
   }
 
@@ -379,9 +377,7 @@ const DeckEngine = (() => {
       document.documentElement.requestFullscreen().then(() => {
         if (fullscreenIcon) fullscreenIcon.className = 'ph ph-corners-in';
         showToast('Mode Layar Penuh Aktif');
-      }).catch(err => {
-        console.warn('Fullscreen error:', err);
-      });
+      }).catch(err => console.warn('Fullscreen error:', err));
     } else {
       if (document.exitFullscreen) {
         document.exitFullscreen().then(() => {
@@ -408,7 +404,7 @@ const DeckEngine = (() => {
     isAutoplayActive = !isAutoplayActive;
     if (isAutoplayActive) {
       if (autoplayIcon) autoplayIcon.className = 'ph ph-pause';
-      showToast(`Autoplay Aktif (Pindah setiap ${autoplayIntervalSeconds} detik)`);
+      showToast(`Autoplay Aktif (${autoplayIntervalSeconds} detik)`);
       restartAutoplay();
     } else {
       if (autoplayIcon) autoplayIcon.className = 'ph ph-play';
@@ -434,10 +430,9 @@ const DeckEngine = (() => {
     clearTimeout(toastTimeout);
     toastTimeout = setTimeout(() => {
       toastBox.classList.remove('show');
-    }, 3000);
+    }, 2800);
   }
-
-  // =========================================================================
+// =========================================================================
   // INTERACTIVE MOCKUP LOGIC
   // =========================================================================
   function bindMockupEvents() {
@@ -653,6 +648,7 @@ const DeckEngine = (() => {
   }
 
   function answerGame(qIndex, isCorrect, btnEl) {
+    const allBtns = document.querySelectorAll('.game-opt-btn');
     if (isCorrect) {
       btnEl.style.backgroundColor = 'var(--md-sys-color-primary-container)';
       btnEl.style.borderColor = 'var(--md-sys-color-primary)';
@@ -660,13 +656,13 @@ const DeckEngine = (() => {
       if (gameFeedbackBox) gameFeedbackBox.style.display = 'block';
       if (btnClaimGameXp) btnClaimGameXp.style.display = 'inline-flex';
       playSuccessChime();
-      showToast('MasyaAllah, Jawaban Benar! +50 XP siap diklaim!');
+      showToast('Mumtaz! Jawaban Benar! +50 XP siap diklaim!');
     } else {
       btnEl.style.backgroundColor = 'var(--md-sys-color-error-container)';
       btnEl.style.borderColor = 'var(--md-sys-color-error)';
       btnEl.style.color = 'var(--md-sys-color-error)';
       playTone(280, 'sawtooth', 0.18, 0.08);
-      showToast('Kurang tepat, coba ingat kembali masa keemasan peradaban Islam di Baghdad...');
+      showToast('Afwan, kurang tepat! Coba ingat kembali kosakata fasilitas sekolah...');
     }
   }
 
@@ -701,6 +697,7 @@ const DeckEngine = (() => {
     toggleSantriAccess,
     openGameModal,
     closeGameModal,
+    switchGameQuestion,
     answerGame,
     claimGameXp,
     openCertModal,
@@ -710,6 +707,9 @@ const DeckEngine = (() => {
 })();
 
 // Start on DOM Ready
-document.addEventListener('DOMContentLoaded', () => {
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => DeckEngine.init());
+} else {
   DeckEngine.init();
-});
+}
+  
