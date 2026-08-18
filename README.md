@@ -1,58 +1,44 @@
-# Presentasi Platform Pembelajaran & Materi Khusus — Yayasan Peradaban Islam Azhariyah
+# Platform Pembelajaran Bahasa Arab Interaktif (SD - SMP - SMA) — PERISA Azhariyah
 
-Website pitch deck presentasi interaktif dan proposal digital untuk penawaran Platform Kelas & Pembelajaran Online **Yayasan Peradaban Islam Azhariyah** (Asuhan **Umi Elly**).
-
----
-
-## 🌟 Fitur Utama Platform dalam Presentasi
-
-1. **Sistem Otoritas Akses Khusus**:
-   - Materi eksklusif hanya dapat diakses oleh santri yang telah terverifikasi dan diberikan izin resmi oleh Umi Elly / Pengurus Yayasan.
-2. **Proteksi Konten Anti-Bocor**:
-   - *Dynamic Floating Watermark* (Nama, No WA & ID Santri melayang di atas video).
-   - *Single Device Active Session* (Anti-patungan akun).
-   - *Encrypted Video Streaming*.
-3. **Game Edukasi & Gamifikasi Sejarah Peradaban Islam**:
-   - Mini-game kuis sejarah tarikh Islam & tebak tokoh peradaban.
-   - Sistem poin XP, lencana prestasi, dan leaderboard santri.
-4. **Dashboard Interaktif Santri & Admin**:
-   - Modul video bertingkat, unduh materi PDF/audio kajian, dan silabus terstruktur.
-   - Panel admin untuk verifikasi infaq otomatis, kontrol switch akses sekali klik, dan ekspor data santri ke Excel.
+Website pitch deck presentasi interaktif dan proposal resmi penawaran **Platform Pembelajaran Bahasa Arab Interaktif Berbasis Game (Tingkat SD, SMP, & SMA)** asuhan **Umi Elly & Yayasan Peradaban Islam Azhariyah**.
 
 ---
 
-## 🎨 Desain & Teknologi
+## 🌟 Fitur Utama Platform Bahasa Arab PERISA
 
-- **Sistem Desain**: Google Material Design 3 (M3) dengan Surface Tonal Elevation & Shape Tokens.
-- **Palette**: Forest Green, Moss, Sage, Mindaro / Lime Cream (`#132a13`, `#31572c`, `#4f772d`, `#90a955`, `#ecf39e`).
-- **Typography**: Google Font *Plus Jakarta Sans*.
-- **Interaktivitas**: Web Audio API Sound Synthesizer, Keyboard Shortcuts, Touch Swipe Mobile Navigation, Autoplay Mode, dan Slide Overview Grid.
+1. **Kurikulum Bahasa Arab Bertingkat (SD, SMP, SMA)**:
+   - **Tingkat SD**: Pengenalan Mufrodat Bergambar, Huruf Hijaiyah, Percakapan Dasar & Lagu Ceria.
+   - **Tingkat SMP**: Kaidah Jumlah Ismiyyah/Fi'liyyah, Dhomir, dan Muhadatsah (Percakapan Harian).
+   - **Tingkat SMA**: Qira'ah (Membaca Teks), Nahwu-Shorof Terapan, dan Latihan Menulis Insya'.
+2. **Game Edukasi & Gamifikasi Mufrodat**:
+   - Mini-game tebak arti kosakata, susun kalimat bahasa Arab, dan kuis kaidah berhadiah poin XP & lencana bintang.
+   - Mengubah kesan Bahasa Arab dari *"sulit dan membosankan"* menjadi **sangat menyenangkan dan mudah dipahami**.
+3. **Sistem Akses Terproteksi Berizin Umi Elly**:
+   - Materi video eksklusif dilengkapi *Dynamic Floating Watermark* nama santri dan enkripsi anti-download.
+   - Hak akses dibuka langsung oleh Umi Elly / yayasan, termasuk jalur khusus beasiswa gratis bagi santri dhuafa.
+4. **Login WhatsApp Ramah Santri & Wali Murid**:
+   - Akses instan tanpa perlu hafalan password yang rumit.
+5. **Dashboard Pengurus Yayasan & Sertifikat Digital**:
+   - Panel admin untuk memantau progres belajar santri, rekapitulasi infaq, dan penerbitan sertifikat resmi ber-QR Code.
+
+---
+
+## 🎨 Identitas Brand PERISA
+
+- **Desain**: Material Design 3 — Dominan Putih (*Clean Editorial Light Theme*).
+- **Warna Resmi PERISA**: Islamic Turquoise (`#008E82`) & Warm Gold (`#B38415`).
+- **Tipografi**: *Plus Jakarta Sans*.
 
 ---
 
 ## 🚀 Cara Menjalankan Secara Lokal
 
-Cukup buka `index.html` langsung di browser, atau jalankan server lokal sederhana:
-
 ```bash
-# Python
+# Menjalankan HTTP server
 python -m http.server 3000
 
-# Atau buka http://localhost:3000 di browser
+# Buka http://localhost:3000 di browser
 ```
-
----
-
-## ⌨️ Pintasan Keyboard (Navigation Shortcuts)
-
-- `→` / `Spasi` / `PageDown`: Slide Selanjutnya
-- `←` / `Backspace` / `PageUp`: Slide Sebelumnya
-- `G` / `O`: Buka Tampilan Grid Semua Slide
-- `P`: Autoplay / Mode Presenter Otomatis
-- `M`: Toggle Efek Suara (Audio Chime)
-- `F`: Layar Penuh (Fullscreen)
-- `1` - `9`: Lompat langsung ke Slide 1 - 9
-- `Escape`: Tutup modal daftar slide
 
 ---
 
