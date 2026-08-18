@@ -117,9 +117,9 @@ body {
    -------------------------------------------------------------------------- */
 .presentation-header {
   height: 56px;
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: #FFFFFF;
+  /* hardware accelerated */
+  -webkit-/* hardware accelerated */
   border-bottom: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
@@ -262,10 +262,10 @@ body {
   height: 100%;
   opacity: 0;
   visibility: hidden;
-  transform: scale(0.98) translateY(10px);
-  transition: opacity 300ms ease, transform 300ms ease, visibility 300ms;
+  display: none;
+  transform: translate3d(0, 8px, 0);
+  transition: opacity 180ms ease-out, transform 180ms ease-out;
   pointer-events: none;
-  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
@@ -273,12 +273,14 @@ body {
   overflow-x: hidden;
   padding: 24px 32px 88px 32px;
   -webkit-overflow-scrolling: touch;
+  will-change: opacity, transform;
 }
 
 .slide-card.active {
+  display: flex;
   opacity: 1;
   visibility: visible;
-  transform: scale(1) translateY(0);
+  transform: translate3d(0, 0, 0);
   pointer-events: auto;
 }
 
@@ -1581,8 +1583,8 @@ body {
   align-items: center;
   gap: 12px;
   background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  /* hardware accelerated */
+  -webkit-/* hardware accelerated */
   border: 1.5px solid var(--border-subtle);
   border-radius: var(--radius-full);
   padding: 6px 16px;
@@ -1645,8 +1647,8 @@ body {
   position: fixed;
   inset: 0;
   background: rgba(8, 30, 28, 0.5);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  
+  -webkit-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1774,9 +1776,9 @@ body {
    ========================================================================== */
 .top-nav-bar {
   height: 58px;
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: #FFFFFF;
+  /* hardware accelerated */
+  -webkit-/* hardware accelerated */
   border-bottom: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
@@ -1906,9 +1908,9 @@ body {
   display: flex;
   align-items: center;
   gap: 14px;
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: #FFFFFF;
+  /* hardware accelerated */
+  -webkit-/* hardware accelerated */
   border: 1.5px solid var(--border-subtle);
   border-radius: var(--radius-full);
   padding: 6px 18px;
@@ -3825,21 +3827,20 @@ const DeckEngine = (() => {
     });
   }
 
-  // Update Slide UI
+  // Update Slide UI (Instant 0ms Stutter-Free Switching)
   function updateSlideView(newIndex, playSound = true) {
     if (newIndex < 1 || newIndex > totalSlides) return;
 
     slides.forEach((slide, idx) => {
       const slideNum = idx + 1;
       if (slideNum === newIndex) {
+        slide.style.display = 'flex';
+        // Force reflow for smooth animation
+        void slide.offsetWidth;
         slide.classList.add('active');
-        slide.classList.remove('prev-out');
-      } else if (slideNum < newIndex) {
-        slide.classList.remove('active');
-        slide.classList.add('prev-out');
       } else {
         slide.classList.remove('active');
-        slide.classList.remove('prev-out');
+        slide.style.display = 'none';
       }
     });
 
