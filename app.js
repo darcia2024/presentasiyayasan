@@ -504,8 +504,6 @@ const DeckEngine = (() => {
         if (isDone) {
           if (markDoneIcon) markDoneIcon.className = 'ph ph-check-fat-fill';
           if (markDoneText) markDoneText.textContent = 'Tuntas Dipelajari ✔';
-          btnMarkComplete.style.background = 'var(--accent-emerald)';
-          btnMarkComplete.style.color = '#000';
           if (totalProgressText) totalProgressText.textContent = '75% Tuntas';
           if (sidebarProgressFill) sidebarProgressFill.style.width = '75%';
           playSuccessChime();
@@ -513,8 +511,6 @@ const DeckEngine = (() => {
         } else {
           if (markDoneIcon) markDoneIcon.className = 'ph ph-check-circle';
           if (markDoneText) markDoneText.textContent = 'Tandai Selesai';
-          btnMarkComplete.style.background = '';
-          btnMarkComplete.style.color = '';
           if (totalProgressText) totalProgressText.textContent = '62% Tuntas';
           if (sidebarProgressFill) sidebarProgressFill.style.width = '62%';
         }
@@ -681,10 +677,10 @@ const DeckEngine = (() => {
     }, 1200);
   }
 
-  // Game Question Bank (Level 1 & Level 2)
+  // Game Question Bank - jenjang mufrodat dasar sampai muhadatsah harian
   const gameQuestions = {
     1: {
-      tag: 'Game 1: Mufrodat Fasilitas Sekolah',
+      tag: 'Game 1: Mufrodat Dasar Sehari-hari',
       question: `"Manakah arti kosakata (mufrodat) yang tepat untuk kata: <span style='color: var(--md-sys-color-primary); font-size: 20px; font-family: Arial, sans-serif;'>'المَكْتَبَةُ' (Al-Maktabatu)</span>?"`,
       options: [
         'Laboratorium Komputer',
@@ -694,20 +690,33 @@ const DeckEngine = (() => {
       ],
       correctIndex: 1,
       feedbackTitle: 'Mumtaz! Jawaban Benar (+50 XP Bertambah)',
-      feedbackDesc: "Kata 'المَكْتَبَةُ' (Al-Maktabatu) berarti Perpustakaan. Santri berhasil menguasai kosakata fasilitas sekolah dengan sempurna!"
+      feedbackDesc: "Kata 'المَكْتَبَةُ' (Al-Maktabatu) berarti Perpustakaan. Santri sudah menguasai mufrodat dasar tempat sehari-hari!"
     },
     2: {
-      tag: 'Game 2: Kaidah Nahwu & Dhomir',
-      question: `"Manakah dhomir (kata ganti) yang tepat untuk menyebut seorang perempuan tunggal — 'dia (perempuan)'? <span style='color: var(--md-sys-color-primary); font-size: 20px; font-family: Arial, sans-serif;'>(الضَّمِيْرُ)</span>"`,
+      tag: 'Game 2: Percakapan Harian (Muhadatsah)',
+      question: `"Temanmu menyapa kamu: <span style='color: var(--md-sys-color-primary); font-size: 20px; font-family: Arial, sans-serif;'>'كَيْفَ حَالُكَ؟' (Kaifa haaluka?)</span> — apa jawaban yang paling tepat?"`,
       options: [
-        'هُوَ (Huwa) — dia (laki-laki)',
-        'أَنْتَ (Anta) — kamu (laki-laki)',
-        'هِيَ (Hiya) — dia (perempuan)',
-        'نَحْنُ (Nahnu) — kami'
+        "مَعَ السَّلَامَةِ (Ma'as-salaamah) — selamat jalan",
+        "الحَمْدُ لِلَّهِ، بِخَيْرٍ (Alhamdulillah, bikhairin) — baik, segala puji bagi Allah",
+        "تُصْبِحُ عَلَى خَيْرٍ (Tushbihu 'ala khairin) — selamat malam",
+        "إِلَى اللِّقَاءِ (Ilal-liqaa') — sampai jumpa"
       ],
-      correctIndex: 2,
+      correctIndex: 1,
       feedbackTitle: 'Mumtaz! Jawaban Benar (+50 XP Bertambah)',
-      feedbackDesc: "Dhomir 'هِيَ' (Hiya) dipakai untuk orang ketiga tunggal perempuan, sedangkan 'هُوَ' (Huwa) untuk laki-laki. Santri sudah paham kaidah dasar dhomir munfashil!"
+      feedbackDesc: "'كَيْفَ حَالُكَ؟' artinya 'Apa kabar?'. Jawaban yang paling sering dipakai sehari-hari adalah 'الحَمْدُ لِلَّهِ، بِخَيْرٍ'. Santri sudah bisa membalas sapaan harian!"
+    },
+    3: {
+      tag: 'Game 3: Susun Kalimat Harian',
+      question: `"Bagaimana cara mengatakan <strong>'Saya pergi ke sekolah'</strong> dalam Bahasa Arab? <span style='color: var(--md-sys-color-primary); font-size: 20px; font-family: Arial, sans-serif;'>(الجُمْلَةُ اليَوْمِيَّةُ)</span>"`,
+      options: [
+        'أَذْهَبُ إِلَى المَدْرَسَةِ (Adzhabu ilal-madrasati)',
+        'أَذْهَبُ إِلَى السُّوقِ (Adzhabu ilas-suuqi) — pergi ke pasar',
+        'آكُلُ فِي البَيْتِ (Aakulu fil-baiti) — makan di rumah',
+        'أَقْرَأُ الكِتَابَ (Aqra-ul kitaaba) — membaca buku'
+      ],
+      correctIndex: 0,
+      feedbackTitle: 'Mumtaz! Jawaban Benar (+50 XP Bertambah)',
+      feedbackDesc: "'أَذْهَبُ' berarti 'saya pergi' dan 'المَدْرَسَةُ' berarti 'sekolah'. Santri sudah bisa merangkai kalimat harian sendiri - selangkah lagi menuju lancar ngobrol!"
     }
   };
 
@@ -717,10 +726,9 @@ const DeckEngine = (() => {
     if (!data) return;
 
     // Sync level selector chips
-    const btnLevel1 = document.getElementById('btnLevel1');
-    const btnLevel2 = document.getElementById('btnLevel2');
-    if (btnLevel1) btnLevel1.classList.toggle('active', level === 1);
-    if (btnLevel2) btnLevel2.classList.toggle('active', level === 2);
+    document.querySelectorAll('[id^="btnLevel"]').forEach((chip) => {
+      chip.classList.toggle('active', chip.id === `btnLevel${level}`);
+    });
 
     // Swap question copy
     const tagEl = document.getElementById('gameCategoryTag');

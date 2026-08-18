@@ -6,13 +6,14 @@ Website pitch deck presentasi interaktif dan proposal resmi penawaran **Platform
 
 ## 🌟 Fitur Utama Platform Bahasa Arab PERISA
 
-1. **Kurikulum Bahasa Arab Bertingkat (SD, SMP, SMA)**:
-   - **Tingkat SD**: Pengenalan Mufrodat Bergambar, Huruf Hijaiyah, Percakapan Dasar & Lagu Ceria.
-   - **Tingkat SMP**: Kaidah Jumlah Ismiyyah/Fi'liyyah, Dhomir, dan Muhadatsah (Percakapan Harian).
-   - **Tingkat SMA**: Qira'ah (Membaca Teks), Nahwu-Shorof Terapan, dan Latihan Menulis Insya'.
+1. **Kurikulum Mufrodat Berjenjang: Dari Dasar Sampai Bisa Ngomong (SD, SMP, & SMA)**:
+   - **Tahap 1 — Mufrodat Dasar**: Kosakata benda & tempat yang dipakai sehari-hari (rumah, sekolah, keluarga), lengkap dengan gambar dan pelafalan.
+   - **Tahap 2 — Mufrodat Perkenalan & Sapaan**: Ta'aruf, salam, menanyakan kabar, dan frasa harian yang langsung bisa dipraktikkan.
+   - **Tahap 3 — Muhadatsah Harian**: Merangkai mufrodat jadi kalimat utuh dan ngobrol untuk situasi harian di rumah, sekolah, dan pasar.
+   - **Tahap 4 — Muhadatsah Bebas**: Roleplay dan bercerita tentang kegiatan sehari-hari sampai santri percaya diri berbicara.
 2. **Game Edukasi & Gamifikasi Mufrodat**:
-   - Mini-game tebak arti kosakata, susun kalimat bahasa Arab, dan kuis kaidah berhadiah poin XP & lencana bintang.
-   - Mengubah kesan Bahasa Arab dari *"sulit dan membosankan"* menjadi **sangat menyenangkan dan mudah dipahami**.
+   - Mini-game bertingkat mengikuti tangga belajar: tebak arti mufrodat, membalas sapaan harian, dan menyusun kalimat sehari-hari, berhadiah poin XP & lencana bintang.
+   - Mengubah kesan Bahasa Arab dari *"sulit dan membosankan"* menjadi **sangat menyenangkan, mudah dipahami, dan langsung terpakai untuk ngobrol**.
 3. **Sistem Akses Terproteksi Berizin Umi Elly**:
    - Materi video eksklusif dilengkapi *Dynamic Floating Watermark* nama santri dan enkripsi anti-download.
    - Hak akses dibuka langsung oleh Umi Elly / yayasan, termasuk jalur khusus beasiswa gratis bagi santri dhuafa.

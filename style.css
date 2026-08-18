@@ -1105,28 +1105,45 @@ body {
 }
 
 .player-center-play {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   background: var(--perisa-teal-primary);
   color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 21px;
   cursor: pointer;
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.10), 0 8px 24px rgba(0, 0, 0, 0.34);
+  transition: transform 320ms cubic-bezier(0.32, 0.72, 0, 1), box-shadow 320ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.player-center-play:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 0 9px rgba(255, 255, 255, 0.14), 0 10px 28px rgba(0, 0, 0, 0.40);
+}
+
+.player-center-play:active {
+  transform: scale(0.97);
 }
 
 .player-hud-title {
   position: absolute;
-  bottom: 8px;
-  left: 10px;
-  font-size: 10px;
-  font-weight: 600;
-  background: rgba(0, 0, 0, 0.7);
-  padding: 3px 8px;
-  border-radius: var(--radius-xs);
+  bottom: 10px;
+  left: 12px;
+  max-width: calc(100% - 24px);
+  padding: 5px 11px;
+  border-radius: var(--radius-full);
+  background: rgba(6, 24, 23, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.10);
   color: #FFFFFF;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .player-controls-bar {
@@ -1150,6 +1167,7 @@ body {
   font-size: 10px;
   font-weight: 600;
   color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
 }
 
 .player-scrub-track {
@@ -1175,15 +1193,29 @@ body {
 .mat-pill {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 5px 10px;
+  gap: 6px;
+  padding: 6px 11px;
   border-radius: var(--radius-full);
-  background: #FFFFFF;
+  background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   color: var(--perisa-teal-dark);
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 600;
   text-decoration: none;
+  box-shadow: var(--shadow-sm);
+  transition: background 240ms cubic-bezier(0.32, 0.72, 0, 1), border-color 240ms cubic-bezier(0.32, 0.72, 0, 1), transform 240ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.mat-pill:hover {
+  background: var(--perisa-teal-light);
+  border-color: var(--perisa-teal-border);
+  transform: translateY(-1px);
+}
+
+.mat-size {
+  color: var(--text-muted);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
 }
 
 .mat-pill.game-pill {
@@ -1206,61 +1238,273 @@ body {
 .sidebar-header-top {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  font-size: 11px;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 7px;
+}
+
+.sidebar-course-tag {
+  font-size: 10px;
   font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--perisa-teal-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.progress-pct {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--perisa-teal-primary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .sidebar-progress-bar {
-  height: 4px;
-  background: #E3ECEB;
+  height: 5px;
+  background: #E7EFEE;
   border-radius: var(--radius-full);
   overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(8, 45, 43, 0.06);
 }
 
 .sidebar-progress-fill {
   height: 100%;
-  background: var(--perisa-teal-primary);
+  border-radius: var(--radius-full);
+  background: linear-gradient(90deg, var(--perisa-teal-primary), #00A99A);
+  transition: width 600ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .syllabus-list {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
 .syllabus-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 7px 9px;
+  display: grid;
+  grid-template-columns: 15px 1fr;
+  align-items: start;
+  column-gap: 9px;
+  padding: 9px 11px;
   border-radius: var(--radius-sm);
   background: var(--bg-card-elevated);
   border: 1px solid var(--border-subtle);
   cursor: pointer;
+  transition: background 260ms cubic-bezier(0.32, 0.72, 0, 1), border-color 260ms cubic-bezier(0.32, 0.72, 0, 1), transform 260ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.syllabus-item:hover {
+  background: var(--bg-card);
+  border-color: var(--perisa-teal-border);
+  transform: translateX(2px);
 }
 
 .syllabus-item.active-syl {
   background: var(--perisa-teal-light);
   border-color: var(--perisa-teal-primary);
+  box-shadow: 0 0 0 3px rgba(0, 135, 122, 0.08);
+}
+
+.syllabus-item.locked {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.syllabus-item.locked:hover {
+  transform: none;
+  background: var(--bg-card-elevated);
+  border-color: var(--border-subtle);
+}
+
+.syl-status-icon {
+  display: flex;
+  justify-content: center;
+  margin-top: 1px;
+  font-size: 14px;
+  line-height: 1;
+  color: #A8BEBC;
+}
+
+.syllabus-item.done .syl-status-icon,
+.syllabus-item.active-syl .syl-status-icon {
+  color: var(--perisa-teal-primary);
+}
+
+/* Kunci kerapian: tanpa ini ketiga span mengalir inline dan teks berdempet */
+.syl-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 
 .syl-session {
-  font-size: 9.5px;
+  font-size: 8.5px;
   font-weight: 700;
-  color: var(--perisa-teal-dark);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--perisa-teal-primary);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .syl-title {
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-main);
+  line-height: 1.35;
+  letter-spacing: -0.005em;
 }
 
 .syl-duration {
-  font-size: 9.5px;
+  font-size: 9px;
+  font-weight: 500;
   color: var(--text-muted);
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------------------
+   SLIDE 6: BLOK META VIDEO (sebelumnya tanpa aturan sama sekali)
+   -------------------------------------------------------------------------- */
+.video-meta-section {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding-top: 11px;
+}
+
+.meta-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.active-module-title {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--perisa-teal-dark);
+}
+
+.module-author {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.btn-mark-done {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 7px 13px;
+  border-radius: var(--radius-full);
+  background: var(--bg-card);
+  border: 1.5px solid var(--perisa-teal-primary);
+  color: var(--perisa-teal-primary);
+  font-family: var(--font-family);
+  font-size: 10.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background 240ms cubic-bezier(0.32, 0.72, 0, 1), color 240ms cubic-bezier(0.32, 0.72, 0, 1), transform 240ms cubic-bezier(0.32, 0.72, 0, 1), box-shadow 240ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.btn-mark-done i {
+  font-size: 13px;
+}
+
+.btn-mark-done:hover {
+  background: var(--perisa-teal-light);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-mark-done:active {
+  transform: scale(0.97);
+}
+
+/* Menggantikan inline style app.js yang memakai variabel tak terdefinisi */
+.btn-mark-done.completed {
+  background: var(--perisa-teal-primary);
+  border-color: var(--perisa-teal-primary);
+  color: var(--text-inverse);
+}
+
+/* --------------------------------------------------------------------------
+   SLIDE 6: SISA CLASS TANPA ATURAN (identitas pengguna, pil kecepatan, wadah)
+   -------------------------------------------------------------------------- */
+.os-user-badge {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.os-avatar-initial {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--perisa-teal-primary);
+  color: var(--text-inverse);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.speed-pill-btn {
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+  background: var(--bg-card-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--perisa-teal-dark);
+  font-family: var(--font-family);
+  font-size: 9.5px;
+  font-weight: 700;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+  transition: background 220ms cubic-bezier(0.32, 0.72, 0, 1), border-color 220ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.speed-pill-btn:hover {
+  background: var(--perisa-teal-light);
+  border-color: var(--perisa-teal-border);
+}
+
+.portal-main-area {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+
+.sidebar-header {
+  display: flex;
+  flex-direction: column;
 }
 
 /* --------------------------------------------------------------------------
