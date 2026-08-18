@@ -1,7 +1,7 @@
 /* ==========================================================================
    MATERIAL DESIGN 3 (M3) STYLESHEET
    Platform Pembelajaran & Materi Khusus — Yayasan Peradaban Islam Azhariyah
-   Palette: #132a13, #31572c, #4f772d, #90a955, #ecf39e
+   Official PERISA Palette: Dominan Putih, Islamic Turquoise (#008E82), PERISA Gold (#B38415)
    Typography: Plus Jakarta Sans
    ========================================================================== */
 
@@ -416,7 +416,7 @@ html, body {
 
 .card-inner {
   background-color: var(--md-sys-color-surface-container);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--md-sys-color-outline-variant);
   border-radius: 20px;
   padding: 20px;
   height: 100%;
@@ -430,14 +430,31 @@ html, body {
 .gold-gradient-text { color: var(--md-sys-color-secondary) !important; display: inline-block; }
 
 .gold-text { color: var(--md-sys-color-secondary) !important; }
-.green-text { color: var(--md-sys-color-secondary) !important; }
+.green-text { color: var(--md-sys-color-primary) !important; }
 .danger-text { color: var(--md-sys-color-error) !important; }
 .warning-text { color: #E5B84B !important; }
-.white-text { color: #FFFFFF !important; }
+.white-text { color: var(--md-sys-color-on-surface) !important; }
 .text-muted { color: var(--md-sys-color-on-surface-variant) !important; }
 
 /* M3 Chips */
 .badge-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  border-radius: var(--md-shape-corner-full);
+  background-color: var(--md-sys-color-primary-container);
+  border: 1px solid var(--md-sys-color-outline);
+  color: var(--md-sys-color-primary);
+  font-family: var(--font-family);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  width: fit-content;
+  margin-bottom: 10px;
+}
+.badge-tag-ignore {
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -545,7 +562,7 @@ html, body {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background-color: rgba(19, 42, 19, 0.2);
+  background-color: rgba(0, 142, 130, 0.12); color: var(--md-sys-color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -739,7 +756,7 @@ html, body {
   font-size: 10px;
   font-weight: 500;
   color: var(--md-sys-color-primary);
-  background-color: rgba(19, 42, 19, 0.85);
+  background-color: rgba(12, 32, 31, 0.85);
   padding: 4px 8px;
   border-radius: var(--md-shape-corner-small);
   border: 1px solid var(--md-sys-color-outline-variant);
@@ -747,7 +764,7 @@ html, body {
 
 .mini-video-bar {
   height: 3.5px;
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: #DCE8E7;
   border-radius: var(--md-shape-corner-full);
   overflow: hidden;
 }
@@ -946,6 +963,17 @@ html, body {
 
 .quote-callout {
   display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 20px;
+  background-color: #FDF9EE;
+  border: 1px solid #F2E4BA;
+  border-left: 4px solid var(--md-sys-color-secondary);
+  border-radius: var(--md-shape-corner-medium);
+  margin-top: 14px;
+}
+.quote-callout-ignore {
+  display: flex;
   align-items: center;
   gap: 14px;
   background-color: var(--md-sys-color-surface-container-low);
@@ -993,26 +1021,24 @@ html, body {
 }
 
 .sol-num {
-  position: absolute;
-  top: 14px;
-  right: 16px;
   font-family: var(--font-family);
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
-  color: rgba(236, 243, 158, 0.18);
+  color: var(--md-sys-color-primary);
+  margin-bottom: 8px;
 }
 
 .sol-icon-wrap {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--md-shape-corner-medium);
-  background-color: var(--md-sys-color-secondary-container);
+  background-color: var(--md-sys-color-primary-container);
   border: 1px solid var(--md-sys-color-outline);
   color: var(--md-sys-color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 22px;
   margin-bottom: 12px;
 }
 
@@ -1088,7 +1114,7 @@ html, body {
   font-size: 10px;
   font-weight: 700;
   padding: 2px 8px;
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: var(--md-sys-color-surface-container);
   border-radius: var(--md-shape-corner-full);
   color: var(--md-sys-color-on-surface-variant);
   margin-bottom: 8px;
@@ -1221,14 +1247,16 @@ html, body {
 
 /* OS Window Frame */
 .os-window-inner {
-  background-color: var(--md-sys-color-surface-container-lowest);
-  border-radius: 18px;
+  background-color: #FFFFFF;
+  border-radius: inherit;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--md-sys-color-outline-variant);
 }
 
 .os-top-bar {
-  background-color: var(--md-sys-color-surface-container-low);
+  background-color: #F1F6F5;
   padding: 8px 14px;
   display: flex;
   align-items: center;
@@ -1251,16 +1279,16 @@ html, body {
 .tl.green { background-color: #27C93F; }
 
 .os-url-bar {
+  background-color: #FFFFFF;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-shape-corner-full);
+  padding: 3px 12px;
+  font-size: 11px;
+  color: var(--md-sys-color-on-surface-variant);
   display: flex;
   align-items: center;
   gap: 6px;
-  background-color: var(--md-sys-color-surface-container-lowest);
-  padding: 4px 12px;
-  border-radius: var(--md-shape-corner-full);
-  font-size: 10.5px;
-  font-weight: 500;
-  color: var(--md-sys-color-on-surface-variant);
-  max-width: 300px;
+  width: 45%;
 }
 
 .os-url-bar i {
@@ -1304,7 +1332,7 @@ html, body {
 }
 
 .interactive-video-player {
-  background-color: #071207;
+  background-color: #0C201F;
   border-radius: var(--md-shape-corner-medium);
   overflow: hidden;
   border: 1px solid var(--md-sys-color-outline-variant);
@@ -1328,8 +1356,8 @@ html, body {
   align-items: center;
   gap: 5px;
   padding: 4px 10px;
-  background-color: rgba(19, 42, 19, 0.85);
-  border: 1px solid rgba(236, 243, 158, 0.3);
+  background-color: rgba(12, 32, 31, 0.85);
+  border: 1px solid rgba(0, 210, 190, 0.5);
   border-radius: var(--md-shape-corner-small);
   font-size: 10.5px;
   font-weight: 600;
@@ -1365,7 +1393,7 @@ html, body {
   left: 10px;
   font-size: 10.5px;
   font-weight: 500;
-  background-color: rgba(19, 42, 19, 0.88);
+  background-color: rgba(12, 32, 31, 0.88);
   padding: 3px 8px;
   border-radius: var(--md-shape-corner-small);
   color: var(--md-sys-color-on-surface);
@@ -1398,7 +1426,7 @@ html, body {
 .player-scrub-track {
   flex-grow: 1;
   height: 4px;
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: #DCE8E7;
   border-radius: var(--md-shape-corner-full);
   overflow: hidden;
   cursor: pointer;
@@ -1534,7 +1562,7 @@ html, body {
 
 .sidebar-progress-bar {
   height: 3.5px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--md-sys-color-surface-container-high);
   border-radius: var(--md-shape-corner-full);
   overflow: hidden;
 }
@@ -1555,12 +1583,30 @@ html, body {
 .syllabus-item {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
-  padding: 7px 9px;
-  background-color: var(--md-sys-color-surface-container-low);
-  border: 1px solid var(--md-sys-color-outline-variant);
+  gap: 10px;
+  padding: 8px 10px;
   border-radius: var(--md-shape-corner-medium);
+  background-color: #FFFFFF;
+  border: 1px solid var(--md-sys-color-outline-variant);
   cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 6px;
+}
+
+.syllabus-item:hover {
+  background-color: #F0F7F6;
+  border-color: var(--md-sys-color-outline);
+}
+
+.syllabus-item.active-syl {
+  background-color: var(--md-sys-color-primary-container);
+  border-color: var(--md-sys-color-primary);
+}
+
+.syllabus-item.locked {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background-color: #F8FAF9;
 }
 
 .syllabus-item.active-syl {
@@ -1762,24 +1808,27 @@ html, body {
 
 .admin-santri-table {
   width: 100%;
-  min-width: 580px;
   border-collapse: collapse;
   font-size: 11.5px;
   text-align: left;
+  background-color: #FFFFFF;
 }
 
 .admin-santri-table th {
-  background-color: var(--md-sys-color-surface-container);
-  padding: 8px 10px;
-  color: var(--md-sys-color-on-surface-variant);
+  padding: 10px 12px;
   font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  background-color: #F1F6F5;
+  border-bottom: 2px solid var(--md-sys-color-outline-variant);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
   font-size: 10.5px;
-  border-bottom: 1px solid var(--md-sys-color-outline-variant);
 }
 
 .admin-santri-table td {
-  padding: 8px 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 10px 12px;
+  border-bottom: 1px solid #EBF2F1;
+  color: var(--md-sys-color-on-surface);
   vertical-align: middle;
 }
 
@@ -1798,7 +1847,7 @@ html, body {
   justify-content: center;
   font-size: 9.5px;
   font-weight: 700;
-  color: #132A13;
+  color: #FFFFFF;
 }
 
 .bg-avatar-1 { background-color: var(--md-sys-color-primary); }
@@ -1859,7 +1908,7 @@ html, body {
 
 .table-prog-bar {
   height: 3.5px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--md-sys-color-surface-container-high);
   border-radius: var(--md-shape-corner-full);
   overflow: hidden;
 }
@@ -2207,7 +2256,7 @@ input:checked + .slider:before {
 
 .done-pill { background-color: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
 .next-pill { background-color: var(--md-sys-color-surface-container-high); color: var(--md-sys-color-on-surface); }
-.future-pill { background-color: rgba(255, 255, 255, 0.05); color: var(--md-sys-color-on-surface-variant); }
+.future-pill { background-color: #F1F6F5; color: var(--md-sys-color-on-surface-variant); border: 1px solid #DCE8E7; }
 
 /* --------------------------------------------------------------------------
    18. TIMELINE & CLOSING
@@ -2389,7 +2438,7 @@ input:checked + .slider:before {
   width: 7px;
   height: 7px;
   border-radius: var(--md-shape-corner-full);
-  background-color: rgba(255, 255, 255, 0.25);
+  background-color: var(--md-sys-color-surface-container-high);
   cursor: pointer;
   transition: all var(--md-sys-motion-duration-medium);
 }
