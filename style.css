@@ -2443,13 +2443,130 @@ body {
 }
 
 /* Responsive Rules */
+/* ==========================================================================
+   LAPISAN RESPONSIF - TABLET & PONSEL
+   ========================================================================== */
+
+/* -------------------------------- TABLET -------------------------------- */
+@media (max-width: 1024px) {
+  .slide-card { padding: 20px 20px 92px 20px; }
+  .problem-grid-4, .solution-grid-4, .security-pillars-grid,
+  .value-impact-grid, .timeline-4weeks { grid-template-columns: repeat(2, 1fr); }
+  .slide-overview-grid { grid-template-columns: repeat(3, 1fr); }
+  .workflow-stepper { grid-template-columns: repeat(2, 1fr); }
+  .hero-title { font-size: 30px; }
+  .section-title { font-size: 23px; }
+}
+
+/* -------------------------------- PONSEL -------------------------------- */
 @media (max-width: 768px) {
-  .top-nav-bar { padding: 0 14px; }
-  .slide-card { padding: 16px 14px 84px 14px; }
-  .slide-hero-layout, .slide-mockup-layout, .mvp-split-grid, .closing-cta-inner { grid-template-columns: 1fr; gap: 16px; }
-  .problem-grid-4, .solution-grid-4, .security-pillars-grid, .value-impact-grid, .timeline-4weeks, .slide-overview-grid { grid-template-columns: 1fr; }
-  .impact-columns, .roadmap-horizontal, .workflow-stepper { grid-template-columns: 1fr; }
-  .student-portal-ui { grid-template-columns: 1fr; }
-  .hero-title { font-size: 26px; }
-  .section-title { font-size: 22px; }
+
+  /* Seluruh turunan slide boleh menyusut. Grid dan flex memberi anaknya
+     min-width:auto, sehingga konten terpanjang memaksa lebar track melebihi
+     layar; overflow-x:hidden lalu memotongnya - itulah sebabnya teks tampak
+     terpangkas di sisi kanan. Harus menjangkau semua level, bukan anak
+     langsung saja, karena grid bersarang beberapa tingkat ke dalam. */
+  .slide-card * { min-width: 0; }
+
+  /* Panggung: dvh supaya tidak melonjak saat bilah URL Safari muncul/hilang */
+  .presentation-stage { height: calc(100vh - 51px); height: calc(100dvh - 51px); }
+  .slide-card { padding: 14px 12px 92px 12px; }
+  .slide-inner { max-width: 100%; }
+
+  /* Semua tata letak jadi satu kolom */
+  .slide-hero-layout, .slide-mockup-layout, .mvp-split-grid,
+  .closing-cta-inner, .student-portal-ui, .problem-grid-4, .solution-grid-4,
+  .security-pillars-grid, .value-impact-grid, .timeline-4weeks,
+  .impact-columns, .roadmap-horizontal, .workflow-stepper,
+  .slide-overview-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* Strip ringkas tetap 2 kolom agar slide tidak terlalu memanjang */
+  .hero-bento-strip, .hero-mini-stats, .admin-quick-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  /* Tipografi */
+  .hero-title       { font-size: 24px; line-height: 1.2; }
+  .hero-subtitle    { font-size: 12.5px; line-height: 1.55; }
+  .section-title    { font-size: 18.5px; line-height: 1.28; }
+  .section-subtitle { font-size: 12px; line-height: 1.5; }
+  .badge-tag        { font-size: 9px; padding: 4px 9px; }
+  .f-bullet         { font-size: 12px; }
+
+  /* Bar navigasi atas */
+  .top-nav-bar { height: 50px; padding: 0 10px; gap: 8px; }
+  .nav-brand { flex: 1 1 auto; min-width: 0; }
+  .brand-text { min-width: 0; }
+  .brand-title {
+    font-size: 11.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .brand-sub { display: none; }
+  .nav-slide-indicator { flex-shrink: 0; padding: 4px 10px; gap: 5px; }
+  .slide-badge-title { display: none; }
+  .nav-actions { flex-shrink: 0; gap: 4px; }
+  .btn-icon-circle { width: 32px; height: 32px; font-size: 14px; }
+
+  /* Dock navigasi bawah */
+  .bottom-dock-nav {
+    bottom: 12px;
+    gap: 8px;
+    padding: 5px 10px;
+    max-width: calc(100vw - 20px);
+  }
+  .dock-nav-btn {
+    min-height: 40px;
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+  .dock-dots-strip { gap: 4px; overflow: hidden; }
+  .dock-dot { width: 6px; height: 6px; }
+
+  /* Jendela mockup */
+  .os-top-bar { padding: 6px 10px; gap: 8px; }
+  .os-url-bar { font-size: 9px; padding: 4px 8px; }
+  .os-user-badge { font-size: 9px; }
+  .os-avatar-initial { width: 20px; height: 20px; font-size: 8px; }
+
+  /* Tabel admin: digulung mendatar, bukan dipotong */
+  .admin-table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .admin-santri-table { min-width: 640px; }
+
+  /* Modal */
+  .modal-card {
+    width: calc(100vw - 20px);
+    max-width: none;
+    max-height: 86vh;
+    padding: 16px;
+    overflow-y: auto;
+  }
+  .modal-title { font-size: 14px; }
+  .modal-sub { font-size: 10.5px; }
+  .game-options-grid { gap: 8px; }
+}
+
+/* ---------------------------- PONSEL SEMPIT ----------------------------- */
+@media (max-width: 430px) {
+  /* Satu kolom terbaca jauh lebih lapang daripada dua kolom sempit */
+  .hero-bento-strip, .hero-mini-stats, .admin-quick-stats {
+    grid-template-columns: 1fr;
+  }
+  .hero-title { font-size: 22px; }
+  .section-title { font-size: 17px; }
+  .nav-slide-indicator { padding: 4px 8px; }
+}
+
+/* ------------------------- PONSEL SANGAT SEMPIT ------------------------- */
+@media (max-width: 360px) {
+  .bottom-dock-nav { gap: 6px; padding: 5px 8px; }
+  .dock-btn-label { display: none; }
+  .dock-nav-btn { padding: 8px 10px; }
+  .dock-dot { width: 5px; height: 5px; }
+  .btn-icon-circle { width: 30px; height: 30px; }
 }
