@@ -1,0 +1,4972 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Platform Materi & Kelas Online — Yayasan Peradaban Islam Azhariyah</title>
+  <meta name="description" content="Presentasi Penawaran Platform Kelas Online Yayasan Peradaban Islam Azhariyah: Sistem proteksi materi kajian, kontrol perizinan akses santri oleh Umi Elly & Yayasan, serta Game Edukasi Interaktif.">
+
+  <!-- Google Fonts: Plus Jakarta Sans (Exclusive) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600;1,700;1,800&display=swap" rel="stylesheet">
+
+  <!-- Phosphor Icons CSS & WebFont -->
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+
+  <!-- Main Stylesheet -->
+  <style>
+/* ==========================================================================
+   MATERIAL DESIGN 3 (M3) STYLESHEET
+   Platform Pembelajaran & Materi Khusus — Yayasan Peradaban Islam Azhariyah
+   Palette: #132a13, #31572c, #4f772d, #90a955, #ecf39e
+   Typography: Plus Jakarta Sans
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. M3 DESIGN TOKENS
+   -------------------------------------------------------------------------- */
+:root {
+  /* M3 Primary Roles */
+  --md-sys-color-primary:                #ECF39E; /* Mindaro / Crisp Lime Butter */
+  --md-sys-color-on-primary:             #132A13; /* Deep Green Text */
+  --md-sys-color-primary-container:      #31572C; /* Dark Moss Container */
+  --md-sys-color-on-primary-container:   #ECF39E;
+
+  /* M3 Secondary Roles */
+  --md-sys-color-secondary:              #90A955; /* Sage Green */
+  --md-sys-color-on-secondary:           #132A13;
+  --md-sys-color-secondary-container:    #224320; /* Deep Sage Container */
+  --md-sys-color-on-secondary-container: #E4ECD4;
+
+  /* M3 Tertiary Roles */
+  --md-sys-color-tertiary:               #A3E635; /* Bright Spring Green */
+  --md-sys-color-on-tertiary:            #132A13;
+  --md-sys-color-tertiary-container:     #2C4E26;
+  --md-sys-color-on-tertiary-container:  #F4F8B8;
+
+  /* M3 Error Roles */
+  --md-sys-color-error:                  #FFB4AB;
+  --md-sys-color-on-error:               #690005;
+  --md-sys-color-error-container:        #4A1215;
+  --md-sys-color-on-error-container:     #FFDAD6;
+
+  /* M3 Surface & Tonal Elevation Hierarchy (Dark Scheme) */
+  --md-sys-color-surface:                #132A13; /* Base Canvas */
+  --md-sys-color-surface-dim:            #0E200E;
+  --md-sys-color-surface-bright:         #1B381B;
+  --md-sys-color-surface-container-lowest:#0B190B;
+  --md-sys-color-surface-container-low:  #162E16; /* Cards Base */
+  --md-sys-color-surface-container:      #1C3B1C; /* Card Content / Modals */
+  --md-sys-color-surface-container-high: #244924; /* Active items */
+  --md-sys-color-surface-container-highest:#2E5A2E; /* Elevated Floating */
+
+  /* M3 On Surface (Text & Content) */
+  --md-sys-color-on-surface:             #F5F8EF; /* High Emphasis Text */
+  --md-sys-color-on-surface-variant:     #C3D4AE; /* Medium Emphasis Text */
+  --md-sys-color-outline:                #4F772D; /* Active Outline / Borders */
+  --md-sys-color-outline-variant:        rgba(144, 169, 85, 0.24); /* Subtle Dividers */
+  --md-sys-color-scrim:                  rgba(0, 0, 0, 0.7);
+
+  /* M3 Shape Radii Tokens */
+  --md-shape-corner-none:        0px;
+  --md-shape-corner-extra-small: 4px;
+  --md-shape-corner-small:       8px;
+  --md-shape-corner-medium:      12px;
+  --md-shape-corner-large:       16px;
+  --md-shape-corner-extra-large: 26px;
+  --md-shape-corner-full:        9999px;
+
+  /* M3 Elevation Shadows */
+  --md-sys-elevation-level1: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --md-sys-elevation-level2: 0 2px 6px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.45);
+  --md-sys-elevation-level3: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.5);
+  --md-sys-elevation-level4: 0 8px 24px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.55);
+  --md-sys-elevation-level5: 0 12px 36px rgba(0, 0, 0, 0.6), 0 6px 12px rgba(0, 0, 0, 0.6);
+
+  /* Typography Scale */
+  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Motion Easing */
+  --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0.0, 0, 1.0);
+  --md-sys-motion-easing-standard:   cubic-bezier(0.2, 0.0, 0, 1.0);
+  --md-sys-motion-duration-short:    180ms;
+  --md-sys-motion-duration-medium:   320ms;
+}
+
+/* --------------------------------------------------------------------------
+   2. RESET & BASE
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  min-height: 100dvh;
+  overflow: hidden;
+  background-color: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--font-family);
+  font-size: 15px;
+  line-height: 1.5;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--md-sys-color-surface-container-lowest);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--md-sys-color-outline);
+  border-radius: var(--md-shape-corner-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--md-sys-color-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   3. BACKGROUND AMBIENT LAYER
+   -------------------------------------------------------------------------- */
+.ambient-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  background-color: var(--md-sys-color-surface);
+}
+
+.ambient-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(144, 169, 85, 0.14) 1.2px, transparent 1.2px);
+  background-size: 32px 32px;
+  opacity: 0.6;
+}
+
+/* --------------------------------------------------------------------------
+   4. M3 TOP APP BAR
+   -------------------------------------------------------------------------- */
+.top-nav-bar {
+  position: fixed;
+  top: 14px;
+  left: 20px;
+  right: 20px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  background-color: var(--md-sys-color-surface-container-low);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-shape-corner-full);
+  z-index: 100;
+  box-shadow: var(--md-sys-elevation-level3);
+  backdrop-filter: blur(12px);
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.brand-crest {
+  width: 36px;
+  height: 36px;
+  background-color: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-primary);
+  border-radius: var(--md-shape-corner-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  flex-shrink: 0;
+}
+
+.crest-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.brand-title {
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  color: var(--md-sys-color-on-surface);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.brand-sub {
+  font-family: var(--font-family);
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--md-sys-color-on-surface-variant);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+/* Center Slide Tracker */
+.nav-slide-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--md-sys-color-surface-container-highest);
+  padding: 5px 14px;
+  border-radius: var(--md-shape-corner-full);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  font-family: var(--font-family);
+  flex-shrink: 0;
+}
+
+.slide-num-current {
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--md-sys-color-primary);
+}
+
+.slide-num-divider {
+  font-size: 11px;
+  color: var(--md-sys-color-on-surface-variant);
+  opacity: 0.6;
+}
+
+.slide-num-total {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.slide-badge-title {
+  display: inline-block;
+  padding-left: 8px;
+  margin-left: 4px;
+  border-left: 1px solid var(--md-sys-color-outline);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+}
+
+/* Nav Actions */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.nav-btn {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--md-shape-corner-full);
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  color: var(--md-sys-color-on-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  cursor: pointer;
+  transition: all var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+}
+
+.nav-btn:hover {
+  background-color: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-primary);
+  border-color: var(--md-sys-color-outline);
+  transform: translateY(-1px);
+}
+
+.nav-btn:active {
+  transform: scale(0.92);
+}
+
+.btn-tooltip {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-4px);
+  padding: 4px 10px;
+  background-color: var(--md-sys-color-surface-container-highest);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-shape-corner-small);
+  font-size: 10.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--md-sys-color-on-surface);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.18s ease;
+  box-shadow: var(--md-sys-elevation-level3);
+}
+
+.nav-btn:hover .btn-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Linear Progress Bar */
+.deck-progress-track {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3.5px;
+  background-color: var(--md-sys-color-surface-container-highest);
+  z-index: 101;
+}
+
+.deck-progress-fill {
+  height: 100%;
+  width: 8.33%;
+  background-color: var(--md-sys-color-primary);
+  transition: width var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-emphasized);
+}
+
+/* --------------------------------------------------------------------------
+   5. PRESENTATION STAGE & SLIDE CARDS
+   -------------------------------------------------------------------------- */
+.presentation-stage {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  padding-top: 76px;
+  padding-bottom: 78px;
+  padding-left: 20px;
+  padding-right: 20px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.slide-card {
+  position: absolute;
+  inset: 76px 20px 78px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.98) translateY(12px);
+  transition: opacity 0.35s var(--md-sys-motion-easing-emphasized), transform 0.35s var(--md-sys-motion-easing-emphasized), visibility 0.35s;
+  pointer-events: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  padding: 10px 0 24px 0;
+}
+
+.slide-card.active {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1) translateY(0);
+  pointer-events: auto;
+  z-index: 5;
+}
+
+.slide-card.prev-out {
+  opacity: 0;
+  transform: scale(1.02) translateY(-12px);
+}
+
+.slide-inner {
+  width: 100%;
+  max-width: 1240px;
+  min-height: min-content;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* --------------------------------------------------------------------------
+   6. M3 ELEVATED CARDS & BEZEL
+   -------------------------------------------------------------------------- */
+.double-bezel {
+  position: relative;
+  background-color: var(--md-sys-color-surface-container-low);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-shape-corner-extra-large);
+  padding: 5px;
+  box-shadow: var(--md-sys-elevation-level2);
+  transition: all var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+}
+
+.double-bezel:hover {
+  border-color: var(--md-sys-color-outline);
+  box-shadow: var(--md-sys-elevation-level3);
+}
+
+.card-inner {
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 20px;
+  padding: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --------------------------------------------------------------------------
+   7. M3 TYPOGRAPHY & CHIPS & BUTTONS
+   -------------------------------------------------------------------------- */
+.gold-gradient-text {
+  color: var(--md-sys-color-primary) !important;
+  background: none !important;
+  -webkit-text-fill-color: initial !important;
+  display: inline-block;
+}
+
+.gold-text { color: var(--md-sys-color-primary) !important; }
+.green-text { color: var(--md-sys-color-secondary) !important; }
+.danger-text { color: var(--md-sys-color-error) !important; }
+.warning-text { color: #FDE047 !important; }
+.white-text { color: #FFFFFF !important; }
+.text-muted { color: var(--md-sys-color-on-surface-variant) !important; }
+
+/* M3 Chips */
+.badge-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  border-radius: var(--md-shape-corner-full);
+  background-color: var(--md-sys-color-secondary-container);
+  border: 1px solid var(--md-sys-color-outline);
+  color: var(--md-sys-color-primary);
+  font-family: var(--font-family);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  width: fit-content;
+  margin-bottom: 10px;
+}
+
+.badge-tag.danger-badge {
+  background-color: var(--md-sys-color-error-container);
+  border-color: var(--md-sys-color-error);
+  color: var(--md-sys-color-error);
+}
+
+.badge-tag.warning-badge {
+  background-color: rgba(253, 224, 71, 0.12);
+  border-color: #FDE047;
+  color: #FEF08A;
+}
+
+.badge-tag.gold-badge {
+  background-color: var(--md-sys-color-primary-container);
+  border-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-primary);
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--md-sys-color-primary);
+}
+
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--md-sys-color-tertiary);
+}
+
+/* Section Header */
+.section-header {
+  margin-bottom: 18px;
+  max-width: 840px;
+}
+
+.section-title {
+  font-family: var(--font-family);
+  font-size: 27px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.28;
+  color: var(--md-sys-color-on-surface);
+  margin-bottom: 6px;
+}
+
+.section-subtitle {
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+/* M3 Filled Button */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 22px;
+  background-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  border: none;
+  border-radius: var(--md-shape-corner-full);
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: all var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+  text-decoration: none;
+  box-shadow: var(--md-sys-elevation-level2);
+  justify-content: center;
+}
+
+.btn-primary:hover {
+  background-color: #F4F8B8;
+  transform: translateY(-1px);
+  box-shadow: var(--md-sys-elevation-level3);
+}
+
+.btn-primary:active {
+  transform: scale(0.96);
+}
+
+.btn-icon-circle {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: rgba(19, 42, 19, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+/* M3 Tonal Button */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 20px;
+  background-color: var(--md-sys-color-surface-container-high);
+  color: var(--md-sys-color-on-surface);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-shape-corner-full);
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: all var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+  text-decoration: none;
+  justify-content: center;
+}
+
+.btn-secondary:hover {
+  background-color: var(--md-sys-color-surface-container-highest);
+  color: var(--md-sys-color-primary);
+  border-color: var(--md-sys-color-outline);
+  transform: translateY(-1px);
+}
+
+/* --------------------------------------------------------------------------
+   8. SLIDE 1: COVER / HERO
+   -------------------------------------------------------------------------- */
+.slide-hero-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr;
+  gap: 36px;
+  align-items: center;
+}
+
+.hero-title {
+  font-family: var(--font-family);
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1.24;
+  letter-spacing: -0.02em;
+  color: var(--md-sys-color-on-surface);
+  margin-bottom: 14px;
+}
+
+.hero-subtitle {
+  font-family: var(--font-family);
+  font-size: 14.5px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-bottom: 20px;
+  max-width: 580px;
+}
+
+.hero-feature-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.pill-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-shape-corner-full);
+  font-family: var(--font-family);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface);
+}
+
+.pill-item i {
+  color: var(--md-sys-color-primary);
+  font-size: 15px;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.keyboard-tip {
+  font-size: 11.5px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.kbd {
+  display: inline-block;
+  padding: 2px 7px;
+  background-color: var(--md-sys-color-surface-container-highest);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-shape-corner-small);
+  font-family: monospace;
+  font-size: 10.5px;
+}
+
+/* Hero Right Visual */
+.hero-card-bezel {
+  width: 100%;
+}
+
+.hero-card-inner {
+  background-color: var(--md-sys-color-surface-container);
+  border-radius: 18px;
+  padding: 20px;
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.card-hero-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.card-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.tag-gold {
+  padding: 4px 10px;
+  background-color: var(--md-sys-color-primary-container);
+  border: 1px solid var(--md-sys-color-primary);
+  border-radius: var(--md-shape-corner-full);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--md-sys-color-primary);
+}
+
+.hero-preview-box {
+  background-color: var(--md-sys-color-surface-container-lowest);
+  border-radius: var(--md-shape-corner-medium);
+  padding: 14px;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  margin-bottom: 14px;
+}
+
+.preview-mini-video {
+  height: 125px;
+  background-color: var(--md-sys-color-surface-container-low);
+  border-radius: var(--md-shape-corner-medium);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px;
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.mini-player-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.mini-play-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.watermark-sample {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--md-sys-color-primary);
+  background-color: rgba(19, 42, 19, 0.85);
+  padding: 4px 8px;
+  border-radius: var(--md-shape-corner-small);
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.mini-video-bar {
+  height: 3.5px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: var(--md-shape-corner-full);
+  overflow: hidden;
+}
+
+.mini-video-fill {
+  height: 100%;
+  background-color: var(--md-sys-color-primary);
+}
+
+.preview-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.stat-mini {
+  background-color: var(--md-sys-color-surface-container);
+  padding: 8px 6px;
+  border-radius: var(--md-shape-corner-medium);
+  text-align: center;
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.stat-num {
+  font-family: var(--font-family);
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.stat-lbl {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-top: 2px;
+}
+
+.hero-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface-variant);
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  padding-top: 12px;
+}
+
+.card-footer-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.card-footer-item i {
+  color: var(--md-sys-color-primary);
+}
+
+/* --------------------------------------------------------------------------
+   9. PROBLEM GRID 4
+   -------------------------------------------------------------------------- */
+.problem-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.problem-card {
+  background-color: var(--md-sys-color-surface-container-low);
+}
+
+.problem-card .card-inner {
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.problem-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--md-shape-corner-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.danger-icon {
+  background-color: var(--md-sys-color-error-container);
+  color: var(--md-sys-color-error);
+  border: 1px solid var(--md-sys-color-error);
+}
+
+.problem-title {
+  font-family: var(--font-family);
+  font-size: 15.5px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  line-height: 1.32;
+  margin-bottom: 8px;
+}
+
+.problem-desc {
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-bottom: 14px;
+  flex-grow: 1;
+}
+
+.problem-impact-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background-color: var(--md-sys-color-error-container);
+  border-radius: var(--md-shape-corner-small);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--md-sys-color-error);
+}
+
+/* --------------------------------------------------------------------------
+   10. IMPACT COLUMNS
+   -------------------------------------------------------------------------- */
+.impact-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.impact-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.impact-item .card-inner {
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.impact-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--md-sys-color-primary);
+  margin-bottom: 10px;
+}
+
+.impact-heading {
+  font-family: var(--font-family);
+  font-size: 16.5px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  line-height: 1.32;
+  margin-bottom: 8px;
+}
+
+.impact-text {
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-bottom: 14px;
+}
+
+.impact-metric-box {
+  background-color: var(--md-sys-color-surface-container-lowest);
+  padding: 10px 12px;
+  border-radius: var(--md-shape-corner-medium);
+  border-left: 3px solid var(--md-sys-color-primary);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metric-val {
+  font-family: var(--font-family);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.metric-label {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.quote-callout {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background-color: var(--md-sys-color-surface-container-low);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-shape-corner-large);
+  padding: 14px 18px;
+}
+
+.quote-icon {
+  font-size: 24px;
+  color: var(--md-sys-color-primary);
+}
+
+.quote-phrase {
+  font-family: var(--font-family);
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--md-sys-color-on-surface);
+}
+
+.quote-author {
+  display: block;
+  font-size: 11.5px;
+  color: var(--md-sys-color-primary);
+  margin-top: 3px;
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   11. SOLUTION GRID 4
+   -------------------------------------------------------------------------- */
+.solution-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.sol-card .card-inner {
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  justify-content: flex-start;
+  position: relative;
+  padding: 16px;
+}
+
+.sol-num {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-family: var(--font-family);
+  font-size: 22px;
+  font-weight: 700;
+  color: rgba(236, 243, 158, 0.18);
+}
+
+.sol-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--md-shape-corner-medium);
+  background-color: var(--md-sys-color-secondary-container);
+  border: 1px solid var(--md-sys-color-outline);
+  color: var(--md-sys-color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.sol-title {
+  font-family: var(--font-family);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  margin-bottom: 6px;
+}
+
+.sol-desc {
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-bottom: 14px;
+}
+
+.sol-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.sol-list li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sol-list i {
+  color: var(--md-sys-color-primary);
+}
+
+/* --------------------------------------------------------------------------
+   12. WORKFLOW STEPPER
+   -------------------------------------------------------------------------- */
+.workflow-stepper {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.step-card {
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-shape-corner-large);
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all var(--md-sys-motion-duration-short);
+}
+
+.step-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--md-sys-color-primary);
+}
+
+.step-card.highlight-step {
+  background-color: var(--md-sys-color-primary-container);
+  border: 1px solid var(--md-sys-color-primary);
+}
+
+.step-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: var(--md-shape-corner-full);
+  color: var(--md-sys-color-on-surface-variant);
+  margin-bottom: 8px;
+}
+
+.gold-step-badge {
+  background-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+}
+
+.step-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: var(--md-sys-color-surface-container-highest);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: var(--md-sys-color-primary);
+  margin-bottom: 10px;
+}
+
+.gold-circle {
+  background-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  border-color: var(--md-sys-color-primary);
+}
+
+.step-title {
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  margin-bottom: 4px;
+}
+
+.step-desc {
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.workflow-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: var(--md-sys-color-surface-container-low);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-shape-corner-medium);
+  padding: 12px 16px;
+}
+
+.banner-icon {
+  font-size: 22px;
+  color: var(--md-sys-color-primary);
+}
+
+.banner-text {
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--md-sys-color-on-surface);
+}
+
+/* --------------------------------------------------------------------------
+   13. SLIDE 6: STUDENT MOCKUP
+   -------------------------------------------------------------------------- */
+.slide-mockup-layout {
+  display: grid;
+  grid-template-columns: 0.8fr 1.3fr;
+  gap: 28px;
+  align-items: center;
+}
+
+.mockup-intro {
+  display: flex;
+  flex-direction: column;
+}
+
+.feature-bullets-side {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.f-bullet {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--md-sys-color-on-surface-variant);
+  line-height: 1.45;
+}
+
+.f-bullet strong {
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+}
+
+.f-bullet-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.mockup-interactive-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  background-color: var(--md-sys-color-secondary-container);
+  border: 1px solid var(--md-sys-color-primary);
+  border-radius: var(--md-shape-corner-medium);
+  font-size: 11.5px;
+  color: var(--md-sys-color-primary);
+  font-weight: 600;
+}
+
+/* OS Window Frame */
+.os-window-inner {
+  background-color: var(--md-sys-color-surface-container-lowest);
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.os-top-bar {
+  background-color: var(--md-sys-color-surface-container-low);
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.os-traffic-lights {
+  display: flex;
+  gap: 5px;
+}
+
+.tl {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+.tl.red { background-color: #FF5F56; }
+.tl.yellow { background-color: #FFBD2E; }
+.tl.green { background-color: #27C93F; }
+
+.os-url-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--md-sys-color-surface-container-lowest);
+  padding: 4px 12px;
+  border-radius: var(--md-shape-corner-full);
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface-variant);
+  max-width: 300px;
+}
+
+.os-url-bar i {
+  color: var(--md-sys-color-primary);
+}
+
+.os-user-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.os-avatar-initial {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  font-size: 9.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Student Portal */
+.student-portal-ui {
+  display: grid;
+  grid-template-columns: 1.4fr 0.9fr;
+  background-color: var(--md-sys-color-surface-container-lowest);
+}
+
+.portal-main-area {
+  padding: 14px;
+  border-right: 1px solid var(--md-sys-color-outline-variant);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.interactive-video-player {
+  background-color: #071207;
+  border-radius: var(--md-shape-corner-medium);
+  overflow: hidden;
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.player-screen {
+  height: 180px;
+  background-color: var(--md-sys-color-surface-container-low);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dynamic-watermark {
+  position: absolute;
+  top: 25%;
+  left: 20%;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  background-color: rgba(19, 42, 19, 0.85);
+  border: 1px solid rgba(236, 243, 158, 0.3);
+  border-radius: var(--md-shape-corner-small);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--md-sys-color-primary);
+  pointer-events: none;
+  animation: floatWatermark 8s infinite ease-in-out;
+}
+
+@keyframes floatWatermark {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(40px, 20px); }
+  50% { transform: translate(80px, -15px); }
+  75% { transform: translate(20px, 25px); }
+  100% { transform: translate(0, 0); }
+}
+
+.player-center-play {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.player-hud-title {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-size: 10.5px;
+  font-weight: 500;
+  background-color: rgba(19, 42, 19, 0.88);
+  padding: 3px 8px;
+  border-radius: var(--md-shape-corner-small);
+  color: var(--md-sys-color-on-surface);
+}
+
+.player-controls-bar {
+  background-color: var(--md-sys-color-surface-container-low);
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.player-ctrl-btn {
+  background: none;
+  border: none;
+  color: var(--md-sys-color-on-surface);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.player-timestamp {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface-variant);
+  font-variant-numeric: tabular-nums;
+}
+
+.player-scrub-track {
+  flex-grow: 1;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: var(--md-shape-corner-full);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.player-scrub-fill {
+  height: 100%;
+  background-color: var(--md-sys-color-primary);
+}
+
+.speed-pill-btn {
+  background-color: var(--md-sys-color-surface-container-highest);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  padding: 2px 7px;
+  border-radius: var(--md-shape-corner-small);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  cursor: pointer;
+}
+
+/* Video Meta */
+.video-meta-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.active-module-title {
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+}
+
+.module-author {
+  font-size: 10.5px;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-top: 2px;
+}
+
+.btn-mark-done {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  background-color: var(--md-sys-color-secondary-container);
+  border: 1px solid var(--md-sys-color-tertiary);
+  border-radius: var(--md-shape-corner-full);
+  color: var(--md-sys-color-primary);
+  font-family: var(--font-family);
+  font-size: 10.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.materials-download-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.mat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: var(--md-sys-color-surface-container-low);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  padding: 4px 10px;
+  border-radius: var(--md-shape-corner-small);
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface-variant);
+  text-decoration: none;
+  transition: all var(--md-sys-motion-duration-short);
+}
+
+.mat-pill:hover {
+  background-color: var(--md-sys-color-surface-container-high);
+  border-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-primary);
+}
+
+.game-pill {
+  background-color: var(--md-sys-color-primary-container) !important;
+  border-color: var(--md-sys-color-primary) !important;
+  color: var(--md-sys-color-primary) !important;
+  font-weight: 600 !important;
+}
+
+.game-pill:hover {
+  background-color: var(--md-sys-color-primary) !important;
+  color: var(--md-sys-color-on-primary) !important;
+}
+
+.mat-size {
+  opacity: 0.6;
+  font-size: 9.5px;
+}
+
+/* Sidebar Silabus */
+.portal-sidebar-area {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidebar-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.sidebar-course-tag {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--md-sys-color-primary);
+}
+
+.progress-pct {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--md-sys-color-tertiary);
+}
+
+.sidebar-progress-bar {
+  height: 3.5px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: var(--md-shape-corner-full);
+  overflow: hidden;
+}
+
+.sidebar-progress-fill {
+  height: 100%;
+  background-color: var(--md-sys-color-tertiary);
+}
+
+.syllabus-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow-y: auto;
+  max-height: 220px;
+}
+
+.syllabus-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 7px 9px;
+  background-color: var(--md-sys-color-surface-container-low);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-shape-corner-medium);
+  cursor: pointer;
+}
+
+.syllabus-item.active-syl {
+  background-color: var(--md-sys-color-primary-container);
+  border-color: var(--md-sys-color-primary);
+}
+
+.syl-status-icon {
+  font-size: 15px;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-top: 1px;
+}
+
+.syllabus-item.done .syl-status-icon { color: var(--md-sys-color-tertiary); }
+.syllabus-item.active-syl .syl-status-icon { color: var(--md-sys-color-primary); }
+.syllabus-item.locked { opacity: 0.45; cursor: not-allowed; }
+
+.syl-session {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--md-sys-color-primary);
+}
+
+.syl-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  line-height: 1.3;
+}
+
+.syl-duration {
+  font-size: 9.5px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+/* --------------------------------------------------------------------------
+   14. SECURITY PILLARS
+   -------------------------------------------------------------------------- */
+.security-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.sec-card .card-inner {
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.sec-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--md-shape-corner-medium);
+  background-color: var(--md-sys-color-secondary-container);
+  border: 1px solid var(--md-sys-color-outline);
+  color: var(--md-sys-color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.sec-title {
+  font-family: var(--font-family);
+  font-size: 15.5px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  margin-bottom: 6px;
+}
+
+.sec-desc {
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-bottom: 14px;
+  flex-grow: 1;
+}
+
+.sec-feature-box {
+  background-color: var(--md-sys-color-surface-container-lowest);
+  padding: 8px 10px;
+  border-radius: var(--md-shape-corner-small);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11px;
+  border-left: 3px solid var(--md-sys-color-primary);
+}
+
+.sec-tag {
+  font-weight: 600;
+  color: var(--md-sys-color-primary);
+}
+
+/* --------------------------------------------------------------------------
+   15. ADMIN DASHBOARD
+   -------------------------------------------------------------------------- */
+.admin-quick-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.q-stat {
+  background-color: var(--md-sys-color-surface-container-low);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-shape-corner-medium);
+  padding: 10px 8px;
+  text-align: center;
+}
+
+.q-stat-val {
+  font-family: var(--font-family);
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.q-stat-lbl {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-top: 2px;
+}
+
+.admin-portal-ui {
+  background-color: var(--md-sys-color-surface-container-lowest);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-table-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.admin-tab-group {
+  display: flex;
+  gap: 5px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.admin-tab {
+  background-color: var(--md-sys-color-surface-container-low);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  padding: 5px 12px;
+  border-radius: var(--md-shape-corner-full);
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: var(--font-family);
+  font-size: 10.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.admin-tab.active {
+  background-color: var(--md-sys-color-primary-container);
+  border-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-primary);
+}
+
+.admin-search-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--md-sys-color-surface-container-low);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  padding: 5px 12px;
+  border-radius: var(--md-shape-corner-full);
+  font-size: 10.5px;
+}
+
+.admin-search-box input {
+  background: none;
+  border: none;
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--font-family);
+  font-size: 10.5px;
+  outline: none;
+  width: 120px;
+}
+
+.admin-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-shape-corner-medium);
+  background-color: var(--md-sys-color-surface-container-low);
+}
+
+.admin-santri-table {
+  width: 100%;
+  min-width: 580px;
+  border-collapse: collapse;
+  font-size: 11.5px;
+  text-align: left;
+}
+
+.admin-santri-table th {
+  background-color: var(--md-sys-color-surface-container);
+  padding: 8px 10px;
+  color: var(--md-sys-color-on-surface-variant);
+  font-weight: 600;
+  font-size: 10.5px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.admin-santri-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  vertical-align: middle;
+}
+
+.table-user-cell {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.user-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #132A13;
+}
+
+.bg-avatar-1 { background-color: var(--md-sys-color-primary); }
+.bg-avatar-2 { background-color: #A3E635; }
+.bg-avatar-3 { background-color: #6EE7B7; }
+.bg-avatar-4 { background-color: #FDE047; }
+
+.user-name {
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+}
+
+.user-meta {
+  font-size: 9.5px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.badge-batch {
+  padding: 2px 7px;
+  border-radius: var(--md-shape-corner-small);
+  background-color: var(--md-sys-color-surface-container-high);
+  font-size: 10.5px;
+  font-weight: 500;
+}
+
+.badge-status-lunas {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px;
+  background-color: var(--md-sys-color-secondary-container);
+  border: 1px solid var(--md-sys-color-tertiary);
+  border-radius: var(--md-shape-corner-full);
+  color: var(--md-sys-color-primary);
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
+.badge-status-pending {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px;
+  background-color: rgba(253, 224, 71, 0.12);
+  border: 1px solid #FDE047;
+  border-radius: var(--md-shape-corner-full);
+  color: #FEF08A;
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
+.table-progress-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 80px;
+}
+
+.table-prog-bar {
+  height: 3.5px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: var(--md-shape-corner-full);
+  overflow: hidden;
+}
+
+.table-prog-fill {
+  height: 100%;
+  background-color: var(--md-sys-color-primary);
+}
+
+.table-prog-text {
+  font-size: 9.5px;
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+/* Switch Component */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+
+.switch input { opacity: 0; width: 0; height: 0; }
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: var(--md-sys-color-surface-container-highest);
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: var(--md-shape-corner-full);
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 12px;
+  width: 12px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--md-sys-color-outline);
+  border-radius: 50%;
+  transition: .2s;
+}
+
+input:checked + .slider {
+  background-color: var(--md-sys-color-primary);
+  border-color: var(--md-sys-color-primary);
+}
+
+input:checked + .slider:before {
+  transform: translateX(16px);
+  background-color: var(--md-sys-color-on-primary);
+}
+
+.btn-table-action {
+  background-color: var(--md-sys-color-surface-container-high);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  padding: 4px 10px;
+  border-radius: var(--md-shape-corner-full);
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--font-family);
+  font-size: 10.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-table-verify {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background-color: var(--md-sys-color-primary);
+  border: none;
+  padding: 4px 10px;
+  border-radius: var(--md-shape-corner-full);
+  color: var(--md-sys-color-on-primary);
+  font-family: var(--font-family);
+  font-size: 10.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10.5px;
+  color: var(--md-sys-color-on-surface-variant);
+  padding-top: 2px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.btn-export-excel {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  background-color: var(--md-sys-color-surface-container-low);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-shape-corner-full);
+  color: var(--md-sys-color-primary);
+  font-family: var(--font-family);
+  font-size: 10.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   16. MVP FEATURE SCOPE
+   -------------------------------------------------------------------------- */
+.mvp-split-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.mvp-column-card .card-inner {
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  padding: 18px;
+}
+
+.mvp-col-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.mvp-badge-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--md-shape-corner-medium);
+  background-color: var(--md-sys-color-secondary-container);
+  border: 1px solid var(--md-sys-color-outline);
+  color: var(--md-sys-color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.admin-icon-bg {
+  background-color: var(--md-sys-color-primary-container);
+  border-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-primary);
+}
+
+.mvp-col-title {
+  font-family: var(--font-family);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+}
+
+.mvp-col-sub {
+  font-size: 11.5px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.mvp-feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mvp-f-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.mvp-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10.5px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.mvp-f-text strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  margin-bottom: 1px;
+}
+
+.mvp-f-text span {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--md-sys-color-on-surface-variant);
+  line-height: 1.45;
+}
+
+/* --------------------------------------------------------------------------
+   17. STRATEGIC VALUE & ROADMAP
+   -------------------------------------------------------------------------- */
+.value-impact-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.val-card .card-inner {
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.val-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.val-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--md-shape-corner-medium);
+  background-color: var(--md-sys-color-secondary-container);
+  border: 1px solid var(--md-sys-color-outline);
+  color: var(--md-sys-color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.val-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: var(--md-shape-corner-full);
+}
+
+.green-badge { background-color: var(--md-sys-color-secondary-container); color: var(--md-sys-color-primary); border: 1px solid var(--md-sys-color-tertiary); }
+.gold-badge-light { background-color: var(--md-sys-color-primary-container); color: var(--md-sys-color-primary); border: 1px solid var(--md-sys-color-primary); }
+.blue-badge { background-color: rgba(56, 189, 248, 0.15); color: #BAE6FD; border: 1px solid #38BDF8; }
+.purple-badge { background-color: rgba(192, 132, 252, 0.15); color: #E9D5FF; border: 1px solid #C084FC; }
+
+.val-title {
+  font-family: var(--font-family);
+  font-size: 15.5px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  margin-bottom: 6px;
+}
+
+.val-desc {
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-bottom: 12px;
+  flex-grow: 1;
+}
+
+.val-quote {
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--md-sys-color-on-surface-variant);
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  padding-top: 8px;
+}
+
+.roadmap-horizontal {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.road-phase .card-inner {
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  justify-content: space-between;
+  padding: 18px;
+}
+
+.road-phase.current-phase .card-inner {
+  background-color: var(--md-sys-color-primary-container);
+  border-color: var(--md-sys-color-primary);
+}
+
+.road-phase-tag {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-bottom: 10px;
+}
+
+.road-phase-tag.active-tag { color: var(--md-sys-color-primary); }
+
+.road-title {
+  font-family: var(--font-family);
+  font-size: 17.5px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  margin-bottom: 14px;
+}
+
+.road-items {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-bottom: 16px;
+  flex-grow: 1;
+}
+
+.road-items li {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.road-items i { color: var(--md-sys-color-primary); }
+
+.road-status-pill {
+  padding: 5px 12px;
+  border-radius: var(--md-shape-corner-full);
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.done-pill { background-color: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+.next-pill { background-color: var(--md-sys-color-surface-container-high); color: var(--md-sys-color-on-surface); }
+.future-pill { background-color: rgba(255, 255, 255, 0.05); color: var(--md-sys-color-on-surface-variant); }
+
+/* --------------------------------------------------------------------------
+   18. TIMELINE & CLOSING
+   -------------------------------------------------------------------------- */
+.slide-closing-layout {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.closing-top-pitch {
+  text-align: center;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.closing-title {
+  font-family: var(--font-family);
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  color: var(--md-sys-color-on-surface);
+  margin-bottom: 6px;
+}
+
+.closing-subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.timeline-4weeks {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.timeline-week-card {
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-shape-corner-large);
+  padding: 14px;
+}
+
+.timeline-week-card.highlight-week {
+  background-color: var(--md-sys-color-primary-container);
+  border-color: var(--md-sys-color-primary);
+}
+
+.week-num {
+  font-family: var(--font-family);
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-bottom: 4px;
+}
+
+.gold-week { color: var(--md-sys-color-primary); }
+
+.week-title {
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  margin-bottom: 4px;
+}
+
+.week-desc {
+  font-size: 11.5px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.closing-cta-box .card-inner {
+  background-color: var(--md-sys-color-primary-container);
+  border: 1px solid var(--md-sys-color-primary);
+  padding: 16px 20px;
+}
+
+.closing-cta-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cta-call-heading {
+  font-family: var(--font-family);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  margin-bottom: 3px;
+}
+
+.cta-call-sub {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.cta-buttons-side {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.btn-cta-main {
+  font-size: 14px;
+  padding: 12px 24px;
+}
+
+.closing-footer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10.5px;
+  font-weight: 400;
+  color: var(--md-sys-color-on-surface-variant);
+  opacity: 0.8;
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  padding-top: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   19. M3 FLOATING BOTTOM DOCK
+   -------------------------------------------------------------------------- */
+.bottom-dock-nav {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px;
+  background-color: var(--md-sys-color-surface-container-low);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-shape-corner-full);
+  z-index: 100;
+  box-shadow: var(--md-sys-elevation-level4);
+  backdrop-filter: blur(12px);
+}
+
+.dock-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 16px;
+  background-color: var(--md-sys-color-surface-container-high);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-shape-corner-full);
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: all var(--md-sys-motion-duration-short);
+}
+
+.dock-nav-btn:hover {
+  background-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  border-color: var(--md-sys-color-primary);
+  transform: translateY(-1px);
+}
+
+.dock-dots-strip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 6px;
+}
+
+.dock-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--md-shape-corner-full);
+  background-color: rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  transition: all var(--md-sys-motion-duration-medium);
+}
+
+.dock-dot:hover {
+  background-color: var(--md-sys-color-primary);
+  transform: scale(1.25);
+}
+
+.dock-dot.active {
+  width: 20px;
+  background-color: var(--md-sys-color-primary);
+}
+
+/* --------------------------------------------------------------------------
+   20. M3 MODAL OVERVIEW
+   -------------------------------------------------------------------------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: var(--md-sys-color-scrim);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  backdrop-filter: blur(8px);
+  transition: all var(--md-sys-motion-duration-medium);
+}
+
+.modal-overlay.open { opacity: 1; visibility: visible; }
+
+.modal-card {
+  width: 100%;
+  max-width: 1000px;
+  max-height: 85vh;
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-shape-corner-extra-large);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: var(--md-sys-elevation-level5);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  padding-bottom: 14px;
+}
+
+.modal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.modal-crest {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--md-shape-corner-medium);
+  background-color: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.modal-title {
+  font-family: var(--font-family);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+}
+
+.modal-sub {
+  font-size: 12px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.modal-close-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--md-sys-color-surface-container-high);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  color: var(--md-sys-color-on-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.slide-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.grid-slide-thumb {
+  background-color: var(--md-sys-color-surface-container-low);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-shape-corner-medium);
+  padding: 14px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.grid-slide-thumb.current {
+  background-color: var(--md-sys-color-primary-container);
+  border-color: var(--md-sys-color-primary);
+}
+
+.thumb-num {
+  font-family: var(--font-family);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--md-sys-color-primary);
+}
+
+.thumb-title {
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  line-height: 1.35;
+}
+
+/* Toast */
+.toast-container {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background-color: var(--md-sys-color-surface-container-highest);
+  border: 1px solid var(--md-sys-color-primary);
+  border-radius: var(--md-shape-corner-full);
+  padding: 8px 18px;
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: var(--md-sys-elevation-level4);
+  z-index: 300;
+  opacity: 0;
+  visibility: hidden;
+  max-width: 90vw;
+  text-align: center;
+  transition: all var(--md-sys-motion-duration-medium);
+}
+
+.toast-container.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ==========================================================================
+   21. RESPONSIVE BREAKPOINTS (TABLETS & MOBILE)
+   ========================================================================== */
+
+/* Tablet (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .hero-title { font-size: 28px; }
+  .section-title { font-size: 23px; }
+  .problem-grid-4, .solution-grid-4, .security-pillars-grid, .value-impact-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .workflow-stepper { grid-template-columns: repeat(3, 1fr); }
+  .timeline-4weeks { grid-template-columns: repeat(2, 1fr); }
+  .slide-overview-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Mobile Screens (max-width: 768px) */
+@media (max-width: 768px) {
+  /* Compact Top Navigation */
+  .top-nav-bar {
+    top: 8px;
+    left: 10px;
+    right: 10px;
+    height: 50px;
+    padding: 0 10px;
+  }
+
+  .brand-crest {
+    width: 28px;
+    height: 28px;
+    padding: 4px;
+  }
+
+  .brand-title {
+    font-size: 12.5px;
+    max-width: 140px;
+  }
+
+  .brand-sub {
+    display: none;
+  }
+
+  .nav-slide-indicator {
+    padding: 3px 10px;
+  }
+
+  .slide-num-current { font-size: 12px; }
+  .slide-num-total { font-size: 11px; }
+  .slide-badge-title { display: none; }
+
+  .nav-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 15px;
+  }
+
+  #btnFullscreenToggle, #btnAutoplayToggle {
+    display: none;
+  }
+
+  /* Compact Presentation Stage */
+  .presentation-stage {
+    padding-top: 64px;
+    padding-bottom: 74px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .slide-card {
+    inset: 64px 10px 74px 10px;
+    display: block;
+    padding-bottom: 24px;
+  }
+
+  .slide-inner {
+    height: auto;
+    max-height: none;
+    padding: 4px 0 16px 0;
+  }
+
+  /* Bigger, Prominent Mobile Headings */
+  .section-header {
+    margin-bottom: 14px;
+  }
+
+  .hero-title {
+    font-size: 28px;
+    line-height: 1.24;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+
+  .hero-subtitle {
+    font-size: 13.5px;
+    line-height: 1.55;
+    margin-bottom: 18px;
+  }
+
+  .section-title {
+    font-size: 24px;
+    line-height: 1.26;
+    letter-spacing: -0.015em;
+    margin-bottom: 6px;
+  }
+
+  .section-subtitle {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* Compact Doppelrand Card */
+  .double-bezel {
+    border-radius: 18px;
+    padding: 3px;
+  }
+
+  .card-inner {
+    border-radius: 15px;
+    padding: 14px;
+  }
+
+  /* Slide 1 Hero Mobile */
+  .slide-hero-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .hero-visual {
+    margin-top: 4px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .hero-actions .btn-primary, .hero-actions .btn-secondary {
+    width: 100%;
+    padding: 11px 16px;
+  }
+
+  .keyboard-tip {
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  /* Grids to Single Column */
+  .problem-grid-4, .solution-grid-4, .security-pillars-grid, .value-impact-grid, .timeline-4weeks {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .impact-columns, .roadmap-horizontal, .mvp-split-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* Stepper Mobile */
+  .workflow-stepper {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .step-card {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .step-circle {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .step-badge {
+    display: inline-block;
+    margin-bottom: 4px;
+  }
+
+  /* Student Portal Mobile */
+  .slide-mockup-layout {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .student-portal-ui {
+    grid-template-columns: 1fr;
+  }
+
+  .portal-main-area {
+    border-right: none;
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+    padding: 10px;
+  }
+
+  .player-screen {
+    height: 150px;
+  }
+
+  .dynamic-watermark {
+    font-size: 9.5px;
+    padding: 3px 7px;
+  }
+
+  .materials-download-pills {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .portal-sidebar-area {
+    padding: 10px;
+  }
+
+  /* Admin Dashboard Mobile */
+  .admin-portal-ui {
+    padding: 10px;
+  }
+
+  .admin-quick-stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .q-stat-val { font-size: 14px; }
+  .q-stat-lbl { font-size: 9.5px; }
+
+  .admin-table-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .admin-search-box {
+    width: 100%;
+  }
+
+  .admin-search-box input {
+    width: 100%;
+  }
+
+  /* Closing Slide Mobile */
+  .closing-title {
+    font-size: 25px;
+    line-height: 1.25;
+    margin-bottom: 8px;
+  }
+
+  .closing-cta-inner {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .cta-buttons-side {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .btn-cta-main, .cta-buttons-side .btn-secondary {
+    width: 100%;
+  }
+
+  .closing-footer-bar {
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+  }
+
+  /* Bottom Floating Dock on Mobile */
+  .bottom-dock-nav {
+    bottom: 10px;
+    padding: 5px 10px;
+    width: auto;
+    max-width: calc(100vw - 20px);
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .dock-nav-btn {
+    padding: 7px 14px;
+    font-size: 12px;
+  }
+
+  .dock-dots-strip {
+    display: flex;
+    gap: 4px;
+    padding: 0 4px;
+  }
+
+  .dock-dot {
+    width: 6px;
+    height: 6px;
+  }
+
+  .dock-dot.active {
+    width: 14px;
+  }
+
+  /* Modal Overview Mobile */
+  .modal-overlay {
+    padding: 12px;
+  }
+
+  .modal-card {
+    padding: 16px;
+  }
+
+  .slide-overview-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .grid-slide-thumb {
+    padding: 10px;
+  }
+
+  .thumb-title {
+    font-size: 11px;
+  }
+}
+
+</style>
+</head>
+<body>
+
+  <!-- Ambient Islamic Geometric Background Grid & Glows -->
+  <div class="ambient-layer">
+    <div class="ambient-pattern"></div>
+  </div>
+
+  <!-- Top Floating Header Bar (M3 App Bar) -->
+  <header class="top-nav-bar" id="topNav">
+    <div class="nav-brand">
+      <div class="brand-crest">
+        <svg viewBox="0 0 40 40" class="crest-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Eight-pointed Islamic Star Geometry -->
+          <rect x="7" y="7" width="26" height="26" rx="4" stroke="currentColor" stroke-width="1.8" fill="none" opacity="0.6"/>
+          <rect x="7" y="7" width="26" height="26" rx="4" transform="rotate(45 20 20)" stroke="currentColor" stroke-width="1.8" fill="none" opacity="0.9"/>
+          <circle cx="20" cy="20" r="5" fill="currentColor"/>
+          <circle cx="20" cy="20" r="11" stroke="currentColor" stroke-width="1" stroke-dasharray="2 3" opacity="0.5"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-title">Peradaban Islam Azhariyah</span>
+        <span class="brand-sub">Platform Materi & Pembelajaran Khusus • Asuhan Umi Elly</span>
+      </div>
+    </div>
+
+    <!-- Center Slide Tracker Indicator -->
+    <div class="nav-slide-indicator">
+      <span class="slide-num-current" id="navSlideCurrent">01</span>
+      <span class="slide-num-divider">/</span>
+      <span class="slide-num-total" id="navSlideTotal">12</span>
+      <span class="slide-badge-title" id="navSlideTitle">Cover & Visi</span>
+    </div>
+
+    <!-- Right Controls: Audio, Overview, Autoplay, Fullscreen -->
+    <div class="nav-actions">
+      <button class="nav-btn" id="btnAudioToggle" title="Suara Efek (M)" aria-label="Toggle Audio">
+        <i class="ph ph-speaker-high" id="audioIcon"></i>
+        <span class="btn-tooltip">Sound: ON</span>
+      </button>
+      <button class="nav-btn" id="btnAutoplayToggle" title="Autoplay / Presenter Mode (P)" aria-label="Toggle Autoplay">
+        <i class="ph ph-play" id="autoplayIcon"></i>
+        <span class="btn-tooltip">Autoplay</span>
+      </button>
+      <button class="nav-btn" id="btnOverviewToggle" title="Daftar Slide (G / O)" aria-label="Slide Overview">
+        <i class="ph ph-squares-four"></i>
+        <span class="btn-tooltip">Semua Slide</span>
+      </button>
+      <button class="nav-btn" id="btnFullscreenToggle" title="Layar Penuh (F)" aria-label="Toggle Fullscreen">
+        <i class="ph ph-corners-out" id="fullscreenIcon"></i>
+        <span class="btn-tooltip">Full Screen</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Global Progress Bar at the top -->
+  <div class="deck-progress-track">
+    <div class="deck-progress-fill" id="deckProgressFill"></div>
+  </div>
+
+  <!-- MAIN SLIDES CONTAINER -->
+  <main class="presentation-stage" id="presentationStage">
+
+    <!-- ============================================================
+         SLIDE 1: COVER / HERO PITCH
+         ============================================================ -->
+    <section class="slide-card active" data-slide-index="1" data-slide-title="Cover & Visi">
+      <div class="slide-inner slide-hero-layout">
+        
+        <div class="hero-content">
+          <div class="badge-tag">
+            <span class="badge-dot"></span>
+            <span class="badge-text">PROPOSAL & PITCH DECK • YAYASAN PERADABAN ISLAM AZHARIYAH</span>
+          </div>
+
+          <h1 class="hero-title">
+            Platform Pembelajaran & Materi Khusus <br>
+            <span class="gold-gradient-text">Yayasan Peradaban Islam Azhariyah</span>
+          </h1>
+
+          <p class="hero-subtitle">
+            Sistem portal eksklusif untuk memproteksi dan mengelola seluruh materi kajian Yayasan Peradaban Islam Azhariyah. <strong>Materi hanya dapat diakses oleh santri yang telah diverifikasi dan resmi diberikan izin oleh Umi Elly atau pihak yayasan</strong>, dilengkapi <strong>Game Edukasi Interaktif</strong> untuk pengalaman belajar yang seru.
+          </p>
+
+          <div class="hero-feature-pills">
+            <div class="pill-item">
+              <i class="ph ph-lock-key"></i>
+              <span>Akses Khusus Berizin Umi Elly</span>
+            </div>
+            <div class="pill-item">
+              <i class="ph ph-shield-check"></i>
+              <span>Proteksi Video Anti-Bocor</span>
+            </div>
+            <div class="pill-item">
+              <i class="ph ph-game-controller"></i>
+              <span>Game Edukasi & Gamifikasi Sejarah</span>
+            </div>
+          </div>
+
+          <div class="hero-actions">
+            <button class="btn-primary" id="btnStartDeck">
+              <span>Mulai Presentasi</span>
+              <div class="btn-icon-circle">
+                <i class="ph ph-arrow-right"></i>
+              </div>
+            </button>
+            <button class="btn-secondary" onclick="DeckEngine.goToSlide(4)">
+              <span>Lihat Solusi Langsung</span>
+              <i class="ph ph-sparkle"></i>
+            </button>
+            <div class="keyboard-tip">
+              <span class="kbd">Space</span> / <span class="kbd">→</span> untuk navigasi
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="double-bezel hero-card-bezel">
+            <div class="hero-card-inner">
+              <div class="card-hero-header">
+                <div class="card-status-pill">
+                  <span class="live-dot"></span>
+                  <span>Portal Materi & Game Yayasan</span>
+                </div>
+                <span class="tag-gold">Akses Terproteksi</span>
+              </div>
+
+              <div class="hero-preview-box">
+                <div class="preview-mini-video">
+                  <div class="mini-player-overlay">
+                    <div class="mini-play-btn"><i class="ph ph-play-fill"></i></div>
+                    <div class="watermark-sample">Ahmad Fauzan • Izin: Umi Elly / Yayasan</div>
+                  </div>
+                  <div class="mini-video-bar">
+                    <div class="mini-video-fill" style="width: 68%;"></div>
+                  </div>
+                </div>
+                <div class="preview-stats-row">
+                  <div class="stat-mini">
+                    <div class="stat-num gold-text">100%</div>
+                    <div class="stat-lbl">Akses Berizin Resmi</div>
+                  </div>
+                  <div class="stat-mini">
+                    <div class="stat-num green-text">+50 XP</div>
+                    <div class="stat-lbl">Game Tarikh Islam</div>
+                  </div>
+                  <div class="stat-mini">
+                    <div class="stat-num white-text">80%</div>
+                    <div class="stat-lbl">Efisiensi Pengurus</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="hero-card-footer">
+                <div class="card-footer-item">
+                  <i class="ph ph-shield-check"></i>
+                  <span>1 Akun 1 Santri Berizin</span>
+                </div>
+                <div class="card-footer-item">
+                  <i class="ph ph-game-controller"></i>
+                  <span>Gamified Learning Engine</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SLIDE 2: KONDISI & MASALAH SAAT INI (THE PROBLEMS)
+         ============================================================ -->
+    <section class="slide-card" data-slide-index="2" data-slide-title="Masalah Saat Ini">
+      <div class="slide-inner slide-standard-layout">
+        
+        <div class="section-header">
+          <div class="badge-tag danger-badge">
+            <i class="ph ph-warning-circle"></i>
+            <span>KONDISI & TANTANGAN SAAT INI</span>
+          </div>
+          <h2 class="section-title">Tantangan Pengelolaan Materi Tanpa Platform Khusus</h2>
+          <p class="section-subtitle">
+            Materi kajian berharga dari Umi Elly dan para asatidz Yayasan Peradaban Islam Azhariyah rentan menghadapi kebocoran jika didistribusikan lewat grup chat biasa.
+          </p>
+        </div>
+
+        <div class="problem-grid-4">
+          
+          <div class="double-bezel problem-card">
+            <div class="card-inner">
+              <div class="problem-icon danger-icon">
+                <i class="ph ph-share-network"></i>
+              </div>
+              <h3 class="problem-title">1. Materi Tersebar & Diakses Tanpa Izin</h3>
+              <p class="problem-desc">
+                Link rekaman mudah dibagikan ke pihak luar. Orang yang belum diberikan hak akses resmi oleh Umi Elly atau yayasan dapat leluasa menonton materi.
+              </p>
+              <div class="problem-impact-pill">
+                <i class="ph ph-x-circle"></i>
+                <span>Amanah materi tidak terjaga</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="double-bezel problem-card">
+            <div class="card-inner">
+              <div class="problem-icon danger-icon">
+                <i class="ph ph-eye-slash"></i>
+              </div>
+              <h3 class="problem-title">2. Pihak Yayasan "Buta" Data Akses</h3>
+              <p class="problem-desc">
+                Umi Elly dan pengurus yayasan tidak dapat memantau siapa saja yang sebenarnya mengakses video kajian, seberapa banyak materi ditonton, dan siapa yang menyebarkannya.
+              </p>
+              <div class="problem-impact-pill">
+                <i class="ph ph-x-circle"></i>
+                <span>Nol data pelacakan & kontrol</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="double-bezel problem-card">
+            <div class="card-inner">
+              <div class="problem-icon danger-icon">
+                <i class="ph ph-receipt"></i>
+              </div>
+              <h3 class="problem-title">3. Pembagian Hak Akses Manual Melelahkan</h3>
+              <p class="problem-desc">
+                Memberikan izin satu-per-satu lewat WhatsApp, cek pendaftaran manual, dan kirim link rekaman menyita banyak waktu pengurus yayasan.
+              </p>
+              <div class="problem-impact-pill">
+                <i class="ph ph-x-circle"></i>
+                <span>Beban pengurus 4-5 jam/hari</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="double-bezel problem-card">
+            <div class="card-inner">
+              <div class="problem-icon danger-icon">
+                <i class="ph ph-game-controller"></i>
+              </div>
+              <h3 class="problem-title">4. Metode Pasif & Santri Cepat Jenuh</h3>
+              <p class="problem-desc">
+                Hanya menonton rekaman panjang tanpa adanya interaktivitas, game tantangan sejarah, atau reward kuis membuat santri mudah bosan dan tidak menuntaskan silabus.
+              </p>
+              <div class="problem-impact-pill">
+                <i class="ph ph-x-circle"></i>
+                <span>Minim interaktivitas & motivasi</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SLIDE 3: DAMPAK NEGATIF JIKA DIBIARKAN
+         ============================================================ -->
+    <section class="slide-card" data-slide-index="3" data-slide-title="Dampak Negatif">
+      <div class="slide-inner slide-standard-layout">
+        
+        <div class="section-header">
+          <div class="badge-tag warning-badge">
+            <i class="ph ph-trend-down"></i>
+            <span>KONSEKUENSI STRATEGIS</span>
+          </div>
+          <h2 class="section-title">Mengapa Proteksi Hak Akses & Inovasi Belajar Sangat Penting?</h2>
+          <p class="section-subtitle">
+            Menjaga materi kajian bukan sekadar persoalan teknis, melainkan menjaga adab, kemurnian ilmu, dan antusiasme santri dalam mempelajari sejarah peradaban Islam.
+          </p>
+        </div>
+
+        <div class="impact-layout">
+          
+          <div class="impact-columns">
+            <div class="double-bezel impact-item">
+              <div class="card-inner">
+                <div class="impact-badge">
+                  <i class="ph ph-scales"></i>
+                  <span>Amanah Ilmu & Keberkahan</span>
+                </div>
+                <h4 class="impact-heading">Menjaga Kehormatan Karya & Kurikulum Yayasan</h4>
+                <p class="impact-text">
+                  Karya ilmiah dan materi kajian yang disusun oleh Umi Elly serta asatidz dinikmati pihak luar tanpa izin. Adab menuntut ilmu menjadi terabaikan jika materi dibagikan sembarangan.
+                </p>
+                <div class="impact-metric-box">
+                  <span class="metric-val danger-text">100% Terlindungi</span>
+                  <span class="metric-label">Target perlindungan hak akses materi dengan platform baru</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="double-bezel impact-item">
+              <div class="card-inner">
+                <div class="impact-badge">
+                  <i class="ph ph-users-three"></i>
+                  <span>Efisiensi Waktu Pengurus</span>
+                </div>
+                <h4 class="impact-heading">Waktu Yayasan Habis Mengurus Teknis Link</h4>
+                <p class="impact-text">
+                  Pengurus yayasan kelelahan menjawab pertanyaan link berulang kali dan mencatat peserta manual, padahal energi yayasan lebih berharga untuk pengembangan program dakwah.
+                </p>
+                <div class="impact-metric-box">
+                  <span class="metric-val warning-text">80% Waktu Hemat</span>
+                  <span class="metric-label">Otomasi perizinan akses tanpa kirim link manual</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="double-bezel impact-item">
+              <div class="card-inner">
+                <div class="impact-badge">
+                  <i class="ph ph-game-controller"></i>
+                  <span>Daya Tarik Generasi Muda</span>
+                </div>
+                <h4 class="impact-heading">Meningkatkan Minat Belajar lewat Gamifikasi</h4>
+                <p class="impact-text">
+                  Generasi muda dan santri modern menyukai pengalaman belajar yang interaktif, menantang lewat mini-game tarikh, dan memberikan pencapaian (*achievement badges*).
+                </p>
+                <div class="impact-metric-box">
+                  <span class="metric-val white-text">3x Lebih Antusias</span>
+                  <span class="metric-label">Tingkat penyelesaian modul dengan fitur game edukasi</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Quote Box -->
+          <div class="quote-callout">
+            <div class="quote-icon"><i class="ph ph-quotes"></i></div>
+            <div class="quote-content">
+              <p class="quote-phrase">
+                "Materi kajian peradaban Islam adalah amanah mulia. Hanya santri yang telah mendapatkan izin resmi dari Umi Elly dan yayasan yang dapat mengaksesnya, demi menjaga marwah, adab keilmuan, dan menghidupkan kecintaan sejarah Islam secara menyenangkan."
+              </p>
+              <span class="quote-author">— Prinsip Yayasan Peradaban Islam Azhariyah</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SLIDE 4: SOLUSI KOMPREHENSIF (THE SOLUTION)
+         ============================================================ -->
+    <section class="slide-card" data-slide-index="4" data-slide-title="Solusi Platform">
+      <div class="slide-inner slide-standard-layout">
+        
+        <div class="section-header">
+          <div class="badge-tag gold-badge">
+            <i class="ph ph-sparkle"></i>
+            <span>SOLUSI UTAMA</span>
+          </div>
+          <h2 class="section-title">Platform Materi Khusus & Game Edukasi Sejarah</h2>
+          <p class="section-subtitle">
+            Web portal terpadu milik Yayasan Peradaban Islam Azhariyah untuk mengunci materi secara aman, memberikan izin akses terpusat, dan menyajikan game interaktif.
+          </p>
+        </div>
+
+        <div class="solution-grid-4">
+          
+          <div class="double-bezel sol-card">
+            <div class="card-inner">
+              <div class="sol-num">01</div>
+              <div class="sol-icon-wrap"><i class="ph ph-user-check"></i></div>
+              <h3 class="sol-title">1 Akun 1 Santri Berizin</h3>
+              <p class="sol-desc">
+                Santri login menggunakan akun pribadi terverifikasi. Hak akses hanya aktif jika telah disetujui langsung oleh Umi Elly atau pihak yayasan.
+              </p>
+              <ul class="sol-list">
+                <li><i class="ph ph-check-circle"></i> Login aman via Email/WA</li>
+                <li><i class="ph ph-check-circle"></i> Cegah sharing akun ke orang luar</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="double-bezel sol-card">
+            <div class="card-inner">
+              <div class="sol-num">02</div>
+              <div class="sol-icon-wrap"><i class="ph ph-video-camera"></i></div>
+              <h3 class="sol-title">Video Player Watermark</h3>
+              <p class="sol-desc">
+                Video materi tidak dapat diunduh sembarangan, dilengkapi <strong>Watermark Dinamis</strong> nama santri & ID yang melayang di layar mencegah rekam layar.
+              </p>
+              <ul class="sol-list">
+                <li><i class="ph ph-check-circle"></i> Anti-download link langsung</li>
+                <li><i class="ph ph-check-circle"></i> Identitas santri terekam di layar</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="double-bezel sol-card">
+            <div class="card-inner">
+              <div class="sol-num">03</div>
+              <div class="sol-icon-wrap"><i class="ph ph-game-controller"></i></div>
+              <h3 class="sol-title">Game Edukasi Interaktif</h3>
+              <p class="sol-desc">
+                Mini-game kuis sejarah peradaban Islam, tebak tokoh tarikh, dan sistem poin XP untuk menguji pemahaman santri dengan cara yang sangat seru.
+              </p>
+              <ul class="sol-list">
+                <li><i class="ph ph-check-circle"></i> Game tantangan sejarah Islam</li>
+                <li><i class="ph ph-check-circle"></i> Kuis seru & lencana prestasi</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="double-bezel sol-card">
+            <div class="card-inner">
+              <div class="sol-num">04</div>
+              <div class="sol-icon-wrap"><i class="ph ph-gauge"></i></div>
+              <h3 class="sol-title">Dashboard Pengelola Terpusat</h3>
+              <p class="sol-desc">
+                Panel admin yayasan untuk melihat data santri, memverifikasi infaq, upload rekaman kajian baru, dan mengelola izin santri.
+              </p>
+              <ul class="sol-list">
+                <li><i class="ph ph-check-circle"></i> Rekap santri berizin terpusat</li>
+                <li><i class="ph ph-check-circle"></i> Otoritas izin penuh di yayasan</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SLIDE 5: CARA KERJA & ALUR SISTEM (USER JOURNEY)
+         ============================================================ -->
+    <section class="slide-card" data-slide-index="5" data-slide-title="Alur Kerja Sistem">
+      <div class="slide-inner slide-standard-layout">
+        
+        <div class="section-header">
+          <div class="badge-tag">
+            <i class="ph ph-flow-arrow"></i>
+            <span>ALUR PERIZINAN & PEMBELAJARAN</span>
+          </div>
+          <h2 class="section-title">Alur Kerja Sistem: Rapi, Terkontrol, & Otomatis</h2>
+          <p class="section-subtitle">
+            Bagaimana santri mendaftar hingga mendapatkan izin resmi untuk mengakses materi kajian dan game edukasi di portal yayasan.
+          </p>
+        </div>
+
+        <div class="workflow-stepper">
+          
+          <div class="step-card">
+            <div class="step-badge">Tahap 1</div>
+            <div class="step-circle"><i class="ph ph-user-plus"></i></div>
+            <div class="step-body">
+              <h4 class="step-title">Pendaftaran Santri</h4>
+              <p class="step-desc">Santri mendaftar di portal resmi Yayasan Peradaban Islam Azhariyah dengan data lengkap.</p>
+            </div>
+            <div class="step-connector"></div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-badge">Tahap 2</div>
+            <div class="step-circle"><i class="ph ph-credit-card"></i></div>
+            <div class="step-body">
+              <h4 class="step-title">Infaq / Pembayaran</h4>
+              <p class="step-desc">Menyelesaikan infaq/pendaftaran kelas sesuai paket program kajian yang dipilih.</p>
+            </div>
+            <div class="step-connector"></div>
+          </div>
+
+          <div class="step-card highlight-step">
+            <div class="step-badge gold-step-badge">Tahap 3 (Kunci)</div>
+            <div class="step-circle gold-circle"><i class="ph ph-key"></i></div>
+            <div class="step-body">
+              <h4 class="step-title">Pemberian Hak Akses</h4>
+              <p class="step-desc">Pihak Umi Elly / yayasan memberikan izin akses resmi (secara otomatis atau diverifikasi di admin panel).</p>
+            </div>
+            <div class="step-connector"></div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-badge">Tahap 4</div>
+            <div class="step-circle"><i class="ph ph-play-circle"></i></div>
+            <div class="step-body">
+              <h4 class="step-title">Akses Materi & Game</h4>
+              <p class="step-desc">Santri menonton video pembelajaran ber-watermark dan memainkan game kuis sejarah interaktif.</p>
+            </div>
+            <div class="step-connector"></div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-badge">Tahap 5</div>
+            <div class="step-circle"><i class="ph ph-trophy"></i></div>
+            <div class="step-body">
+              <h4 class="step-title">Evaluasi & Sertifikat</h4>
+              <p class="step-desc">Poin game dan progres belajar tercatat lengkap hingga siap menerima sertifikat digital dari yayasan.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="workflow-banner">
+          <div class="banner-icon"><i class="ph ph-shield-check"></i></div>
+          <div class="banner-text">
+            <strong>Keamanan Berlapis:</strong> Tanpa adanya izin resmi yang disetujui oleh Umi Elly atau yayasan, materi dan game kelas tidak akan bisa dibuka oleh siapa pun.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SLIDE 6: PENGALAMAN MURID (LIVE INTERACTIVE DEMO)
+         ============================================================ -->
+    <section class="slide-card" data-slide-index="6" data-slide-title="Dashboard Murid">
+      <div class="slide-inner slide-mockup-layout">
+        
+        <div class="mockup-intro">
+          <div class="badge-tag gold-badge">
+            <i class="ph ph-student"></i>
+            <span>PENGALAMAN SANTRI (INTERACTIVE DEMO)</span>
+          </div>
+          <h2 class="section-title">Dashboard Santri: Rapi, Terproteksi, & Ada Game Seru</h2>
+          <p class="section-subtitle">
+            Santri yang telah disetujui aksesnya dapat menonton silabus kajian terproteksi dan menguji pemahaman melalui mini-game sejarah Islam.
+          </p>
+
+          <div class="feature-bullets-side">
+            <div class="f-bullet">
+              <div class="f-bullet-icon"><i class="ph ph-check"></i></div>
+              <div>
+                <strong>Watermark Personal:</strong> Mencegah santri membocorkan rekaman ke orang luar.
+              </div>
+            </div>
+            <div class="f-bullet">
+              <div class="f-bullet-icon"><i class="ph ph-game-controller"></i></div>
+              <div>
+                <strong>Mini-Game Tarikh Islam:</strong> Kuis interaktif tebak tokoh & tarikh dengan reward XP.
+              </div>
+            </div>
+            <div class="f-bullet">
+              <div class="f-bullet-icon"><i class="ph ph-check"></i></div>
+              <div>
+                <strong>Unduh PDF Resmi:</strong> Download rangkuman materi sah dari yayasan.
+              </div>
+            </div>
+          </div>
+
+          <div class="mockup-interactive-hint">
+            <i class="ph ph-cursor-click"></i>
+            <span>Coba klik item silabus atau tombol <strong>"Mini-Game Tarikh"</strong> di bawah video!</span>
+          </div>
+        </div>
+
+        <!-- LIVE INTERACTIVE STUDENT MOCKUP -->
+        <div class="mockup-stage-wrapper">
+          <div class="double-bezel os-window-bezel">
+            <div class="os-window-inner">
+              
+              <!-- OS Window Header -->
+              <div class="os-top-bar">
+                <div class="os-traffic-lights">
+                  <span class="tl red"></span>
+                  <span class="tl yellow"></span>
+                  <span class="tl green"></span>
+                </div>
+                <div class="os-url-bar">
+                  <i class="ph ph-lock-key"></i>
+                  <span>portal.azhariyah.org/materi/batch-4/sesi-2</span>
+                </div>
+                <div class="os-user-badge">
+                  <div class="os-avatar-initial">AF</div>
+                  <span>Ahmad Fauzan (Level 3 • 420 XP)</span>
+                </div>
+              </div>
+
+              <!-- Student Portal Interior Layout -->
+              <div class="student-portal-ui">
+                
+                <!-- Main Video & Notes View -->
+                <div class="portal-main-area">
+                  
+                  <div class="interactive-video-player" id="interactivePlayer">
+                    <!-- Simulated Video Screen -->
+                    <div class="player-screen" id="playerScreen">
+                      <!-- Dynamic Floating Watermark -->
+                      <div class="dynamic-watermark" id="watermarkElement">
+                        <i class="ph ph-shield-check"></i>
+                        <span>Ahmad Fauzan • Izin: Yayasan Azhariyah</span>
+                      </div>
+
+                      <div class="player-center-play" id="btnPlayerCenterPlay">
+                        <i class="ph ph-play-fill" id="centerPlayIcon"></i>
+                      </div>
+
+                      <div class="player-hud-title" id="playerHudTitle">
+                        Modul 2: Era Keemasan Baitul Hikmah & Kebangkitan Sains Baghdad
+                      </div>
+                    </div>
+
+                    <!-- Player Bottom Bar Controls -->
+                    <div class="player-controls-bar">
+                      <button class="player-ctrl-btn" id="btnPlayerPlayToggle">
+                        <i class="ph ph-play-fill" id="barPlayIcon"></i>
+                      </button>
+                      <span class="player-timestamp" id="playerTimer">08:24 / 45:10</span>
+                      
+                      <div class="player-scrub-track">
+                        <div class="player-scrub-fill" id="playerScrubFill" style="width: 28%;"></div>
+                      </div>
+
+                      <button class="speed-pill-btn" id="btnSpeedToggle">1.25x</button>
+                      <button class="player-ctrl-btn" title="Kualitas 1080p HD"><i class="ph ph-gear"></i></button>
+                      <button class="player-ctrl-btn" title="Full Screen Player"><i class="ph ph-arrows-out"></i></button>
+                    </div>
+                  </div>
+
+                  <!-- Video Info & Tabs -->
+                  <div class="video-meta-section">
+                    <div class="meta-row">
+                      <div>
+                        <h4 class="active-module-title" id="activeModuleTitle">Sesi 2: Dinasti Abbasiyah & Gerakan Penerjemahan Besar</h4>
+                        <p class="module-author">Kajian Yayasan Peradaban Islam Azhariyah • 45 Menit</p>
+                      </div>
+                      <button class="btn-mark-done" id="btnMarkComplete">
+                        <i class="ph ph-check-circle" id="markDoneIcon"></i>
+                        <span id="markDoneText">Tandai Selesai</span>
+                      </button>
+                    </div>
+
+                    <!-- Material Download & Game Launcher Row -->
+                    <div class="materials-download-pills">
+                      <a href="javascript:void(0)" class="mat-pill game-pill" onclick="DeckEngine.showToast('🎮 Membuka Game Edukasi: Tebak Tokoh & Khazanah Baitul Hikmah (+50 XP)!')">
+                        <i class="ph ph-game-controller"></i>
+                        <span>Mainkan Game Tarikh (+50 XP)</span>
+                      </a>
+                      <a href="javascript:void(0)" class="mat-pill" onclick="DeckEngine.showToast('Mengunduh Berkas PDF: Ringkasan Kuliah Sesi 2.pdf')">
+                        <i class="ph ph-file-pdf"></i>
+                        <span>Rangkuman Kajian Modul 2.pdf</span>
+                        <span class="mat-size">(2.4 MB)</span>
+                      </a>
+                      <a href="javascript:void(0)" class="mat-pill" onclick="DeckEngine.showToast('Membuka Forum Tanya-Jawab...')">
+                        <i class="ph ph-chat-centered-text"></i>
+                        <span>Tanya Asatidz & Umi Elly</span>
+                      </a>
+                    </div>
+                  </div>
+
+                </div>
+
+                <!-- Right Sidebar: Interactive Silabus Checklist -->
+                <div class="portal-sidebar-area">
+                  <div class="sidebar-header">
+                    <div class="sidebar-header-top">
+                      <span class="sidebar-course-tag">Peradaban Islam Azhariyah</span>
+                      <span class="progress-pct" id="totalProgressText">62% Tuntas</span>
+                    </div>
+                    <div class="sidebar-progress-bar">
+                      <div class="sidebar-progress-fill" id="sidebarProgressFill" style="width: 62%;"></div>
+                    </div>
+                  </div>
+
+                  <div class="syllabus-list" id="syllabusList">
+                    
+                    <div class="syllabus-item done" data-module="1" data-title="Sesi 1: Fondasi Nilai Peradaban Madinah" data-time="38 Menit">
+                      <div class="syl-status-icon"><i class="ph ph-check-circle-fill"></i></div>
+                      <div class="syl-info">
+                        <span class="syl-session">Sesi 1 • Game Selesai (+50 XP)</span>
+                        <span class="syl-title">Fondasi Nilai Peradaban Madinah</span>
+                        <span class="syl-duration">38 Menit • Selesai</span>
+                      </div>
+                    </div>
+
+                    <div class="syllabus-item current active-syl" data-module="2" data-title="Sesi 2: Dinasti Abbasiyah & Gerakan Penerjemahan" data-time="45 Menit">
+                      <div class="syl-status-icon"><i class="ph ph-play-circle-fill"></i></div>
+                      <div class="syl-info">
+                        <span class="syl-session">Sesi 2 (Diputar)</span>
+                        <span class="syl-title">Dinasti Abbasiyah & Baitul Hikmah</span>
+                        <span class="syl-duration">45 Menit • Game Tersedia 🎮</span>
+                      </div>
+                    </div>
+
+                    <div class="syllabus-item" data-module="3" data-title="Sesi 3: Kejayaan Andalusia & Sains Kordoba" data-time="52 Menit">
+                      <div class="syl-status-icon"><i class="ph ph-circle"></i></div>
+                      <div class="syl-info">
+                        <span class="syl-session">Sesi 3</span>
+                        <span class="syl-title">Kejayaan Andalusia & Kordoba</span>
+                        <span class="syl-duration">52 Menit • Kuis Game Level 3</span>
+                      </div>
+                    </div>
+
+                    <div class="syllabus-item locked" data-module="4" data-title="Sesi 4: Dinasti Utsmaniyah & Transisi Modern" data-time="48 Menit">
+                      <div class="syl-status-icon"><i class="ph ph-lock"></i></div>
+                      <div class="syl-info">
+                        <span class="syl-session">Sesi 4</span>
+                        <span class="syl-title">Dinasti Utsmaniyah & Era Modern</span>
+                        <span class="syl-duration">Rilis 24 Agustus</span>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SLIDE 7: KONTROL AKSES & PROTEKSI KONTEN (SECURITY DEEP DIVE)
+         ============================================================ -->
+    <section class="slide-card" data-slide-index="7" data-slide-title="Proteksi Konten">
+      <div class="slide-inner slide-standard-layout">
+        
+        <div class="section-header">
+          <div class="badge-tag danger-badge">
+            <i class="ph ph-shield-check"></i>
+            <span>SISTEM PROTEKSI MATERI</span>
+          </div>
+          <h2 class="section-title">4 Lapis Perlindungan Materi Kajian Yayasan</h2>
+          <p class="section-subtitle">
+            Memastikan materi hanya bisa dinikmati oleh pihak yang telah disetujui, serta terlindungi dari pembajakan dan penyebaran bebas.
+          </p>
+        </div>
+
+        <div class="security-pillars-grid">
+          
+          <div class="double-bezel sec-card">
+            <div class="card-inner">
+              <div class="sec-icon"><i class="ph ph-fingerprint"></i></div>
+              <h3 class="sec-title">1. Dynamic Screen Watermark</h3>
+              <p class="sec-desc">
+                Nama, nomor WhatsApp, dan ID santri melayang di atas video. Mencegah perekaman layar karena identitas penyebar akan langsung terlihat.
+              </p>
+              <div class="sec-feature-box">
+                <span class="sec-tag">Efek Psikologis Kuat</span>
+                <span>Santri tidak berani merekam dan membagikan ke publik.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="double-bezel sec-card">
+            <div class="card-inner">
+              <div class="sec-icon"><i class="ph ph-devices"></i></div>
+              <h3 class="sec-title">2. Single Device Active Session</h3>
+              <p class="sec-desc">
+                Satu akun hanya bisa login di satu HP/perangkat. Jika password dibagikan ke teman, akun di perangkat pertama otomatis logout.
+              </p>
+              <div class="sec-feature-box">
+                <span class="sec-tag">Anti-Patungan Akun</span>
+                <span>Mencegah 1 akun dipakai ramai-ramai.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="double-bezel sec-card">
+            <div class="card-inner">
+              <div class="sec-icon"><i class="ph ph-file-lock"></i></div>
+              <h3 class="sec-title">3. Encrypted Video Stream (HLS)</h3>
+              <p class="sec-desc">
+                Video di-stream dengan enkripsi chunk terproteksi, bukan file MP4 polos, sehingga ekstensi download browser tidak bisa mengunduh file asli.
+              </p>
+              <div class="sec-feature-box">
+                <span class="sec-tag">Anti-Download Langsung</span>
+                <span>Materi kajian tersimpan aman di server yayasan.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="double-bezel sec-card">
+            <div class="card-inner">
+              <div class="sec-icon"><i class="ph ph-toggle-left"></i></div>
+              <h3 class="sec-title">4. Kendali Otoritas Yayasan</h3>
+              <p class="sec-desc">
+                Hak akses bisa disetting expired otomatis sesuai periode batch kajian, atau dibuka-tutup kapan saja oleh Umi Elly dan pengurus yayasan.
+              </p>
+              <div class="sec-feature-box">
+                <span class="sec-tag">Kendali Penuh Yayasan</span>
+                <span>Yayasan berhak penuh memberi atau mencabut akses.</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SLIDE 8: DASHBOARD ADMIN (LIVE INTERACTIVE DEMO)
+         ============================================================ -->
+    <section class="slide-card" data-slide-index="8" data-slide-title="Dashboard Admin">
+      <div class="slide-inner slide-mockup-layout">
+        
+        <div class="mockup-intro">
+          <div class="badge-tag gold-badge">
+            <i class="ph ph-chart-polar"></i>
+            <span>PANEL PENGELOLA YAYASAN (INTERACTIVE DEMO)</span>
+          </div>
+          <h2 class="section-title">Kendali Izin Akses Santri & Materi di Satu Layar</h2>
+          <p class="section-subtitle">
+            Umi Elly dan pengurus yayasan dapat dengan mudah memverifikasi pendaftar, memberikan izin akses, mengunggah materi kajian, dan memantau keaktifan santri.
+          </p>
+
+          <div class="admin-quick-stats">
+            <div class="q-stat">
+              <div class="q-stat-val gold-text">1.284</div>
+              <div class="q-stat-lbl">Santri Terdaftar</div>
+            </div>
+            <div class="q-stat">
+              <div class="q-stat-val green-text">Rp 48,5 Jt</div>
+              <div class="q-stat-lbl">Infaq Terkelola</div>
+            </div>
+            <div class="q-stat">
+              <div class="q-stat-val white-text">74.2%</div>
+              <div class="q-stat-lbl">Rata-rata Tonton</div>
+            </div>
+          </div>
+
+          <div class="mockup-interactive-hint">
+            <i class="ph ph-cursor-click"></i>
+            <span>Coba klik tombol <strong>"Beri Izin / Verifikasi"</strong> pada tabel santri di samping!</span>
+          </div>
+        </div>
+
+        <!-- LIVE INTERACTIVE ADMIN MOCKUP -->
+        <div class="mockup-stage-wrapper">
+          <div class="double-bezel os-window-bezel">
+            <div class="os-window-inner">
+              
+              <!-- Admin Header -->
+              <div class="os-top-bar admin-top-bar">
+                <div class="os-traffic-lights">
+                  <span class="tl red"></span>
+                  <span class="tl yellow"></span>
+                  <span class="tl green"></span>
+                </div>
+                <div class="os-url-bar">
+                  <i class="ph ph-shield-check"></i>
+                  <span>admin.azhariyah.org/manajemen-akses-santri</span>
+                </div>
+                <div class="admin-status-badge">
+                  <span class="live-dot"></span>
+                  <span>Panel Pengurus Yayasan</span>
+                </div>
+              </div>
+
+              <!-- Admin Interior Layout -->
+              <div class="admin-portal-ui">
+                
+                <!-- Filter Tabs & Search -->
+                <div class="admin-table-controls">
+                  <div class="admin-tab-group" id="adminFilterTabs">
+                    <button class="admin-tab active" data-filter="all">Semua Santri (1.284)</button>
+                    <button class="admin-tab" data-filter="pending" id="tabPending">Menunggu Izin (<span id="pendingCount">2</span>)</button>
+                    <button class="admin-tab" data-filter="active">Akses Diberikan (1.240)</button>
+                    <button class="admin-tab" data-filter="expired">Kedaluwarsa (41)</button>
+                  </div>
+                  
+                  <div class="admin-search-box">
+                    <i class="ph ph-magnifying-glass"></i>
+                    <input type="text" placeholder="Cari nama santri, no WA..." readonly value="Fauzan / Siti">
+                  </div>
+                </div>
+
+                <!-- Interactive Santri Table -->
+                <div class="admin-table-wrapper">
+                  <table class="admin-santri-table" id="santriTable">
+                    <thead>
+                      <tr>
+                        <th>Santri</th>
+                        <th>Program Kajian</th>
+                        <th>Status Infaq</th>
+                        <th>Progres Belajar</th>
+                        <th>Hak Akses</th>
+                        <th>Otoritas Yayasan</th>
+                      </tr>
+                    </thead>
+                    <tbody id="santriTableBody">
+                      
+                      <!-- Row 1: Active -->
+                      <tr data-status="active" id="row-1">
+                        <td>
+                          <div class="table-user-cell">
+                            <div class="user-avatar bg-avatar-1">AF</div>
+                            <div>
+                              <div class="user-name">Ahmad Fauzan</div>
+                              <div class="user-meta">0812-8921-9921 • Jakarta</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td><span class="badge-batch">Batch 4 Peradaban</span></td>
+                        <td><span class="badge-status-lunas"><i class="ph ph-check"></i> Infaq Terverifikasi</span></td>
+                        <td>
+                          <div class="table-progress-wrap">
+                            <div class="table-prog-bar"><div class="table-prog-fill" style="width: 62%;"></div></div>
+                            <span class="table-prog-text">62% (420 XP)</span>
+                          </div>
+                        </td>
+                        <td>
+                          <label class="switch">
+                            <input type="checkbox" checked onchange="DeckEngine.toggleSantriAccess(1)">
+                            <span class="slider"></span>
+                          </label>
+                        </td>
+                        <td>
+                          <button class="btn-table-action" onclick="DeckEngine.showToast('Detail izin santri Ahmad Fauzan dibuka')">Detail Izin</button>
+                        </td>
+                      </tr>
+
+                      <!-- Row 2: Pending Verif (Interactive!) -->
+                      <tr data-status="pending" id="row-2" class="row-pending-highlight">
+                        <td>
+                          <div class="table-user-cell">
+                            <div class="user-avatar bg-avatar-2">SN</div>
+                            <div>
+                              <div class="user-name">Siti Nurhaliza</div>
+                              <div class="user-meta">0857-1122-3344 • Bandung</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td><span class="badge-batch">Batch 4 Peradaban</span></td>
+                        <td><span class="badge-status-pending" id="statusBadge-2"><i class="ph ph-clock"></i> Menunggu Konfirmasi Infaq</span></td>
+                        <td>
+                          <span class="text-muted" id="progText-2">Akses Belum Dibuka</span>
+                        </td>
+                        <td>
+                          <label class="switch">
+                            <input type="checkbox" id="switchAccess-2" onchange="DeckEngine.toggleSantriAccess(2)">
+                            <span class="slider"></span>
+                          </label>
+                        </td>
+                        <td>
+                          <button class="btn-table-verify" id="btnVerify-2" onclick="DeckEngine.verifySantri(2)">
+                            <i class="ph ph-check-bold"></i>
+                            <span>Beri Izin Akses</span>
+                          </button>
+                        </td>
+                      </tr>
+
+                      <!-- Row 3: Active -->
+                      <tr data-status="active" id="row-3">
+                        <td>
+                          <div class="table-user-cell">
+                            <div class="user-avatar bg-avatar-3">MR</div>
+                            <div>
+                              <div class="user-name">M. Rizky Pratama</div>
+                              <div class="user-meta">0813-7788-9900 • Surabaya</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td><span class="badge-batch">Batch 4 Peradaban</span></td>
+                        <td><span class="badge-status-lunas"><i class="ph ph-check"></i> Infaq Terverifikasi</span></td>
+                        <td>
+                          <div class="table-progress-wrap">
+                            <div class="table-prog-bar"><div class="table-prog-fill" style="width: 100%;"></div></div>
+                            <span class="table-prog-text gold-text">100% (780 XP • Juara 1)</span>
+                          </div>
+                        </td>
+                        <td>
+                          <label class="switch">
+                            <input type="checkbox" checked onchange="DeckEngine.toggleSantriAccess(3)">
+                            <span class="slider"></span>
+                          </label>
+                        </td>
+                        <td>
+                          <button class="btn-table-action" onclick="DeckEngine.showToast('Sertifikat izin kelulusan digital siap dicetak')">Sertifikat</button>
+                        </td>
+                      </tr>
+
+                      <!-- Row 4: Pending Verif (Interactive!) -->
+                      <tr data-status="pending" id="row-4" class="row-pending-highlight">
+                        <td>
+                          <div class="table-user-cell">
+                            <div class="user-avatar bg-avatar-4">FA</div>
+                            <div>
+                              <div class="user-name">Fajar Alamsyah</div>
+                              <div class="user-meta">0821-4455-6677 • Yogyakarta</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td><span class="badge-batch">Batch 4 Peradaban</span></td>
+                        <td><span class="badge-status-pending" id="statusBadge-4"><i class="ph ph-clock"></i> Menunggu Konfirmasi Infaq</span></td>
+                        <td>
+                          <span class="text-muted" id="progText-4">Akses Belum Dibuka</span>
+                        </td>
+                        <td>
+                          <label class="switch">
+                            <input type="checkbox" id="switchAccess-4" onchange="DeckEngine.toggleSantriAccess(4)">
+                            <span class="slider"></span>
+                          </label>
+                        </td>
+                        <td>
+                          <button class="btn-table-verify" id="btnVerify-4" onclick="DeckEngine.verifySantri(4)">
+                            <i class="ph ph-check-bold"></i>
+                            <span>Beri Izin Akses</span>
+                          </button>
+                        </td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Admin Footer Stats -->
+                <div class="admin-table-footer">
+                  <div class="footer-note">
+                    <i class="ph ph-info"></i>
+                    <span>Hak akses materi & leaderboard game dikontrol penuh oleh Umi Elly dan Pengurus Yayasan.</span>
+                  </div>
+                  <div class="footer-actions">
+                    <button class="btn-export-excel" onclick="DeckEngine.showToast('Laporan 1.284 Data Santri siap diekspor ke format Excel / CSV')">
+                      <i class="ph ph-file-arrow-down"></i>
+                      <span>Ekspor Excel</span>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SLIDE 9: CAKUPAN FITUR MVP FASE 1 (DELIVERABLES)
+         ============================================================ -->
+    <section class="slide-card" data-slide-index="9" data-slide-title="Fitur MVP & Game">
+      <div class="slide-inner slide-standard-layout">
+        
+        <div class="section-header">
+          <div class="badge-tag gold-badge">
+            <i class="ph ph-rocket-launch"></i>
+            <span>RUANG LINGKUP MVP & MODUL GAME</span>
+          </div>
+          <h2 class="section-title">Fitur Siap Pakai yang Menjawab Kebutuhan Yayasan</h2>
+          <p class="section-subtitle">
+            Fokus pada sistem perizinan yang kuat, pemutar materi yang terlindungi, dan modul game kuis edukatif untuk meningkatkan antusiasme santri.
+          </p>
+        </div>
+
+        <div class="mvp-split-grid">
+          
+          <!-- Column A: Santri Module -->
+          <div class="double-bezel mvp-column-card">
+            <div class="card-inner">
+              <div class="mvp-col-header">
+                <div class="mvp-badge-icon"><i class="ph ph-student"></i></div>
+                <div>
+                  <h3 class="mvp-col-title">Portal Santri & Game (Frontend)</h3>
+                  <span class="mvp-col-sub">Akses Materi Eksklusif & Gamifikasi Santri</span>
+                </div>
+              </div>
+
+              <div class="mvp-feature-list">
+                <div class="mvp-f-item">
+                  <div class="mvp-check"><i class="ph ph-check-bold"></i></div>
+                  <div class="mvp-f-text">
+                    <strong>Autentikasi Santri Aman</strong>
+                    <span>Login & registrasi mudah dengan nomor WhatsApp / Email terdaftar.</span>
+                  </div>
+                </div>
+
+                <div class="mvp-f-item">
+                  <div class="mvp-check"><i class="ph ph-check-bold"></i></div>
+                  <div class="mvp-f-text">
+                    <strong>Player Terproteksi + Watermark Nama</strong>
+                    <span>Streaming video ber-watermark nama santri dan anti-download langsung.</span>
+                  </div>
+                </div>
+
+                <div class="mvp-f-item">
+                  <div class="mvp-check"><i class="ph ph-check-bold"></i></div>
+                  <div class="mvp-f-text">
+                    <strong>Game Edukasi & Kuis Sejarah Islam</strong>
+                    <span>Mini-game tebak tokoh peradaban, tarikh, dan tantangan modul dengan reward poin XP.</span>
+                  </div>
+                </div>
+
+                <div class="mvp-f-item">
+                  <div class="mvp-check"><i class="ph ph-check-bold"></i></div>
+                  <div class="mvp-f-text">
+                    <strong>Progress Bar & Lencana Prestasi</strong>
+                    <span>Pelacakan otomatis sesi yang telah ditonton dan lencana pencapaian belajar santri.</span>
+                  </div>
+                </div>
+
+                <div class="mvp-f-item">
+                  <div class="mvp-check"><i class="ph ph-check-bold"></i></div>
+                  <div class="mvp-f-text">
+                    <strong>Unduh Berkas & Ringkasan Resmi</strong>
+                    <span>Akses berkas PDF pendukung yang diterbitkan resmi oleh yayasan.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column B: Admin Module -->
+          <div class="double-bezel mvp-column-card">
+            <div class="card-inner">
+              <div class="mvp-col-header">
+                <div class="mvp-badge-icon admin-icon-bg"><i class="ph ph-sliders"></i></div>
+                <div>
+                  <h3 class="mvp-col-title">Panel Pengurus Yayasan (Admin)</h3>
+                  <span class="mvp-col-sub">Otoritas Perizinan & Manajemen Materi</span>
+                </div>
+              </div>
+
+              <div class="mvp-feature-list">
+                <div class="mvp-f-item">
+                  <div class="mvp-check"><i class="ph ph-check-bold"></i></div>
+                  <div class="mvp-f-text">
+                    <strong>Pemberian & Pembatalan Izin Akses</strong>
+                    <span>Tombol aktivasi izin santri per batch/kelas secara instan.</span>
+                  </div>
+                </div>
+
+                <div class="mvp-f-item">
+                  <div class="mvp-check"><i class="ph ph-check-bold"></i></div>
+                  <div class="mvp-f-text">
+                    <strong>Manajemen & Upload Video Kajian</strong>
+                    <span>Mudah menambahkan materi video baru, judul modul, dan PDF ringkasan.</span>
+                  </div>
+                </div>
+
+                <div class="mvp-f-item">
+                  <div class="mvp-check"><i class="ph ph-check-bold"></i></div>
+                  <div class="mvp-f-text">
+                    <strong>Pengaturan Bank Soal & Game Kuis</strong>
+                    <span>Pengurus dapat membuat soal kuis game sejarah Islam per bab pembelajaran.</span>
+                  </div>
+                </div>
+
+                <div class="mvp-f-item">
+                  <div class="mvp-check"><i class="ph ph-check-bold"></i></div>
+                  <div class="mvp-f-text">
+                    <strong>Pemantauan Keaktifan & Skor Santri</strong>
+                    <span>Melihat siapa santri yang paling rajin belajar dan berprestasi di kuis game.</span>
+                  </div>
+                </div>
+
+                <div class="mvp-f-item">
+                  <div class="mvp-check"><i class="ph ph-check-bold"></i></div>
+                  <div class="mvp-f-text">
+                    <strong>Ekspor Laporan Data Santri</strong>
+                    <span>Download data peserta dan rekap infaq ke format Excel kapan saja.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SLIDE 10: MANFAAT & NILAI TAMBAH (STRATEGIC IMPACT)
+         ============================================================ -->
+    <section class="slide-card" data-slide-index="10" data-slide-title="Manfaat & Nilai Tambah">
+      <div class="slide-inner slide-standard-layout">
+        
+        <div class="section-header">
+          <div class="badge-tag">
+            <i class="ph ph-trophy"></i>
+            <span>NILAI STRATEGIS BAGI YAYASAN</span>
+          </div>
+          <h2 class="section-title">Manfaat Nyata bagi Yayasan Peradaban Islam Azhariyah</h2>
+          <p class="section-subtitle">
+            Membangun aset teknologi mandiri untuk menjaga amanah dakwah dan menghidupkan kecintaan generasi muda pada peradaban Islam.
+          </p>
+        </div>
+
+        <div class="value-impact-grid">
+          
+          <div class="double-bezel val-card">
+            <div class="card-inner">
+              <div class="val-header">
+                <div class="val-icon gold-icon"><i class="ph ph-clock-clockwise"></i></div>
+                <div class="val-badge green-badge">Efisiensi 80%</div>
+              </div>
+              <h3 class="val-title">Penghematan Waktu Pengurus</h3>
+              <p class="val-desc">
+                Pengurus tidak lagi repot membagikan link rekaman satu-per-satu lewat chat pribadi. Sistem bekerja otomatis melayani santri berizin 24/7.
+              </p>
+              <div class="val-quote">"Yayasan bisa fokus pada penyusunan materi & kurikulum dakwah."</div>
+            </div>
+          </div>
+
+          <div class="double-bezel val-card">
+            <div class="card-inner">
+              <div class="val-header">
+                <div class="val-icon gold-icon"><i class="ph ph-shield-star"></i></div>
+                <div class="val-badge gold-badge-light">Amanah 100%</div>
+              </div>
+              <h3 class="val-title">Materi Terjaga & Berizin Sah</h3>
+              <p class="val-desc">
+                Materi kajian Umi Elly dan asatidz hanya dinikmati oleh santri yang berhak, menjaga adab dan marwah keilmuan peradaban Islam.
+              </p>
+              <div class="val-quote">"Menjaga kemurnian hak akses dan keberkahan ilmu."</div>
+            </div>
+          </div>
+
+          <div class="double-bezel val-card">
+            <div class="card-inner">
+              <div class="val-header">
+                <div class="val-icon gold-icon"><i class="ph ph-game-controller"></i></div>
+                <div class="val-badge blue-badge">Gamifikasi</div>
+              </div>
+              <h3 class="val-title">Belajar Seru & Berkesan</h3>
+              <p class="val-desc">
+                Integrasi game kuis sejarah membuat santri dari berbagai usia tidak cepat bosan dan termotivasi mengulang pelajaran hingga tuntas.
+              </p>
+              <div class="val-quote">"Sejarah peradaban Islam jadi topik yang hidup & mengasyikkan."</div>
+            </div>
+          </div>
+
+          <div class="double-bezel val-card">
+            <div class="card-inner">
+              <div class="val-header">
+                <div class="val-icon gold-icon"><i class="ph ph-chart-bar"></i></div>
+                <div class="val-badge purple-badge">Transparansi</div>
+              </div>
+              <h3 class="val-title">Akuntabilitas Finansial & Infaq</h3>
+              <p class="val-desc">
+                Data santri dan infaq pendaftaran tercatat rapi dan transparan, memudahkan pelaporan berkala bagi pembina yayasan.
+              </p>
+              <div class="val-quote">"Membangun kepercayaan santri dan umat secara profesional."</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SLIDE 11: ROADMAP PENGEMBANGAN MASA DEPAN (FUTURE ROADMAP)
+         ============================================================ -->
+    <section class="slide-card" data-slide-index="11" data-slide-title="Roadmap & Game">
+      <div class="slide-inner slide-standard-layout">
+        
+        <div class="section-header">
+          <div class="badge-tag gold-badge">
+            <i class="ph ph-compass"></i>
+            <span>ROADMAP PENGEMBANGAN FITUR & GAME</span>
+          </div>
+          <h2 class="section-title">Rencana Pengembangan Platform & Game Edukasi</h2>
+          <p class="section-subtitle">
+            Fondasi MVP dibangun modular sehingga siap dikembangkan menjadi ekosistem digital dan game interaktif Islam terdepan.
+          </p>
+        </div>
+
+        <div class="roadmap-horizontal">
+          
+          <!-- Phase 1 -->
+          <div class="double-bezel road-phase current-phase">
+            <div class="card-inner">
+              <div class="road-phase-tag active-tag">
+                <span class="live-dot"></span>
+                <span>Fase 1: MVP Core + Kuis Game (Bulan 1)</span>
+              </div>
+              <h3 class="road-title">Portal Materi & Kuis Interaktif</h3>
+              <ul class="road-items">
+                <li><i class="ph ph-check"></i> Web Portal Santri & Video Terproteksi</li>
+                <li><i class="ph ph-check"></i> Dynamic Watermark Anti-Bocor</li>
+                <li><i class="ph ph-check"></i> Kontrol Izin Akses oleh Yayasan</li>
+                <li><i class="ph ph-game-controller"></i> Mini-Game Kuis Tarikh & Poin XP</li>
+              </ul>
+              <div class="road-status-pill done-pill">Fokus Peluncuran Utama</div>
+            </div>
+          </div>
+
+          <!-- Phase 2 -->
+          <div class="double-bezel road-phase">
+            <div class="card-inner">
+              <div class="road-phase-tag">
+                <span>Fase 2: Game Sejarah & Ujian (Bulan 2-3)</span>
+              </div>
+              <h3 class="road-title">Game Petualangan & Sertifikat</h3>
+              <ul class="road-items">
+                <li><i class="ph ph-game-controller"></i> <strong>Game Petualangan Peta Khilafah Islam</strong></li>
+                <li><i class="ph ph-trophy"></i> Leaderboard Peringkat Santri & Lencana Koleksi</li>
+                <li><i class="ph ph-circle"></i> E-Sertifikat Digital QR Sanad Resmi</li>
+                <li><i class="ph ph-circle"></i> Forum Tanya-Jawab Asatidz & Umi Elly</li>
+              </ul>
+              <div class="road-status-pill next-pill">Pengembangan Tahap 2</div>
+            </div>
+          </div>
+
+          <!-- Phase 3 -->
+          <div class="double-bezel road-phase">
+            <div class="card-inner">
+              <div class="road-phase-tag">
+                <span>Fase 3: Ekosistem Global & Mobile (Bulan 4+)</span>
+              </div>
+              <h3 class="road-title">Aplikasi Mobile & Simulasi</h3>
+              <ul class="road-items">
+                <li><i class="ph ph-circle"></i> Aplikasi Mobile iOS & Android</li>
+                <li><i class="ph ph-game-controller"></i> Game Simulasi Sains Peradaban Baitul Hikmah</li>
+                <li><i class="ph ph-circle"></i> Live Streaming Kajian Eksklusif di Portal</li>
+                <li><i class="ph ph-circle"></i> Komunitas Alumni Peradaban Islam</li>
+              </ul>
+              <div class="road-status-pill future-pill">Visi Jangka Panjang</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SLIDE 12: RENCANA IMPLEMENTASI & CLOSING PITCH (TIMELINE & CTA)
+         ============================================================ -->
+    <section class="slide-card" data-slide-index="12" data-slide-title="Penutup & Kolaborasi">
+      <div class="slide-inner slide-closing-layout">
+        
+        <div class="closing-top-pitch">
+          <div class="badge-tag gold-badge">
+            <i class="ph ph-handshake"></i>
+            <span>LANGKAH SELANJUTNYA • SINERGI BERSAMA</span>
+          </div>
+
+          <h2 class="closing-title">
+            Mari Bersinergi Mewujudkan Platform Digital <br>
+            <span class="gold-gradient-text">Yayasan Peradaban Islam Azhariyah</span>
+          </h2>
+
+          <p class="closing-subtitle">
+            Bersama Umi Elly dan Dewan Pengurus Yayasan, kita bangun platform mandiri berfitur lengkap yang amanah, profesional, dan menyenangkan bagi santri.
+          </p>
+        </div>
+
+        <!-- 4-Week Timeline Horizontal Tracker -->
+        <div class="timeline-4weeks">
+          
+          <div class="timeline-week-card">
+            <div class="week-num">Pekan 1</div>
+            <div class="week-title">Desain & Alur Perizinan</div>
+            <p class="week-desc">Finalisasi tampilan portal santri & panel admin sesuai kebutuhan Umi Elly dan yayasan.</p>
+          </div>
+
+          <div class="timeline-week-card">
+            <div class="week-num">Pekan 2</div>
+            <div class="week-title">Frontend, Video & Game Kuis</div>
+            <p class="week-desc">Pembangunan player video ber-watermark, modul silabus, dan mesin game kuis tarikh.</p>
+          </div>
+
+          <div class="timeline-week-card">
+            <div class="week-num">Pekan 3</div>
+            <div class="week-title">Backend & Kontrol Akses</div>
+            <p class="week-desc">Sistem pendaftaran, integrasi verifikasi infaq, dan panel kendali izin pengurus.</p>
+          </div>
+
+          <div class="timeline-week-card highlight-week">
+            <div class="week-num gold-week">Pekan 4</div>
+            <div class="week-title">Uji Keamanan & Go-Live</div>
+            <p class="week-desc">Testing proteksi video, migrasi data santri lama, pelatihan tim admin, dan peluncuran.</p>
+          </div>
+
+        </div>
+
+        <!-- Big CTA Card -->
+        <div class="double-bezel closing-cta-box">
+          <div class="card-inner closing-cta-inner">
+            <div class="cta-text-side">
+              <h3 class="cta-call-heading">Siap Memulai Langkah Transformasi?</h3>
+              <p class="cta-call-sub">
+                Kami siap mendemonstrasikan prototipe langsung dan mendiskusikan modul materi serta game bersama Umi Elly dan Pengurus Yayasan.
+              </p>
+            </div>
+            
+            <div class="cta-buttons-side">
+              <a href="https://wa.me/?text=Assalamu%27alaikum%20Warahmatullah%20Umi%20Elly%20%26%20Pengurus%20Yayasan%20Peradaban%20Islam%20Azhariyah.%20Kami%20tertarik%20berdiskusi%20lebih%20lanjut%20mengenai%20Platform%20Materi%20Kajian%20Khusus%20dan%20Game%20Edukasi." target="_blank" class="btn-primary btn-cta-main" id="btnContactWa">
+                <i class="ph ph-whatsapp-logo"></i>
+                <span>Jadwalkan Diskusi / Demo</span>
+              </a>
+              <button class="btn-secondary" onclick="DeckEngine.goToSlide(1)">
+                <i class="ph ph-arrow-counter-clockwise"></i>
+                <span>Ulangi Presentasi</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Closing Footer Note -->
+        <div class="closing-footer-bar">
+          <span>Yayasan Peradaban Islam Azhariyah • Asuhan Umi Elly © 2025</span>
+          <span>Menjaga Kemurnian & Hak Akses Amanah Ilmu</span>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM FLOATING PRESENTATION CONTROLS BAR -->
+  <nav class="bottom-dock-nav" id="bottomDock">
+    
+    <!-- Previous Slide Button -->
+    <button class="dock-nav-btn prev-btn" id="btnPrevSlide" title="Slide Sebelumnya (← / Backspace)">
+      <i class="ph ph-arrow-left"></i>
+      <span class="dock-btn-label">Prev</span>
+    </button>
+
+    <!-- Slide Quick Dots Strip -->
+    <div class="dock-dots-strip" id="dockDotsStrip" title="Pilih Slide">
+      <!-- Generated by JS -->
+    </div>
+
+    <!-- Next Slide Button -->
+    <button class="dock-nav-btn next-btn" id="btnNextSlide" title="Slide Selanjutnya (→ / Space)">
+      <span class="dock-btn-label">Next</span>
+      <i class="ph ph-arrow-right"></i>
+    </button>
+
+  </nav>
+
+  <!-- SLIDE OVERVIEW MODAL (GRID SELECTOR) -->
+  <div class="modal-overlay" id="overviewModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <div class="modal-crest"><i class="ph ph-squares-four"></i></div>
+          <div>
+            <h3 class="modal-title">Daftar Seluruh Slide Presentasi</h3>
+            <p class="modal-sub">Pilih slide mana saja untuk melompat langsung ke halaman tersebut</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="btnCloseOverview">
+          <i class="ph ph-x"></i>
+        </button>
+      </div>
+
+      <div class="slide-overview-grid" id="slideOverviewGrid">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION POPUP -->
+  <div class="toast-container" id="toastBox">
+    <div class="toast-content" id="toastMessage">Pesan Notifikasi</div>
+  </div>
+
+  <!-- Main JavaScript Logic (Embedded & Bulletproof) -->
+  <script>
+/**
+ * PLATFORM KELAS ONLINE PERADABAN ISLAM AZHARIYAH
+ * Interactive Presentation Engine & Motion Choreography
+ * Yayasan Umi Ely
+ */
+
+const DeckEngine = (() => {
+  // State
+  let currentSlide = 1;
+  let totalSlides = 12;
+  let isAudioEnabled = true;
+  let isAutoplayActive = false;
+  let autoplayTimer = null;
+  let autoplayIntervalSeconds = 9;
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let isVideoPlaying = false;
+  let videoPlayInterval = null;
+  let videoCurrentSeconds = 504; // 08:24
+  let currentSpeedIndex = 1;
+  const speedOptions = ['1.0x', '1.25x', '1.5x', '2.0x'];
+
+  // Audio Context (Web Audio API Synthesizer)
+  let audioCtx = null;
+
+  function initAudio() {
+    if (!audioCtx) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (AudioContext) {
+        audioCtx = new AudioContext();
+      }
+    }
+  }
+
+  function playTone(freq = 520, type = 'sine', duration = 0.15, gainVal = 0.1) {
+    if (!isAudioEnabled) return;
+    try {
+      initAudio();
+      if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(freq * 1.2, audioCtx.currentTime + duration);
+
+      gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    } catch (e) {
+      console.warn('Audio play failed:', e);
+    }
+  }
+
+  function playSlideChime() {
+    playTone(440, 'triangle', 0.18, 0.08);
+    setTimeout(() => playTone(660, 'sine', 0.22, 0.06), 40);
+  }
+
+  function playSuccessChime() {
+    playTone(523.25, 'sine', 0.15, 0.1);
+    setTimeout(() => playTone(659.25, 'sine', 0.18, 0.1), 80);
+    setTimeout(() => playTone(783.99, 'sine', 0.25, 0.12), 160);
+  }
+
+  // DOM Elements
+  const slides = document.querySelectorAll('.slide-card');
+  const navSlideCurrent = document.getElementById('navSlideCurrent');
+  const navSlideTotal = document.getElementById('navSlideTotal');
+  const navSlideTitle = document.getElementById('navSlideTitle');
+  const deckProgressFill = document.getElementById('deckProgressFill');
+  const dockDotsStrip = document.getElementById('dockDotsStrip');
+  const btnPrevSlide = document.getElementById('btnPrevSlide');
+  const btnNextSlide = document.getElementById('btnNextSlide');
+  const btnAudioToggle = document.getElementById('btnAudioToggle');
+  const audioIcon = document.getElementById('audioIcon');
+  const btnAutoplayToggle = document.getElementById('btnAutoplayToggle');
+  const autoplayIcon = document.getElementById('autoplayIcon');
+  const btnOverviewToggle = document.getElementById('btnOverviewToggle');
+  const btnFullscreenToggle = document.getElementById('btnFullscreenToggle');
+  const fullscreenIcon = document.getElementById('fullscreenIcon');
+  const overviewModal = document.getElementById('overviewModal');
+  const btnCloseOverview = document.getElementById('btnCloseOverview');
+  const slideOverviewGrid = document.getElementById('slideOverviewGrid');
+  const toastBox = document.getElementById('toastBox');
+  const toastMessage = document.getElementById('toastMessage');
+
+  // Initialize
+  function init() {
+    totalSlides = slides.length;
+    if (navSlideTotal) navSlideTotal.textContent = String(totalSlides).padStart(2, '0');
+
+    buildDockDots();
+    buildOverviewGrid();
+    bindEvents();
+    bindMockupEvents();
+    updateSlideView(1, false);
+  }
+
+  // Build Dots in Bottom Dock
+  function buildDockDots() {
+    if (!dockDotsStrip) return;
+    dockDotsStrip.innerHTML = '';
+    slides.forEach((slide, index) => {
+      const slideNum = index + 1;
+      const dot = document.createElement('div');
+      dot.className = `dock-dot ${slideNum === 1 ? 'active' : ''}`;
+      dot.title = `Slide ${slideNum}: ${slide.dataset.slideTitle || ''}`;
+      dot.addEventListener('click', () => {
+        goToSlide(slideNum);
+      });
+      dockDotsStrip.appendChild(dot);
+    });
+  }
+
+  // Build Overview Grid in Modal
+  function buildOverviewGrid() {
+    if (!slideOverviewGrid) return;
+    slideOverviewGrid.innerHTML = '';
+    slides.forEach((slide, index) => {
+      const slideNum = index + 1;
+      const title = slide.dataset.slideTitle || `Slide ${slideNum}`;
+      const thumb = document.createElement('div');
+      thumb.className = `grid-slide-thumb ${slideNum === 1 ? 'current' : ''}`;
+      thumb.dataset.slideIndex = slideNum;
+      thumb.innerHTML = `
+        <div class="thumb-num">Slide ${String(slideNum).padStart(2, '0')}</div>
+        <div class="thumb-title">${title}</div>
+      `;
+      thumb.addEventListener('click', () => {
+        goToSlide(slideNum);
+        closeOverviewModal();
+      });
+      slideOverviewGrid.appendChild(thumb);
+    });
+  }
+
+  // Update Slide UI
+  function updateSlideView(newIndex, playSound = true) {
+    if (newIndex < 1 || newIndex > totalSlides) return;
+
+    slides.forEach((slide, idx) => {
+      const slideNum = idx + 1;
+      if (slideNum === newIndex) {
+        slide.classList.add('active');
+        slide.classList.remove('prev-out');
+      } else if (slideNum < newIndex) {
+        slide.classList.remove('active');
+        slide.classList.add('prev-out');
+      } else {
+        slide.classList.remove('active');
+        slide.classList.remove('prev-out');
+      }
+    });
+
+    currentSlide = newIndex;
+
+    // Update Nav Bar
+    if (navSlideCurrent) navSlideCurrent.textContent = String(currentSlide).padStart(2, '0');
+    const activeSlideEl = document.querySelector(`.slide-card[data-slide-index="${currentSlide}"]`);
+    if (activeSlideEl && navSlideTitle) {
+      navSlideTitle.textContent = activeSlideEl.dataset.slideTitle || '';
+    }
+
+    // Update Progress Fill
+    if (deckProgressFill) {
+      const pct = (currentSlide / totalSlides) * 100;
+      deckProgressFill.style.width = `${pct}%`;
+    }
+
+    // Update Dock Dots
+    const allDots = document.querySelectorAll('.dock-dot');
+    allDots.forEach((dot, idx) => {
+      if (idx + 1 === currentSlide) {
+        dot.classList.add('active');
+      } else {
+        dot.classList.remove('active');
+      }
+    });
+
+    // Update Overview Modal Highlights
+    const allThumbs = document.querySelectorAll('.grid-slide-thumb');
+    allThumbs.forEach((thumb, idx) => {
+      if (idx + 1 === currentSlide) {
+        thumb.classList.add('current');
+      } else {
+        thumb.classList.remove('current');
+      }
+    });
+
+    // Sound
+    if (playSound) {
+      playSlideChime();
+    }
+  }
+
+  // Navigation Methods
+  function nextSlide() {
+    if (currentSlide < totalSlides) {
+      goToSlide(currentSlide + 1);
+    } else {
+      goToSlide(1); // loop back
+    }
+  }
+
+  function prevSlide() {
+    if (currentSlide > 1) {
+      goToSlide(currentSlide - 1);
+    }
+  }
+
+  function goToSlide(slideNumber) {
+    if (slideNumber >= 1 && slideNumber <= totalSlides) {
+      updateSlideView(slideNumber, true);
+      if (isAutoplayActive) {
+        restartAutoplay();
+      }
+    }
+  }
+
+  // Event Listeners
+  function bindEvents() {
+    // Buttons
+    if (btnPrevSlide) btnPrevSlide.addEventListener('click', prevSlide);
+    if (btnNextSlide) btnNextSlide.addEventListener('click', nextSlide);
+
+    const btnStartDeck = document.getElementById('btnStartDeck');
+    if (btnStartDeck) btnStartDeck.addEventListener('click', nextSlide);
+
+    // Audio Toggle
+    if (btnAudioToggle) {
+      btnAudioToggle.addEventListener('click', () => {
+        isAudioEnabled = !isAudioEnabled;
+        if (audioIcon) {
+          audioIcon.className = isAudioEnabled ? 'ph ph-speaker-high' : 'ph ph-speaker-slash';
+        }
+        const tooltip = btnAudioToggle.querySelector('.btn-tooltip');
+        if (tooltip) tooltip.textContent = isAudioEnabled ? 'Sound: ON' : 'Sound: OFF';
+        showToast(isAudioEnabled ? 'Suara efek diaktifkan' : 'Suara efek dinonaktifkan');
+        if (isAudioEnabled) playTone(600, 'sine', 0.15, 0.1);
+      });
+    }
+
+    // Autoplay Toggle
+    if (btnAutoplayToggle) {
+      btnAutoplayToggle.addEventListener('click', toggleAutoplay);
+    }
+
+    // Overview Modal
+    if (btnOverviewToggle) {
+      btnOverviewToggle.addEventListener('click', toggleOverviewModal);
+    }
+    if (btnCloseOverview) {
+      btnCloseOverview.addEventListener('click', closeOverviewModal);
+    }
+    if (overviewModal) {
+      overviewModal.addEventListener('click', (e) => {
+        if (e.target === overviewModal) closeOverviewModal();
+      });
+    }
+
+    // Fullscreen Toggle
+    if (btnFullscreenToggle) {
+      btnFullscreenToggle.addEventListener('click', toggleFullscreen);
+    }
+
+    // Keyboard Shortcuts
+    window.addEventListener('keydown', (e) => {
+      // Don't trigger if typing in an input
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+      switch (e.key) {
+        case 'ArrowRight':
+        case 'ArrowDown':
+        case ' ':
+        case 'PageDown':
+          e.preventDefault();
+          nextSlide();
+          break;
+        case 'ArrowLeft':
+        case 'ArrowUp':
+        case 'Backspace':
+        case 'PageUp':
+          e.preventDefault();
+          prevSlide();
+          break;
+        case 'Home':
+          e.preventDefault();
+          goToSlide(1);
+          break;
+        case 'End':
+          e.preventDefault();
+          goToSlide(totalSlides);
+          break;
+        case 'f':
+          case 'F':
+          toggleFullscreen();
+          break;
+        case 'g':
+        case 'G':
+        case 'o':
+        case 'O':
+          toggleOverviewModal();
+          break;
+        case 'p':
+        case 'P':
+          toggleAutoplay();
+          break;
+        case 'm':
+        case 'M':
+          if (btnAudioToggle) btnAudioToggle.click();
+          break;
+        case 'Escape':
+          closeOverviewModal();
+          break;
+        default:
+          // Direct number jumping
+          if (e.key >= '1' && e.key <= '9') {
+            const num = parseInt(e.key, 10);
+            if (num <= totalSlides) goToSlide(num);
+          }
+          break;
+      }
+    });
+
+    // Touch Swipe Gestures
+    const stage = document.getElementById('presentationStage');
+    if (stage) {
+      stage.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+      }, { passive: true });
+
+      stage.addEventListener('touchend', (e) => {
+        const touchEndX = e.changedTouches[0].screenX;
+        const touchEndY = e.changedTouches[0].screenY;
+        handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
+      }, { passive: true });
+    }
+  }
+
+  function handleSwipe(x1, y1, x2, y2) {
+    const diffX = x2 - x1;
+    const diffY = y2 - y1;
+    const minDistance = 50;
+
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > minDistance) {
+      if (diffX < 0) {
+        nextSlide(); // Swipe Left -> Next
+      } else {
+        prevSlide(); // Swipe Right -> Prev
+      }
+    }
+  }
+
+  // Fullscreen API
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().then(() => {
+        if (fullscreenIcon) fullscreenIcon.className = 'ph ph-corners-in';
+        showToast('Mode Layar Penuh Aktif');
+      }).catch(err => {
+        console.warn('Fullscreen error:', err);
+      });
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().then(() => {
+          if (fullscreenIcon) fullscreenIcon.className = 'ph ph-corners-out';
+          showToast('Keluar Layar Penuh');
+        });
+      }
+    }
+  }
+
+  // Overview Modal
+  function toggleOverviewModal() {
+    if (!overviewModal) return;
+    overviewModal.classList.toggle('open');
+  }
+
+  function closeOverviewModal() {
+    if (!overviewModal) return;
+    overviewModal.classList.remove('open');
+  }
+
+  // Autoplay Mode
+  function toggleAutoplay() {
+    isAutoplayActive = !isAutoplayActive;
+    if (isAutoplayActive) {
+      if (autoplayIcon) autoplayIcon.className = 'ph ph-pause';
+      showToast(`Autoplay Aktif (Pindah setiap ${autoplayIntervalSeconds} detik)`);
+      restartAutoplay();
+    } else {
+      if (autoplayIcon) autoplayIcon.className = 'ph ph-play';
+      showToast('Autoplay Dihentikan');
+      clearInterval(autoplayTimer);
+    }
+  }
+
+  function restartAutoplay() {
+    clearInterval(autoplayTimer);
+    if (!isAutoplayActive) return;
+    autoplayTimer = setInterval(() => {
+      nextSlide();
+    }, autoplayIntervalSeconds * 1000);
+  }
+
+  // Toast Notification
+  let toastTimeout = null;
+  function showToast(msg) {
+    if (!toastBox || !toastMessage) return;
+    toastMessage.textContent = msg;
+    toastBox.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => {
+      toastBox.classList.remove('show');
+    }, 3000);
+  }
+
+  // =========================================================================
+  // INTERACTIVE MOCKUP LOGIC
+  // =========================================================================
+  function bindMockupEvents() {
+    // 1. Student Mockup Video Player Interactivity (Slide 6)
+    const btnCenterPlay = document.getElementById('btnPlayerCenterPlay');
+    const btnBarPlay = document.getElementById('btnPlayerPlayToggle');
+    const centerPlayIcon = document.getElementById('centerPlayIcon');
+    const barPlayIcon = document.getElementById('barPlayIcon');
+    const playerTimer = document.getElementById('playerTimer');
+    const playerScrubFill = document.getElementById('playerScrubFill');
+    const btnSpeedToggle = document.getElementById('btnSpeedToggle');
+    const btnMarkComplete = document.getElementById('btnMarkComplete');
+    const markDoneIcon = document.getElementById('markDoneIcon');
+    const markDoneText = document.getElementById('markDoneText');
+    const totalProgressText = document.getElementById('totalProgressText');
+    const sidebarProgressFill = document.getElementById('sidebarProgressFill');
+
+    function togglePlayState() {
+      isVideoPlaying = !isVideoPlaying;
+      if (isVideoPlaying) {
+        if (centerPlayIcon) centerPlayIcon.className = 'ph ph-pause-fill';
+        if (barPlayIcon) barPlayIcon.className = 'ph ph-pause-fill';
+        showToast('Video diputar: Sesi 2 - Baitul Hikmah Baghdad');
+        playTone(550, 'sine', 0.1, 0.08);
+
+        videoPlayInterval = setInterval(() => {
+          videoCurrentSeconds += 1;
+          const mins = Math.floor(videoCurrentSeconds / 60);
+          const secs = videoCurrentSeconds % 60;
+          if (playerTimer) {
+            playerTimer.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')} / 45:10`;
+          }
+          if (playerScrubFill) {
+            const scrubPct = (videoCurrentSeconds / 2710) * 100;
+            playerScrubFill.style.width = `${Math.min(scrubPct, 100)}%`;
+          }
+        }, 1000);
+      } else {
+        if (centerPlayIcon) centerPlayIcon.className = 'ph ph-play-fill';
+        if (barPlayIcon) barPlayIcon.className = 'ph ph-play-fill';
+        clearInterval(videoPlayInterval);
+        showToast('Video dijeda');
+      }
+    }
+
+    if (btnCenterPlay) btnCenterPlay.addEventListener('click', togglePlayState);
+    if (btnBarPlay) btnBarPlay.addEventListener('click', togglePlayState);
+
+    // Speed Pill
+    if (btnSpeedToggle) {
+      btnSpeedToggle.addEventListener('click', () => {
+        currentSpeedIndex = (currentSpeedIndex + 1) % speedOptions.length;
+        btnSpeedToggle.textContent = speedOptions[currentSpeedIndex];
+        showToast(`Kecepatan putar: ${speedOptions[currentSpeedIndex]}`);
+        playTone(700, 'sine', 0.08, 0.06);
+      });
+    }
+
+    // Mark Complete Button
+    if (btnMarkComplete) {
+      btnMarkComplete.addEventListener('click', () => {
+        const isDone = btnMarkComplete.classList.toggle('completed');
+        if (isDone) {
+          if (markDoneIcon) markDoneIcon.className = 'ph ph-check-fat-fill';
+          if (markDoneText) markDoneText.textContent = 'Tuntas Dipelajari ✔';
+          btnMarkComplete.style.background = 'var(--accent-emerald)';
+          btnMarkComplete.style.color = '#000';
+          if (totalProgressText) totalProgressText.textContent = '75% Tuntas';
+          if (sidebarProgressFill) sidebarProgressFill.style.width = '75%';
+          playSuccessChime();
+          showToast('Alhamdulillah! Progres santri bertambah menjadi 75%');
+        } else {
+          if (markDoneIcon) markDoneIcon.className = 'ph ph-check-circle';
+          if (markDoneText) markDoneText.textContent = 'Tandai Selesai';
+          btnMarkComplete.style.background = '';
+          btnMarkComplete.style.color = '';
+          if (totalProgressText) totalProgressText.textContent = '62% Tuntas';
+          if (sidebarProgressFill) sidebarProgressFill.style.width = '62%';
+        }
+      });
+    }
+
+    // Interactive Syllabus Click
+    const syllabusItems = document.querySelectorAll('.syllabus-item:not(.locked)');
+    const activeModuleTitle = document.getElementById('activeModuleTitle');
+    const playerHudTitle = document.getElementById('playerHudTitle');
+
+    syllabusItems.forEach((item) => {
+      item.addEventListener('click', () => {
+        syllabusItems.forEach(i => i.classList.remove('active-syl'));
+        item.classList.add('active-syl');
+        const title = item.dataset.title || 'Modul Pembelajaran';
+        if (activeModuleTitle) activeModuleTitle.textContent = title;
+        if (playerHudTitle) playerHudTitle.textContent = title;
+        showToast(`Membuka materi: ${title}`);
+        playTone(600, 'triangle', 0.12, 0.08);
+      });
+    });
+
+    // 2. Admin Mockup Tab Filters (Slide 8)
+    const adminTabs = document.querySelectorAll('.admin-tab');
+    const tableRows = document.querySelectorAll('#santriTableBody tr');
+
+    adminTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        adminTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const filter = tab.dataset.filter;
+
+        tableRows.forEach(row => {
+          const status = row.dataset.status;
+          if (filter === 'all' || status === filter) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        });
+
+        showToast(`Filter tabel: ${tab.textContent}`);
+        playTone(500, 'sine', 0.08, 0.05);
+      });
+    });
+  }
+
+  // Admin Verification Action Handler
+  function verifySantri(id) {
+    const row = document.getElementById(`row-${id}`);
+    const badge = document.getElementById(`statusBadge-${id}`);
+    const btnVerify = document.getElementById(`btnVerify-${id}`);
+    const switchAccess = document.getElementById(`switchAccess-${id}`);
+    const progText = document.getElementById(`progText-${id}`);
+    const pendingCount = document.getElementById(`pendingCount`);
+
+    if (row && badge && btnVerify) {
+      row.classList.remove('row-pending-highlight');
+      row.dataset.status = 'active';
+
+      badge.className = 'badge-status-lunas';
+      badge.innerHTML = '<i class="ph ph-check"></i> Lunas Rp 150rb';
+
+      if (switchAccess) switchAccess.checked = true;
+      if (progText) progText.innerHTML = '<span class="green-text">Akses Terbuka (0%)</span>';
+
+      btnVerify.style.display = 'none';
+
+      // Update pending badge count
+      if (pendingCount) {
+        let count = parseInt(pendingCount.textContent, 10);
+        if (count > 0) count -= 1;
+        pendingCount.textContent = count;
+      }
+
+      playSuccessChime();
+      showToast('Pembayaran diverifikasi! Akses kelas otomatis dibuka untuk santri.');
+    }
+  }
+
+  // Admin Switch Toggle Handler
+  function toggleSantriAccess(id) {
+    playTone(620, 'sine', 0.08, 0.07);
+    showToast(`Hak akses video santri #${id} diperbarui & dicatat ke sistem audit log`);
+  }
+
+  // Public API
+  return {
+    init,
+    goToSlide,
+    nextSlide,
+    prevSlide,
+    verifySantri,
+    toggleSantriAccess,
+    showToast
+  };
+})();
+
+// Start on DOM Ready
+document.addEventListener('DOMContentLoaded', () => {
+  DeckEngine.init();
+});
+  </script>
+</body>
+</html>
