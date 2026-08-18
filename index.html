@@ -26,10 +26,10 @@
 
 :root {
   /* Brand Identity Tokens (Official PERISA Turquoise & Royal Ochre Gold) */
-  --perisa-teal-dark:      #082D2B; /* Deep Islamic Teal for High-Contrast Headlines */
+  --perisa-teal-dark:      #082D2B; /* Deep Islamic Teal for Headlines */
   --perisa-teal-primary:   #00877A; /* Primary Brand Turquoise */
   --perisa-teal-light:     #E1F5F2; /* Soft Mint Tonal Container */
-  --perisa-teal-border:    rgba(0, 135, 122, 0.18);
+  --perisa-teal-border:    rgba(0, 135, 122, 0.2);
 
   --perisa-gold-dark:      #8A6405; /* Deep Ochre Gold for Readable Text */
   --perisa-gold-primary:   #C5921B; /* Royal Warm Gold */
@@ -75,8 +75,6 @@
   --md-sys-color-outline:               var(--perisa-teal-primary);
   --md-sys-color-outline-variant:       var(--border-subtle);
   --md-sys-color-surface-container:     var(--bg-card-elevated);
-  --md-sys-color-surface-container-high:#EBF3F2;
-  --md-sys-color-surface-container-low: #FFFFFF;
   --md-shape-corner-medium:             var(--radius-md);
   --md-shape-corner-large:              var(--radius-lg);
   --md-shape-corner-full:               var(--radius-full);
@@ -100,26 +98,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-.app-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 100vw;
-  position: relative;
-  background: radial-gradient(circle at 10% 10%, rgba(0, 135, 122, 0.05) 0%, transparent 40%),
-              radial-gradient(circle at 90% 90%, rgba(197, 146, 27, 0.05) 0%, transparent 40%),
-              #FAFCFB;
-  overflow: hidden;
-}
-
 /* --------------------------------------------------------------------------
-   HEADER NAVIGATION (Crisp Frosted Porcelain Bar)
+   TOP NAVIGATION APP BAR
    -------------------------------------------------------------------------- */
-.presentation-header {
-  height: 56px;
+.top-nav-bar {
+  height: 58px;
   background: #FFFFFF;
-  /* hardware accelerated */
-  -webkit-/* hardware accelerated */
   border-bottom: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
@@ -127,31 +111,33 @@ body {
   padding: 0 24px;
   z-index: 100;
   box-shadow: var(--shadow-sm);
+  position: relative;
 }
 
-.header-brand {
+.nav-brand {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
 .brand-crest {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: var(--radius-sm);
   background: var(--perisa-teal-light);
   border: 1px solid var(--perisa-teal-border);
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .brand-crest svg {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
 }
 
-.brand-text-block {
+.brand-text {
   display: flex;
   flex-direction: column;
 }
@@ -171,32 +157,43 @@ body {
   text-transform: uppercase;
 }
 
-.header-center {
+.nav-slide-indicator {
   display: flex;
   align-items: center;
-  gap: 10px;
-}
-
-.slide-counter-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 12px;
+  gap: 6px;
+  padding: 5px 14px;
   background: var(--bg-card-elevated);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-full);
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--perisa-teal-dark);
 }
 
-.active-slide-title {
+.slide-num-current {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 800;
+  color: var(--perisa-teal-primary);
+}
+
+.slide-num-divider {
+  font-size: 11px;
   color: var(--text-muted);
 }
 
-.header-controls {
+.slide-num-total {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.slide-badge-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--perisa-teal-dark);
+  border-left: 1px solid var(--border-subtle);
+  padding-left: 8px;
+  margin-left: 2px;
+}
+
+.nav-actions {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -228,7 +225,7 @@ body {
   display: none;
 }
 
-/* Progress Line at Top */
+/* Progress Track */
 .deck-progress-track {
   height: 3px;
   width: 100%;
@@ -241,17 +238,17 @@ body {
   height: 100%;
   background: linear-gradient(90deg, var(--perisa-teal-primary), var(--perisa-gold-primary));
   width: 8.33%;
-  transition: width 350ms ease;
+  transition: width 250ms ease;
 }
 
 /* --------------------------------------------------------------------------
-   STAGE & SLIDE CONTAINER
+   STAGE & SLIDE CONTAINER (ZERO-LATENCY 60FPS / 120FPS)
    -------------------------------------------------------------------------- */
 .presentation-stage {
   flex-grow: 1;
   position: relative;
   overflow: hidden;
-  height: calc(100vh - 59px);
+  height: calc(100vh - 61px);
 }
 
 .slide-card {
@@ -260,7 +257,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  display: none !important;
+  display: none;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -296,7 +293,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   EDITORIAL TYPOGRAPHY & HEADINGS
+   EDITORIAL TYPOGRAPHY & BADGES
    -------------------------------------------------------------------------- */
 .badge-tag {
   display: inline-flex;
@@ -327,6 +324,12 @@ body {
   color: #991B1B;
 }
 
+.badge-tag.warning-badge {
+  background: #FEF3C7;
+  border-color: #FBBF24;
+  color: #92400E;
+}
+
 .badge-dot {
   width: 6px;
   height: 6px;
@@ -349,8 +352,8 @@ body {
 }
 
 .section-header {
-  margin-bottom: 20px;
-  max-width: 860px;
+  margin-bottom: 22px;
+  max-width: 880px;
 }
 
 .section-title {
@@ -363,15 +366,13 @@ body {
 }
 
 .section-subtitle {
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 400;
   line-height: 1.55;
   color: var(--text-muted);
 }
 
-/* --------------------------------------------------------------------------
-   CARD SYSTEM (Double-Bezel & Crisp Pure White)
-   -------------------------------------------------------------------------- */
+/* Double-Bezel Card Container */
 .double-bezel {
   background-color: #FFFFFF;
   border: 1px solid var(--border-subtle);
@@ -395,9 +396,7 @@ body {
   flex-direction: column;
 }
 
-/* --------------------------------------------------------------------------
-   BUTTONS & CTAs
-   -------------------------------------------------------------------------- */
+/* Buttons */
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -455,7 +454,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   HERO SLIDE 1 (REDESIGNED ULTRA-LUXURY KEYNOTE LAYOUT)
+   SLIDE 1: HERO PITCH
    -------------------------------------------------------------------------- */
 .slide-hero-layout {
   display: grid;
@@ -583,7 +582,7 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
-/* Hero Visual Showcase */
+/* Hero Showcase Card */
 .hero-visual-card {
   background: #FFFFFF;
   border: 1px solid var(--border-subtle);
@@ -686,21 +685,182 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   PROBLEM / SOLUTION / VALUE GRIDS
+   SLIDE 2: PROBLEM GRID (4 COLUMNS)
    -------------------------------------------------------------------------- */
-.problem-grid-4, .solution-grid-4, .value-impact-grid, .security-pillars-grid {
+.problem-grid-4 {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
 }
 
-.problem-card .card-inner, .sol-card .card-inner, .sec-card .card-inner, .val-card .card-inner {
+.problem-card .card-inner {
   justify-content: space-between;
+  padding: 18px;
+  gap: 12px;
+}
+
+.problem-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: #FEE2E2;
+  border: 1px solid #FCA5A5;
+  color: #DC2626;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+
+.problem-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--perisa-teal-dark);
+  line-height: 1.35;
+}
+
+.problem-desc {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-body);
+}
+
+.problem-impact-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: #FEF2F2;
+  border: 1px solid #F87171;
+  color: #991B1B;
+  font-size: 10.5px;
+  font-weight: 700;
+  width: fit-content;
+  margin-top: auto;
+}
+
+/* --------------------------------------------------------------------------
+   SLIDE 3: IMPACT COLUMNS & QUOTE
+   -------------------------------------------------------------------------- */
+.impact-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.impact-item .card-inner {
   padding: 18px;
   gap: 10px;
 }
 
-.prob-icon, .sol-icon-wrap, .sec-icon, .val-icon {
+.impact-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--perisa-teal-light);
+  border: 1px solid var(--perisa-teal-border);
+  border-radius: var(--radius-full);
+  color: var(--perisa-teal-primary);
+  font-size: 11px;
+  font-weight: 700;
+  width: fit-content;
+}
+
+.impact-heading {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--perisa-teal-dark);
+  line-height: 1.35;
+}
+
+.impact-text {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-body);
+}
+
+.impact-metric-box {
+  background: var(--bg-card-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: auto;
+}
+
+.metric-val {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--perisa-teal-primary);
+}
+
+.metric-val.danger-text { color: #DC2626; }
+.metric-val.warning-text { color: #D97706; }
+
+.metric-label {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+.quote-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px;
+  background: var(--perisa-gold-light);
+  border: 1px solid var(--perisa-gold-border);
+  border-left: 4px solid var(--perisa-gold-primary);
+  border-radius: var(--radius-md);
+  margin-top: 14px;
+}
+
+.quote-icon i {
+  font-size: 24px;
+  color: var(--perisa-gold-dark);
+}
+
+.quote-phrase {
+  font-size: 12.5px;
+  font-style: italic;
+  line-height: 1.55;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.quote-author {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--perisa-gold-dark);
+}
+
+/* --------------------------------------------------------------------------
+   SLIDE 4: SOLUTION GRID
+   -------------------------------------------------------------------------- */
+.solution-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.sol-card .card-inner {
+  padding: 18px;
+  gap: 8px;
+}
+
+.sol-num {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--perisa-teal-primary);
+}
+
+.sol-icon-wrap {
   width: 42px;
   height: 42px;
   border-radius: var(--radius-md);
@@ -711,25 +871,17 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 20px;
-  margin-bottom: 8px;
-}
-
-.sol-num {
-  font-size: 20px;
-  font-weight: 800;
-  color: var(--perisa-teal-primary);
   margin-bottom: 4px;
 }
 
-.prob-title, .sol-title, .sec-title, .val-title {
+.sol-title {
   font-size: 14.5px;
   font-weight: 700;
   color: var(--perisa-teal-dark);
   line-height: 1.35;
-  margin-bottom: 4px;
 }
 
-.prob-desc, .sol-desc, .sec-desc, .val-desc {
+.sol-desc {
   font-size: 12px;
   line-height: 1.5;
   color: var(--text-body);
@@ -756,46 +908,13 @@ body {
   color: var(--perisa-teal-primary);
 }
 
-/* Quote Callout */
-.quote-callout {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 16px 20px;
-  background: var(--perisa-gold-light);
-  border: 1px solid var(--perisa-gold-border);
-  border-left: 4px solid var(--perisa-gold-primary);
-  border-radius: var(--radius-md);
-  margin-top: 16px;
-}
-
-.quote-icon i {
-  font-size: 24px;
-  color: var(--perisa-gold-dark);
-}
-
-.quote-phrase {
-  font-size: 12.5px;
-  font-style: italic;
-  line-height: 1.55;
-  color: var(--text-main);
-  margin-bottom: 4px;
-}
-
-.quote-author {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--perisa-gold-dark);
-}
-
 /* --------------------------------------------------------------------------
-   STEPPER & WORKFLOW (SLIDE 5)
+   SLIDE 5: WORKFLOW STEPPER (5 COLUMNS)
    -------------------------------------------------------------------------- */
 .workflow-stepper {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 12px;
-  position: relative;
   margin: 16px 0;
 }
 
@@ -809,7 +928,6 @@ body {
   align-items: center;
   text-align: center;
   box-shadow: var(--shadow-sm);
-  position: relative;
 }
 
 .step-card.highlight-step {
@@ -824,10 +942,6 @@ body {
   text-transform: uppercase;
   color: var(--text-muted);
   margin-bottom: 8px;
-}
-
-.gold-step-badge {
-  color: var(--perisa-gold-dark);
 }
 
 .step-circle {
@@ -863,7 +977,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   MOCKUP LAYOUT (SLIDES 6 & 8)
+   SLIDES 6 & 8: MOCKUPS (STUDENT & ADMIN PORTAL)
    -------------------------------------------------------------------------- */
 .slide-mockup-layout {
   display: grid;
@@ -921,7 +1035,6 @@ body {
   color: var(--perisa-teal-dark);
 }
 
-/* OS Window Frame */
 .os-window-bezel {
   background: #FFFFFF;
   border: 1px solid var(--border-subtle);
@@ -975,41 +1088,12 @@ body {
   width: 48%;
 }
 
-.os-user-badge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--perisa-teal-dark);
-}
-
-.os-avatar-initial {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--perisa-teal-primary);
-  color: #FFFFFF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  font-weight: 800;
-}
-
-/* Student Video Mockup Grid */
 .student-portal-ui {
   display: grid;
   grid-template-columns: 1.35fr 0.65fr;
   gap: 12px;
   padding: 14px;
   background: var(--bg-card-elevated);
-}
-
-.portal-main-area {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }
 
 .interactive-video-player {
@@ -1039,12 +1123,6 @@ body {
   color: #A7F3EC;
   font-size: 9.5px;
   font-weight: 600;
-  animation: floatWatermark 8s infinite ease-in-out;
-}
-
-@keyframes floatWatermark {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(-40px, 20px); }
 }
 
 .player-center-play {
@@ -1058,7 +1136,6 @@ body {
   justify-content: center;
   font-size: 20px;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
 }
 
 .player-hud-title {
@@ -1102,7 +1179,6 @@ body {
   background: #E3ECEB;
   border-radius: var(--radius-full);
   overflow: hidden;
-  cursor: pointer;
 }
 
 .player-scrub-fill {
@@ -1110,18 +1186,6 @@ body {
   background: var(--perisa-teal-primary);
 }
 
-.speed-pill-btn {
-  background: var(--bg-card-elevated);
-  border: 1px solid var(--border-subtle);
-  padding: 2px 8px;
-  border-radius: var(--radius-sm);
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--perisa-teal-dark);
-  cursor: pointer;
-}
-
-/* Material Download & Game Launcher */
 .materials-download-pills {
   display: flex;
   gap: 6px;
@@ -1141,7 +1205,6 @@ body {
   font-size: 10.5px;
   font-weight: 600;
   text-decoration: none;
-  transition: all 0.2s ease;
 }
 
 .mat-pill.game-pill {
@@ -1151,12 +1214,6 @@ body {
   font-weight: 700;
 }
 
-.mat-pill:hover {
-  border-color: var(--perisa-teal-primary);
-  color: var(--perisa-teal-primary);
-}
-
-/* Syllabus Checklist */
 .portal-sidebar-area {
   background: #FFFFFF;
   border: 1px solid var(--border-subtle);
@@ -1175,20 +1232,11 @@ body {
   font-weight: 700;
 }
 
-.sidebar-course-tag {
-  color: var(--perisa-teal-dark);
-}
-
-.progress-pct {
-  color: var(--perisa-teal-primary);
-}
-
 .sidebar-progress-bar {
   height: 4px;
   background: #E3ECEB;
   border-radius: var(--radius-full);
   overflow: hidden;
-  margin-top: 4px;
 }
 
 .sidebar-progress-fill {
@@ -1212,27 +1260,11 @@ body {
   background: var(--bg-card-elevated);
   border: 1px solid var(--border-subtle);
   cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.syllabus-item:hover {
-  background: var(--perisa-teal-light);
-  border-color: var(--perisa-teal-border);
 }
 
 .syllabus-item.active-syl {
   background: var(--perisa-teal-light);
   border-color: var(--perisa-teal-primary);
-}
-
-.syl-status-icon i {
-  font-size: 14px;
-  color: var(--perisa-teal-primary);
-}
-
-.syl-info {
-  display: flex;
-  flex-direction: column;
 }
 
 .syl-session {
@@ -1253,7 +1285,66 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   ADMIN DASHBOARD (SLIDE 8)
+   SLIDE 7: SECURITY PILLARS (4 COLUMNS)
+   -------------------------------------------------------------------------- */
+.security-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.sec-card .card-inner {
+  padding: 18px;
+  gap: 8px;
+}
+
+.sec-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--perisa-teal-light);
+  border: 1px solid var(--perisa-teal-border);
+  color: var(--perisa-teal-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+
+.sec-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--perisa-teal-dark);
+  line-height: 1.35;
+}
+
+.sec-desc {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-body);
+}
+
+.sec-feature-box {
+  background: var(--bg-card-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: auto;
+  font-size: 10.5px;
+  color: var(--text-muted);
+}
+
+.sec-tag {
+  font-weight: 700;
+  color: var(--perisa-teal-primary);
+}
+
+/* --------------------------------------------------------------------------
+   SLIDE 8: ADMIN DASHBOARD
    -------------------------------------------------------------------------- */
 .admin-quick-stats {
   display: grid;
@@ -1277,13 +1368,8 @@ body {
   color: var(--perisa-teal-dark);
 }
 
-.q-stat-val.gold-text {
-  color: var(--perisa-gold-dark);
-}
-
-.q-stat-val.green-text {
-  color: var(--perisa-teal-primary);
-}
+.q-stat-val.gold-text { color: var(--perisa-gold-dark); }
+.q-stat-val.green-text { color: var(--perisa-teal-primary); }
 
 .q-stat-lbl {
   font-size: 10px;
@@ -1322,7 +1408,6 @@ body {
   font-size: 10.5px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
 }
 
 .admin-tab.active {
@@ -1340,7 +1425,6 @@ body {
   border-radius: var(--radius-full);
   padding: 3px 10px;
   font-size: 10.5px;
-  color: var(--text-muted);
 }
 
 .admin-search-box input {
@@ -1379,10 +1463,6 @@ body {
   padding: 8px 10px;
   border-bottom: 1px solid var(--border-subtle);
   vertical-align: middle;
-}
-
-.admin-santri-table tr:hover {
-  background: #F9FCFB;
 }
 
 .table-user-cell {
@@ -1466,11 +1546,6 @@ body {
   font-size: 10px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-table-verify:hover {
-  background: #006D63;
 }
 
 .btn-table-action {
@@ -1484,8 +1559,30 @@ body {
   cursor: pointer;
 }
 
+.admin-table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.btn-export-excel {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--perisa-teal-dark);
+  cursor: pointer;
+}
+
 /* --------------------------------------------------------------------------
-   MVP SPLIT GRID (SLIDE 9)
+   SLIDE 9: MVP SPLIT GRID (2 COLUMNS)
    -------------------------------------------------------------------------- */
 .mvp-split-grid {
   display: grid;
@@ -1573,61 +1670,372 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   FLOATING DOCK (PORCELAIN GLASS PILL)
+   SLIDE 10: VALUE IMPACT GRID (4 COLUMNS)
    -------------------------------------------------------------------------- */
-.presentation-dock {
+.value-impact-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.val-card .card-inner {
+  padding: 18px;
+  gap: 8px;
+}
+
+.val-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.val-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--perisa-teal-light);
+  border: 1px solid var(--perisa-teal-border);
+  color: var(--perisa-teal-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.val-icon.gold-icon {
+  background: var(--perisa-gold-light);
+  border-color: var(--perisa-gold-border);
+  color: var(--perisa-gold-dark);
+}
+
+.val-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+}
+
+.val-badge.green-badge { background: #E6F7F5; color: #006D64; border: 1px solid #00A396; }
+.val-badge.gold-badge-light { background: #FEF3C7; color: #92400E; border: 1px solid #D97706; }
+.val-badge.blue-badge { background: #E0F2FE; color: #0369A1; border: 1px solid #38BDF8; }
+.val-badge.purple-badge { background: #F3E8FF; color: #6B21A8; border: 1px solid #C084FC; }
+
+.val-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--perisa-teal-dark);
+  line-height: 1.35;
+}
+
+.val-desc {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-body);
+}
+
+.val-quote {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--perisa-gold-dark);
+  margin-top: auto;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   SLIDE 11: ROADMAP HORIZONTAL (3 COLUMNS)
+   -------------------------------------------------------------------------- */
+.roadmap-horizontal {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.road-phase .card-inner {
+  padding: 20px;
+  gap: 12px;
+}
+
+.road-phase.current-phase {
+  border-color: var(--perisa-teal-primary);
+  box-shadow: 0 6px 24px rgba(0, 135, 122, 0.18);
+}
+
+.road-phase-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--bg-card-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  width: fit-content;
+}
+
+.road-phase-tag.active-tag {
+  background: var(--perisa-teal-light);
+  border-color: var(--perisa-teal-border);
+  color: var(--perisa-teal-primary);
+}
+
+.road-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--perisa-teal-dark);
+  line-height: 1.3;
+}
+
+.road-items {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-body);
+}
+
+.road-items li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.road-items li i {
+  color: var(--perisa-teal-primary);
+  font-size: 15px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.road-status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  margin-top: auto;
+  text-align: center;
+}
+
+.road-status-pill.done-pill {
+  background: #E6F7F5;
+  border: 1px solid #00A396;
+  color: #006D64;
+}
+
+.road-status-pill.next-pill {
+  background: #FEF3C7;
+  border: 1px solid #D97706;
+  color: #92400E;
+}
+
+.road-status-pill.future-pill {
+  background: var(--bg-card-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   SLIDE 12: CLOSING & 4-WEEKS TIMELINE (4 COLUMNS & CTA)
+   -------------------------------------------------------------------------- */
+.slide-closing-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.closing-top-pitch {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.closing-title {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+  color: var(--perisa-teal-dark);
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #B38415 0%, #D4AF37 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.closing-subtitle {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  max-width: 820px;
+}
+
+.timeline-4weeks {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.timeline-week-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: var(--shadow-sm);
+}
+
+.timeline-week-card.highlight-week {
+  background: #FFFCF5;
+  border: 1.5px solid var(--perisa-gold-primary);
+  box-shadow: 0 4px 18px rgba(197, 146, 27, 0.15);
+}
+
+.week-num {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: var(--perisa-teal-light);
+  border: 1px solid var(--perisa-teal-border);
+  border-radius: var(--radius-full);
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--perisa-teal-primary);
+  width: fit-content;
+  text-transform: uppercase;
+}
+
+.week-num.gold-week {
+  background: var(--perisa-gold-light);
+  border-color: var(--perisa-gold-border);
+  color: var(--perisa-gold-dark);
+}
+
+.week-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--perisa-teal-dark);
+}
+
+.week-desc {
+  font-size: 11.5px;
+  color: var(--text-body);
+  line-height: 1.45;
+}
+
+.closing-cta-box {
+  background: #FFFFFF;
+  border-radius: var(--radius-xl);
+}
+
+.closing-cta-inner {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 20px;
+  align-items: center;
+  padding: 22px 28px;
+}
+
+.cta-call-heading {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--perisa-teal-dark);
+  margin-bottom: 4px;
+}
+
+.cta-call-sub {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.cta-buttons-side {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.closing-footer-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 12px;
+}
+
+/* --------------------------------------------------------------------------
+   BOTTOM DOCK CONTROLS
+   -------------------------------------------------------------------------- */
+.bottom-dock-nav {
   position: fixed;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
-}
-
-.floating-dock-card {
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: rgba(255, 255, 255, 0.95);
-  /* hardware accelerated */
-  -webkit-/* hardware accelerated */
+  gap: 14px;
+  background: #FFFFFF;
   border: 1.5px solid var(--border-subtle);
   border-radius: var(--radius-full);
-  padding: 6px 16px;
+  padding: 6px 18px;
   box-shadow: var(--shadow-xl);
 }
 
-.dock-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
+.dock-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
   background: var(--bg-card-elevated);
   border: 1px solid var(--border-subtle);
   color: var(--perisa-teal-dark);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 15px;
+  font-family: var(--font-family);
+  font-size: 11.5px;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.dock-btn:hover {
+.dock-nav-btn:hover {
   background: var(--perisa-teal-light);
   color: var(--perisa-teal-primary);
   border-color: var(--perisa-teal-primary);
 }
 
-.dock-btn.primary-dock-btn {
+.dock-nav-btn.next-btn {
   background: var(--perisa-teal-primary);
   color: #FFFFFF;
   border-color: var(--perisa-teal-primary);
   box-shadow: 0 2px 8px rgba(0, 135, 122, 0.3);
 }
 
+.dock-nav-btn.next-btn:hover {
+  background: #006D63;
+}
+
 .dock-dots-strip {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
+  padding: 0 4px;
 }
 
 .dock-dot {
@@ -1639,21 +2047,26 @@ body {
   transition: all 0.25s ease;
 }
 
+.dock-dot:hover {
+  background: var(--perisa-teal-primary);
+  transform: scale(1.2);
+}
+
 .dock-dot.active {
-  width: 22px;
+  width: 24px;
   border-radius: var(--radius-full);
   background: var(--perisa-teal-primary);
 }
 
 /* --------------------------------------------------------------------------
-   MODALS (CLEAN & HIGH CONTRAST)
+   OVERVIEW & GAME & CERTIFICATE MODALS
    -------------------------------------------------------------------------- */
 .modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(8, 30, 28, 0.5);
-  
-  -webkit-
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1734,257 +2147,6 @@ body {
   cursor: pointer;
 }
 
-/* Toast */
-.toast-container {
-  position: fixed;
-  bottom: 78px;
-  left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-  z-index: 1000;
-}
-
-.toast-container.show {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(0);
-}
-
-.toast-content {
-  background: var(--perisa-teal-dark);
-  color: #FFFFFF;
-  padding: 10px 20px;
-  border-radius: var(--radius-full);
-  font-size: 12px;
-  font-weight: 600;
-  box-shadow: var(--shadow-xl);
-  border: 1px solid rgba(0, 210, 190, 0.3);
-}
-
-/* Responsive Rules */
-@media (max-width: 768px) {
-  .presentation-header { padding: 0 14px; }
-  .slide-card { padding: 16px 14px 84px 14px; }
-  .slide-hero-layout, .slide-mockup-layout, .mvp-split-grid { grid-template-columns: 1fr; gap: 20px; }
-  .problem-grid-4, .solution-grid-4, .value-impact-grid, .security-pillars-grid { grid-template-columns: 1fr; }
-  .workflow-stepper { grid-template-columns: 1fr; }
-  .student-portal-ui { grid-template-columns: 1fr; }
-  .hero-title { font-size: 26px; }
-  .section-title { font-size: 22px; }
-}
-
-
-/* ==========================================================================
-   TOP NAVIGATION APP BAR (MATCHING index.html EXACT CLASS NAMES)
-   ========================================================================== */
-.top-nav-bar {
-  height: 58px;
-  background: #FFFFFF;
-  /* hardware accelerated */
-  -webkit-/* hardware accelerated */
-  border-bottom: 1px solid var(--border-subtle);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  z-index: 100;
-  box-shadow: var(--shadow-sm);
-  position: relative;
-}
-
-.nav-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.brand-crest {
-  width: 34px;
-  height: 34px;
-  border-radius: var(--radius-sm);
-  background: var(--perisa-teal-light);
-  border: 1px solid var(--perisa-teal-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.brand-crest svg {
-  width: 24px;
-  height: 24px;
-}
-
-.brand-text {
-  display: flex;
-  flex-direction: column;
-}
-
-.brand-title {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: var(--perisa-teal-dark);
-  letter-spacing: -0.01em;
-}
-
-.brand-sub {
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--perisa-gold-dark);
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-
-.nav-slide-indicator {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 14px;
-  background: var(--bg-card-elevated);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-full);
-}
-
-.slide-num-current {
-  font-size: 12px;
-  font-weight: 800;
-  color: var(--perisa-teal-primary);
-}
-
-.slide-num-divider {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-.slide-num-total {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text-muted);
-}
-
-.slide-badge-title {
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--perisa-teal-dark);
-  border-left: 1px solid var(--border-subtle);
-  padding-left: 8px;
-  margin-left: 2px;
-}
-
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.nav-btn {
-  width: 34px;
-  height: 34px;
-  border-radius: var(--radius-full);
-  background: var(--bg-card-elevated);
-  border: 1px solid var(--border-subtle);
-  color: var(--text-body);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 15px;
-  transition: all 0.2s ease;
-  position: relative;
-}
-
-.nav-btn:hover {
-  background: var(--perisa-teal-light);
-  color: var(--perisa-teal-primary);
-  border-color: var(--perisa-teal-primary);
-}
-
-/* ==========================================================================
-   BOTTOM DOCK CONTROLS (MATCHING index.html EXACT CLASS NAMES)
-   ========================================================================== */
-.bottom-dock-nav {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  background: #FFFFFF;
-  /* hardware accelerated */
-  -webkit-/* hardware accelerated */
-  border: 1.5px solid var(--border-subtle);
-  border-radius: var(--radius-full);
-  padding: 6px 18px;
-  box-shadow: var(--shadow-xl);
-}
-
-.dock-nav-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  border-radius: var(--radius-full);
-  background: var(--bg-card-elevated);
-  border: 1px solid var(--border-subtle);
-  color: var(--perisa-teal-dark);
-  font-family: var(--font-family);
-  font-size: 11.5px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.dock-nav-btn:hover {
-  background: var(--perisa-teal-light);
-  color: var(--perisa-teal-primary);
-  border-color: var(--perisa-teal-primary);
-}
-
-.dock-nav-btn.next-btn {
-  background: var(--perisa-teal-primary);
-  color: #FFFFFF;
-  border-color: var(--perisa-teal-primary);
-  box-shadow: 0 2px 8px rgba(0, 135, 122, 0.3);
-}
-
-.dock-nav-btn.next-btn:hover {
-  background: #006D63;
-}
-
-.dock-dots-strip {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0 4px;
-}
-
-.dock-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #D5E2E0;
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-
-.dock-dot:hover {
-  background: var(--perisa-teal-primary);
-  transform: scale(1.2);
-}
-
-.dock-dot.active {
-  width: 24px;
-  border-radius: var(--radius-full);
-  background: var(--perisa-teal-primary);
-}
-
-/* ==========================================================================
-   SLIDE OVERVIEW GRID
-   ========================================================================== */
 .slide-overview-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -2026,6 +2188,47 @@ body {
   font-size: 12px;
   font-weight: 600;
   color: var(--perisa-teal-dark);
+}
+
+/* Toast */
+.toast-container {
+  position: fixed;
+  bottom: 78px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.toast-container.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast-content {
+  background: var(--perisa-teal-dark);
+  color: #FFFFFF;
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: var(--shadow-xl);
+  border: 1px solid rgba(0, 210, 190, 0.3);
+}
+
+/* Responsive Rules */
+@media (max-width: 768px) {
+  .top-nav-bar { padding: 0 14px; }
+  .slide-card { padding: 16px 14px 84px 14px; }
+  .slide-hero-layout, .slide-mockup-layout, .mvp-split-grid, .closing-cta-inner { grid-template-columns: 1fr; gap: 16px; }
+  .problem-grid-4, .solution-grid-4, .security-pillars-grid, .value-impact-grid, .timeline-4weeks, .slide-overview-grid { grid-template-columns: 1fr; }
+  .impact-columns, .roadmap-horizontal, .workflow-stepper { grid-template-columns: 1fr; }
+  .student-portal-ui { grid-template-columns: 1fr; }
+  .hero-title { font-size: 26px; }
+  .section-title { font-size: 22px; }
 }
 
 </style>
@@ -3296,7 +3499,7 @@ body {
       </div>
     </section>
 
-    <!-- ============================================================
+        <!-- ============================================================
          SLIDE 11: ROADMAP PENGEMBANGAN MASA DEPAN (FUTURE ROADMAP)
          ============================================================ -->
     <section class="slide-card" data-slide-index="11" data-slide-title="Roadmap & Game">
@@ -3307,9 +3510,9 @@ body {
             <i class="ph ph-compass"></i>
             <span>ROADMAP PENGEMBANGAN FITUR & GAME</span>
           </div>
-          <h2 class="section-title">Rencana Pengembangan Platform & Game Edukasi</h2>
+          <h2 class="section-title">Rencana Pengembangan Platform & Game Bahasa Arab</h2>
           <p class="section-subtitle">
-            Fondasi MVP dibangun modular sehingga siap dikembangkan menjadi ekosistem digital dan game interaktif Islam terdepan.
+            Fondasi MVP dibangun modular sehingga siap dikembangkan menjadi ekosistem digital pembelajaran Bahasa Arab interaktif terdepan untuk santri SD, SMP, hingga SMA.
           </p>
         </div>
 
@@ -3320,14 +3523,14 @@ body {
             <div class="card-inner">
               <div class="road-phase-tag active-tag">
                 <span class="live-dot"></span>
-                <span>Fase 1: MVP Core + Kuis Game (Bulan 1)</span>
+                <span>Fase 1: MVP Core + Kuis Mufrodat (Bulan 1)</span>
               </div>
-              <h3 class="road-title">Portal Materi & Kuis Interaktif</h3>
+              <h3 class="road-title">Portal Materi & Kuis Mufrodat SD-SMA</h3>
               <ul class="road-items">
-                <li><i class="ph ph-check"></i> Web Portal Santri & Video Terproteksi</li>
-                <li><i class="ph ph-check"></i> Dynamic Watermark Anti-Bocor</li>
-                <li><i class="ph ph-check"></i> Kontrol Izin Akses oleh Yayasan</li>
-                <li><i class="ph ph-game-controller"></i> Mini-Game Kuis Tarikh & Poin XP</li>
+                <li><i class="ph ph-check-circle"></i> Web Portal Santri & Video Terproteksi</li>
+                <li><i class="ph ph-check-circle"></i> Dynamic Watermark Anti-Bocor</li>
+                <li><i class="ph ph-check-circle"></i> Kontrol Izin Akses & Beasiswa Yayasan</li>
+                <li><i class="ph ph-game-controller"></i> Mini-Game Mufrodat & Poin XP</li>
               </ul>
               <div class="road-status-pill done-pill">Fokus Peluncuran Utama</div>
             </div>
@@ -3337,14 +3540,14 @@ body {
           <div class="double-bezel road-phase">
             <div class="card-inner">
               <div class="road-phase-tag">
-                <span>Fase 2: Game Sejarah & Ujian (Bulan 2-3)</span>
+                <span>Fase 2: Muhadatsah & Ujian (Bulan 2-3)</span>
               </div>
-              <h3 class="road-title">Game Petualangan & Sertifikat</h3>
+              <h3 class="road-title">Game Kaidah Nahwu & Sertifikat</h3>
               <ul class="road-items">
-                <li><i class="ph ph-game-controller"></i> <strong>Game Petualangan Peta Khilafah Islam</strong></li>
-                <li><i class="ph ph-trophy"></i> Leaderboard Peringkat Santri & Lencana Koleksi</li>
-                <li><i class="ph ph-circle"></i> E-Sertifikat Digital QR Sanad Resmi</li>
-                <li><i class="ph ph-circle"></i> Forum Tanya-Jawab Asatidz & Umi Elly</li>
+                <li><i class="ph ph-game-controller"></i> <strong>Game Susun Kalimat & Tantangan Dhomir</strong></li>
+                <li><i class="ph ph-trophy"></i> Leaderboard Peringkat Santri & Lencana Juara</li>
+                <li><i class="ph ph-certificate"></i> E-Sertifikat Digital QR Sanad Resmi</li>
+                <li><i class="ph ph-chat-circle-dots"></i> Forum Tanya-Jawab Asatidz & Umi Elly</li>
               </ul>
               <div class="road-status-pill next-pill">Pengembangan Tahap 2</div>
             </div>
@@ -3356,12 +3559,12 @@ body {
               <div class="road-phase-tag">
                 <span>Fase 3: Ekosistem Global & Mobile (Bulan 4+)</span>
               </div>
-              <h3 class="road-title">Aplikasi Mobile & Simulasi</h3>
+              <h3 class="road-title">Aplikasi Mobile & AI Percakapan Arab</h3>
               <ul class="road-items">
-                <li><i class="ph ph-circle"></i> Aplikasi Mobile iOS & Android</li>
-                <li><i class="ph ph-game-controller"></i> Game Simulasi Sains Peradaban Baitul Hikmah</li>
-                <li><i class="ph ph-circle"></i> Live Streaming Kajian Eksklusif di Portal</li>
-                <li><i class="ph ph-circle"></i> Komunitas Alumni Peradaban Islam</li>
+                <li><i class="ph ph-device-mobile"></i> Aplikasi Mobile iOS & Android</li>
+                <li><i class="ph ph-sparkle"></i> Praktik Muhadatsah Interaktif Berbasis AI</li>
+                <li><i class="ph ph-broadcast"></i> Live Streaming Kelas Bahasa Arab Eksklusif</li>
+                <li><i class="ph ph-users-three"></i> Komunitas Alumni Santri Bahasa Arab</li>
               </ul>
               <div class="road-status-pill future-pill">Visi Jangka Panjang</div>
             </div>
@@ -3372,7 +3575,7 @@ body {
       </div>
     </section>
 
-    <!-- ============================================================
+        <!-- ============================================================
          SLIDE 12: RENCANA IMPLEMENTASI & CLOSING PITCH (TIMELINE & CTA)
          ============================================================ -->
     <section class="slide-card" data-slide-index="12" data-slide-title="Penutup & Kolaborasi">
@@ -3390,7 +3593,7 @@ body {
           </h2>
 
           <p class="closing-subtitle">
-            Bersama Umi Elly dan Dewan Pengurus Yayasan, kita bangun platform mandiri berfitur lengkap yang amanah, profesional, dan menyenangkan bagi santri.
+            Bersama Umi Elly dan Dewan Pengurus Yayasan, kita bangun platform pembelajaran Bahasa Arab mandiri berfitur lengkap yang amanah, profesional, dan menyenangkan bagi santri SD hingga SMA.
           </p>
         </div>
 
@@ -3400,25 +3603,25 @@ body {
           <div class="timeline-week-card">
             <div class="week-num">Pekan 1</div>
             <div class="week-title">Desain & Alur Perizinan</div>
-            <p class="week-desc">Finalisasi tampilan portal santri & panel admin sesuai kebutuhan Umi Elly dan yayasan.</p>
+            <p class="week-desc">Finalisasi tampilan portal santri & panel admin sesuai kebutuhan Umi Elly dan kurikulum yayasan.</p>
           </div>
 
           <div class="timeline-week-card">
             <div class="week-num">Pekan 2</div>
-            <div class="week-title">Frontend, Video & Game Kuis</div>
-            <p class="week-desc">Pembangunan player video ber-watermark, modul silabus, dan mesin game kuis tarikh.</p>
+            <div class="week-title">Frontend & Game Bahasa Arab</div>
+            <p class="week-desc">Pembangunan player video ber-watermark, silabus materi Bahasa Arab, dan mesin mini-game mufrodat.</p>
           </div>
 
           <div class="timeline-week-card">
             <div class="week-num">Pekan 3</div>
-            <div class="week-title">Backend & Kontrol Akses</div>
-            <p class="week-desc">Sistem pendaftaran, integrasi verifikasi infaq, dan panel kendali izin pengurus.</p>
+            <div class="week-title">Backend & Kontrol Izin</div>
+            <p class="week-desc">Sistem pendaftaran WhatsApp, integrasi verifikasi infaq/beasiswa, dan panel kendali izin pengurus.</p>
           </div>
 
           <div class="timeline-week-card highlight-week">
             <div class="week-num gold-week">Pekan 4</div>
             <div class="week-title">Uji Keamanan & Go-Live</div>
-            <p class="week-desc">Testing proteksi video, migrasi data santri lama, pelatihan tim admin, dan peluncuran.</p>
+            <p class="week-desc">Testing proteksi video, migrasi data santri lama, pelatihan tim admin, dan peluncuran resmi.</p>
           </div>
 
         </div>
@@ -3434,7 +3637,7 @@ body {
             </div>
             
             <div class="cta-buttons-side">
-              <a href="https://wa.me/?text=Assalamu%27alaikum%20Warahmatullah%20Umi%20Elly%20%26%20Pengurus%20Yayasan%20Peradaban%20Islam%20Azhariyah.%20Kami%20tertarik%20berdiskusi%20lebih%20lanjut%20mengenai%20Platform%20Materi%20Kajian%20Khusus%20dan%20Game%20Edukasi." target="_blank" class="btn-primary btn-cta-main" id="btnContactWa">
+              <a href="https://wa.me/?text=Assalamu%27alaikum%20Warahmatullah%20Umi%20Elly%20%26%20Pengurus%20Yayasan%20Peradaban%20Islam%20Azhariyah.%20Kami%20tertarik%20berdiskusi%20lebih%20lanjut%20mengenai%20Platform%20Pembelajaran%20Bahasa%20Arab%20Interaktif." target="_blank" class="btn-primary btn-cta-main" id="btnContactWa">
                 <i class="ph ph-whatsapp-logo"></i>
                 <span>Jadwalkan Diskusi / Demo</span>
               </a>
@@ -3448,7 +3651,7 @@ body {
 
         <!-- Closing Footer Note -->
         <div class="closing-footer-bar">
-          <span>Yayasan Peradaban Islam Azhariyah • Asuhan Umi Elly © 2025</span>
+          <span>Yayasan Peradaban Islam Azhariyah • Asuhan Umi Elly © 2026</span>
           <span>Menjaga Kemurnian & Hak Akses Amanah Ilmu</span>
         </div>
 
