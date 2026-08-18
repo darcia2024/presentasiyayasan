@@ -1,3 +1,9 @@
+/**
+ * PLATFORM KELAS ONLINE PERADABAN ISLAM AZHARIYAH
+ * Interactive Presentation Engine & Motion Choreography
+ * Yayasan Umi Ely
+ */
+
 const DeckEngine = (() => {
   // State
   let currentSlide = 1;
@@ -673,6 +679,82 @@ const DeckEngine = (() => {
     setTimeout(() => {
       closeGameModal();
     }, 1200);
+  }
+
+  // Game Question Bank (Level 1 & Level 2)
+  const gameQuestions = {
+    1: {
+      tag: 'Game 1: Mufrodat Fasilitas Sekolah',
+      question: `"Manakah arti kosakata (mufrodat) yang tepat untuk kata: <span style='color: var(--md-sys-color-primary); font-size: 20px; font-family: Arial, sans-serif;'>'المَكْتَبَةُ' (Al-Maktabatu)</span>?"`,
+      options: [
+        'Laboratorium Komputer',
+        'Perpustakaan Sekolah (Ruang Baca)',
+        'Ruang Guru / Kantor',
+        'Lapangan Olahraga'
+      ],
+      correctIndex: 1,
+      feedbackTitle: 'Mumtaz! Jawaban Benar (+50 XP Bertambah)',
+      feedbackDesc: "Kata 'المَكْتَبَةُ' (Al-Maktabatu) berarti Perpustakaan. Santri berhasil menguasai kosakata fasilitas sekolah dengan sempurna!"
+    },
+    2: {
+      tag: 'Game 2: Kaidah Nahwu & Dhomir',
+      question: `"Manakah dhomir (kata ganti) yang tepat untuk menyebut seorang perempuan tunggal — 'dia (perempuan)'? <span style='color: var(--md-sys-color-primary); font-size: 20px; font-family: Arial, sans-serif;'>(الضَّمِيْرُ)</span>"`,
+      options: [
+        'هُوَ (Huwa) — dia (laki-laki)',
+        'أَنْتَ (Anta) — kamu (laki-laki)',
+        'هِيَ (Hiya) — dia (perempuan)',
+        'نَحْنُ (Nahnu) — kami'
+      ],
+      correctIndex: 2,
+      feedbackTitle: 'Mumtaz! Jawaban Benar (+50 XP Bertambah)',
+      feedbackDesc: "Dhomir 'هِيَ' (Hiya) dipakai untuk orang ketiga tunggal perempuan, sedangkan 'هُوَ' (Huwa) untuk laki-laki. Santri sudah paham kaidah dasar dhomir munfashil!"
+    }
+  };
+
+  // Switch Game Level / Question
+  function switchGameQuestion(level) {
+    const data = gameQuestions[level];
+    if (!data) return;
+
+    // Sync level selector chips
+    const btnLevel1 = document.getElementById('btnLevel1');
+    const btnLevel2 = document.getElementById('btnLevel2');
+    if (btnLevel1) btnLevel1.classList.toggle('active', level === 1);
+    if (btnLevel2) btnLevel2.classList.toggle('active', level === 2);
+
+    // Swap question copy
+    const tagEl = document.getElementById('gameCategoryTag');
+    const questionEl = document.getElementById('gameQuestionText');
+    if (tagEl) tagEl.textContent = data.tag;
+    if (questionEl) questionEl.innerHTML = data.question;
+
+    // Rebuild answer options (text + correct-answer handler + reset styling)
+    const optionBtns = document.querySelectorAll('#gameOptionsContainer .game-opt-btn');
+    optionBtns.forEach((btn, idx) => {
+      const isCorrect = idx === data.correctIndex;
+      const label = data.options[idx] || '';
+      const textEl = document.getElementById(`optText${idx}`);
+      if (textEl) textEl.innerHTML = isCorrect ? `<strong>${label}</strong>` : label;
+
+      btn.setAttribute('onclick', `DeckEngine.answerGame(${idx}, ${isCorrect}, this)`);
+
+      btn.style.backgroundColor = '#FFFFFF';
+      btn.style.borderColor = 'var(--md-sys-color-outline-variant)';
+      btn.style.color = 'var(--md-sys-color-on-surface)';
+    });
+
+    // Reset feedback & claim button
+    const feedbackBox = document.getElementById('gameFeedbackBox');
+    const feedbackTitle = document.getElementById('gameFeedbackTitle');
+    const feedbackDesc = document.getElementById('gameFeedbackDesc');
+    const claimBtn = document.getElementById('btnClaimGameXp');
+    if (feedbackTitle) feedbackTitle.textContent = data.feedbackTitle;
+    if (feedbackDesc) feedbackDesc.textContent = data.feedbackDesc;
+    if (feedbackBox) feedbackBox.style.display = 'none';
+    if (claimBtn) claimBtn.style.display = 'none';
+
+    playTone(600, 'triangle', 0.12, 0.07);
+    showToast(`Tantangan dibuka: ${data.tag}`);
   }
 
   // Certificate Modal Logic
