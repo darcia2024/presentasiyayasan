@@ -624,6 +624,61 @@ const DeckEngine = (() => {
     }
   }
 
+  // Game Modal Logic
+  const gameModal = document.getElementById('gameModal');
+  const certModal = document.getElementById('certModal');
+  const gameScoreDisplay = document.getElementById('gameScoreDisplay');
+  const gameFeedbackBox = document.getElementById('gameFeedbackBox');
+  const btnClaimGameXp = document.getElementById('btnClaimGameXp');
+  const certStudentName = document.getElementById('certStudentName');
+
+  function openGameModal() {
+    if (gameModal) gameModal.classList.add('open');
+    playTone(580, 'sine', 0.1, 0.08);
+  }
+
+  function closeGameModal() {
+    if (gameModal) gameModal.classList.remove('open');
+  }
+
+  function answerGame(qIndex, isCorrect, btnEl) {
+    if (isCorrect) {
+      btnEl.style.backgroundColor = 'var(--md-sys-color-primary-container)';
+      btnEl.style.borderColor = 'var(--md-sys-color-primary)';
+      btnEl.style.color = 'var(--md-sys-color-primary)';
+      if (gameFeedbackBox) gameFeedbackBox.style.display = 'block';
+      if (btnClaimGameXp) btnClaimGameXp.style.display = 'inline-flex';
+      playSuccessChime();
+      showToast('MasyaAllah, Jawaban Benar! +50 XP siap diklaim!');
+    } else {
+      btnEl.style.backgroundColor = 'var(--md-sys-color-error-container)';
+      btnEl.style.borderColor = 'var(--md-sys-color-error)';
+      btnEl.style.color = 'var(--md-sys-color-error)';
+      playTone(280, 'sawtooth', 0.18, 0.08);
+      showToast('Kurang tepat, coba ingat kembali masa keemasan peradaban Islam di Baghdad...');
+    }
+  }
+
+  function claimGameXp() {
+    if (gameScoreDisplay) gameScoreDisplay.innerHTML = '<strong>470 XP (Level 3 • Naik Rank 3 🏆)</strong>';
+    playSuccessChime();
+    showToast('Alhamdulillah! +50 XP berhasil dicatat ke profil santri.');
+    setTimeout(() => {
+      closeGameModal();
+    }, 1200);
+  }
+
+  // Certificate Modal Logic
+  function openCertModal(name = 'Ahmad Fauzan') {
+    if (certStudentName) certStudentName.textContent = name;
+    if (certModal) certModal.classList.add('open');
+    playTone(620, 'sine', 0.12, 0.08);
+  }
+
+  function closeCertModal() {
+    if (certModal) certModal.classList.remove('open');
+  }
+
   // Public API
   return {
     init,
@@ -633,6 +688,12 @@ const DeckEngine = (() => {
     verifySantri,
     verifyBeasiswa,
     toggleSantriAccess,
+    openGameModal,
+    closeGameModal,
+    answerGame,
+    claimGameXp,
+    openCertModal,
+    closeCertModal,
     showToast
   };
 })();
