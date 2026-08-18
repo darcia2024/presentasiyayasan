@@ -4484,58 +4484,68 @@ input:checked + .slider:before {
       <!-- Game Content Area -->
       <div class="game-content-box" style="display: flex; flex-direction: column; gap: 16px;">
         
-        <!-- Score Bar -->
-        <div style="display: flex; justify-content: space-between; align-items: center; background-color: var(--md-sys-color-surface-container-low); padding: 10px 16px; border-radius: var(--md-shape-corner-medium); border: 1px solid var(--md-sys-color-outline-variant);">
+        <!-- Score Bar & Level Tabs -->
+        <div style="display: flex; justify-content: space-between; align-items: center; background-color: var(--md-sys-color-surface-container); padding: 10px 16px; border-radius: var(--md-shape-corner-medium); border: 1px solid var(--md-sys-color-outline-variant);">
           <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--md-sys-color-on-surface);">
             <i class="ph ph-student" style="color: var(--md-sys-color-primary); font-size: 16px;"></i>
-            <span>Santri: <strong>Ahmad Fauzan</strong></span>
+            <span>Santri: <strong>Ahmad Fauzan</strong> (Kelas 8 SMP)</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--md-sys-color-primary); background-color: var(--md-sys-color-primary-container); padding: 4px 10px; border-radius: var(--md-shape-corner-full);">
+          <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #92400E; background-color: #FEF3C7; padding: 4px 10px; border-radius: var(--md-shape-corner-full); border: 1px solid #D97706;">
             <i class="ph ph-sparkle"></i>
-            <span id="gameScoreDisplay">420 XP (Level 3)</span>
+            <span id="gameScoreDisplay">420 XP (Level 3 • Mumtaz)</span>
           </div>
         </div>
 
-        <!-- Question Box -->
-        <div class="game-question-card" style="background-color: var(--md-sys-color-surface-container-lowest); border: 1px solid var(--md-sys-color-outline); border-radius: var(--md-shape-corner-large); padding: 18px; text-align: left;">
-          <span style="font-size: 11px; font-weight: 700; color: var(--md-sys-color-primary); text-transform: uppercase; letter-spacing: 0.04em;">Tantangan Mufrodat Arab #01</span>
-          <h3 style="font-size: 17px; font-weight: 600; color: var(--md-sys-color-on-surface); line-height: 1.45; margin-top: 6px;">
-            "Manakah arti kosakata (mufrodat) yang tepat untuk kata: <span style='color: var(--md-sys-color-primary); font-size: 19px;'>'المَكْتَبَةُ' (Al-Maktabatu)</span>?"
+        <!-- Level Selector Chips -->
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <span style="font-size: 11px; font-weight: 600; color: var(--md-sys-color-on-surface-variant);">Pilih Tantangan Game:</span>
+          <button id="btnLevel1" class="admin-tab active" onclick="DeckEngine.switchGameQuestion(1)" style="font-size: 11px; padding: 4px 10px; border-radius: var(--md-shape-corner-full);">1. Tebak Mufrodat (Kosakata)</button>
+          <button id="btnLevel2" class="admin-tab" onclick="DeckEngine.switchGameQuestion(2)" style="font-size: 11px; padding: 4px 10px; border-radius: var(--md-shape-corner-full);">2. Kaidah Nahwu & Dhomir</button>
+        </div>
+
+        <!-- Question Box (Dynamic) -->
+        <div class="game-question-card" id="gameQuestionCard" style="background-color: var(--md-sys-color-surface-container); border: 1.5px solid var(--md-sys-color-outline); border-radius: var(--md-shape-corner-large); padding: 18px; text-align: left;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span id="gameCategoryTag" style="font-size: 11px; font-weight: 700; color: #006D64; background-color: #E6F7F5; padding: 2px 8px; border-radius: 4px; border: 1px solid #00A396; text-transform: uppercase; letter-spacing: 0.04em;">Game 1: Mufrodat Fasilitas Sekolah</span>
+            <span style="font-size: 11px; font-weight: 600; color: #92400E;">Hadiah: +50 XP</span>
+          </div>
+          <h3 id="gameQuestionText" style="font-size: 17px; font-weight: 600; color: var(--md-sys-color-on-surface); line-height: 1.5; margin-top: 8px;">
+            "Manakah arti kosakata (mufrodat) yang tepat untuk kata: <span style='color: var(--md-sys-color-primary); font-size: 20px; font-family: Arial, sans-serif;'>'المَكْتَبَةُ' (Al-Maktabatu)</span>?"
           </h3>
         </div>
 
         <!-- Multiple Choice Options -->
         <div class="game-options-grid" id="gameOptionsContainer" style="display: grid; grid-template-columns: 1fr; gap: 10px;">
           
-          <button class="game-opt-btn" onclick="DeckEngine.answerGame(1, false, this)" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; background-color: var(--md-sys-color-surface-container-low); border: 1px solid var(--md-sys-color-outline-variant); border-radius: var(--md-shape-corner-medium); color: var(--md-sys-color-on-surface); font-family: var(--font-family); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
-            <span style="width: 26px; height: 26px; border-radius: 50%; background-color: var(--md-sys-color-surface-container-high); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: var(--md-sys-color-primary);">A</span>
-            <span>Laboratorium Komputer</span>
+          <button class="game-opt-btn" onclick="DeckEngine.answerGame(0, false, this)" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; background-color: #FFFFFF; border: 1.5px solid var(--md-sys-color-outline-variant); border-radius: var(--md-shape-corner-medium); color: var(--md-sys-color-on-surface); font-family: var(--font-family); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
+            <span style="width: 26px; height: 26px; border-radius: 50%; background-color: #F1F6F5; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: var(--md-sys-color-primary);">A</span>
+            <span id="optText0">Laboratorium Komputer</span>
           </button>
 
-          <button class="game-opt-btn" onclick="DeckEngine.answerGame(1, true, this)" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; background-color: var(--md-sys-color-surface-container-low); border: 1px solid var(--md-sys-color-outline-variant); border-radius: var(--md-shape-corner-medium); color: var(--md-sys-color-on-surface); font-family: var(--font-family); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
-            <span style="width: 26px; height: 26px; border-radius: 50%; background-color: var(--md-sys-color-surface-container-high); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: var(--md-sys-color-primary);">B</span>
-            <span><strong>Perpustakaan Sekolah (Ruang Baca)</strong></span>
+          <button class="game-opt-btn" onclick="DeckEngine.answerGame(1, true, this)" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; background-color: #FFFFFF; border: 1.5px solid var(--md-sys-color-outline-variant); border-radius: var(--md-shape-corner-medium); color: var(--md-sys-color-on-surface); font-family: var(--font-family); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
+            <span style="width: 26px; height: 26px; border-radius: 50%; background-color: #F1F6F5; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: var(--md-sys-color-primary);">B</span>
+            <span id="optText1"><strong>Perpustakaan Sekolah (Ruang Baca)</strong></span>
           </button>
 
-          <button class="game-opt-btn" onclick="DeckEngine.answerGame(1, false, this)" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; background-color: var(--md-sys-color-surface-container-low); border: 1px solid var(--md-sys-color-outline-variant); border-radius: var(--md-shape-corner-medium); color: var(--md-sys-color-on-surface); font-family: var(--font-family); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
-            <span style="width: 26px; height: 26px; border-radius: 50%; background-color: var(--md-sys-color-surface-container-high); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: var(--md-sys-color-primary);">C</span>
-            <span>Ruang Guru / Kantor</span>
+          <button class="game-opt-btn" onclick="DeckEngine.answerGame(2, false, this)" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; background-color: #FFFFFF; border: 1.5px solid var(--md-sys-color-outline-variant); border-radius: var(--md-shape-corner-medium); color: var(--md-sys-color-on-surface); font-family: var(--font-family); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
+            <span style="width: 26px; height: 26px; border-radius: 50%; background-color: #F1F6F5; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: var(--md-sys-color-primary);">C</span>
+            <span id="optText2">Ruang Guru / Kantor</span>
           </button>
 
-          <button class="game-opt-btn" onclick="DeckEngine.answerGame(1, false, this)" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; background-color: var(--md-sys-color-surface-container-low); border: 1px solid var(--md-sys-color-outline-variant); border-radius: var(--md-shape-corner-medium); color: var(--md-sys-color-on-surface); font-family: var(--font-family); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
-            <span style="width: 26px; height: 26px; border-radius: 50%; background-color: var(--md-sys-color-surface-container-high); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: var(--md-sys-color-primary);">D</span>
-            <span>Lapangan Olahraga</span>
+          <button class="game-opt-btn" onclick="DeckEngine.answerGame(3, false, this)" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; background-color: #FFFFFF; border: 1.5px solid var(--md-sys-color-outline-variant); border-radius: var(--md-shape-corner-medium); color: var(--md-sys-color-on-surface); font-family: var(--font-family); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
+            <span style="width: 26px; height: 26px; border-radius: 50%; background-color: #F1F6F5; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: var(--md-sys-color-primary);">D</span>
+            <span id="optText3">Lapangan Olahraga</span>
           </button>
 
         </div>
 
         <!-- Feedback Box -->
-        <div id="gameFeedbackBox" style="display: none; padding: 12px 16px; border-radius: var(--md-shape-corner-medium); background-color: var(--md-sys-color-primary-container); border: 1px solid var(--md-sys-color-primary); color: var(--md-sys-color-on-surface); font-size: 12.5px; line-height: 1.5;">
-          <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--md-sys-color-primary); margin-bottom: 4px;">
-            <i class="ph ph-check-circle-fill" style="font-size: 18px;"></i>
-            <span>Jawaban Benar! (+50 XP Bertambah)</span>
+        <div id="gameFeedbackBox" style="display: none; padding: 12px 16px; border-radius: var(--md-shape-corner-medium); background-color: #E6F7F5; border: 1.5px solid #00A396; color: #0F2422; font-size: 12.5px; line-height: 1.5;">
+          <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; color: #006D64; margin-bottom: 4px;">
+            <i class="ph ph-check-circle-fill" style="font-size: 18px; color: #008E82;"></i>
+            <span id="gameFeedbackTitle">Mumtaz! Jawaban Benar (+50 XP Bertambah)</span>
           </div>
-          <div>Mumtaz! Kata 'المَكْتَبَةُ' (Al-Maktabatu) berarti Perpustakaan. Santri berhasil menguasai kosakata fasilitas sekolah dengan sempurna!</div>
+          <div id="gameFeedbackDesc">Kata 'المَكْتَبَةُ' (Al-Maktabatu) berarti Perpustakaan. Santri berhasil menguasai kosakata fasilitas sekolah dengan sempurna!</div>
         </div>
 
         <!-- Game Action Footer -->
@@ -5326,6 +5336,7 @@ const DeckEngine = (() => {
     toggleSantriAccess,
     openGameModal,
     closeGameModal,
+    switchGameQuestion,
     answerGame,
     claimGameXp,
     openCertModal,
