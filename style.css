@@ -9,48 +9,48 @@
    1. M3 DESIGN TOKENS
    -------------------------------------------------------------------------- */
 :root {
-  /* M3 Primary Roles */
-  --md-sys-color-primary:                #ECF39E; /* Mindaro / Crisp Lime Butter */
-  --md-sys-color-on-primary:             #132A13; /* Deep Green Text */
-  --md-sys-color-primary-container:      #31572C; /* Dark Moss Container */
-  --md-sys-color-on-primary-container:   #ECF39E;
+  /* PERISA Official Brand Roles (Islamic Teal / Turquoise & Warm Gold) */
+  --md-sys-color-primary:                #00D2BE; /* Vibrant PERISA Turquoise */
+  --md-sys-color-on-primary:             #04201E; /* Deep Teal Text */
+  --md-sys-color-primary-container:      #0E4D48; /* Deep Teal Container */
+  --md-sys-color-on-primary-container:   #A7F3EC;
 
-  /* M3 Secondary Roles */
-  --md-sys-color-secondary:              #90A955; /* Sage Green */
-  --md-sys-color-on-secondary:           #132A13;
-  --md-sys-color-secondary-container:    #224320; /* Deep Sage Container */
-  --md-sys-color-on-secondary-container: #E4ECD4;
+  /* Secondary: PERISA Warm Gold Accent */
+  --md-sys-color-secondary:              #E5B84B; /* Official PERISA Gold */
+  --md-sys-color-on-secondary:           #241800;
+  --md-sys-color-secondary-container:    #3D2F0B; /* Deep Amber Gold */
+  --md-sys-color-on-secondary-container: #FFE7A8;
 
-  /* M3 Tertiary Roles */
-  --md-sys-color-tertiary:               #A3E635; /* Bright Spring Green */
-  --md-sys-color-on-tertiary:            #132A13;
-  --md-sys-color-tertiary-container:     #2C4E26;
-  --md-sys-color-on-tertiary-container:  #F4F8B8;
+  /* Tertiary: Mint & Lime Spring */
+  --md-sys-color-tertiary:               #38E5B0;
+  --md-sys-color-on-tertiary:            #002116;
+  --md-sys-color-tertiary-container:     #0D4836;
+  --md-sys-color-on-tertiary-container:  #95FCD4;
 
-  /* M3 Error Roles */
+  /* Error Roles */
   --md-sys-color-error:                  #FFB4AB;
   --md-sys-color-on-error:               #690005;
   --md-sys-color-error-container:        #4A1215;
   --md-sys-color-on-error-container:     #FFDAD6;
 
-  /* M3 Surface & Tonal Elevation Hierarchy (Dark Scheme) */
-  --md-sys-color-surface:                #132A13; /* Base Canvas */
-  --md-sys-color-surface-dim:            #0E200E;
-  --md-sys-color-surface-bright:         #1B381B;
-  --md-sys-color-surface-container-lowest:#0B190B;
-  --md-sys-color-surface-container-low:  #162E16; /* Cards Base */
-  --md-sys-color-surface-container:      #1C3B1C; /* Card Content / Modals */
-  --md-sys-color-surface-container-high: #244924; /* Active items */
-  --md-sys-color-surface-container-highest:#2E5A2E; /* Elevated Floating */
+  /* Surface & Tonal Elevation Hierarchy (Deep Islamic Teal Night) */
+  --md-sys-color-surface:                #071918; /* Rich Base Canvas */
+  --md-sys-color-surface-dim:            #041211;
+  --md-sys-color-surface-bright:         #0E2A29;
+  --md-sys-color-surface-container-lowest:#030D0C;
+  --md-sys-color-surface-container-low:  #0B2423; /* Cards Base */
+  --md-sys-color-surface-container:      #103130; /* Elevated Card */
+  --md-sys-color-surface-container-high: #16403E; /* Active items */
+  --md-sys-color-surface-container-highest:#1E5350; /* Floating Dock & Bars */
 
-  /* M3 On Surface (Text & Content) */
-  --md-sys-color-on-surface:             #F5F8EF; /* High Emphasis Text */
-  --md-sys-color-on-surface-variant:     #C3D4AE; /* Medium Emphasis Text */
-  --md-sys-color-outline:                #4F772D; /* Active Outline / Borders */
-  --md-sys-color-outline-variant:        rgba(144, 169, 85, 0.24); /* Subtle Dividers */
-  --md-sys-color-scrim:                  rgba(0, 0, 0, 0.7);
+  /* On Surface (Text & Content) */
+  --md-sys-color-on-surface:             #F2FAF9; /* High Emphasis Text */
+  --md-sys-color-on-surface-variant:     #A5CECB; /* Medium Emphasis Text */
+  --md-sys-color-outline:                #00A396; /* Official PERISA Teal Outline */
+  --md-sys-color-outline-variant:        rgba(0, 163, 150, 0.25); /* Subtle Dividers */
+  --md-sys-color-scrim:                  rgba(0, 0, 0, 0.75);
 
-  /* M3 Shape Radii Tokens */
+  /* Shape Radii Tokens */
   --md-shape-corner-none:        0px;
   --md-shape-corner-extra-small: 4px;
   --md-shape-corner-small:       8px;
@@ -59,14 +59,14 @@
   --md-shape-corner-extra-large: 26px;
   --md-shape-corner-full:        9999px;
 
-  /* M3 Elevation Shadows */
-  --md-sys-elevation-level1: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.4);
-  --md-sys-elevation-level2: 0 2px 6px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.45);
-  --md-sys-elevation-level3: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.5);
-  --md-sys-elevation-level4: 0 8px 24px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.55);
-  --md-sys-elevation-level5: 0 12px 36px rgba(0, 0, 0, 0.6), 0 6px 12px rgba(0, 0, 0, 0.6);
+  /* Elevation Shadows */
+  --md-sys-elevation-level1: 0 1px 3px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.45);
+  --md-sys-elevation-level2: 0 2px 6px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.5);
+  --md-sys-elevation-level3: 0 4px 14px rgba(0, 0, 0, 0.45), 0 2px 4px rgba(0, 0, 0, 0.55);
+  --md-sys-elevation-level4: 0 8px 26px rgba(0, 0, 0, 0.55), 0 4px 8px rgba(0, 0, 0, 0.6);
+  --md-sys-elevation-level5: 0 12px 38px rgba(0, 0, 0, 0.65), 0 6px 14px rgba(0, 0, 0, 0.65);
 
-  /* Typography Scale */
+  /* Typography */
   --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   /* Motion Easing */
@@ -132,7 +132,7 @@ html, body {
 .ambient-pattern {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(144, 169, 85, 0.14) 1.2px, transparent 1.2px);
+  background-image: radial-gradient(rgba(0, 163, 150, 0.16) 1.2px, transparent 1.2px);
   background-size: 32px 32px;
   opacity: 0.6;
 }
@@ -422,17 +422,12 @@ html, body {
 /* --------------------------------------------------------------------------
    7. M3 TYPOGRAPHY & CHIPS & BUTTONS
    -------------------------------------------------------------------------- */
-.gold-gradient-text {
-  color: var(--md-sys-color-primary) !important;
-  background: none !important;
-  -webkit-text-fill-color: initial !important;
-  display: inline-block;
-}
+.gold-gradient-text { color: var(--md-sys-color-secondary) !important; display: inline-block; }
 
-.gold-text { color: var(--md-sys-color-primary) !important; }
+.gold-text { color: var(--md-sys-color-secondary) !important; }
 .green-text { color: var(--md-sys-color-secondary) !important; }
 .danger-text { color: var(--md-sys-color-error) !important; }
-.warning-text { color: #FDE047 !important; }
+.warning-text { color: #E5B84B !important; }
 .white-text { color: #FFFFFF !important; }
 .text-muted { color: var(--md-sys-color-on-surface-variant) !important; }
 
@@ -463,7 +458,7 @@ html, body {
 
 .badge-tag.warning-badge {
   background-color: rgba(253, 224, 71, 0.12);
-  border-color: #FDE047;
+  border-color: #E5B84B;
   color: #FEF08A;
 }
 
@@ -532,7 +527,7 @@ html, body {
 }
 
 .btn-primary:hover {
-  background-color: #F4F8B8;
+  background-color: #A7F3EC;
   transform: translateY(-1px);
   box-shadow: var(--md-sys-elevation-level3);
 }
@@ -1802,7 +1797,7 @@ html, body {
 .bg-avatar-1 { background-color: var(--md-sys-color-primary); }
 .bg-avatar-2 { background-color: #A3E635; }
 .bg-avatar-3 { background-color: #6EE7B7; }
-.bg-avatar-4 { background-color: #FDE047; }
+.bg-avatar-4 { background-color: #E5B84B; }
 
 .user-name {
   font-weight: 600;
@@ -1841,7 +1836,7 @@ html, body {
   gap: 3px;
   padding: 2px 7px;
   background-color: rgba(253, 224, 71, 0.12);
-  border: 1px solid #FDE047;
+  border: 1px solid #E5B84B;
   border-radius: var(--md-shape-corner-full);
   color: #FEF08A;
   font-size: 10.5px;
