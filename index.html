@@ -277,11 +277,11 @@ body {
 }
 
 .slide-card.active {
-  display: flex;
-  opacity: 1;
-  visibility: visible;
-  transform: translate3d(0, 0, 0);
-  pointer-events: auto;
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translate3d(0, 0, 0) !important;
+  pointer-events: auto !important;
 }
 
 .slide-inner {
@@ -2097,7 +2097,7 @@ body {
         <!-- ============================================================
          SLIDE 1: COVER / HERO PITCH (REDESIGNED ULTRA-LUXURY)
          ============================================================ -->
-    <section class="slide-card active" data-slide-index="1" data-slide-title="Cover & Visi">
+    <section class="slide-card active" data-slide-index="1" data-slide-title="Cover & Visi" style="display: flex; opacity: 1; visibility: visible;">
       <div class="slide-inner slide-hero-layout">
         
         <div class="hero-content">
@@ -3777,7 +3777,7 @@ const DeckEngine = (() => {
   const toastBox = document.getElementById('toastBox');
   const toastMessage = document.getElementById('toastMessage');
 
-  // Initialize
+  // Initialize (Instant 0ms Start & Hash Restoration)
   function init() {
     totalSlides = slides.length;
     if (navSlideTotal) navSlideTotal.textContent = String(totalSlides).padStart(2, '0');
@@ -3786,7 +3786,18 @@ const DeckEngine = (() => {
     buildOverviewGrid();
     bindEvents();
     bindMockupEvents();
-    updateSlideView(1, false);
+
+    // Check if URL has hash (e.g., #slide-3 or #3)
+    let initialSlide = 1;
+    const hash = window.location.hash.replace('#', '');
+    if (hash) {
+      const parsed = parseInt(hash.replace('slide-', ''), 10);
+      if (!isNaN(parsed) && parsed >= 1 && parsed <= totalSlides) {
+        initialSlide = parsed;
+      }
+    }
+
+    updateSlideView(initialSlide, false);
   }
 
   // Build Dots in Bottom Dock
@@ -3845,6 +3856,7 @@ const DeckEngine = (() => {
     });
 
     currentSlide = newIndex;
+    try { window.location.hash = `slide-${currentSlide}`; } catch(e) {}
 
     // Update Nav Bar
     if (navSlideCurrent) navSlideCurrent.textContent = String(currentSlide).padStart(2, '0');
@@ -4383,9 +4395,11 @@ const DeckEngine = (() => {
 })();
 
 // Start on DOM Ready
-document.addEventListener('DOMContentLoaded', () => {
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => DeckEngine.init());
+} else {
   DeckEngine.init();
-});
+}
   </script>
 </body>
 </html>

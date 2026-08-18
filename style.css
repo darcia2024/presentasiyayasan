@@ -256,11 +256,11 @@ body {
 }
 
 .slide-card.active {
-  display: flex;
-  opacity: 1;
-  visibility: visible;
-  transform: translate3d(0, 0, 0);
-  pointer-events: auto;
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translate3d(0, 0, 0) !important;
+  pointer-events: auto !important;
 }
 
 .slide-inner {

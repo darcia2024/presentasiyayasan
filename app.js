@@ -94,7 +94,7 @@ const DeckEngine = (() => {
   const toastBox = document.getElementById('toastBox');
   const toastMessage = document.getElementById('toastMessage');
 
-  // Initialize
+  // Initialize (Instant 0ms Start & Hash Restoration)
   function init() {
     totalSlides = slides.length;
     if (navSlideTotal) navSlideTotal.textContent = String(totalSlides).padStart(2, '0');
@@ -103,7 +103,18 @@ const DeckEngine = (() => {
     buildOverviewGrid();
     bindEvents();
     bindMockupEvents();
-    updateSlideView(1, false);
+
+    // Check if URL has hash (e.g., #slide-3 or #3)
+    let initialSlide = 1;
+    const hash = window.location.hash.replace('#', '');
+    if (hash) {
+      const parsed = parseInt(hash.replace('slide-', ''), 10);
+      if (!isNaN(parsed) && parsed >= 1 && parsed <= totalSlides) {
+        initialSlide = parsed;
+      }
+    }
+
+    updateSlideView(initialSlide, false);
   }
 
   // Build Dots in Bottom Dock
