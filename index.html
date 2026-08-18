@@ -1768,6 +1768,259 @@ body {
   .section-title { font-size: 22px; }
 }
 
+
+/* ==========================================================================
+   TOP NAVIGATION APP BAR (MATCHING index.html EXACT CLASS NAMES)
+   ========================================================================== */
+.top-nav-bar {
+  height: 58px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-crest {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  background: var(--perisa-teal-light);
+  border: 1px solid var(--perisa-teal-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.brand-crest svg {
+  width: 24px;
+  height: 24px;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--perisa-teal-dark);
+  letter-spacing: -0.01em;
+}
+
+.brand-sub {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--perisa-gold-dark);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.nav-slide-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  background: var(--bg-card-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+}
+
+.slide-num-current {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--perisa-teal-primary);
+}
+
+.slide-num-divider {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.slide-num-total {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.slide-badge-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--perisa-teal-dark);
+  border-left: 1px solid var(--border-subtle);
+  padding-left: 8px;
+  margin-left: 2px;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-full);
+  background: var(--bg-card-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-body);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.nav-btn:hover {
+  background: var(--perisa-teal-light);
+  color: var(--perisa-teal-primary);
+  border-color: var(--perisa-teal-primary);
+}
+
+/* ==========================================================================
+   BOTTOM DOCK CONTROLS (MATCHING index.html EXACT CLASS NAMES)
+   ========================================================================== */
+.bottom-dock-nav {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  padding: 6px 18px;
+  box-shadow: var(--shadow-xl);
+}
+
+.dock-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background: var(--bg-card-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--perisa-teal-dark);
+  font-family: var(--font-family);
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dock-nav-btn:hover {
+  background: var(--perisa-teal-light);
+  color: var(--perisa-teal-primary);
+  border-color: var(--perisa-teal-primary);
+}
+
+.dock-nav-btn.next-btn {
+  background: var(--perisa-teal-primary);
+  color: #FFFFFF;
+  border-color: var(--perisa-teal-primary);
+  box-shadow: 0 2px 8px rgba(0, 135, 122, 0.3);
+}
+
+.dock-nav-btn.next-btn:hover {
+  background: #006D63;
+}
+
+.dock-dots-strip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 4px;
+}
+
+.dock-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #D5E2E0;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.dock-dot:hover {
+  background: var(--perisa-teal-primary);
+  transform: scale(1.2);
+}
+
+.dock-dot.active {
+  width: 24px;
+  border-radius: var(--radius-full);
+  background: var(--perisa-teal-primary);
+}
+
+/* ==========================================================================
+   SLIDE OVERVIEW GRID
+   ========================================================================== */
+.slide-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.grid-slide-thumb {
+  background: var(--bg-card-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.grid-slide-thumb:hover {
+  background: var(--perisa-teal-light);
+  border-color: var(--perisa-teal-primary);
+  transform: translateY(-2px);
+}
+
+.grid-slide-thumb.current {
+  background: var(--perisa-teal-light);
+  border: 2px solid var(--perisa-teal-primary);
+}
+
+.thumb-num {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--perisa-teal-primary);
+  text-transform: uppercase;
+}
+
+.thumb-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--perisa-teal-dark);
+}
+
 </style>
 </head>
 <body>
