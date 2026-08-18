@@ -590,6 +590,40 @@ const DeckEngine = (() => {
     showToast(`Hak akses video santri #${id} diperbarui & dicatat ke sistem audit log`);
   }
 
+  // Admin Beasiswa Handler
+  function verifyBeasiswa(id) {
+    const row = document.getElementById(`row-${id}`);
+    const badge = document.getElementById(`statusBadge-${id}`);
+    const btnVerify = document.getElementById(`btnVerify-${id}`);
+    const switchAccess = document.getElementById(`switchAccess-${id}`);
+    const progText = document.getElementById(`progText-${id}`);
+    const pendingCount = document.getElementById(`pendingCount`);
+
+    if (row && badge && btnVerify) {
+      row.classList.remove('row-pending-highlight');
+      row.dataset.status = 'active';
+
+      badge.className = 'badge-status-lunas';
+      badge.style.backgroundColor = 'var(--md-sys-color-primary-container)';
+      badge.style.color = 'var(--md-sys-color-primary)';
+      badge.innerHTML = '<i class="ph ph-check"></i> Beasiswa Resmi Umi Elly';
+
+      if (switchAccess) switchAccess.checked = true;
+      if (progText) progText.innerHTML = '<span class="green-text">Akses Gratis Berkah (0%)</span>';
+
+      btnVerify.style.display = 'none';
+
+      if (pendingCount) {
+        let count = parseInt(pendingCount.textContent, 10);
+        if (count > 0) count -= 1;
+        pendingCount.textContent = count;
+      }
+
+      playSuccessChime();
+      showToast('Alhamdulillah! Beasiswa santri dhuafa disetujui Umi Elly. Akses kelas otomatis dibuka gratis.');
+    }
+  }
+
   // Public API
   return {
     init,
@@ -597,6 +631,7 @@ const DeckEngine = (() => {
     nextSlide,
     prevSlide,
     verifySantri,
+    verifyBeasiswa,
     toggleSantriAccess,
     showToast
   };
