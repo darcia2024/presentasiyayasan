@@ -104,6 +104,22 @@
          ========================================================== -->
     <section class="role-view-section active" id="santriPortalView">
       
+      <!-- Portal Internal Nav Tabs -->
+      <div class="portal-nav-strip">
+        <button class="portal-nav-tab active" data-tab="ruang-belajar" onclick="PrototypeApp.switchPortalTab('ruang-belajar')">
+          <i class="ph ph-video"></i> Ruang Belajar (Kelas Aktif)
+        </button>
+        <button class="portal-nav-tab" data-tab="katalog" onclick="PrototypeApp.switchPortalTab('katalog')">
+          <i class="ph ph-books"></i> Katalog Seluruh Kelas
+        </button>
+        <button class="portal-nav-tab" data-tab="profil" onclick="PrototypeApp.switchPortalTab('profil')">
+          <i class="ph ph-user-circle"></i> Profil & Prestasi Santri
+        </button>
+      </div>
+
+      <!-- TAB 1: RUANG BELAJAR AKTIF -->
+      <div id="tabRuangBelajar">
+      
       <!-- Greeting Banner -->
       <div class="santri-hero-banner">
         <div class="banner-left">
@@ -246,6 +262,250 @@
         </aside>
 
       </div>
+      </div> <!-- End #tabRuangBelajar -->
+
+      <!-- TAB 2: KATALOG KELAS CONTOH -->
+      <div id="tabKatalogKelas" style="display: none;">
+        
+        <div class="catalog-header-box">
+          <div class="catalog-title-group">
+            <h2>Katalog Kelas Bahasa Arab Yayasan PERISA</h2>
+            <p>Pilihan kurikulum berjenjang dari tingkat SD, SMP, hingga SMA asuhan Umi Elly & Asatidz.</p>
+          </div>
+
+          <div class="catalog-filters">
+            <button class="catalog-filter-btn active" onclick="PrototypeApp.filterCatalog('all', this)">Semua Jenjang</button>
+            <button class="catalog-filter-btn" onclick="PrototypeApp.filterCatalog('sd', this)">Tingkat SD</button>
+            <button class="catalog-filter-btn" onclick="PrototypeApp.filterCatalog('smp', this)">Tingkat SMP</button>
+            <button class="catalog-filter-btn" onclick="PrototypeApp.filterCatalog('sma', this)">Tingkat SMA</button>
+          </div>
+        </div>
+
+        <div class="catalog-grid">
+          
+          <!-- Course 1 (SD) -->
+          <div class="course-card" data-jenjang="sd">
+            <div class="course-thumbnail-area">
+              <span class="course-level-tag"><i class="ph ph-baby"></i> Tingkat SD</span>
+              <div class="course-arabic-name">الأَدَوَاتُ المَدْرَسِيَّةُ</div>
+            </div>
+            <div class="course-content-area">
+              <h3 class="course-title">Mufrodat Cilik: Benda Sekolah & Rumah</h3>
+              <p class="course-desc">Mengenal kosakata dasar, alat tulis, dan ruangan sekolah dengan metode visual & lagu.</p>
+              <div class="course-instructor-row">
+                <i class="ph ph-chalkboard-teacher"></i>
+                <span>Pengajar: Umi Elly • 8 Modul Video</span>
+              </div>
+              <div class="course-bottom-action-row">
+                <span class="course-infaq-tag beasiswa">Beasiswa / Gratis</span>
+                <button class="btn-enroll-course" onclick="PrototypeApp.showToast('Membuka kurikulum Mufrodat Cilik SD...'); PrototypeApp.setJenjang('sd'); PrototypeApp.switchPortalTab('ruang-belajar');">Mulai Belajar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Course 2 (SD) -->
+          <div class="course-card" data-jenjang="sd">
+            <div class="course-thumbnail-area">
+              <span class="course-level-tag"><i class="ph ph-baby"></i> Tingkat SD</span>
+              <div class="course-arabic-name">الأَلْوَانُ وَالأَرْقَامُ</div>
+            </div>
+            <div class="course-content-area">
+              <h3 class="course-title">Lagu Angka & Warna Bahasa Arab</h3>
+              <p class="course-desc">Menghafal angka 1-20 dan warna primer dalam bahasa Arab dengan game tebak warna seru.</p>
+              <div class="course-instructor-row">
+                <i class="ph ph-chalkboard-teacher"></i>
+                <span>Pengajar: Umi Elly • 6 Modul Video</span>
+              </div>
+              <div class="course-bottom-action-row">
+                <span class="course-infaq-tag beasiswa">Beasiswa / Gratis</span>
+                <button class="btn-enroll-course" onclick="PrototypeApp.showToast('Membuka kelas Lagu Angka & Warna...'); PrototypeApp.setJenjang('sd'); PrototypeApp.switchPortalTab('ruang-belajar');">Mulai Belajar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Course 3 (SMP) -->
+          <div class="course-card" data-jenjang="smp">
+            <div class="course-thumbnail-area">
+              <span class="course-level-tag gold"><i class="ph ph-student"></i> Tingkat SMP</span>
+              <div class="course-arabic-name">فِي المَدْرَسَةِ وَالفَصْلِ</div>
+            </div>
+            <div class="course-content-area">
+              <h3 class="course-title">Tata Bahasa Arab: Jumlah Ismiyyah & Dhomir</h3>
+              <p class="course-desc">Mempelajari struktur kalimat mubtada khobar, kata ganti, dan percakapan harian di sekolah.</p>
+              <div class="course-instructor-row">
+                <i class="ph ph-chalkboard-teacher"></i>
+                <span>Pengajar: Umi Elly • 12 Modul Video</span>
+              </div>
+              <div class="course-bottom-action-row">
+                <span class="course-infaq-tag">Infaq Terverifikasi</span>
+                <button class="btn-enroll-course" onclick="PrototypeApp.showToast('Membuka kelas SMP Aktif...'); PrototypeApp.setJenjang('smp'); PrototypeApp.switchPortalTab('ruang-belajar');">Lanjut Belajar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Course 4 (SMP) -->
+          <div class="course-card" data-jenjang="smp">
+            <div class="course-thumbnail-area">
+              <span class="course-level-tag gold"><i class="ph ph-student"></i> Tingkat SMP</span>
+              <div class="course-arabic-name">القِصَصُ العَرَبِيَّةُ القَصِيْرَةُ</div>
+            </div>
+            <div class="course-content-area">
+              <h3 class="course-title">Membaca Cerita Bahasa Arab Pendek</h3>
+              <p class="course-desc">Melatih pemahaman teks cerita islami pendek dan menambah kekayaan kosakata aktif santri.</p>
+              <div class="course-instructor-row">
+                <i class="ph ph-chalkboard-teacher"></i>
+                <span>Pengajar: Ustadzah Salma • 10 Modul Video</span>
+              </div>
+              <div class="course-bottom-action-row">
+                <span class="course-infaq-tag">Infaq Rp 150rb</span>
+                <button class="btn-enroll-course" onclick="PrototypeApp.showToast('Menampilkan detail silabus cerita pendek...')">Lihat Silabus</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Course 5 (SMA) -->
+          <div class="course-card" data-jenjang="sma">
+            <div class="course-thumbnail-area">
+              <span class="course-level-tag"><i class="ph ph-graduation-cap"></i> Tingkat SMA</span>
+              <div class="course-arabic-name">تَصْرِيْفُ الأَفْعَالِ وَالصَّرْفُ</div>
+            </div>
+            <div class="course-content-area">
+              <h3 class="course-title">Nahwu-Shorof Terapan: Tashrif Fi'il</h3>
+              <p class="course-desc">Kaidah perubahan bentuk kata kerja lampau, sekarang, dan perintah secara sistematis.</p>
+              <div class="course-instructor-row">
+                <i class="ph ph-chalkboard-teacher"></i>
+                <span>Pengajar: Umi Elly • 14 Modul Video</span>
+              </div>
+              <div class="course-bottom-action-row">
+                <span class="course-infaq-tag">Infaq Terverifikasi</span>
+                <button class="btn-enroll-course" onclick="PrototypeApp.showToast('Membuka kelas Nahwu Shorof SMA...'); PrototypeApp.setJenjang('sma'); PrototypeApp.switchPortalTab('ruang-belajar');">Mulai Belajar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Course 6 (SMA) -->
+          <div class="course-card" data-jenjang="sma">
+            <div class="course-thumbnail-area">
+              <span class="course-level-tag"><i class="ph ph-graduation-cap"></i> Tingkat SMA</span>
+              <div class="course-arabic-name">الخِطَابَةُ وَالمُحَادَثَةُ الدَّعْوِيَّةُ</div>
+            </div>
+            <div class="course-content-area">
+              <h3 class="course-title">Muhadatsah Dakwah & Pidato Khitobah</h3>
+              <p class="course-desc">Keterampilan pidato resmi bahasa Arab dan dialog tematik dakwah Al-Qur'an.</p>
+              <div class="course-instructor-row">
+                <i class="ph ph-chalkboard-teacher"></i>
+                <span>Pengajar: Umi Elly • 10 Modul Video</span>
+              </div>
+              <div class="course-bottom-action-row">
+                <span class="course-infaq-tag">Infaq Rp 175rb</span>
+                <button class="btn-enroll-course" onclick="PrototypeApp.showToast('Menampilkan detail silabus Khitobah Dakwah...')">Lihat Silabus</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div> <!-- End #tabKatalogKelas -->
+
+      <!-- TAB 3: PROFIL SANTRI LENGKAP -->
+      <div id="tabProfilSantri" style="display: none;">
+        
+        <!-- Profile Header -->
+        <div class="profile-card-header">
+          <div class="profile-user-left">
+            <div class="profile-avatar-giant">AF</div>
+            <div class="profile-info-block">
+              <h2>Ahmad Fauzan</h2>
+              <div class="profile-meta-line">
+                <span><i class="ph ph-whatsapp-logo"></i> 0812-8921-9921</span>
+                <span>•</span>
+                <span><i class="ph ph-student"></i> Kelas 8 SMP (PERISA Azhariyah)</span>
+                <span>•</span>
+                <span style="background: rgba(0, 210, 190, 0.2); border: 1px solid #00D2BE; padding: 2px 8px; border-radius: 4px; font-weight: 700;">Akses Aktif</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <button class="btn-pdf-download" style="background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); color: #fff;" onclick="PrototypeApp.showToast('Membuka pengaturan notifikasi WhatsApp wali murid...')">
+              <i class="ph ph-gear"></i> Pengaturan Akun
+            </button>
+            <button class="btn-game-launcher" onclick="PrototypeApp.openCertModal('Ahmad Fauzan')">
+              <i class="ph ph-certificate"></i> Lihat Sertifikat Digital
+            </button>
+          </div>
+        </div>
+
+        <!-- Profile Stats -->
+        <div class="profile-stats-grid">
+          <div class="profile-stat-box">
+            <div class="metric-icon-circle gold"><i class="ph ph-sparkle"></i></div>
+            <div>
+              <div class="metric-val-big">420 XP</div>
+              <div class="metric-lbl-sub">Total Poin Belajar</div>
+            </div>
+          </div>
+
+          <div class="profile-stat-box">
+            <div class="metric-icon-circle"><i class="ph ph-trophy"></i></div>
+            <div>
+              <div class="metric-val-big">Rank 3 🏆</div>
+              <div class="metric-lbl-sub">Leaderboard Santri</div>
+            </div>
+          </div>
+
+          <div class="profile-stat-box">
+            <div class="metric-icon-circle blue"><i class="ph ph-fire"></i></div>
+            <div>
+              <div class="metric-val-big">5 Hari 🔥</div>
+              <div class="metric-lbl-sub">Daily Streak Belajar</div>
+            </div>
+          </div>
+
+          <div class="profile-stat-box">
+            <div class="metric-icon-circle"><i class="ph ph-check-circle"></i></div>
+            <div>
+              <div class="metric-val-big">62% Tuntas</div>
+              <div class="metric-lbl-sub">Silabus Modul Selesai</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Badges & Achievements -->
+        <div class="profile-section-card">
+          <div class="profile-section-title">
+            <i class="ph ph-medal" style="color: var(--md-secondary); font-size: 20px;"></i>
+            <span>Lencana Prestasi Belajar Bahasa Arab</span>
+          </div>
+
+          <div class="badges-grid">
+            <div class="badge-item-card">
+              <div class="badge-icon-box"><i class="ph ph-star-fill"></i></div>
+              <div class="badge-item-title">Bintang Mufrodat</div>
+              <div class="badge-item-desc">Berhasil menjawab 10 kuis kosakata tanpa salah.</div>
+            </div>
+
+            <div class="badge-item-card">
+              <div class="badge-icon-box"><i class="ph ph-shield-check-fill"></i></div>
+              <div class="badge-item-title">Penjaga Adab</div>
+              <div class="badge-item-desc">Menuntaskan video kajian penuh tanpa skip.</div>
+            </div>
+
+            <div class="badge-item-card">
+              <div class="badge-icon-box"><i class="ph ph-book-bookmark-fill"></i></div>
+              <div class="badge-item-title">Khatam Modul 1</div>
+              <div class="badge-item-desc">Menyelesaikan silabus tata bahasa dasar.</div>
+            </div>
+
+            <div class="badge-item-card">
+              <div class="badge-icon-box"><i class="ph ph-fire-fill"></i></div>
+              <div class="badge-item-title">Santri Istiqomah</div>
+              <div class="badge-item-desc">Belajar 5 hari berturut-turut di portal.</div>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- End #tabProfilSantri -->
     </section>
 
     <!-- ==========================================================

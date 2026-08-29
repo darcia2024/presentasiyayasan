@@ -503,6 +503,44 @@ const PrototypeApp = (() => {
     updateVideoTimeDisplay();
   }
 
+
+  // Portal Nav View Switcher (Ruang Belajar, Katalog Kelas, Profil Santri)
+  function switchPortalTab(tabName) {
+    document.querySelectorAll('.portal-nav-tab').forEach(tab => {
+      tab.classList.toggle('active', tab.dataset.tab === tabName);
+    });
+
+    const roomView = document.getElementById('tabRuangBelajar');
+    const catalogView = document.getElementById('tabKatalogKelas');
+    const profileView = document.getElementById('tabProfilSantri');
+
+    if (roomView) roomView.style.display = tabName === 'ruang-belajar' ? 'block' : 'none';
+    if (catalogView) catalogView.style.display = tabName === 'katalog' ? 'block' : 'none';
+    if (profileView) profileView.style.display = tabName === 'profil' ? 'block' : 'none';
+
+    showToast(`Membuka: ${tabName === 'ruang-belajar' ? 'Ruang Belajar' : tabName === 'katalog' ? 'Katalog Seluruh Kelas' : 'Profil Santri'}`);
+    playTone(560, 'sine', 0.08, 0.06);
+  }
+
+  // Filter Catalog Courses by Jenjang
+  function filterCatalog(jenjang, btnEl) {
+    document.querySelectorAll('.catalog-filter-btn').forEach(btn => btn.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+
+    const cards = document.querySelectorAll('.course-card');
+    cards.forEach(card => {
+      const cardJenjang = card.dataset.jenjang;
+      if (jenjang === 'all' || cardJenjang === jenjang) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    showToast(`Filter Katalog: ${jenjang.toUpperCase()}`);
+    playTone(520, 'triangle', 0.08, 0.05);
+  }
+
   return {
     init,
     setRole,
@@ -522,7 +560,9 @@ const PrototypeApp = (() => {
     verifyBeasiswa,
     toggleSantriAccess,
     filterAdminTable,
-    showToast
+    showToast,
+    switchPortalTab,
+    filterCatalog
   };
 })();
 
