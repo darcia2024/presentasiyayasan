@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Game 2D Petualangan Santri Bahasa Arab — PERISA Node.js</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+  <link rel="stylesheet" href="game2d.css">
+</head>
+<body>
+
+  <div class="game-wrapper">
+    
+    <header class="game-header">
+      <div class="game-title-group">
+        <h1><i class="ph-bold ph-game-controller"></i> Petualangan Santri Mufrodat 2D</h1>
+        <p>Yayasan Peradaban Islam Azhariyah • Node.js Canvas Engine</p>
+      </div>
+
+      <div class="game-stats-hud">
+        <div class="hud-pill xp"><i class="ph-bold ph-sparkle"></i> <span id="gameHudXp">420 XP</span></div>
+        <div class="hud-pill"><span id="gameHudLives">❤️❤️❤️</span></div>
+        <a href="prototype.html" class="hud-pill" style="text-decoration: none; color: #00877A;">
+          <i class="ph-bold ph-arrow-u-up-left"></i> Kembali ke Portal
+        </a>
+      </div>
+    </header>
+
+    <!-- Mission Target Banner -->
+    <div style="background: linear-gradient(135deg, #072624 0%, #103B38 100%); color: #FFFFFF; border-radius: 14px; padding: 12px 18px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+      <div>
+        <span id="questJenjangTag" style="background: rgba(0, 210, 190, 0.2); border: 1px solid #00D2BE; color: #A7F3EC; padding: 2px 8px; border-radius: 9999px; font-size: 10px; font-weight: 800;">SD - Mufrodat Sekolah</span>
+        <div style="font-size: 13px; margin-top: 4px;">
+          MISI: Tangkap kata Arab: <strong id="questTargetArabic" style="color: #FBBF24; font-size: 18px; font-family: Arial;">المَكْتَبَةُ</strong> <span id="questTargetTranslation" style="color: #A7F3EC; font-size: 12px;">(Perpustakaan)</span>
+        </div>
+      </div>
+      <div id="gameActionBanner" style="font-size: 12px; font-weight: 800; color: #FBBF24; opacity: 0; transition: opacity 0.3s;">Mumtaz! +50 XP</div>
+    </div>
+
+    <!-- 2D Canvas Area -->
+    <div class="canvas-container">
+      <canvas id="gameCanvas" width="800" height="440"></canvas>
+    </div>
+
+    <!-- Mobile Touch / Tablet Controls Bar -->
+    <div class="touch-controls-bar">
+      <div class="dpad-group">
+        <button class="touch-btn" id="btnTouchLeft"><i class="ph-bold ph-caret-left"></i></button>
+        <button class="touch-btn" id="btnTouchRight"><i class="ph-bold ph-caret-right"></i></button>
+      </div>
+      <button class="touch-btn jump-btn" id="btnTouchJump">
+        <i class="ph-bold ph-arrow-up"></i>
+        <span>LOMPAT</span>
+      </button>
+    </div>
+
+    <div class="game-instructions">
+      Gunakan tombol <strong>Panah Kiri / Kanan</strong> untuk berjalan, dan <strong>Spasi / Panah Atas</strong> untuk melompat!
+    </div>
+
+  </div>
+
+  <script src="game2d.js"></script>
+</body>
+</html>

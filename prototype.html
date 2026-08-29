@@ -759,12 +759,18 @@
       </div>
 
       <!-- Modal Actions -->
-      <div style="display: flex; justify-content: flex-end; gap: 10px;">
-        <button class="btn-pdf-download" onclick="PrototypeApp.closeGameModal()">Tutup</button>
-        <button class="btn-game-launcher" id="btnClaimGameXp" style="display: none;" onclick="PrototypeApp.claimGameXp()">
-          <i class="ph ph-trophy"></i>
-          <span>Klaim +50 XP ke Profil</span>
-        </button>
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+        <a href="game2d.html" class="btn-game-launcher" style="background: linear-gradient(135deg, #00877A 0%, #005F55 100%); text-decoration: none;" title="Buka Game 2D Canvas Petualangan Santri">
+          <i class="ph ph-game-controller"></i>
+          <span>Buka Game 2D Canvas Petualangan Santri 🕹️</span>
+        </a>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn-pdf-download" onclick="PrototypeApp.closeGameModal()">Tutup</button>
+          <button class="btn-game-launcher" id="btnClaimGameXp" style="display: none;" onclick="PrototypeApp.claimGameXp()">
+            <i class="ph ph-trophy"></i>
+            <span>Klaim +50 XP ke Profil</span>
+          </button>
+        </div>
       </div>
 
     </div>
