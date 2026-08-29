@@ -262,8 +262,98 @@ const PrototypeApp = (() => {
     }
   }
 
+
+  // Main View Switcher (Course Player, AI Studio Assistant, Admin Panel)
+  function switchMainView(viewName) {
+    const courseView = document.getElementById('viewCoursePlayer');
+    const adminView = document.getElementById('viewAdminPanel');
+    const aiView = document.getElementById('viewAiAssistant');
+    const ws = document.getElementById('refMainWorkspace');
+    if (ws) ws.scrollTop = 0;
+
+    const breadcrumbRoot = document.getElementById('breadcrumbRoot');
+    const breadcrumbCategory = document.getElementById('breadcrumbCategory');
+    const breadcrumb = document.getElementById('breadcrumbActiveTitle');
+
+    // Reset Sidebar active states
+    document.querySelectorAll('.ref-nav-item').forEach(item => {
+      item.classList.remove('active');
+    });
+
+    if (viewName === 'ai-assistant') {
+      if (courseView) courseView.style.display = 'none';
+      if (adminView) adminView.style.display = 'none';
+      if (aiView) aiView.style.display = 'block';
+
+      if (breadcrumbRoot) breadcrumbRoot.textContent = 'Asisten Pembelajaran';
+      if (breadcrumbCategory) breadcrumbCategory.textContent = 'Kaidah & Konsultasi';
+      if (breadcrumb) breadcrumb.textContent = 'Studio Asisten Bahasa Arab (Asuhan Umi Elly)';
+
+      showToast('Membuka Studio Asisten Pintar Bahasa Arab');
+      playTone(600, 'sine', 0.1, 0.06);
+      return;
+    }
+
+    if (viewName === 'admin') {
+      if (courseView) courseView.style.display = 'none';
+      if (adminView) adminView.style.display = 'block';
+      if (aiView) aiView.style.display = 'none';
+
+      if (breadcrumbRoot) breadcrumbRoot.textContent = 'Yayasan PERISA';
+      if (breadcrumbCategory) breadcrumbCategory.textContent = 'Otoritas & Tata Kelola';
+      if (breadcrumb) breadcrumb.textContent = 'Panel Pengurus Yayasan';
+
+      showToast('Beralih ke Panel Otoritas dan Tata Kelola Yayasan');
+      playTone(560, 'sine', 0.1, 0.06);
+      return;
+    }
+
+    // Default: Course Player
+    if (courseView) courseView.style.display = 'block';
+    if (adminView) adminView.style.display = 'none';
+    if (aiView) aiView.style.display = 'none';
+
+    if (breadcrumbRoot) breadcrumbRoot.textContent = 'Kurikulum';
+    if (breadcrumbCategory) breadcrumbCategory.textContent = 'Bahasa Arab Jenjang SMP';
+    if (breadcrumb) breadcrumb.textContent = 'Jumlah Ismiyyah dan Fasilitas Sekolah';
+
+    showToast('Membuka Kurikulum Pembelajaran Bahasa Arab');
+    playTone(520, 'sine', 0.1, 0.06);
+  }
+
+  function askAiQuestion(query) {
+    const input = document.getElementById('aiInputPrompt');
+    if (input) input.value = query;
+    handleAiSend();
+  }
+
+  function handleAiSend() {
+    const input = document.getElementById('aiInputPrompt');
+    const box = document.getElementById('aiResponseBox');
+    const content = document.getElementById('aiResponseContent');
+    if (!input || !box || !content) return;
+
+    const val = input.value.trim();
+    if (!val) {
+      showToast('Silakan masukkan pertanyaan kaidah bahasa Arab');
+      return;
+    }
+
+    showToast('Menganalisis kaidah bahasa Arab berdasarkan sanad kurikulum...');
+    playTone(640, 'sine', 0.12, 0.08);
+
+    box.style.display = 'block';
+    content.innerHTML = `<strong>Pertanyaan:</strong> "${val}"<br><br><strong>Analisis Kaidah Asuhan Umi Elly:</strong><br>` +
+      `<p style="margin-top: 6px; line-height: 1.6;">Alhamdulillah, berdasarkan kaidah tata bahasa Arab dasar, struktur kalimat tersebut menggunakan kaidah <strong>Jumlah Ismiyyah</strong> yang diawali oleh Isim Ma'rifat sebagai <em>Mubtada' (مُبْتَدَأٌ)</em> berharkat Rofa' (Dhammah), diikuti oleh <em>Khobar (خَبَرٌ)</em> berupa Syibhul Jumlah (Jar wa Majrur) yang menyempurnakan makna kalimat secara utuh.</p>` +
+      `<div style="margin-top: 8px; padding: 10px; background: var(--teal-light); border-radius: var(--radius-sm); font-size: 12px; color: #006D63;">` +
+      `<strong>Rujukan Silabus:</strong> Modul 02 Hal. 14 — Yayasan Peradaban Islam Azhariyah.</div>`;
+  }
+
   return {
     setRole,
+    switchMainView,
+    askAiQuestion,
+    handleAiSend,
     togglePlayVideo,
     playPronunciationAudio,
     switchSubTab,

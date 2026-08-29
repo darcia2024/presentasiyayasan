@@ -108,6 +108,12 @@
           </a>
         </li>
         <li>
+          <a class="ref-nav-item" onclick="PrototypeApp.switchMainView('ai-assistant')">
+            <i class="ph ph-sparkle"></i>
+            <span>Asisten Bahasa Arab</span>
+          </a>
+        </li>
+        <li>
           <a href="game2d.html" class="ref-nav-item">
             <i class="ph ph-puzzle-piece"></i>
             <span>Simulasi Kaidah 2D</span>
@@ -449,6 +455,122 @@
 
         </div> <!-- End course-main-grid -->
       </div> <!-- End #viewCoursePlayer -->
+
+      
+      <!-- ======================================================
+           VIEW 3: ASISTEN PINTAR BAHASA ARAB (SETO AI STUDIO)
+           ====================================================== -->
+      <div id="viewAiAssistant" style="display: none; width: 100%;">
+        <div class="seto-dashboard-layout">
+          
+          <!-- Central Hub -->
+          <div class="seto-main-hub">
+            <div></div>
+
+            <div class="seto-center-content">
+              <div class="seto-emblem-star">
+                <i class="ph ph-sparkle"></i>
+              </div>
+
+              <h1 class="seto-h1-welcome" id="setoWelcomeTitle">Ahlan wa Sahlan, Ahmad Fauzan</h1>
+              <p class="seto-p-sub">
+                Pusat Asisten Pembelajaran Bahasa Arab Terpadu. Tanyakan kaidah Nahwu, konjugasi Tashrif, atau mufrodat kitab asuhan Umi Elly.
+              </p>
+
+              <!-- 3 Shortcut Action Cards -->
+              <div class="seto-cards-grid">
+                <div class="seto-action-card" onclick="PrototypeApp.askAiQuestion('Tashrif kata kerja كَتَبَ (Kataba) ke dalam Fi\'il Madhi, Mudhari\', dan Amr')">
+                  <div class="seto-card-icon"><i class="ph ph-arrows-left-right"></i></div>
+                  <div class="seto-card-title">Tashrif Kata Kerja</div>
+                  <div class="seto-card-desc">Konjugasi wazan Fi'il Madhi, Mudhari', dan Amr otomatis sesuai sanad.</div>
+                </div>
+
+                <div class="seto-action-card" onclick="PrototypeApp.askAiQuestion('Analisis I\'rob struktur kalimat: الأُسْتَاذُ فِي الفَصْلِ (Al-Ustadzu fil fashli)')">
+                  <div class="seto-card-icon"><i class="ph ph-tree-structure"></i></div>
+                  <div class="seto-card-title">Analisis I'rob Kalimat</div>
+                  <div class="seto-card-desc">Urai kedudukan Mubtada, Khobar, Fa'il, dan tanda I'rob dalam kalimat.</div>
+                </div>
+
+                <div class="seto-action-card" onclick="PrototypeApp.askAiQuestion('Simulasi hiwar percakapan tematik di perpustakaan sekolah')">
+                  <div class="seto-card-icon"><i class="ph ph-chat-teardrop-text"></i></div>
+                  <div class="seto-card-title">Latihan Hiwar Santri</div>
+                  <div class="seto-card-desc">Simulasi percakapan tematik harian sesuai modul asuhan Umi Elly.</div>
+                </div>
+              </div>
+
+              <!-- AI Output Message Box -->
+              <div id="aiResponseBox" style="display: none; background: #FFFFFF; border: 1.5px solid var(--teal-border); border-radius: var(--radius-lg); padding: 20px 24px; text-align: left; width: 100%; margin-bottom: 24px; box-shadow: var(--shadow-sm);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 8px;">
+                  <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--teal-primary);">
+                    <i class="ph ph-sparkle"></i> Analisis Kaidah Bahasa Arab (Asuhan Umi Elly)
+                  </div>
+                  <button class="btn-share-text" style="font-size: 11px; padding: 2px 8px;" onclick="document.getElementById('aiResponseBox').style.display='none'">Tutup</button>
+                </div>
+                <div id="aiResponseContent" style="font-size: 13px; color: var(--text-body); line-height: 1.6;"></div>
+              </div>
+
+              <!-- Central Prompt Input Bar (Bottom Dock) -->
+              <div class="seto-prompt-dock">
+                <input type="text" id="aiInputPrompt" class="seto-input-field" placeholder="Ketik pertanyaan kaidah bahasa Arab, mufrodat, atau kalimat..." onkeydown="if(event.key==='Enter') PrototypeApp.handleAiSend();">
+                <div class="seto-prompt-bottom-bar">
+                  <div class="seto-pill-actions">
+                    <button class="seto-pill-btn" onclick="PrototypeApp.showToast('Lampiran teks rujukan diaktifkan')"><i class="ph ph-paperclip"></i> Rujukan</button>
+                    <button class="seto-pill-btn" onclick="PrototypeApp.showToast('Mode Analisis I\'rob diaktifkan')"><i class="ph ph-tree-structure"></i> Mode I'rob</button>
+                    <button class="seto-pill-btn" onclick="PrototypeApp.showToast('Mode Tashrif diaktifkan')"><i class="ph ph-arrows-left-right"></i> Mode Tashrif</button>
+                  </div>
+                  <button class="seto-send-btn" title="Kirim Pertanyaan" onclick="PrototypeApp.handleAiSend()">
+                    <i class="ph ph-arrow-up"></i>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+            <div></div>
+          </div>
+
+          <!-- Right History Column -->
+          <aside class="seto-history-column">
+            <div class="seto-history-title-row">
+              <div class="seto-history-h3">Riwayat Konsultasi</div>
+              <button class="icon-circle-btn" style="width: 28px; height: 28px; font-size: 14px;" onclick="PrototypeApp.showToast('Membuat sesi konsultasi baru...')">
+                <i class="ph ph-plus"></i>
+              </button>
+            </div>
+
+            <div class="seto-search-box">
+              <i class="ph ph-magnifying-glass"></i>
+              <input type="text" class="seto-search-input" placeholder="Cari arsip pertanyaan...">
+            </div>
+
+            <div class="seto-history-list">
+              <div class="seto-history-card" onclick="PrototypeApp.askAiQuestion('Penjelasan kaidah Jumlah Ismiyyah')">
+                <div class="seto-history-heading">Kaidah Jumlah Ismiyyah</div>
+                <div class="seto-history-snippet">Pembahasan struktur Mubtada dan Khobar dalam kalimat sempurna.</div>
+                <div class="seto-history-time">2 Jam yang lalu</div>
+              </div>
+
+              <div class="seto-history-card" onclick="PrototypeApp.askAiQuestion('Tashrif Fi\'il Tsulatsi Mujarrad')">
+                <div class="seto-history-heading">Tashrif Fi'il Tsulatsi</div>
+                <div class="seto-history-snippet">Pola wazan Fa'ala Yaf'ulu untuk kata kerja dasar.</div>
+                <div class="seto-history-time">Kemarin</div>
+              </div>
+
+              <div class="seto-history-card" onclick="PrototypeApp.askAiQuestion('Daftar 20 Mufrodat Perpustakaan')">
+                <div class="seto-history-heading">Mufrodat Fasilitas Sekolah</div>
+                <div class="seto-history-snippet">Daftar kosakata sarana perpustakaan dan ruang kelas.</div>
+                <div class="seto-history-time">3 Hari yang lalu</div>
+              </div>
+            </div>
+
+            <button class="btn-enroll-primary" style="width: 100%; justify-content: center; padding: 10px;" onclick="PrototypeApp.showToast('Membuka sesi konsultasi baru bersama Umi Elly...')">
+              <i class="ph ph-chat-circle-dots"></i> Mulai Konsultasi Baru
+            </button>
+          </aside>
+
+        </div>
+      </div>
+
 
       <!-- ======================================================
            VIEW 2: PANEL OTORITAS YAYASAN (ADMIN / UMI ELLY)

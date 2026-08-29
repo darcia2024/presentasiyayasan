@@ -854,3 +854,292 @@ html, body {
 .modal-overlay.open .modal-box {
   transform: scale(1) translateY(0) !important;
 }
+
+
+/* ==========================================================================
+   SETO-STYLE ARABIC AI ASSISTANT STUDIO DASHBOARD
+   ========================================================================== */
+.seto-dashboard-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  min-height: calc(100vh - 46px);
+  background: #FAFCFB;
+  width: 100%;
+}
+
+.seto-main-hub {
+  padding: 40px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 100%;
+}
+
+.seto-center-content {
+  width: 100%;
+  max-width: 780px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.seto-emblem-star {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 135, 122, 0.18) 0%, rgba(197, 146, 27, 0.1) 60%, transparent 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--teal-primary);
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+.seto-h1-welcome {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--teal-dark);
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.seto-p-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 520px;
+  line-height: 1.5;
+  margin-bottom: 36px;
+}
+
+/* 3 Shortcut Action Cards */
+.seto-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.seto-action-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 22px 18px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.seto-action-card:hover {
+  border-color: var(--teal-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  background: var(--bg-subtle);
+}
+
+.seto-card-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  background: var(--teal-light);
+  color: var(--teal-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+
+.seto-card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--teal-dark);
+}
+
+.seto-card-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+/* Central Prompt Input Bar (Bottom Dock) */
+.seto-prompt-dock {
+  width: 100%;
+  max-width: 780px;
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 14px 18px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.seto-prompt-dock:focus-within {
+  border-color: var(--teal-primary);
+  box-shadow: 0 4px 20px rgba(0, 135, 122, 0.12);
+}
+
+.seto-input-field {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-family: var(--font-family);
+  font-size: 13.5px;
+  color: var(--text-main);
+  background: transparent;
+}
+
+.seto-input-field::placeholder {
+  color: var(--text-muted);
+}
+
+.seto-prompt-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 10px;
+}
+
+.seto-pill-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.seto-pill-btn {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  color: var(--text-body);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.seto-pill-btn:hover {
+  background: var(--teal-light);
+  color: var(--teal-primary);
+  border-color: var(--teal-primary);
+}
+
+.seto-send-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--teal-dark);
+  color: #FFFFFF;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.seto-send-btn:hover {
+  background: var(--teal-primary);
+}
+
+/* Right History Column */
+.seto-history-column {
+  background: #FFFFFF;
+  border-left: 1px solid var(--border-color);
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.seto-history-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.seto-history-h3 {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--teal-dark);
+}
+
+.seto-search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.seto-search-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--font-family);
+  font-size: 12px;
+  width: 100%;
+  color: var(--text-main);
+}
+
+.seto-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-grow: 1;
+}
+
+.seto-history-card {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  background: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.seto-history-card:hover {
+  border-color: var(--teal-primary);
+  background: var(--bg-subtle);
+}
+
+.seto-history-heading {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--teal-dark);
+  margin-bottom: 4px;
+}
+
+.seto-history-snippet {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.seto-history-time {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  text-align: right;
+}
