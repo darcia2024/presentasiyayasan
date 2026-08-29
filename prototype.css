@@ -1196,3 +1196,187 @@ html, body {
   background: var(--teal-primary);
   color: #FFFFFF;
 }
+
+
+/* ==========================================================================
+   ALL SIDEBAR VIEWS (BERANDA UTAMA & MODUL SILABUS PDF)
+   ========================================================================== */
+
+/* BERANDA UTAMA (HOME DASHBOARD) */
+.beranda-view-layout {
+  padding: 32px 40px;
+  max-width: 1600px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.beranda-welcome-banner {
+  background: linear-gradient(135deg, #072826 0%, #0F403D 100%);
+  color: #FFFFFF;
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.beranda-banner-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 6px;
+  color: #FFFFFF;
+}
+
+.beranda-banner-sub {
+  font-size: 13px;
+  color: #A7F3EC;
+  max-width: 600px;
+  line-height: 1.55;
+}
+
+.beranda-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.beranda-metric-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.beranda-two-col {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 24px;
+}
+
+.beranda-continue-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.beranda-continue-preview {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.beranda-schedule-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.schedule-item {
+  border-left: 3px solid var(--teal-primary);
+  background: var(--bg-subtle);
+  padding: 12px 14px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* MODUL & SILABUS PDF VIEW */
+.pdf-library-layout {
+  padding: 32px 40px;
+  max-width: 1600px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.pdf-filter-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pdf-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.pdf-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  transition: all 0.2s ease;
+}
+
+.pdf-card:hover {
+  border-color: var(--teal-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.pdf-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.pdf-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: var(--teal-light);
+  color: var(--teal-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.pdf-card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--teal-dark);
+  line-height: 1.45;
+  margin-bottom: 4px;
+}
+
+.pdf-card-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.pdf-card-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 14px;
+}

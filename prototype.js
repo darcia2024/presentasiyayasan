@@ -427,6 +427,114 @@ const PrototypeApp = (() => {
     playNext();
   }
 
+  // Main View Router (Beranda, Modul PDF, Kurikulum, Asisten AI, Admin)
+  function switchMainView(viewName) {
+    const berandaView = document.getElementById('viewBerandaUtama');
+    const courseView = document.getElementById('viewCoursePlayer');
+    const pdfView = document.getElementById('viewModulPdf');
+    const aiView = document.getElementById('viewAiAssistant');
+    const adminView = document.getElementById('viewAdminPanel');
+    const ws = document.getElementById('refMainWorkspace');
+    if (ws) ws.scrollTop = 0;
+
+    const breadcrumbRoot = document.getElementById('breadcrumbRoot');
+    const breadcrumbCategory = document.getElementById('breadcrumbCategory');
+    const breadcrumb = document.getElementById('breadcrumbActiveTitle');
+
+    // Hide all views first
+    if (berandaView) berandaView.style.display = 'none';
+    if (courseView) courseView.style.display = 'none';
+    if (pdfView) pdfView.style.display = 'none';
+    if (aiView) aiView.style.display = 'none';
+    if (adminView) adminView.style.display = 'none';
+
+    // Reset Sidebar Nav Active states
+    document.querySelectorAll('.ref-nav-item').forEach(item => item.classList.remove('active'));
+
+    if (viewName === 'beranda') {
+      if (berandaView) berandaView.style.display = 'block';
+      const nav = document.getElementById('nav-beranda');
+      if (nav) nav.classList.add('active');
+
+      if (breadcrumbRoot) breadcrumbRoot.textContent = 'Portal Utama';
+      if (breadcrumbCategory) breadcrumbCategory.textContent = 'Dashboard Santri';
+      if (breadcrumb) breadcrumb.textContent = 'Beranda Informasi Pembelajaran';
+
+      showToast('Membuka Beranda Utama Santri');
+      playTone(520, 'sine', 0.1, 0.06);
+      return;
+    }
+
+    if (viewName === 'modul-pdf') {
+      if (pdfView) pdfView.style.display = 'block';
+      const nav = document.getElementById('nav-modul-pdf');
+      if (nav) nav.classList.add('active');
+
+      if (breadcrumbRoot) breadcrumbRoot.textContent = 'Perpustakaan Digital';
+      if (breadcrumbCategory) breadcrumbCategory.textContent = 'Dokumen & Silabus';
+      if (breadcrumb) breadcrumb.textContent = 'Arsip Modul PDF Resmi';
+
+      showToast('Membuka Arsip Modul dan Silabus PDF');
+      playTone(540, 'sine', 0.1, 0.06);
+      return;
+    }
+
+    if (viewName === 'ai-assistant') {
+      if (aiView) aiView.style.display = 'block';
+      const nav = document.getElementById('nav-asisten-ai');
+      if (nav) nav.classList.add('active');
+
+      if (breadcrumbRoot) breadcrumbRoot.textContent = 'Asisten Pembelajaran';
+      if (breadcrumbCategory) breadcrumbCategory.textContent = 'Kaidah & Konsultasi';
+      if (breadcrumb) breadcrumb.textContent = 'Studio Asisten Bahasa Arab (Asuhan Umi Elly)';
+
+      showToast('Membuka Studio Asisten Pintar Bahasa Arab');
+      playTone(600, 'sine', 0.1, 0.06);
+      return;
+    }
+
+    if (viewName === 'admin') {
+      if (adminView) adminView.style.display = 'block';
+      const nav = document.getElementById('nav-admin');
+      if (nav) nav.classList.add('active');
+
+      if (breadcrumbRoot) breadcrumbRoot.textContent = 'Yayasan PERISA';
+      if (breadcrumbCategory) breadcrumbCategory.textContent = 'Otoritas & Tata Kelola';
+      if (breadcrumb) breadcrumb.textContent = 'Panel Pengurus Yayasan';
+
+      showToast('Beralih ke Panel Otoritas dan Tata Kelola Yayasan');
+      playTone(560, 'sine', 0.1, 0.06);
+      return;
+    }
+
+    // Default: Kurikulum / Course Player
+    if (courseView) courseView.style.display = 'block';
+    const nav = document.getElementById('nav-kurikulum');
+    if (nav) nav.classList.add('active');
+
+    if (breadcrumbRoot) breadcrumbRoot.textContent = 'Kurikulum';
+    if (breadcrumbCategory) breadcrumbCategory.textContent = 'Bahasa Arab Jenjang SMP';
+    if (breadcrumb) breadcrumb.textContent = 'Jumlah Ismiyyah dan Fasilitas Sekolah';
+
+    showToast('Membuka Kurikulum Pembelajaran Bahasa Arab');
+    playTone(520, 'sine', 0.1, 0.06);
+  }
+
+  function openPdfPreview(title, author, size) {
+    const modal = document.getElementById('pdfModal');
+    const nameEl = document.getElementById('pdfDocName');
+    const metaEl = document.getElementById('pdfDocMeta');
+    if (nameEl) nameEl.textContent = title;
+    if (metaEl) metaEl.textContent = `Penyusun: ${author} • ${size} • Format PDF Resmi`;
+    if (modal) modal.classList.add('open');
+    playTone(580, 'sine', 0.1, 0.06);
+  }
+
+  function closePdfPreview() {
+    const modal = document.getElementById('pdfModal');
+    if (modal) modal.classList.remove('open');
+  }
+
   return {
     setRole,
     switchMainView,
