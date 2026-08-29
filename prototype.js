@@ -245,6 +245,23 @@ const PrototypeApp = (() => {
     }
   }
 
+
+  // Horizontal Sub-Tab Switcher (Ringkasan, Audio, Kuis, Pengumuman, Ulasan)
+  function switchSubTab(tabName) {
+    document.querySelectorAll('.sub-tab-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.subtab === tabName);
+    });
+
+    const tabs = ['ringkasan', 'audio', 'kuis', 'pengumuman', 'ulasan'];
+    tabs.forEach(t => {
+      const el = document.getElementById(`subtab-${t}`);
+      if (el) el.style.display = t === tabName ? 'block' : 'none';
+    });
+
+    showToast(`Membuka: ${tabName === 'ringkasan' ? 'Ringkasan Materi' : tabName === 'audio' ? 'Pelafalan Audio (Umi)' : tabName === 'kuis' ? 'Kuis Interaktif (+50 XP)' : tabName === 'pengumuman' ? 'Pengumuman' : 'Ulasan Santri'}`);
+    playTone(540, 'sine', 0.08, 0.06);
+  }
+
   return {
     setRole,
     togglePlayVideo,
@@ -256,6 +273,7 @@ const PrototypeApp = (() => {
     closeCertModal,
     verifySantri,
     verifyBeasiswa,
-    showToast
+    showToast,
+    switchSubTab
   };
 })();
