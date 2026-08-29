@@ -699,8 +699,19 @@ const PrototypeApp = (() => {
     if (modal) modal.classList.remove('open');
   }
 
+
+  // Mobile Drawer Toggle
+  function toggleMobileDrawer() {
+    const drawer = document.getElementById('mobileDrawerOverlay');
+    if (drawer) {
+      drawer.classList.toggle('open');
+      playTone(560, 'sine', 0.08, 0.05);
+    }
+  }
+
   return {
     setRole,
+    toggleMobileDrawer,
     switchMainView,
     askAiQuestion,
     handleAiSend,
