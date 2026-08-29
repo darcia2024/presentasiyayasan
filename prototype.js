@@ -105,10 +105,21 @@ const PrototypeApp = (() => {
 
     const courseView = document.getElementById('viewCoursePlayer');
     const adminView = document.getElementById('viewAdminPanel');
+    const ws = document.getElementById('refMainWorkspace');
+    if (ws) ws.scrollTop = 0;
+
+    const breadcrumbRoot = document.getElementById('breadcrumbRoot');
+    const breadcrumbCategory = document.getElementById('breadcrumbCategory');
+    const breadcrumb = document.getElementById('breadcrumbActiveTitle');
 
     if (roleName === 'admin') {
       if (courseView) courseView.style.display = 'none';
       if (adminView) adminView.style.display = 'block';
+
+      if (breadcrumbRoot) breadcrumbRoot.textContent = 'PERISA Yayasan';
+      if (breadcrumbCategory) breadcrumbCategory.textContent = 'Otoritas & Perizinan';
+      if (breadcrumb) breadcrumb.textContent = 'Panel Admin Umi Elly';
+
       showToast('Mode Berganti: Panel Otoritas Yayasan & Umi Elly');
       playTone(600, 'triangle', 0.1, 0.08);
       return;
@@ -123,7 +134,6 @@ const PrototypeApp = (() => {
     // Update DOM Elements
     const userCardName = document.querySelector('.user-name-small');
     const userCardSub = document.querySelector('.sidebar-user-card div div:last-child');
-    const breadcrumb = document.getElementById('breadcrumbActiveTitle');
     const mainTitle = document.getElementById('courseMainTitle');
     const jenjangPill = document.getElementById('courseJenjangPill');
     const arabicTitle = document.getElementById('currentVideoArabic');
@@ -131,9 +141,12 @@ const PrototypeApp = (() => {
     const watermark = document.querySelector('.ref-video-watermark');
     const aboutDesc = document.getElementById('aboutCourseDesc');
 
+    if (breadcrumbRoot) breadcrumbRoot.textContent = 'Kursus';
+    if (breadcrumbCategory) breadcrumbCategory.textContent = data.jenjangPill;
+    if (breadcrumb) breadcrumb.textContent = data.breadcrumb;
+
     if (userCardName) userCardName.textContent = data.user.name;
     if (userCardSub) userCardSub.textContent = data.user.level;
-    if (breadcrumb) breadcrumb.textContent = data.breadcrumb;
     if (mainTitle) mainTitle.textContent = data.title;
     if (jenjangPill) jenjangPill.textContent = data.jenjangPill;
     if (arabicTitle) arabicTitle.textContent = data.arabicTitle;
