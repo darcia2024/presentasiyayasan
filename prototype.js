@@ -1,6 +1,6 @@
 /**
  * PERISA (YAYASAN PERADABAN ISLAM AZHARIYAH)
- * Interactive Working Prototype Engine
+ * Next-Gen Interactive Working Prototype Engine
  * Asuhan Umi Elly
  */
 
@@ -29,27 +29,27 @@ const PrototypeApp = (() => {
         bannerTitle: 'Belajar Mufrodat Dasar & Percakapan Ceria (SD)',
         bannerSub: 'Mengenal kosakata benda sekolah, angka, warna, dan hiwar sederhana bersama Umi Elly.',
         modules: [
-          { id: 1, num: 'Modul 01', arabic: 'الأَدَوَاتُ المَدْرَسِيَّةُ', title: 'Peralatan Sekolah & Belajar', duration: '08:45', xp: 40, desc: 'Mengenal mufrodat buku, pena, tas, dan meja belajar.' },
-          { id: 2, num: 'Modul 02', arabic: 'الأَلْوَانُ وَالأَرْقَامُ', title: 'Mengenal Warna & Angka Arab (1-10)', duration: '10:15', xp: 50, desc: 'Menghafal angka dan warna primer dalam bahasa Arab dengan lagu.' },
-          { id: 3, num: 'Modul 03', arabic: 'التَّعَارُفُ وَالتَّحِيَّاتُ', title: 'Percakapan Perkenalan Santri', duration: '12:00', xp: 50, desc: 'Praktik menyapa salam dan menanyakan kabar sesama teman.' }
+          { id: 1, num: 'Modul 01', arabic: 'الأَدَوَاتُ المَدْرَسِيَّةُ', title: 'Peralatan Sekolah & Belajar', duration: '08:45', xp: 40, desc: 'Mengenal mufrodat buku (كِتَابٌ), pena (قَلَمٌ), tas (حَقِيْبَةٌ), dan meja (مَكْتَبٌ).' },
+          { id: 2, num: 'Modul 02', arabic: 'الأَلْوَانُ وَالأَرْقَامُ', title: 'Mengenal Warna & Angka Arab (1-10)', duration: '10:15', xp: 50, desc: 'Menghafal angka dan warna primer dalam bahasa Arab dengan lagu ceria.' },
+          { id: 3, num: 'Modul 03', arabic: 'التَّعَارُفُ وَالتَّحِيَّاتُ', title: 'Percakapan Perkenalan Santri', duration: '12:00', xp: 50, desc: 'Praktik menyapa salam (السَّلَامُ عَلَيْكُمْ) dan menanyakan kabar sesama teman.' }
         ]
       },
       smp: {
         bannerTitle: 'Tata Bahasa Arab Dasar & Kosakata Harian (SMP)',
         bannerSub: 'Mendalami kaidah Jumlah Ismiyyah, kata ganti (Dhomir), dan percakapan tematik sekolah.',
         modules: [
-          { id: 1, num: 'Modul 01', arabic: 'أَقْسَامُ الكَلَامِ : اسْمٌ وَفِعْلٌ', title: 'Pembagian Kata: Isim & Fi\'il', duration: '11:20', xp: 50, desc: 'Membedakan kata benda dan kata kerja dalam Al-Qur\'an.' },
-          { id: 2, num: 'Modul 02', arabic: 'الوَحْدَةُ الثَّانِيَةُ : فِي المَدْرَسَةِ', title: 'Jumlah Ismiyyah & Fasilitas Sekolah', duration: '12:30', xp: 50, desc: 'Menyusun kalimat mubtada khobar tentang lingkungan sekolah.' },
-          { id: 3, num: 'Modul 03', arabic: 'الضَّمَائِرُ المُتَّصِلَةُ وَالمُنْفَصِلَةُ', title: 'Kaidah Dhomir (Kata Ganti Orang)', duration: '14:10', xp: 60, desc: 'Memahami dhomir huwa, hiya, anta, anti, ana, nahnu.' }
+          { id: 1, num: 'Modul 01', arabic: 'أَقْسَامُ الكَلَامِ : اسْمٌ وَفِعْلٌ', title: 'Pembagian Kata: Isim, Fi\'il, Huruf', duration: '11:20', xp: 50, desc: 'Membedakan kata benda dan kata kerja dalam Al-Qur\'an.' },
+          { id: 2, num: 'Modul 02', arabic: 'الوَحْدَةُ الثَّانِيَةُ : فِي المَدْرَسَةِ', title: 'Jumlah Ismiyyah & Fasilitas Sekolah', duration: '12:30', xp: 50, desc: 'Menyusun kalimat mubtada khobar tentang lingkungan perpustakaan & kelas.' },
+          { id: 3, num: 'Modul 03', arabic: 'الضَّمَائِرُ المُتَّصِلَةُ وَالمُنْفَصِلَةُ', title: 'Kaidah Dhomir (Kata Ganti Orang)', duration: '14:10', xp: 60, desc: 'Memahami dhomir huwa, hiya, anta, anti, ana, nahnu dalam kalimat.' }
         ]
       },
       sma: {
         bannerTitle: 'Nahwu-Shorof Lanjutan & Muhadatsah Dakwah (SMA)',
         bannerSub: 'Kaidah I\'rob mendalam, Tashrif Fi\'il, dan persiapan membaca kitab turats serta dakwah.',
         modules: [
-          { id: 1, num: 'Modul 01', arabic: 'تَصْرِيْفُ الأَفْعَالِ الثُّلَاثِيَّةِ', title: 'Tashrif Fi\'il Madhi, Mudhari\', Amr', duration: '16:40', xp: 60, desc: 'Pola perubahan bentuk kata kerja dan maknanya.' },
-          { id: 2, num: 'Modul 02', arabic: 'عَلَامَاتُ الإِعْرَابِ الأَصْلِيَّةُ', title: 'Tanda I\'rob Asli: Rofa\', Nashob, Jer', duration: '18:15', xp: 70, desc: 'Memahami harokat dhommah, fathah, kasroh pada struktur kalimat.' },
-          { id: 3, num: 'Modul 03', arabic: 'المُحَادَثَةُ الإِسْلَامِيَّةُ وَالدَّعْوَةُ', title: 'Muhadatsah Tematik Dakwah Islamiyah', duration: '15:50', xp: 70, desc: 'Keterampilan berpidato dan dialog bahasa Arab formal.' }
+          { id: 1, num: 'Modul 01', arabic: 'تَصْرِيْفُ الأَفْعَالِ الثُّلَاثِيَّةِ', title: 'Tashrif Fi\'il Madhi, Mudhari\', Amr', duration: '16:40', xp: 60, desc: 'Pola perubahan bentuk kata kerja lampau, sekarang, dan perintah.' },
+          { id: 2, num: 'Modul 02', arabic: 'عَلَامَاتُ الإِعْرَابِ الأَصْلِيَّةُ', title: 'Tanda I\'rob Asli: Rofa\', Nashob, Jer', duration: '18:15', xp: 70, desc: 'Memahami harokat dhommah, fathah, kasroh pada struktur i\'rob kalimat.' },
+          { id: 3, num: 'Modul 03', arabic: 'المُحَادَثَةُ الإِسْلَامِيَّةُ وَالدَّعْوَةُ', title: 'Muhadatsah Tematik Dakwah Islamiyah', duration: '15:50', xp: 70, desc: 'Keterampilan berpidato dan dialog bahasa Arab formal asuhan Umi Elly.' }
         ]
       }
     },
@@ -59,7 +59,7 @@ const PrototypeApp = (() => {
         level: 1,
         jenjang: 'SD - SMP',
         tag: 'Level 1: Tebak Mufrodat Fasilitas',
-        question: 'Manakah arti kosakata (mufrodat) yang tepat untuk kata: <strong style="color: #00877A; font-size: 22px; font-family: Arial;">"المَكْتَبَةُ" (Al-Maktabatu)</strong>?',
+        question: 'Manakah arti kosakata (mufrodat) yang tepat untuk kata: <br><strong style="color: #00877A; font-size: 24px; font-family: Arial;">"المَكْتَبَةُ" (Al-Maktabatu)</strong>?',
         options: ['Laboratorium Komputer', 'Perpustakaan Sekolah', 'Ruang Guru / Kantor', 'Lapangan Olahraga'],
         correctIndex: 1,
         feedback: 'Mumtaz! "المَكْتَبَةُ" artinya Perpustakaan Sekolah. Santri berhasil menguasai kosakata fasilitas!'
@@ -68,7 +68,7 @@ const PrototypeApp = (() => {
         level: 2,
         jenjang: 'SMP - SMA',
         tag: 'Level 2: Kaidah Nahwu & Dhomir',
-        question: 'Lengkapi kalimat berikut dengan Dhomir (kata ganti) yang tepat: <br><strong style="color: #00877A; font-size: 22px; font-family: Arial;">".... طَالِبٌ نَشِيْطٌ فِي الفَصْلِ"</strong>',
+        question: 'Lengkapi kalimat berikut dengan Dhomir (kata ganti) yang tepat: <br><strong style="color: #00877A; font-size: 24px; font-family: Arial;">".... طَالِبٌ نَشِيْطٌ فِي الفَصْلِ"</strong>',
         options: ['هِيَ (Hiya)', 'هُوَ (Huwa)', 'هُمْ (Hum)', 'أَنْتُمْ (Antum)'],
         correctIndex: 1,
         feedback: 'Ahsanta! Karena "طَالِبٌ" adalah isim mudzakkar mufrod, maka dhomir yang tepat adalah "هُوَ" (Huwa).'
@@ -85,7 +85,7 @@ const PrototypeApp = (() => {
           'قَلَمٌ عَلَى مَكْتَبِ (Qolamun \'ala maktabi)'
         ],
         correctIndex: 0,
-        feedback: 'Barakallah! "القَلَمُ عَلَى المَكْتَبِ" (Pena itu di atas meja) adalah susunan Mubtada dan Khobar Syibhul Jumlah yang sempurna!'
+        feedback: 'Barakallah! "القَلَمُ عَلَى المَكْتَبِ" (Pena itu di atas meja) adalah susunan Mubtada dan Khobar yang sempurna!'
       }
     ],
     currentGameIndex: 0
@@ -131,6 +131,13 @@ const PrototypeApp = (() => {
     setTimeout(() => playTone(1046.50, 'triangle', 0.3, 0.15), 210);
   }
 
+  function playPronunciationAudio() {
+    playTone(480, 'sine', 0.12, 0.1);
+    setTimeout(() => playTone(620, 'sine', 0.16, 0.12), 80);
+    setTimeout(() => playTone(540, 'sine', 0.2, 0.09), 180);
+    showToast('🔊 Memutar pelafalan mufrodat resmi asuhan Umi Elly: "Al-Maktabatu"');
+  }
+
   // Toast Notification
   let toastTimer = null;
   function showToast(msg) {
@@ -160,7 +167,6 @@ const PrototypeApp = (() => {
       if (adminSection) adminSection.classList.remove('active');
       if (navUserProfile) navUserProfile.style.display = 'flex';
 
-      // Update Jenjang from role
       const jenjang = roleName.replace('santri-', '');
       setJenjang(jenjang);
       showToast(`Mode Berganti: Portal Santri Tingkat ${jenjang.toUpperCase()}`);
@@ -348,9 +354,9 @@ const PrototypeApp = (() => {
       game.options.forEach((opt, idx) => {
         const btn = document.createElement('button');
         btn.className = 'game-opt-btn';
-        btn.style.cssText = 'display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #FFFFFF; border: 1.5px solid #E2ECEB; border-radius: 14px; font-family: var(--font-family); font-size: 13px; font-weight: 600; cursor: pointer; text-align: left; transition: all 0.2s;';
+        btn.style.cssText = 'display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: #FFFFFF; border: 1.5px solid #E2ECEB; border-radius: 16px; font-family: var(--font-family); font-size: 13.5px; font-weight: 600; cursor: pointer; text-align: left; transition: all 0.2s;';
         btn.innerHTML = `
-          <span style="width: 26px; height: 26px; border-radius: 50%; background: #E1F5F2; color: #00877A; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px;">${String.fromCharCode(65 + idx)}</span>
+          <span style="width: 28px; height: 28px; border-radius: 50%; background: #E1F5F2; color: #00877A; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12.5px;">${String.fromCharCode(65 + idx)}</span>
           <span>${opt}</span>
         `;
         btn.onclick = () => answerGame(idx, btn);
@@ -504,6 +510,7 @@ const PrototypeApp = (() => {
     loadModule,
     togglePlayVideo,
     toggleSpeed,
+    playPronunciationAudio,
     openGameModal,
     closeGameModal,
     switchGameLevel,
