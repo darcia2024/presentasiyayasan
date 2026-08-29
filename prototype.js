@@ -8,7 +8,7 @@ const PrototypeApp = (() => {
   // Data Kurikulum Per Jenjang
   const roleData = {
     'santri-sd': {
-      user: { name: 'Aisyah Zahra', level: 'Santri Jenjang SD Kelas 5', phone: '0821-4455-6677' },
+      user: { name: 'Aisyah Zahra', initials: 'AZ', level: 'Santri Jenjang SD Kelas 5', phone: '0821-4455-6677', nisn: 'NISN: PERISA-SD-0291', status: 'Terverifikasi • Infaq Aktif', bg: '#00877A' },
       breadcrumb: 'Kosakata Peralatan Pendidikan dan Angka',
       title: 'Bahasa Arab SD: Pengenalan Mufrodat dan Hiwar Dasar',
       jenjangPill: 'Jenjang SD Kelas 5',
@@ -25,7 +25,7 @@ const PrototypeApp = (() => {
       ]
     },
     'santri-smp': {
-      user: { name: 'Ahmad Fauzan', level: 'Santri Jenjang SMP Kelas 8', phone: '0812-8921-9921' },
+      user: { name: 'Ahmad Fauzan', initials: 'AF', level: 'Santri Jenjang SMP Kelas 8', phone: '0812-8921-9921', nisn: 'NISN: PERISA-SMP-0821', status: 'Terverifikasi • Infaq Aktif', bg: '#00877A' },
       breadcrumb: 'Jumlah Ismiyyah dan Fasilitas Sekolah',
       title: 'Bahasa Arab SMP: Kaidah Jumlah Ismiyyah',
       jenjangPill: 'Jenjang SMP Kelas 8',
@@ -42,21 +42,33 @@ const PrototypeApp = (() => {
       ]
     },
     'santri-sma': {
-      user: { name: 'M. Rizky Pratama', level: 'Santri Jenjang SMA Kelas 11', phone: '0813-7788-9900' },
+      user: { name: 'M. Rizky Pratama', initials: 'RP', level: 'Santri Jenjang SMA Kelas 11', phone: '0813-7788-9900', nisn: 'NISN: PERISA-SMA-1104', status: 'Terverifikasi • Infaq Aktif', bg: '#072826' },
       breadcrumb: 'Kaidah Nahwu-Shorof Terapan dan Tashrif',
       title: 'Bahasa Arab SMA: Nahwu-Shorof Terapan & Tashrif',
       jenjangPill: 'Jenjang SMA Kelas 11',
       metaStats: '14 Modul Pembelajaran • Durasi: 3 Jam 15 Menit • Kurikulum Lanjutan',
       arabicTitle: 'تَصْرِيْفُ الأَفْعَالِ الثُّلَاثِيَّةِ',
-      subtitle: 'Modul 01: Perubahan Bentuk Kata Kerja (Madhi, Mudhari\', Amr)',
+      subtitle: 'Modul 01: Perubahan Bentuk Kata Kerja (Madhi, Mudhari', Amr)',
       watermark: 'M. Rizky Pratama • 0813-7788-9900 • Hak Cipta PERISA Azhariyah',
-      aboutDesc: 'Modul lanjutan ilmu Shorof dan kaidah I\'rob kitab turats serta latihan pidato dakwah resmi asuhan Umi Elly.',
+      aboutDesc: 'Modul lanjutan ilmu Shorof dan kaidah I'rob kitab turats serta latihan pidato dakwah resmi asuhan Umi Elly.',
       lessons: [
         { name: 'Pola Perubahan Kata Kerja (Tashrif)', time: '35 Menit', active: true },
-        { name: 'Tanda I\'rob Asli (Rofa\', Nashob, Jer)', time: '40 Menit', active: false },
+        { name: 'Tanda I'rob Asli (Rofa', Nashob, Jer)', time: '40 Menit', active: false },
         { name: 'Muhadatsah Dakwah & Pidato Khitobah', time: '30 Menit', active: false },
         { name: 'Lembar Evaluasi Terapan', time: '15 Menit', active: false }
       ]
+    },
+    'admin': {
+      user: { name: 'Ustadz Pengurus', initials: 'UE', level: 'Pengurus Otoritas Yayasan', phone: '0812-9900-1122', nisn: 'ID: ADM-PERISA-001', status: 'Otoritas Pusat • Administrator', bg: '#C5921B' },
+      breadcrumb: 'Panel Otoritas dan Tata Kelola Yayasan',
+      title: 'Panel Kendali Otoritas & Tata Kelola Yayasan',
+      jenjangPill: 'Otoritas Yayasan',
+      metaStats: 'Pusat Kendali Santri • Infaq • Validasi Kelulusan Sanad',
+      arabicTitle: 'إِدَارَةُ المَعْهَدِ وَالمُؤَسَّسَةِ',
+      subtitle: 'Tata Kelola Santri, Pengawasan Infaq, & Sanad Kelulusan',
+      watermark: 'Otoritas Resmi Yayasan PERISA Azhariyah',
+      aboutDesc: 'Panel administrasi dan pengawasan proses belajar seluruh santri Yayasan Peradaban Islam Azhariyah.',
+      lessons: []
     }
   };
 
@@ -98,12 +110,51 @@ const PrototypeApp = (() => {
     toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
   }
 
-  // Set Role Action
+  // Set Role Action (Full Dynamic Synchronization)
   function setRole(roleName) {
     document.querySelectorAll('.role-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.role === roleName);
     });
 
+    const data = roleData[roleName] || roleData['santri-smp'];
+
+    // 1. Update Sidebar User Card
+    const userCardAvatar = document.getElementById('sidebarUserAvatar');
+    const userCardName = document.getElementById('sidebarUserName');
+    const userCardSub = document.getElementById('sidebarUserSub');
+    if (userCardAvatar) {
+      userCardAvatar.textContent = data.user.initials;
+      userCardAvatar.style.background = data.user.bg;
+    }
+    if (userCardName) userCardName.textContent = data.user.name;
+    if (userCardSub) userCardSub.textContent = data.user.level;
+
+    // 2. Update Profile Dropdown Menu Elements
+    const dropAvatar = document.getElementById('dropdownAvatarLarge');
+    const dropName = document.getElementById('dropdownUserName');
+    const dropStatus = document.getElementById('dropdownUserStatus');
+    const dropNisn = document.getElementById('dropdownUserNisn');
+    if (dropAvatar) {
+      dropAvatar.textContent = data.user.initials;
+      dropAvatar.style.background = data.user.bg;
+    }
+    if (dropName) dropName.textContent = data.user.name;
+    if (dropStatus) dropStatus.textContent = data.user.status;
+    if (dropNisn) dropNisn.textContent = data.user.nisn;
+
+    // Update checkmarks in dropdown
+    ['sd', 'smp', 'sma', 'admin'].forEach(k => {
+      const item = document.getElementById(`accountItem-${k}`);
+      const check = document.getElementById(`check-${k}`);
+      const isCurrent = (k === 'sd' && roleName === 'santri-sd') ||
+                        (k === 'smp' && roleName === 'santri-smp') ||
+                        (k === 'sma' && roleName === 'santri-sma') ||
+                        (k === 'admin' && roleName === 'admin');
+      if (item) item.classList.toggle('current', isCurrent);
+      if (check) check.style.display = isCurrent ? 'block' : 'none';
+    });
+
+    // 3. View Switching
     const courseView = document.getElementById('viewCoursePlayer');
     const adminView = document.getElementById('viewAdminPanel');
     const ws = document.getElementById('refMainWorkspace');
@@ -121,22 +172,18 @@ const PrototypeApp = (() => {
       if (breadcrumbCategory) breadcrumbCategory.textContent = 'Otoritas & Tata Kelola';
       if (breadcrumb) breadcrumb.textContent = 'Panel Pengurus Yayasan';
 
-      showToast('Beralih ke Panel Otoritas dan Tata Kelola Yayasan');
+      showToast('Beralih ke Akun Pengurus: Panel Otoritas Yayasan');
       playTone(560, 'sine', 0.1, 0.06);
       return;
     }
 
-    // Otherwise it's a student role (SD, SMP, SMA)
+    // Student Role (SD, SMP, SMA)
     if (courseView) courseView.style.display = 'block';
     if (adminView) adminView.style.display = 'none';
 
-    const data = roleData[roleName] || roleData['santri-smp'];
-
-    // Update DOM Elements
-    const userCardName = document.querySelector('.user-name-small');
-    const userCardSub = document.getElementById('sidebarUserSub');
+    // 4. Update Course Content Elements
     const mainTitle = document.getElementById('courseMainTitle');
-    const jenjangPill = document.getElementById('courseJenjangPill');
+    const jenjangText = document.getElementById('courseJenjangText');
     const arabicTitle = document.getElementById('currentVideoArabic');
     const subtitle = document.getElementById('currentVideoSubtitle');
     const watermark = document.querySelector('.ref-video-watermark');
@@ -146,16 +193,14 @@ const PrototypeApp = (() => {
     if (breadcrumbCategory) breadcrumbCategory.textContent = data.jenjangPill;
     if (breadcrumb) breadcrumb.textContent = data.breadcrumb;
 
-    if (userCardName) userCardName.textContent = data.user.name;
-    if (userCardSub) userCardSub.textContent = data.user.level;
     if (mainTitle) mainTitle.textContent = data.title;
-    if (jenjangPill) jenjangPill.textContent = data.jenjangPill;
+    if (jenjangText) jenjangText.textContent = data.jenjangPill;
     if (arabicTitle) arabicTitle.textContent = data.arabicTitle;
     if (subtitle) subtitle.textContent = data.subtitle;
     if (watermark) watermark.innerHTML = `<i class="ph ph-shield-check"></i> ${data.watermark}`;
     if (aboutDesc) aboutDesc.textContent = data.aboutDesc;
 
-    // Render lessons
+    // 5. Render Lessons
     const lessonContainer = document.querySelector('.lesson-sub-list');
     if (lessonContainer) {
       lessonContainer.innerHTML = '';
@@ -171,7 +216,7 @@ const PrototypeApp = (() => {
       });
     }
 
-    showToast(`Beralih ke Portal Pembelajaran: ${data.jenjangPill}`);
+    showToast(`Beralih ke Akun Santri: ${data.user.name} (${data.jenjangPill})`);
     playTone(520, 'sine', 0.1, 0.06);
   }
 
@@ -709,8 +754,34 @@ const PrototypeApp = (() => {
     }
   }
 
+
+  // Toggle User Profile Dropdown
+  function toggleProfileDropdown(e) {
+    if (e) e.stopPropagation();
+    const card = document.getElementById('sidebarUserCard');
+    const menu = document.getElementById('profileDropdownMenu');
+    if (menu) {
+      const isOpen = menu.classList.toggle('show');
+      if (card) card.classList.toggle('active', isOpen);
+      if (isOpen) playTone(540, 'sine', 0.08, 0.05);
+    }
+  }
+
+  // Close profile dropdown when clicking anywhere outside
+  document.addEventListener('click', (e) => {
+    const card = document.getElementById('sidebarUserCard');
+    const menu = document.getElementById('profileDropdownMenu');
+    if (menu && menu.classList.contains('show')) {
+      if (!menu.contains(e.target) && (!card || !card.contains(e.target))) {
+        menu.classList.remove('show');
+        if (card) card.classList.remove('active');
+      }
+    }
+  });
+
   return {
     setRole,
+    toggleProfileDropdown,
     toggleMobileDrawer,
     switchMainView,
     askAiQuestion,

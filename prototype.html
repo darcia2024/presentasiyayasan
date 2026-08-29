@@ -505,14 +505,92 @@
         <img src="logo-perisa-horizontal.png?v=3.0" alt="Yayasan Peradaban Islam Azhariyah" style="width: 100%; max-width: 210px; height: auto; display: block; object-fit: contain;">
       </div>
 
-      <!-- User Profile Card -->
-      <div class="sidebar-user-card" onclick="PrototypeApp.showToast('Profil Santri: Ahmad Fauzan')">
-        <div class="user-left-info">
-          <div class="user-avatar-small">AF</div>
-          <div>
-            <div class="user-name-small">Ahmad Fauzan</div>
-            <div style="font-size: 10px; color: var(--text-muted);" id="sidebarUserSub">Santri Jenjang SMP</div>
+            <!-- User Profile Card (Interactive Profile Switcher Dropdown) -->
+      <div style="position: relative;">
+        <div class="sidebar-user-card" id="sidebarUserCard" onclick="PrototypeApp.toggleProfileDropdown(event)">
+          <div class="user-left-info">
+            <div class="user-avatar-small" id="sidebarUserAvatar">AF</div>
+            <div>
+              <div class="user-name-small" id="sidebarUserName">Ahmad Fauzan</div>
+              <div style="font-size: 10px; color: var(--text-muted);" id="sidebarUserSub">Santri Jenjang SMP Kelas 8</div>
+            </div>
           </div>
+          <i class="ph ph-caret-down" id="sidebarUserCaret" style="color: var(--text-muted); font-size: 13px;"></i>
+        </div>
+
+        <!-- Dropdown Menu -->
+        <div class="profile-dropdown-menu" id="profileDropdownMenu" onclick="event.stopPropagation()">
+          <div class="dropdown-user-header">
+            <div class="dropdown-avatar-large" id="dropdownAvatarLarge">AF</div>
+            <div>
+              <strong style="font-size: 13px; color: var(--teal-dark);" id="dropdownUserName">Ahmad Fauzan</strong>
+              <div style="font-size: 10.5px; color: var(--teal-primary); font-weight: 600;" id="dropdownUserStatus">Terverifikasi • Infaq Aktif</div>
+              <div style="font-size: 9.5px; color: var(--text-muted);" id="dropdownUserNisn">NISN: PERISA-SMP-0821</div>
+            </div>
+          </div>
+
+          <div style="font-size: 10.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em;">
+            Pilih Perspektif Santri:
+          </div>
+
+          <div class="dropdown-account-list">
+            <div class="dropdown-account-item" id="accountItem-sd" onclick="PrototypeApp.setRole('santri-sd'); PrototypeApp.toggleProfileDropdown();">
+              <div class="dropdown-account-left">
+                <div class="dropdown-mini-avatar">AZ</div>
+                <div>
+                  <div style="font-size: 12px; font-weight: 700;">Aisyah Zahra</div>
+                  <div style="font-size: 10px; color: var(--text-muted);">Santri Jenjang SD (Kelas 5)</div>
+                </div>
+              </div>
+              <i class="ph ph-check" style="font-size: 14px; color: var(--teal-primary); display: none;" id="check-sd"></i>
+            </div>
+
+            <div class="dropdown-account-item current" id="accountItem-smp" onclick="PrototypeApp.setRole('santri-smp'); PrototypeApp.toggleProfileDropdown();">
+              <div class="dropdown-account-left">
+                <div class="dropdown-mini-avatar">AF</div>
+                <div>
+                  <div style="font-size: 12px; font-weight: 700;">Ahmad Fauzan</div>
+                  <div style="font-size: 10px; color: var(--text-muted);">Santri Jenjang SMP (Kelas 8)</div>
+                </div>
+              </div>
+              <i class="ph ph-check" style="font-size: 14px; color: var(--teal-primary); display: block;" id="check-smp"></i>
+            </div>
+
+            <div class="dropdown-account-item" id="accountItem-sma" onclick="PrototypeApp.setRole('santri-sma'); PrototypeApp.toggleProfileDropdown();">
+              <div class="dropdown-account-left">
+                <div class="dropdown-mini-avatar">RP</div>
+                <div>
+                  <div style="font-size: 12px; font-weight: 700;">M. Rizky Pratama</div>
+                  <div style="font-size: 10px; color: var(--text-muted);">Santri Jenjang SMA (Kelas 11)</div>
+                </div>
+              </div>
+              <i class="ph ph-check" style="font-size: 14px; color: var(--teal-primary); display: none;" id="check-sma"></i>
+            </div>
+
+            <div class="dropdown-account-item" id="accountItem-admin" onclick="PrototypeApp.setRole('admin'); PrototypeApp.toggleProfileDropdown();">
+              <div class="dropdown-account-left">
+                <div class="dropdown-mini-avatar" style="background: var(--gold-light); color: var(--gold-dark);">UE</div>
+                <div>
+                  <div style="font-size: 12px; font-weight: 700;">Pengurus Yayasan</div>
+                  <div style="font-size: 10px; color: var(--text-muted);">Otoritas PERISA Azhariyah</div>
+                </div>
+              </div>
+              <i class="ph ph-check" style="font-size: 14px; color: var(--gold-dark); display: none;" id="check-admin"></i>
+            </div>
+          </div>
+
+          <div class="dropdown-quick-actions">
+            <button class="dropdown-action-btn" onclick="PrototypeApp.toggleProfileDropdown(); PrototypeApp.openCertificate();">
+              <i class="ph ph-certificate" style="color: var(--gold-dark);"></i>
+              <span>Lihat Piagam Kelulusan Santri</span>
+            </button>
+            <button class="dropdown-action-btn" onclick="PrototypeApp.toggleProfileDropdown(); PrototypeApp.showToast('Data infaq santri telah terverifikasi bendahara yayasan');">
+              <i class="ph ph-shield-check" style="color: var(--teal-primary);"></i>
+              <span>Status Infaq & Verifikasi</span>
+            </button>
+          </div>
+        </div>
+      </div>
         </div>
         <i class="ph ph-caret-down" style="color: var(--text-muted); font-size: 12px;"></i>
       </div>
