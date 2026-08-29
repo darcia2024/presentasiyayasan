@@ -2,66 +2,193 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Game 2D Petualangan Santri Bahasa Arab — PERISA Node.js</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulasi Percakapan & Evaluasi Suara Santri — Yayasan PERISA Azhariyah</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & Amiri -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Phosphor Icons -->
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
   <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+
   <link rel="stylesheet" href="game2d.css">
 </head>
 <body>
 
-  <div class="game-wrapper">
-    
-    <header class="game-header">
-      <div class="game-title-group">
-        <h1><i class="ph-bold ph-game-controller"></i> Petualangan Santri Mufrodat 2D</h1>
-        <p>Yayasan Peradaban Islam Azhariyah • Node.js Canvas Engine</p>
-      </div>
-
-      <div class="game-stats-hud">
-        <div class="hud-pill xp"><i class="ph-bold ph-sparkle"></i> <span id="gameHudXp">420 XP</span></div>
-        <div class="hud-pill"><span id="gameHudLives">❤️❤️❤️</span></div>
-        <a href="prototype.html" class="hud-pill" style="text-decoration: none; color: #00877A;">
-          <i class="ph-bold ph-arrow-u-up-left"></i> Kembali ke Portal
-        </a>
-      </div>
-    </header>
-
-    <!-- Mission Target Banner -->
-    <div style="background: linear-gradient(135deg, #072624 0%, #103B38 100%); color: #FFFFFF; border-radius: 14px; padding: 12px 18px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+  <!-- Top Navigation Header -->
+  <header class="hiwar-header-bar">
+    <div class="header-left-brand">
+      <div class="brand-badge-icon"><i class="ph ph-buildings"></i></div>
       <div>
-        <span id="questJenjangTag" style="background: rgba(0, 210, 190, 0.2); border: 1px solid #00D2BE; color: #A7F3EC; padding: 2px 8px; border-radius: 9999px; font-size: 10px; font-weight: 800;">SD - Mufrodat Sekolah</span>
-        <div style="font-size: 13px; margin-top: 4px;">
-          MISI: Tangkap kata Arab: <strong id="questTargetArabic" style="color: #FBBF24; font-size: 18px; font-family: Arial;">المَكْتَبَةُ</strong> <span id="questTargetTranslation" style="color: #A7F3EC; font-size: 12px;">(Perpustakaan)</span>
+        <div class="brand-title-main">Simulasi Percakapan & Evaluasi Suara Bahasa Arab</div>
+        <div class="brand-title-sub">Yayasan Peradaban Islam Azhariyah • Asuhan Umi Elly</div>
+      </div>
+    </div>
+
+    <div class="header-right-meta">
+      <div class="stat-pill-box">
+        <i class="ph ph-student"></i>
+        <span>Santri: <strong>Ahmad Fauzan</strong> (SMP Kelas 8)</span>
+      </div>
+      <div class="stat-pill-box" style="background: rgba(0, 135, 122, 0.15); color: #A7F3EC; border-color: #00877A;">
+        <i class="ph ph-seal-check"></i>
+        <span>Skor Kelancaran: <strong id="scoreDisplay">100% (Mumtaz)</strong></span>
+      </div>
+      <a href="prototype.html" class="btn-return-portal">
+        <i class="ph ph-arrow-left"></i> Kembali ke Portal
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Simulator Container -->
+  <main class="hiwar-main-container">
+    
+    <!-- Left Dialogue Screen (70%) -->
+    <section class="hiwar-dialogue-screen">
+      
+      <!-- Top Dialogue Mission Banner -->
+      <div class="mission-status-banner">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="step-indicator" id="currentStepPill">Langkah 1 dari 4</span>
+          <span style="font-size: 12.5px; font-weight: 700; color: var(--teal-dark);" id="missionThemeTitle">
+            Tema: Percakapan Sapaan & Fasilitas Perpustakaan (التَّعَارُفُ وَالمَكْتَبَةُ)
+          </span>
+        </div>
+        <div class="response-mode-toggle">
+          <button class="mode-toggle-btn active" id="modeVoiceBtn" onclick="HiwarApp.setResponseMode('voice')">
+            <i class="ph ph-microphone"></i> Mode Suara
+          </button>
+          <button class="mode-toggle-btn" id="modeChoiceBtn" onclick="HiwarApp.setResponseMode('choice')">
+            <i class="ph ph-list-checks"></i> Pilihan Ganda
+          </button>
         </div>
       </div>
-      <div id="gameActionBanner" style="font-size: 12px; font-weight: 800; color: #FBBF24; opacity: 0; transition: opacity 0.3s;">Mumtaz! +50 XP</div>
-    </div>
 
-    <!-- 2D Canvas Area -->
-    <div class="canvas-container">
-      <canvas id="gameCanvas" width="800" height="440"></canvas>
-    </div>
+      <!-- Chat Dialogue History Canvas -->
+      <div class="chat-dialogue-canvas" id="chatCanvas">
+        
+        <!-- Message 1: Umi Elly -->
+        <div class="chat-message-bubble teacher-bubble">
+          <div class="speaker-avatar-circle">UE</div>
+          <div class="bubble-content-box">
+            <div class="bubble-speaker-name">Umi Elly (Pengasuh Yayasan)</div>
+            <div class="bubble-arabic-text" id="teacherArabicText">السَّلَامُ عَلَيْكُمْ يَا أَحْمَد ، كَيْفَ حَالُكَ اليَوْمَ ؟</div>
+            <div class="bubble-latin-sub" id="teacherLatinSub">"Assalamu'alaikum ya Ahmad, kaifa halukal yaum?" (Bagaimana kabarmu hari ini?)</div>
+            <button class="btn-replay-audio" onclick="HiwarApp.speakTeacherArabic()">
+              <i class="ph ph-speaker-high"></i> Dengarkan Suara Umi Elly
+            </button>
+          </div>
+        </div>
 
-    <!-- Mobile Touch / Tablet Controls Bar -->
-    <div class="touch-controls-bar">
-      <div class="dpad-group">
-        <button class="touch-btn" id="btnTouchLeft"><i class="ph-bold ph-caret-left"></i></button>
-        <button class="touch-btn" id="btnTouchRight"><i class="ph-bold ph-caret-right"></i></button>
+        <!-- Student Dynamic Response Bubble (Appears after answer) -->
+        <div class="chat-message-bubble student-bubble" id="studentResponseBubble" style="display: none;">
+          <div class="bubble-content-box" style="text-align: right;">
+            <div class="bubble-speaker-name" style="color: var(--teal-primary);">Ahmad Fauzan (Santri)</div>
+            <div class="bubble-arabic-text" id="studentArabicText">وَعَلَيْكُمُ السَّلَامُ ، أَنَا بِخَيْرٍ وَالحَمْدُ لِلَّهِ</div>
+            <div class="bubble-latin-sub" id="studentLatinSub">"Wa'alaikumussalam, ana bikhair walhamdulillah"</div>
+            <div class="accuracy-badge" id="studentAccuracyBadge"><i class="ph ph-check"></i> Pelafalan Fasih & Tepat</div>
+          </div>
+          <div class="speaker-avatar-circle student-avatar">AF</div>
+        </div>
+
       </div>
-      <button class="touch-btn jump-btn" id="btnTouchJump">
-        <i class="ph-bold ph-arrow-up"></i>
-        <span>LOMPAT</span>
+
+      <!-- Bottom Interactive Response Control Dock -->
+      <div class="dialogue-bottom-dock">
+        
+        <!-- Voice Recording Mode Dock -->
+        <div id="voiceControlDock" class="voice-dock-layout">
+          <div class="voice-instruction-text">
+            <span id="voicePromptInstruction">Silakan tekan tombol mikrofon di bawah dan ucapkan jawaban dalam bahasa Arab:</span>
+            <div class="target-phrase-recommendation" id="targetVoicePhrase">"وَعَلَيْكُمُ السَّلَامُ ، أَنَا بِخَيْرٍ وَالحَمْدُ لِلَّهِ"</div>
+          </div>
+
+          <div class="mic-action-row">
+            <button class="btn-record-mic" id="recordMicBtn" onclick="HiwarApp.toggleVoiceRecording()">
+              <i class="ph ph-microphone" id="micIcon"></i>
+              <span id="micLabel">Mulai Merekam Suara</span>
+            </button>
+            
+            <div class="voice-waveform-box" id="voiceWaveform">
+              <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+              <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+            </div>
+
+            <button class="btn-direct-submit" id="btnSimulateVoice" onclick="HiwarApp.submitVoiceAnswer()">
+              <i class="ph ph-paper-plane-right"></i> Kirim Jawaban Suara
+            </button>
+          </div>
+        </div>
+
+        <!-- Multiple Choice Mode Dock -->
+        <div id="choiceControlDock" class="choice-dock-layout" style="display: none;">
+          <div style="font-size: 13px; font-weight: 700; color: var(--teal-dark); margin-bottom: 10px;">
+            Pilihlah kalimat respon percakapan yang tepat:
+          </div>
+          <div class="choice-options-grid" id="choiceOptionsGrid">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- Right Evaluation & Reference Sidebar (30%) -->
+    <aside class="hiwar-eval-sidebar">
+      
+      <!-- Lesson Reference Card -->
+      <div class="eval-card-box">
+        <h3 class="eval-card-title"><i class="ph ph-book-open"></i> Kaidah Nahwu Terkait</h3>
+        <p style="font-size: 12px; color: var(--text-body); line-height: 1.55;" id="ruleReferenceText">
+          Percakapan ini menerapkan kaidah <strong>Sapaan Santri & Isim Dhomir</strong> (أَنَا / Saya). Respon santri menggunakan kalimat baku yang beradab sesuai sunnah.
+        </p>
+      </div>
+
+      <!-- Vocabulary Pocket List -->
+      <div class="eval-card-box">
+        <h3 class="eval-card-title"><i class="ph ph-list-star"></i> Kosakata (Mufrodat) Pembelajaran</h3>
+        <div class="vocab-pocket-list" id="vocabPocketList">
+          <div class="vocab-pocket-item">
+            <span class="vocab-ar">كَيْفَ حَالُكَ</span>
+            <span class="vocab-id">Bagaimana kabarmu?</span>
+          </div>
+          <div class="vocab-pocket-item">
+            <span class="vocab-ar">أَنَا بِخَيْرٍ</span>
+            <span class="vocab-id">Saya dalam keadaan baik</span>
+          </div>
+          <div class="vocab-pocket-item">
+            <span class="vocab-ar">المَكْتَبَةُ</span>
+            <span class="vocab-id">Perpustakaan</span>
+          </div>
+          <div class="vocab-pocket-item">
+            <span class="vocab-ar">عَلَى المَكْتَبِ</span>
+            <span class="vocab-id">Di atas meja</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Completion Summary Card -->
+      <div class="eval-card-box" style="background: var(--teal-light); border-color: var(--teal-primary);">
+        <h3 class="eval-card-title" style="color: #006D63;"><i class="ph ph-seal-check"></i> Panduan Makhraj Umi Elly</h3>
+        <p style="font-size: 11.5px; color: #006D63; line-height: 1.5;">
+          Perhatikan kejelasan huruf <strong>ح (Haa Halqiyyah)</strong> pada kata <em>"Bikhair"</em> dan <em>"Haluka"</em> agar makhraj huruf terdengar fasih.
+        </p>
+      </div>
+
+      <button class="btn-enroll-primary" style="width: 100%; justify-content: center; padding: 12px;" onclick="HiwarApp.resetSimulator()">
+        <i class="ph ph-arrows-counter-clockwise"></i> Ulangi Simulasi dari Awal
       </button>
-    </div>
 
-    <div class="game-instructions">
-      Gunakan tombol <strong>Panah Kiri / Kanan</strong> untuk berjalan, dan <strong>Spasi / Panah Atas</strong> untuk melompat!
-    </div>
+    </aside>
 
-  </div>
+  </main>
+
+  <div class="toast-bar" id="hiwarToast">Pemberitahuan</div>
 
   <script src="game2d.js"></script>
 </body>
