@@ -261,10 +261,10 @@
       <div id="viewCoursePlayer" style="display: block; width: 100%;">
         <div class="course-main-grid">
 
-          <!-- LEFT COLUMN: PLAYER & TABS -->
+                    <!-- LEFT COLUMN: PLAYER & TABS -->
           <div class="left-player-column">
             
-                        <!-- CLEAN UNBOXED CODELINGO HEADER (ZERO BADGES) -->
+            <!-- CLEAN UNBOXED CODELINGO HEADER (ZERO BADGES) -->
             <div class="course-title-header">
               <div>
                 <h1 class="course-main-h1">
@@ -294,6 +294,61 @@
               </div>
             </div>
 
+            <!-- Video Player Screen -->
+            <div class="ref-video-player-box">
+              <div class="video-screen-content">
+                
+                <!-- Floating Dynamic Moving Watermark -->
+                <div class="ref-video-watermark">
+                  <i class="ph ph-shield-check"></i> Ahmad Fauzan • 0812-8921-9921 • Hak Cipta PERISA Azhariyah
+                </div>
+
+                <div style="font-size: 26px; font-weight: 700; font-family: 'Amiri', 'Traditional Arabic', Arial; margin-bottom: 6px;" id="currentVideoArabic">
+                  الوَحْدَةُ الثَّانِيَةُ : فِي المَدْرَسَةِ
+                </div>
+                <div style="font-size: 13px; color: #A7F3EC; margin-bottom: 20px;" id="currentVideoSubtitle">
+                  Modul 02: Kosakata Fasilitas Perpustakaan (المَكْتَبَةُ)
+                </div>
+
+                <button class="center-glass-play" onclick="PrototypeApp.togglePlayVideo()">
+                  <i class="ph ph-play" id="playIcon"></i>
+                </button>
+
+              </div>
+            </div>
+
+            <!-- Horizontal Sub-Tabs -->
+            <div class="ref-sub-tabs-bar">
+              <button class="sub-tab-btn active" data-subtab="ringkasan" onclick="PrototypeApp.switchSubTab('ringkasan')">Ringkasan Materi</button>
+              <button class="sub-tab-btn" data-subtab="audio" onclick="PrototypeApp.switchSubTab('audio')">Pelafalan Mufrodat</button>
+              <button class="sub-tab-btn" data-subtab="kuis" onclick="PrototypeApp.switchSubTab('kuis')">Evaluasi Pemahaman</button>
+              <button class="sub-tab-btn" data-subtab="pengumuman" onclick="PrototypeApp.switchSubTab('pengumuman')">Pemberitahuan Yayasan</button>
+              <button class="sub-tab-btn" data-subtab="ulasan" onclick="PrototypeApp.switchSubTab('ulasan')">Catatan & Ulasan</button>
+            </div>
+
+            <!-- SUB-TAB CONTENT CONTAINER -->
+            <div class="sub-tab-viewport" style="margin-top: 14px;">
+
+              <!-- 1. TAB RINGKASAN MATERI -->
+              <div id="subtab-ringkasan" class="subtab-pane active">
+                <div class="about-course-block">
+                  <h3>Deskripsi Modul Pembelajaran</h3>
+                  <p id="aboutCourseDesc">
+                    Modul ini disusun oleh <strong>Umi Elly</strong> untuk membimbing santri memahami kaidah tata bahasa Arab secara terstruktur, pengenalan susunan kalimat <em>Jumlah Ismiyyah</em> (Mubtada dan Khobar), serta penguasaan kosakata tematik fasilitas pendidikan.
+                  </p>
+
+                  <div class="what-learn-card">
+                    <h4 style="font-size: 13.5px; font-weight: 700; color: var(--teal-dark);">Kompetensi Dasar Pembelajaran</h4>
+                    <div class="what-learn-grid" id="whatLearnGrid">
+                      <div class="learn-item"><i class="ph ph-check"></i><span>Memahami struktur Mubtada dan Khobar dalam kalimat sempurna</span></div>
+                      <div class="learn-item"><i class="ph ph-check"></i><span>Menguasai 20 kosakata tematik fasilitas dan sarana sekolah</span></div>
+                      <div class="learn-item"><i class="ph ph-check"></i><span>Mengenal pembagian kata ganti (Dhomir Munfashil)</span></div>
+                      <div class="learn-item"><i class="ph ph-check"></i><span>Mempraktikkan percakapan (hiwar) baku secara terbimbing</span></div>
+                      <div class="learn-item"><i class="ph ph-check"></i><span>Menuntaskan lembar evaluasi mandiri setiap modul</span></div>
+                      <div class="learn-item"><i class="ph ph-check"></i><span>Memperoleh sertifikat resmi kelulusan berverifikasi QR</span></div>
+                    </div>
+                  </div>
+
                   <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
                     <div style="display: flex; align-items: center; gap: 12px;">
                       <i class="ph ph-file-pdf" style="font-size: 26px; color: var(--teal-primary);"></i>
@@ -309,7 +364,7 @@
                 </div>
               </div>
 
-              <!-- Tab 2: Pelafalan Audio -->
+              <!-- 2. TAB PELAFALAN AUDIO (REAL ARABIC VOICE SYNTHESIS) -->
               <div id="subtab-audio" class="subtab-pane" style="display: none;">
                 <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 22px;">
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px;">
@@ -326,40 +381,54 @@
                     </button>
                   </div>
 
+                  <!-- Word Cards Grid -->
                   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                    
                     <div id="wordCard-1" class="arabic-word-card" onclick="PrototypeApp.speakArabic('المَكْتَبَةُ', 'Al-Maktabatu (Perpustakaan)', 'wordCard-1')">
                       <div>
                         <div class="arabic-text-large">المَكْتَبَةُ</div>
                         <div class="latin-meaning-text">Al-Maktabatu (Perpustakaan)</div>
                       </div>
-                      <button class="icon-circle-btn speaker-play-btn"><i class="ph ph-speaker-high"></i></button>
+                      <button class="icon-circle-btn speaker-play-btn" title="Dengarkan Suara">
+                        <i class="ph ph-speaker-high"></i>
+                      </button>
                     </div>
+
                     <div id="wordCard-2" class="arabic-word-card" onclick="PrototypeApp.speakArabic('الكِتَابُ', 'Al-Kitabu (Buku Pelajaran)', 'wordCard-2')">
                       <div>
                         <div class="arabic-text-large">الكِتَابُ</div>
                         <div class="latin-meaning-text">Al-Kitabu (Buku Pelajaran)</div>
                       </div>
-                      <button class="icon-circle-btn speaker-play-btn"><i class="ph ph-speaker-high"></i></button>
+                      <button class="icon-circle-btn speaker-play-btn" title="Dengarkan Suara">
+                        <i class="ph ph-speaker-high"></i>
+                      </button>
                     </div>
+
                     <div id="wordCard-3" class="arabic-word-card" onclick="PrototypeApp.speakArabic('القَلَمُ', 'Al-Qalamu (Pena)', 'wordCard-3')">
                       <div>
                         <div class="arabic-text-large">القَلَمُ</div>
                         <div class="latin-meaning-text">Al-Qalamu (Pena)</div>
                       </div>
-                      <button class="icon-circle-btn speaker-play-btn"><i class="ph ph-speaker-high"></i></button>
+                      <button class="icon-circle-btn speaker-play-btn" title="Dengarkan Suara">
+                        <i class="ph ph-speaker-high"></i>
+                      </button>
                     </div>
+
                     <div id="wordCard-4" class="arabic-word-card" onclick="PrototypeApp.speakArabic('الفَصْلُ', 'Al-Fashlu (Ruang Kelas)', 'wordCard-4')">
                       <div>
                         <div class="arabic-text-large">الفَصْلُ</div>
                         <div class="latin-meaning-text">Al-Fashlu (Ruang Kelas)</div>
                       </div>
-                      <button class="icon-circle-btn speaker-play-btn"><i class="ph ph-speaker-high"></i></button>
+                      <button class="icon-circle-btn speaker-play-btn" title="Dengarkan Suara">
+                        <i class="ph ph-speaker-high"></i>
+                      </button>
                     </div>
+
                   </div>
                 </div>
               </div>
 
-              <!-- Tab 3: Evaluasi -->
+              <!-- 3. TAB EVALUASI PEMAHAMAN -->
               <div id="subtab-kuis" class="subtab-pane" style="display: none;">
                 <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 22px;">
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
@@ -383,7 +452,7 @@
                 </div>
               </div>
 
-              <!-- Tab 4: Pengumuman -->
+              <!-- 4. TAB PEMBERITAHUAN -->
               <div id="subtab-pengumuman" class="subtab-pane" style="display: none;">
                 <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px;">
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
@@ -396,7 +465,7 @@
                 </div>
               </div>
 
-              <!-- Tab 5: Ulasan -->
+              <!-- 5. TAB ULASAN -->
               <div id="subtab-ulasan" class="subtab-pane" style="display: none;">
                 <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px;">
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
