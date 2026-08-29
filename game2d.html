@@ -100,11 +100,16 @@
       <!-- Bottom Interactive Response Control Dock -->
       <div class="dialogue-bottom-dock">
         
-        <!-- Voice Recording Mode Dock -->
+        <!-- Voice Recording Mode Dock with Real Speech Recognition -->
         <div id="voiceControlDock" class="voice-dock-layout">
           <div class="voice-instruction-text">
-            <span id="voicePromptInstruction">Silakan tekan tombol mikrofon di bawah dan ucapkan jawaban dalam bahasa Arab:</span>
+            <span id="voicePromptInstruction">Tekan tombol mikrofon dan ucapkan kalimat target berikut:</span>
             <div class="target-phrase-recommendation" id="targetVoicePhrase">"وَعَلَيْكُمُ السَّلَامُ ، أَنَا بِخَيْرٍ وَالحَمْدُ لِلَّهِ"</div>
+          </div>
+
+          <!-- Live Speech Detection Monitor Box -->
+          <div id="liveVoiceTranscript" style="background: var(--bg-subtle); border: 1px dashed var(--border-color); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 12px; color: var(--text-muted); font-style: italic;">
+            Belum ada suara terekam. Tekan tombol rekam di bawah lalu berbicaralah ke mikrofon.
           </div>
 
           <div class="mic-action-row">
@@ -118,8 +123,8 @@
               <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
             </div>
 
-            <button class="btn-direct-submit" id="btnSimulateVoice" onclick="HiwarApp.submitVoiceAnswer()">
-              <i class="ph ph-paper-plane-right"></i> Kirim Jawaban Suara
+            <button class="btn-direct-submit" style="background: var(--bg-subtle); border: 1px solid var(--border-color); color: var(--teal-primary);" title="Uji Coba Suara Otomatis" onclick="HiwarApp.simulateCorrectSpokenAnswer()">
+              <i class="ph ph-check"></i> Uji Suara Target
             </button>
           </div>
         </div>

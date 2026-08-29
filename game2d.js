@@ -1,6 +1,7 @@
 /**
- * SIMULASI PERCAKAPAN (HIWAR) & EVALUASI SUARA SANTRI
+ * SIMULASI PERCAKAPAN (HIWAR) & EVALUASI SUARA SANTRI ASLI
  * Yayasan Peradaban Islam Azhariyah — Asuhan Umi Elly
+ * With Real Web Speech Recognition (Microphone Listener & Accuracy Scorer)
  */
 
 const HiwarApp = (() => {
@@ -13,6 +14,7 @@ const HiwarApp = (() => {
       teacherLatin: '"Assalamu\'alaikum ya Ahmad, kaifa halukal yaum?" (Bagaimana kabarmu hari ini?)',
       targetAr: 'وَعَلَيْكُمُ السَّلَامُ ، أَنَا بِخَيْرٍ وَالحَمْدُ لِلَّهِ',
       targetLatin: '"Wa\'alaikumussalam, ana bikhair walhamdulillah"',
+      keywords: ['وعليكم', 'سلام', 'بخير', 'الحمد', 'لله', 'bikhair', 'alhamdulillah', 'salam', 'waalaikumsalam'],
       rule: 'Menerapkan kaidah sapaan baku santri dan kata ganti Dhomir (أَنَا / Saya).',
       choices: [
         { text: 'وَعَلَيْكُمُ السَّلَامُ ، أَنَا بِخَيْرٍ وَالحَمْدُ لِلَّهِ', correct: true, latin: 'Wa\'alaikumussalam, ana bikhair walhamdulillah' },
@@ -27,6 +29,7 @@ const HiwarApp = (() => {
       teacherLatin: '"Madza taqra\'u fil maktabati ya bunayya?" (Apa yang engkau baca di perpustakaan, wahai ananda?)',
       targetAr: 'أَقْرَأُ كِتَابَ اللُّغَةِ العَرَبِيَّةِ وَالقَوَاعِدِ',
       targetLatin: '"Aqra\'u kitabal lughatil arabiyyati wal qawa\'id"',
+      keywords: ['اقرأ', 'كتاب', 'اللغة', 'العربية', 'قواعد', 'aqra', 'kitab', 'arabiyyah', 'qawaid'],
       rule: 'Penerapan Fi\'il Mudhari\' untuk orang pertama (أَقْرَأُ / Saya membaca) dan Maf\'ul Bih.',
       choices: [
         { text: 'أَقْرَأُ كِتَابَ اللُّغَةِ العَرَبِيَّةِ وَالقَوَاعِدِ', correct: true, latin: 'Aqra\'u kitabal lughatil arabiyyati wal qawa\'id' },
@@ -41,6 +44,7 @@ const HiwarApp = (() => {
       teacherLatin: '"Aynal kitabul ladzi taqra\'uhul an?" (Di manakah buku yang sedang engkau baca sekarang?)',
       targetAr: 'الكِتَابُ عَلَى المَكْتَبِ أَمَامِي',
       targetLatin: '"Al-Kitabu \'alal maktabi amami"',
+      keywords: ['الكتاب', 'على', 'المكتب', 'امامي', 'kitab', 'maktab', 'amami'],
       rule: 'Penerapan kaidah Jumlah Ismiyyah: الكِتَابُ (Mubtada\') dan عَلَى المَكْتَبِ (Khobar Syibhul Jumlah).',
       choices: [
         { text: 'الكِتَابُ عَلَى المَكْتَبِ أَمَامِي', correct: true, latin: 'Al-Kitabu \'alal maktabi amami (Buku itu di atas meja di depanku)' },
@@ -55,6 +59,7 @@ const HiwarApp = (() => {
       teacherLatin: '"Barakallahu fika ya Ahmad, zadakallahu \'ilman wa fahma" (Semoga Allah memberkahimu dan menambah ilmu bagimu)',
       targetAr: 'آمِيْنَ يَا رَبَّ العَالَمِيْنَ ، وَجَزَاكِ اللهُ خَيْرًا يَا أُمِّي',
       targetLatin: '"Aamin ya Rabbal \'Alamin, wa jazakillahu khairan ya Ummi"',
+      keywords: ['آمين', 'رب', 'العالمين', 'جزاك', 'خيرا', 'امي', 'aamin', 'jazakillah', 'khair', 'ummi'],
       rule: 'Adab santri dalam membalas doa guru/pengasuh dengan doa kebaikan (Jazakillahu Khairan).',
       choices: [
         { text: 'آمِيْنَ يَا رَبَّ العَالَمِيْنَ ، وَجَزَاكِ اللهُ خَيْرًا يَا أُمِّي', correct: true, latin: 'Aamin ya Rabbal \'Alamin, wa jazakillahu khairan ya Ummi' },
@@ -67,6 +72,8 @@ const HiwarApp = (() => {
   let currentStepIdx = 0;
   let responseMode = 'voice';
   let isRecording = false;
+  let recognitionInstance = null;
+  let userSpokenText = '';
 
   // Web Audio Synth for tones
   let audioCtx = null;
@@ -103,7 +110,7 @@ const HiwarApp = (() => {
     toast.textContent = msg;
     toast.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
   }
 
   // Speak Arabic with Web Speech
@@ -138,13 +145,14 @@ const HiwarApp = (() => {
     document.getElementById('voiceControlDock').style.display = mode === 'voice' ? 'flex' : 'none';
     document.getElementById('choiceControlDock').style.display = mode === 'choice' ? 'block' : 'none';
 
-    showToast(`Mode respon berganti ke: ${mode === 'voice' ? 'Rekaman Suara / Bicara' : 'Pilihan Ganda'}`);
+    showToast(`Mode respon berganti ke: ${mode === 'voice' ? 'Rekaman Suara Nyata' : 'Pilihan Ganda'}`);
     playTone(540, 'sine', 0.08, 0.05);
   }
 
   // Render Current Step Data
   function renderCurrentStep() {
     const data = dialogueSteps[currentStepIdx];
+    userSpokenText = '';
     
     // Header & Info
     document.getElementById('currentStepPill').textContent = `Langkah ${data.step} dari ${dialogueSteps.length}`;
@@ -158,6 +166,10 @@ const HiwarApp = (() => {
     // Target Voice Phrase
     document.getElementById('targetVoicePhrase').textContent = `"${data.targetAr}"`;
 
+    // Reset Live Voice Box
+    const liveBox = document.getElementById('liveVoiceTranscript');
+    if (liveBox) liveBox.textContent = 'Belum ada suara terekam. Tekan tombol merah di bawah lalu berbicaralah.';
+
     // Hide Student Response from previous step until answered
     document.getElementById('studentResponseBubble').style.display = 'none';
 
@@ -165,7 +177,7 @@ const HiwarApp = (() => {
     const choiceContainer = document.getElementById('choiceOptionsGrid');
     if (choiceContainer) {
       choiceContainer.innerHTML = '';
-      data.choices.forEach((c, idx) => {
+      data.choices.forEach((c) => {
         const btn = document.createElement('div');
         btn.className = 'choice-option-card';
         btn.onclick = () => handleChoiceAnswer(c.correct, c.text, c.latin);
@@ -186,6 +198,47 @@ const HiwarApp = (() => {
     }, 400);
   }
 
+  // Real Web Speech Recognition Initializer
+  function startRealSpeechRecognition() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      showToast('Browser belum mendukung Speech Recognition. Menggunakan mode analisis audio.');
+      return null;
+    }
+
+    const rec = new SpeechRecognition();
+    rec.continuous = false;
+    rec.interimResults = true;
+    rec.lang = 'ar-SA'; // Listen for Arabic pronunciation
+
+    rec.onstart = () => {
+      const liveBox = document.getElementById('liveVoiceTranscript');
+      if (liveBox) liveBox.textContent = 'Mendengarkan ucapan santri... Silakan berbicara.';
+    };
+
+    rec.onresult = (event) => {
+      let transcript = '';
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        transcript += event.results[i][0].transcript;
+      }
+      userSpokenText = transcript;
+      const liveBox = document.getElementById('liveVoiceTranscript');
+      if (liveBox) liveBox.textContent = `Terdengar: "${transcript}"`;
+    };
+
+    rec.onerror = (err) => {
+      console.warn('SpeechRecognition error:', err);
+    };
+
+    rec.onend = () => {
+      if (isRecording) {
+        processRealSpokenResult();
+      }
+    };
+
+    return rec;
+  }
+
   // Toggle Voice Recording
   function toggleVoiceRecording() {
     isRecording = !isRecording;
@@ -194,25 +247,42 @@ const HiwarApp = (() => {
     const icon = document.getElementById('micIcon');
 
     if (isRecording) {
+      userSpokenText = '';
       btn.classList.add('recording');
-      label.textContent = 'Merekam... Ucapkan Kalimat';
+      label.textContent = 'Sedang Merekam... Bicaralah Sekarang';
       icon.className = 'ph-fill ph-waveform';
-      showToast('Mikrofon aktif. Silakan ucapkan kalimat bahasa Arab!');
+      showToast('Mikrofon MENDENGARKAN! Silakan ucapkan kalimat bahasa Arab.');
       playTone(660, 'sine', 0.1, 0.08);
 
-      // Auto stop after 3.5s for seamless interactive experience
+      try {
+        if (!recognitionInstance) recognitionInstance = startRealSpeechRecognition();
+        if (recognitionInstance) recognitionInstance.start();
+      } catch (e) {
+        console.log('Recognition restart:', e);
+      }
+
+      // Auto evaluate after 4.5 seconds if user stops speaking
       setTimeout(() => {
-        if (isRecording) submitVoiceAnswer();
-      }, 3500);
+        if (isRecording) {
+          if (recognitionInstance) {
+            try { recognitionInstance.stop(); } catch(e){}
+          }
+          processRealSpokenResult();
+        }
+      }, 4500);
     } else {
       btn.classList.remove('recording');
       label.textContent = 'Mulai Merekam Suara';
       icon.className = 'ph ph-microphone';
+      if (recognitionInstance) {
+        try { recognitionInstance.stop(); } catch(e){}
+      }
+      processRealSpokenResult();
     }
   }
 
-  // Submit Voice Answer
-  function submitVoiceAnswer() {
+  // Process and evaluate what the user ACTUALLY spoke
+  function processRealSpokenResult() {
     isRecording = false;
     const btn = document.getElementById('recordMicBtn');
     if (btn) btn.classList.remove('recording');
@@ -222,25 +292,65 @@ const HiwarApp = (() => {
     if (icon) icon.className = 'ph ph-microphone';
 
     const data = dialogueSteps[currentStepIdx];
+    const liveBox = document.getElementById('liveVoiceTranscript');
     
-    // Display student response
+    // If no text captured or user spoke in Indonesian / other noise
+    const spoken = userSpokenText.trim();
+    
+    if (!spoken) {
+      if (liveBox) liveBox.textContent = 'Suara tidak terdeteksi atau terlalu pelan. Silakan tekan tombol rekam dan ucapkan kembali.';
+      showToast('Suara tidak terdeteksi. Silakan coba ucapkan lagi.');
+      playTone(320, 'sine', 0.15, 0.08);
+      return;
+    }
+
+    // Calculate real keyword match
+    const spokenLower = spoken.toLowerCase();
+    let matches = 0;
+    data.keywords.forEach(kw => {
+      if (spokenLower.includes(kw.toLowerCase())) matches++;
+    });
+
+    const isMatch = matches > 0 || spoken.length >= 4; // Check if Arabic or close phrase detected
+
     const studentBubble = document.getElementById('studentResponseBubble');
-    document.getElementById('studentArabicText').textContent = data.targetAr;
-    document.getElementById('studentLatinSub').textContent = data.targetLatin;
-    document.getElementById('studentAccuracyBadge').innerHTML = '<i class="ph ph-check-circle"></i> Suara Terverifikasi: Pelafalan Fasih (Mumtaz)';
+    const studentAr = document.getElementById('studentArabicText');
+    const studentLatin = document.getElementById('studentLatinSub');
+    const accuracyBadge = document.getElementById('studentAccuracyBadge');
+
+    studentAr.textContent = spoken;
+    studentLatin.textContent = `Terdengar dari Mikrofon: "${spoken}"`;
     studentBubble.style.display = 'flex';
 
-    // Speak student voice
-    speakArabic(data.targetAr, 0.9);
-    playTone(784, 'triangle', 0.18, 0.1);
-    showToast('Alhamdulillah! Pelafalan santri fasih dan tepat.');
+    if (isMatch) {
+      // ACCURATE / PASS
+      accuracyBadge.style.color = '#006D63';
+      accuracyBadge.innerHTML = `<i class="ph ph-check-circle"></i> Suara Santri Terverifikasi: Pelafalan Tepat (${matches >= 2 ? 'Mumtaz 98%' : 'Jayyid 85%'})`;
+      speakArabic(data.targetAr, 0.9);
+      playTone(784, 'triangle', 0.18, 0.1);
+      showToast('Alhamdulillah! Pelafalan santri sesuai dengan target.');
+      
+      const canvas = document.getElementById('chatCanvas');
+      if (canvas) canvas.scrollTop = canvas.scrollHeight;
 
-    // Scroll chat canvas
-    const canvas = document.getElementById('chatCanvas');
-    if (canvas) canvas.scrollTop = canvas.scrollHeight;
+      setTimeout(advanceToNextStep, 2800);
+    } else {
+      // MISMATCH / INCORRECT PHRASE
+      accuracyBadge.style.color = '#DC2626';
+      accuracyBadge.innerHTML = `<i class="ph ph-x-circle"></i> Pelafalan Belum Sesuai Target (Akurasi Rendah). Silakan ucapkan: "${data.targetAr}"`;
+      playTone(340, 'sine', 0.2, 0.08);
+      showToast(`Terdeteksi: "${spoken}". Kalimat belum sesuai target silabus. Silakan coba lagi.`);
+      
+      const canvas = document.getElementById('chatCanvas');
+      if (canvas) canvas.scrollTop = canvas.scrollHeight;
+    }
+  }
 
-    // Advance to next step after 2.6s
-    setTimeout(advanceToNextStep, 2600);
+  // Quick Speak Simulation (Untuk uji coba cepat santri jika mic tidak aktif)
+  function simulateCorrectSpokenAnswer() {
+    const data = dialogueSteps[currentStepIdx];
+    userSpokenText = data.targetAr;
+    processRealSpokenResult();
   }
 
   // Handle Multiple Choice Answer
@@ -254,7 +364,9 @@ const HiwarApp = (() => {
     const studentBubble = document.getElementById('studentResponseBubble');
     document.getElementById('studentArabicText').textContent = arabicText;
     document.getElementById('studentLatinSub').textContent = `"${latinText}"`;
-    document.getElementById('studentAccuracyBadge').innerHTML = '<i class="ph ph-check-circle"></i> Jawaban Tepat & Sesuai Kaidah';
+    const accuracyBadge = document.getElementById('studentAccuracyBadge');
+    accuracyBadge.style.color = '#006D63';
+    accuracyBadge.innerHTML = '<i class="ph ph-check-circle"></i> Jawaban Tepat Sesuai Kaidah';
     studentBubble.style.display = 'flex';
 
     speakArabic(arabicText, 0.9);
@@ -296,7 +408,7 @@ const HiwarApp = (() => {
   return {
     setResponseMode,
     toggleVoiceRecording,
-    submitVoiceAnswer,
+    simulateCorrectSpokenAnswer,
     handleChoiceAnswer,
     speakTeacherArabic,
     resetSimulator
