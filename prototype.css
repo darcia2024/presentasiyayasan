@@ -1490,109 +1490,102 @@ html, body {
 }
 
 
-/* ==========================================================================
-   CLEAN & PRECISE COURSE HEADER (ZERO BADGES, PERFECT HORIZONTAL ALIGNMENT)
-   ========================================================================== */
-.course-title-header {
-  background: #FFFFFF;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 20px 26px;
-  margin-bottom: 18px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  box-shadow: var(--shadow-sm);
-}
 
-.header-left-content {
+
+
+
+/* --------------------------------------------------------------------------
+   CLEAN UNBOXED CODELINGO COURSE HEADER & VIDEO PLAYER
+   -------------------------------------------------------------------------- */
+.course-title-header {
   display: flex;
-  flex-direction: column;
-  gap: 5px;
-  flex-grow: 1;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin-bottom: 4px !important;
 }
 
 .course-main-h1 {
-  font-size: 21px;
+  font-size: 22px;
   font-weight: 800;
   color: var(--teal-dark);
-  letter-spacing: -0.015em;
-  margin: 0;
   display: flex;
-  align-items: baseline;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
   flex-wrap: wrap;
+  margin: 0 0 6px 0;
 }
 
 .course-arabic-sub-tag {
   font-family: 'Amiri', 'Traditional Arabic', Arial, sans-serif;
-  font-size: 21px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--teal-primary);
 }
 
-.course-meta-text-row {
+.course-meta-stats-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   font-size: 12.5px;
   color: var(--text-muted);
-  font-weight: 500;
+  font-weight: 600;
   flex-wrap: wrap;
 }
 
-.course-meta-text-row span.meta-dot {
+.course-meta-stats-row span.dot-sep {
   color: var(--border-color);
   font-size: 14px;
 }
 
-.header-cta-cluster {
+.header-cta-buttons {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
 }
 
-.btn-header-secondary {
+.btn-share-text {
   background: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--text-main);
+  border: none;
+  color: var(--teal-primary);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
   padding: 8px 16px;
   border-radius: var(--radius-full);
-  font-family: var(--font-family);
-  font-size: 12.5px;
-  font-weight: 700;
-  cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
 }
 
-.btn-header-secondary:hover {
-  border-color: var(--teal-primary);
-  color: var(--teal-primary);
-  background: var(--bg-subtle);
+.btn-share-text:hover {
+  background: var(--teal-light);
 }
 
-.btn-header-primary {
+.btn-enroll-primary {
   background: var(--teal-primary);
-  border: 1px solid var(--teal-primary);
   color: #FFFFFF;
-  padding: 8px 18px;
+  border: none;
   border-radius: var(--radius-full);
+  padding: 9px 20px;
   font-family: var(--font-family);
-  font-size: 12.5px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 800;
   cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 135, 122, 0.25);
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  transition: all 0.15s ease;
+  gap: 7px;
+  transition: all 0.2s ease;
 }
 
-.btn-header-primary:hover {
+.btn-enroll-primary:hover {
   background: var(--teal-hover);
+  transform: translateY(-1px);
 }
-

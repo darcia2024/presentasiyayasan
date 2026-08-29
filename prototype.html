@@ -264,96 +264,35 @@
           <!-- LEFT COLUMN: PLAYER & TABS -->
           <div class="left-player-column">
             
-            <!-- CLEAN PRECISE HORIZONTAL HEADER (ZERO BADGES) -->
+                        <!-- CLEAN UNBOXED CODELINGO HEADER (ZERO BADGES) -->
             <div class="course-title-header">
-              <div class="header-left-content">
+              <div>
                 <h1 class="course-main-h1">
                   <span id="courseMainTitle">Bahasa Arab SMP: Kaidah Jumlah Ismiyyah</span>
                   <span class="course-arabic-sub-tag" id="courseArabicTitle">الجُمْلَةُ الإِسْمِيَّةُ</span>
                 </h1>
-                <div class="course-meta-text-row">
+
+                <div class="course-meta-stats-row">
                   <span id="courseJenjangText">Jenjang SMP Kelas 8</span>
-                  <span class="meta-dot">•</span>
+                  <span class="dot-sep">•</span>
                   <span>12 Modul Pembelajaran</span>
-                  <span class="meta-dot">•</span>
+                  <span class="dot-sep">•</span>
                   <span>Durasi: 2 Jam 30 Menit</span>
-                  <span class="meta-dot">•</span>
+                  <span class="dot-sep">•</span>
                   <span>Asuhan Umi Elly</span>
                 </div>
               </div>
 
-              <div class="header-cta-cluster">
-                <button class="btn-header-secondary" onclick="PrototypeApp.showToast('Tautan materi disalin ke clipboard')">
+              <div class="header-cta-buttons">
+                <button class="btn-share-text" onclick="PrototypeApp.showToast('Tautan materi disalin ke clipboard')">
                   <i class="ph ph-share-network"></i> Bagikan
                 </button>
-                <button class="btn-header-primary" onclick="PrototypeApp.switchSubTab('kuis')">
-                  <i class="ph ph-check-circle"></i> Latihan Evaluasi
+                <button class="btn-enroll-primary" onclick="PrototypeApp.switchSubTab('kuis')">
+                  <i class="ph ph-check-circle"></i>
+                  <span>Latihan Evaluasi</span>
                 </button>
               </div>
             </div>
-
-              <!-- Right Action CTA Cluster -->
-              <div class="header-cta-cluster">
-                <button class="btn-header-secondary" onclick="PrototypeApp.showToast('Tautan materi pembelajaran disalin ke clipboard')">
-                  <i class="ph ph-share-network"></i> Bagikan
-                </button>
-                <button class="btn-header-primary" onclick="PrototypeApp.switchSubTab('kuis')">
-                  <i class="ph ph-check-circle"></i> Latihan Evaluasi
-                </button>
-              </div>
-            </div>
-
-            <!-- Video Player Screen -->
-            <div class="ref-video-player-box">
-              <div class="video-screen-content">
-                <div class="ref-video-watermark">
-                  <i class="ph ph-shield-check"></i> Ahmad Fauzan • 0812-8921-9921 • Hak Cipta PERISA Azhariyah
-                </div>
-
-                <div style="font-size: 26px; font-weight: 700; font-family: 'Amiri', 'Traditional Arabic', Arial; margin-bottom: 6px;" id="currentVideoArabic">
-                  الوَحْدَةُ الثَّانِيَةُ : فِي المَدْرَسَةِ
-                </div>
-                <div style="font-size: 13px; color: #A7F3EC; margin-bottom: 20px;" id="currentVideoSubtitle">
-                  Modul 02: Kosakata Fasilitas Perpustakaan (المَكْتَبَةُ)
-                </div>
-
-                <button class="center-glass-play" onclick="PrototypeApp.togglePlayVideo()">
-                  <i class="ph ph-play" id="playIcon"></i>
-                </button>
-              </div>
-            </div>
-
-            <!-- Horizontal Sub-Tabs -->
-            <div class="ref-sub-tabs-bar">
-              <button class="sub-tab-btn active" data-subtab="ringkasan" onclick="PrototypeApp.switchSubTab('ringkasan')">Ringkasan Materi</button>
-              <button class="sub-tab-btn" data-subtab="audio" onclick="PrototypeApp.switchSubTab('audio')">Pelafalan Mufrodat</button>
-              <button class="sub-tab-btn" data-subtab="kuis" onclick="PrototypeApp.switchSubTab('kuis')">Evaluasi Pemahaman</button>
-              <button class="sub-tab-btn" data-subtab="pengumuman" onclick="PrototypeApp.switchSubTab('pengumuman')">Pemberitahuan Yayasan</button>
-              <button class="sub-tab-btn" data-subtab="ulasan" onclick="PrototypeApp.switchSubTab('ulasan')">Catatan & Ulasan</button>
-            </div>
-
-            <!-- Sub-Tab Content -->
-            <div class="sub-tab-viewport" style="margin-top: 14px;">
-              
-              <!-- Tab 1: Ringkasan -->
-              <div id="subtab-ringkasan" class="subtab-pane active">
-                <div class="about-course-block">
-                  <h3>Deskripsi Modul Pembelajaran</h3>
-                  <p id="aboutCourseDesc">
-                    Modul ini disusun oleh <strong>Umi Elly</strong> untuk membimbing santri memahami kaidah tata bahasa Arab secara terstruktur, pengenalan susunan kalimat <em>Jumlah Ismiyyah</em> (Mubtada dan Khobar), serta penguasaan kosakata tematik fasilitas pendidikan.
-                  </p>
-
-                  <div class="what-learn-card">
-                    <h4 style="font-size: 13.5px; font-weight: 700; color: var(--teal-dark);">Kompetensi Dasar Pembelajaran</h4>
-                    <div class="what-learn-grid" id="whatLearnGrid">
-                      <div class="learn-item"><i class="ph ph-check"></i><span>Memahami struktur Mubtada dan Khobar dalam kalimat sempurna</span></div>
-                      <div class="learn-item"><i class="ph ph-check"></i><span>Menguasai 20 kosakata tematik fasilitas dan sarana sekolah</span></div>
-                      <div class="learn-item"><i class="ph ph-check"></i><span>Mengenal pembagian kata ganti (Dhomir Munfashil)</span></div>
-                      <div class="learn-item"><i class="ph ph-check"></i><span>Mempraktikkan percakapan (hiwar) baku secara terbimbing</span></div>
-                      <div class="learn-item"><i class="ph ph-check"></i><span>Menuntaskan lembar evaluasi mandiri setiap modul</span></div>
-                      <div class="learn-item"><i class="ph ph-check"></i><span>Memperoleh sertifikat resmi kelulusan berverifikasi QR</span></div>
-                    </div>
-                  </div>
 
                   <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
                     <div style="display: flex; align-items: center; gap: 12px;">
