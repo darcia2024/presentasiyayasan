@@ -1610,6 +1610,11 @@ html, body {
   overflow-x: hidden !important;
 }
 
+/* Base Desktop: Mobile Top Nav is STRICTLY hidden */
+.mobile-top-nav {
+  display: none !important;
+}
+
 @media (max-width: 768px) {
   /* 1. HIDE REDUNDANT DESKTOP TOP BARS ON MOBILE */
   .demo-control-bar {

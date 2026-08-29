@@ -31,6 +31,11 @@
       padding: 0 !important;
     }
 
+    /* MOBILE ELEMENTS ARE STRICTLY HIDDEN ON DESKTOP */
+    .mobile-top-nav {
+      display: none !important;
+    }
+
     /* DRAWER IS STRICTLY A FIXED MODAL AND HIDDEN BY DEFAULT */
     .mobile-drawer-overlay {
       display: none !important;
@@ -66,6 +71,31 @@
       box-shadow: 10px 0 35px rgba(0, 0, 0, 0.4) !important;
       overflow-y: auto !important;
       box-sizing: border-box !important;
+    }
+
+    @media (min-width: 769px) {
+      .mobile-top-nav {
+        display: none !important;
+      }
+      .course-title-header {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: flex-start !important;
+        margin-bottom: 12px !important;
+        gap: 16px !important;
+      }
+      .header-cta-buttons {
+        display: flex !important;
+        width: auto !important;
+        gap: 10px !important;
+      }
+      .course-main-h1 {
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+        margin-bottom: 4px !important;
+      }
     }
 
     @media (max-width: 768px) {
