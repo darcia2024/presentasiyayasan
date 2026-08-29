@@ -1590,474 +1590,114 @@ html, body {
   transform: translateY(-1px);
 }
 
-
-
 /* ==========================================================================
-   PIXEL-PERFECT MOBILE ARCHITECTURE (ZERO HORIZONTAL OVERFLOW)
-   Specifically crafted for Umi Elly's mobile browsing experience
+   DESKTOP 3-PANE SCROLLING ARCHITECTURE (>= 769px)
    ========================================================================== */
-
-/* Universal Mobile Safety Guard */
-html, body {
-  overflow-x: hidden !important;
-  max-width: 100vw !important;
-  width: 100% !important;
-}
-
-.app-window-frame {
-  max-width: 100vw !important;
-  width: 100% !important;
-  overflow-x: hidden !important;
-}
-
-/* Base Desktop: Mobile Top Nav is STRICTLY hidden */
-.mobile-top-nav {
-  display: none !important;
-}
-
-@media (max-width: 768px) {
-  /* 1. HIDE REDUNDANT DESKTOP TOP BARS ON MOBILE */
-  .demo-control-bar {
-    display: none !important; /* Move role switcher exclusively into mobile drawer */
+@media (min-width: 769px) {
+  html, body {
+    height: 100vh !important;
+    overflow: hidden !important;
   }
 
-  .ref-sidebar {
+  .mobile-top-nav,
+  .mobile-bottom-nav,
+  .mobile-drawer-overlay {
     display: none !important;
   }
 
-  .ref-top-header {
-    display: none !important; /* Hide cluttered breadcrumb bar on mobile */
-  }
-
-  /* 2. SLIM 50PX MOBILE TOPBAR */
-  .mobile-top-nav {
-    display: flex !important;
-    padding: 10px 16px !important;
-    height: 52px !important;
-    box-sizing: border-box !important;
-    background: var(--teal-dark) !important;
+  .demo-control-bar {
+    height: 46px !important;
+    flex-shrink: 0 !important;
     position: sticky !important;
     top: 0 !important;
     z-index: 1000 !important;
   }
 
-  .mobile-brand-wrap {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  .app-window-frame {
+    height: calc(100vh - 46px) !important;
+    max-height: calc(100vh - 46px) !important;
+    display: flex !important;
+    overflow: hidden !important;
   }
 
-  .mobile-brand-icon {
-    width: 30px !important;
-    height: 30px !important;
-    font-size: 16px !important;
+  /* 1. Left Sidebar: Independent Scroll */
+  .ref-sidebar {
+    width: 250px !important;
+    min-width: 250px !important;
+    height: 100% !important;
+    overflow-y: auto !important;
+    flex-shrink: 0 !important;
+    border-right: 1px solid var(--border-color) !important;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 135, 122, 0.2) transparent;
   }
 
-  .mobile-brand-text {
-    font-size: 13.5px !important;
-  }
+  .ref-sidebar::-webkit-scrollbar { width: 5px; }
+  .ref-sidebar::-webkit-scrollbar-thumb { background: rgba(0, 135, 122, 0.2); border-radius: 4px; }
 
-  /* 3. FLUID FULL-BLEED WORKSPACE */
+  /* 2. Center Workspace: Fluid Smooth Scroll */
   .ref-main-workspace {
-    width: 100% !important;
-    max-width: 100vw !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    overflow-x: hidden !important;
-    box-sizing: border-box !important;
+    flex: 1 !important;
+    height: 100% !important;
+    overflow-y: auto !important;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 135, 122, 0.25) transparent;
   }
+
+  .ref-main-workspace::-webkit-scrollbar { width: 6px; }
+  .ref-main-workspace::-webkit-scrollbar-thumb { background: rgba(0, 135, 122, 0.25); border-radius: 4px; }
 
   .course-main-grid {
-    grid-template-columns: 100% !important;
-    width: 100% !important;
-    max-width: 100vw !important;
-    padding: 16px 14px !important;
-    margin: 0 !important;
-    gap: 20px !important;
-    box-sizing: border-box !important;
+    display: grid !important;
+    grid-template-columns: 1.68fr 1fr !important;
+    gap: 32px !important;
+    align-items: start !important;
+    padding: 24px 32px 48px 32px !important;
   }
 
-  .left-player-column {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
-    gap: 14px !important;
+  /* 3. Right Column: Pinned Sticky in Place */
+  .right-sidebar-column {
+    position: sticky !important;
+    top: 20px !important;
+    max-height: calc(100vh - 46px - 40px) !important;
+    overflow-y: auto !important;
+    align-self: start !important;
+    padding-right: 4px !important;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 135, 122, 0.2) transparent;
   }
 
-  /* 4. COMPACT TITLE & CTA BUTTONS */
+  .right-sidebar-column::-webkit-scrollbar { width: 5px; }
+  .right-sidebar-column::-webkit-scrollbar-thumb { background: rgba(0, 135, 122, 0.2); border-radius: 4px; }
+
   .course-title-header {
-    flex-direction: column !important;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
     align-items: flex-start !important;
-    gap: 12px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    padding: 0 !important;
-    margin: 0 0 10px 0 !important;
-  }
-
-  .course-main-h1 {
-    font-size: 17.5px !important;
-    line-height: 1.35 !important;
-    margin: 0 0 4px 0 !important;
-    display: block !important;
-    word-break: break-word !important;
-  }
-
-  .course-arabic-sub-tag {
-    font-size: 18px !important;
-    display: inline-block !important;
-    margin-left: 6px !important;
-  }
-
-  .course-meta-stats-row {
-    font-size: 11px !important;
-    gap: 6px !important;
-    flex-wrap: wrap !important;
-    line-height: 1.4 !important;
+    margin-bottom: 12px !important;
+    gap: 16px !important;
   }
 
   .header-cta-buttons {
     display: flex !important;
-    width: 100% !important;
-    gap: 8px !important;
-    margin-top: 4px !important;
+    width: auto !important;
+    gap: 10px !important;
   }
 
-  .btn-share-text {
-    flex: 1 !important;
-    border: 1px solid var(--border-color) !important;
-    background: var(--bg-subtle) !important;
-    color: var(--teal-dark) !important;
-    padding: 8px 12px !important;
-    font-size: 12px !important;
-    justify-content: center !important;
-    text-align: center !important;
-    border-radius: var(--radius-full) !important;
-  }
-
-  .btn-enroll-primary {
-    flex: 1.4 !important;
-    padding: 8px 14px !important;
-    font-size: 12px !important;
-    justify-content: center !important;
-    text-align: center !important;
-    border-radius: var(--radius-full) !important;
-  }
-
-  /* 5. PERFECT 16:9 RESPONSIVE VIDEO PLAYER (NO HORIZONTAL CUTOFF) */
-  .ref-video-player-box {
-    width: 100% !important;
-    max-width: 100% !important;
-    height: auto !important;
-    aspect-ratio: 16 / 9 !important;
-    max-height: 220px !important;
-    border-radius: var(--radius-md) !important;
-    box-sizing: border-box !important;
-    overflow: hidden !important;
-    margin: 0 !important;
-  }
-
-  .video-screen-content {
-    width: 100% !important;
-    height: 100% !important;
-    padding: 12px !important;
-    box-sizing: border-box !important;
-    justify-content: center !important;
-  }
-
-  .ref-video-watermark {
-    font-size: 8px !important;
-    padding: 2px 6px !important;
-    top: 6px !important;
-    left: 6px !important;
-    max-width: 90% !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
-  }
-
-  #currentVideoArabic {
-    font-size: 18px !important;
-    margin-bottom: 2px !important;
-    line-height: 1.2 !important;
-  }
-
-  #currentVideoSubtitle {
-    font-size: 10.5px !important;
-    margin-bottom: 8px !important;
-  }
-
-  .center-glass-play {
-    width: 48px !important;
-    height: 48px !important;
-    font-size: 20px !important;
-  }
-
-  /* 6. HORIZONTAL SCROLLING SUB-TABS */
-  .ref-sub-tabs-bar {
+  .course-main-h1 {
     display: flex !important;
-    overflow-x: auto !important;
-    white-space: nowrap !important;
-    gap: 14px !important;
-    padding: 2px 2px 8px 2px !important;
-    border-bottom: 1px solid var(--border-subtle) !important;
-    -webkit-overflow-scrolling: touch !important;
-    scrollbar-width: none !important;
-    margin-top: 4px !important;
-  }
-
-  .ref-sub-tabs-bar::-webkit-scrollbar {
-    display: none !important;
-  }
-
-  .sub-tab-btn {
-    font-size: 12px !important;
-    padding: 4px 2px !important;
-    flex-shrink: 0 !important;
-  }
-
-  /* 7. OTHER VIEWS RESPONSIVENESS */
-  .beranda-view-layout {
-    padding: 14px !important;
-    gap: 16px !important;
-  }
-
-  .beranda-welcome-banner {
-    padding: 16px !important;
-  }
-
-  .beranda-metrics-grid {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 8px !important;
-  }
-
-  .beranda-metric-card {
-    padding: 10px 12px !important;
-  }
-
-  .pdf-library-layout {
-    padding: 14px !important;
-  }
-
-  .pdf-grid {
-    grid-template-columns: 1fr !important;
-  }
-
-  .seto-main-hub {
-    padding: 20px 14px !important;
-  }
-
-  .seto-cards-grid {
-    grid-template-columns: 1fr !important;
-  }
-
-  .seto-history-column {
-    padding: 16px 14px !important;
-  }
-
-  .seto-prompt-dock {
-    padding: 10px 12px !important;
-  }
-
-  .right-sidebar-column {
-    width: 100% !important;
-    box-sizing: border-box !important;
+    align-items: center !important;
+    gap: 12px !important;
+    margin-bottom: 4px !important;
   }
 }
-
 
 /* ==========================================================================
-   INTERACTIVE SIDEBAR PROFILE DROPDOWN
+   NATIVE MOBILE APP ARCHITECTURE (<= 768px)
    ========================================================================== */
-.sidebar-user-card {
-  position: relative !important;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 9px 12px;
-  background: var(--bg-subtle);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  margin-bottom: 22px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  user-select: none;
-}
-
-.sidebar-user-card:hover {
-  border-color: var(--teal-primary);
-  background: var(--teal-light);
-}
-
-.sidebar-user-card.active {
-  border-color: var(--teal-primary);
-  box-shadow: 0 0 0 3px rgba(0, 135, 122, 0.15);
-}
-
-.sidebar-user-card .ph-caret-down {
-  transition: transform 0.2s ease;
-}
-
-.sidebar-user-card.active .ph-caret-down {
-  transform: rotate(180deg);
-}
-
-/* Dropdown Menu Popup */
-.profile-dropdown-menu {
-  display: none;
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  width: 260px;
-  background: #FFFFFF;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 12px 36px rgba(7, 40, 38, 0.14), 0 2px 8px rgba(7, 40, 38, 0.06);
-  z-index: 2000;
-  padding: 14px;
-  flex-direction: column;
-  gap: 12px;
-  animation: dropFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.profile-dropdown-menu.show {
-  display: flex;
-}
-
-@keyframes dropFadeIn {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.dropdown-user-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.dropdown-avatar-large {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: var(--teal-primary);
-  color: #FFFFFF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 800;
-  flex-shrink: 0;
-}
-
-.dropdown-account-list {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.dropdown-account-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 10px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all 0.15s ease;
-  font-size: 12px;
-  color: var(--text-main);
-  background: #FFFFFF;
-  border: 1px solid transparent;
-}
-
-.dropdown-account-item:hover {
-  background: var(--bg-subtle);
-  border-color: var(--border-color);
-}
-
-.dropdown-account-item.current {
-  background: var(--teal-light);
-  color: var(--teal-primary);
-  font-weight: 700;
-  border-color: rgba(0, 135, 122, 0.25);
-}
-
-.dropdown-account-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.dropdown-mini-avatar {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: #E2ECEB;
-  color: var(--text-main);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 9.5px;
-  font-weight: 800;
-}
-
-.dropdown-account-item.current .dropdown-mini-avatar {
-  background: var(--teal-primary);
-  color: #FFFFFF;
-}
-
-.dropdown-quick-actions {
-  border-top: 1px solid var(--border-subtle);
-  padding-top: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.dropdown-action-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 10px;
-  border-radius: var(--radius-sm);
-  background: var(--bg-subtle);
-  border: 1px solid var(--border-color);
-  color: var(--text-body);
-  font-size: 11.5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  width: 100%;
-}
-
-.dropdown-action-btn:hover {
-  background: var(--teal-light);
-  color: var(--teal-primary);
-  border-color: var(--teal-primary);
-}
-
-
-/* ==========================================================================
-   NATIVE MOBILE APP ARCHITECTURE (iOS & Android Style UI)
-   - Left-aligned animated Hamburger button
-   - High-contrast prominent Brand & Title
-   - Ultra-compact high-density cards & metrics
-   - Smooth gesture-like sliding drawer
-   - Fixed thumb-friendly Bottom Navigation Bar
-   ========================================================================== */
-
-/* Base Desktop: Mobile elements strictly hidden */
-.mobile-top-nav,
-.mobile-bottom-nav,
-.mobile-drawer-overlay {
-  display: none !important;
-}
-
 @media (max-width: 768px) {
-  /* Hide Desktop presentational bars */
+  /* Hide Desktop Elements */
   .demo-control-bar,
   aside.demo-control-bar,
   .ref-sidebar,
@@ -2069,6 +1709,7 @@ html, body {
     height: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
+    overflow: hidden !important;
   }
 
   html, body {
@@ -2076,10 +1717,10 @@ html, body {
     max-width: 100vw !important;
     overflow-x: hidden !important;
     background-color: #F8FAFA !important;
-    padding-bottom: 74px !important; /* Space for bottom nav */
+    padding-bottom: 68px !important;
   }
 
-  /* 1. NATIVE MOBILE APP TOPBAR (Left Hamburger, Prominent Title, Right Actions) */
+  /* 1. Mobile Top Navbar */
   .mobile-top-nav {
     display: flex !important;
     position: sticky !important;
@@ -2093,16 +1734,14 @@ html, body {
     width: 100% !important;
     box-sizing: border-box !important;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
   }
 
   .mobile-top-left {
     display: flex !important;
     align-items: center !important;
-    gap: 12px !important;
+    gap: 10px !important;
   }
 
-  /* Animated Hamburger Button on the Left */
   .mobile-hamburger-btn {
     background: rgba(255, 255, 255, 0.1) !important;
     border: 1px solid rgba(255, 255, 255, 0.18) !important;
@@ -2124,38 +1763,34 @@ html, body {
     background: var(--teal-primary) !important;
   }
 
-  /* Prominent Brand Title in Navbar */
   .mobile-brand-wrap {
     display: flex !important;
     align-items: center !important;
-    gap: 10px !important;
+    gap: 8px !important;
   }
 
   .mobile-brand-wrap img {
-    height: 36px !important;
-    width: 36px !important;
+    height: 34px !important;
+    width: 34px !important;
     object-fit: contain !important;
     border-radius: 8px !important;
     background: #FFFFFF !important;
     padding: 2px !important;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
   }
 
   .mobile-brand-text {
-    font-size: 15.5px !important;
+    font-size: 14.5px !important;
     font-weight: 800 !important;
     color: #FFFFFF !important;
-    letter-spacing: -0.01em !important;
     line-height: 1.15 !important;
   }
 
   .mobile-brand-sub {
-    font-size: 10.5px !important;
+    font-size: 10px !important;
     color: #A7F3EC !important;
     font-weight: 600 !important;
   }
 
-  /* Right Action Icons */
   .mobile-top-right {
     display: flex !important;
     align-items: center !important;
@@ -2174,7 +1809,6 @@ html, body {
     justify-content: center !important;
     font-size: 16px !important;
     text-decoration: none !important;
-    cursor: pointer !important;
   }
 
   .mobile-user-avatar-tag {
@@ -2189,9 +1823,10 @@ html, body {
     font-size: 11px !important;
     font-weight: 800 !important;
     border: 1.5px solid rgba(255, 255, 255, 0.3) !important;
+    cursor: pointer !important;
   }
 
-  /* 2. SMOOTH ANIMATED SLIDING DRAWER (Left-to-Right) */
+  /* 2. Left-to-Right Animated Drawer */
   .mobile-drawer-overlay {
     display: flex !important;
     position: fixed !important;
@@ -2237,7 +1872,15 @@ html, body {
     transform: translateX(0) !important;
   }
 
-  /* 3. FLUID NATIVE APP WORKSPACE */
+  .drawer-header-row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding-bottom: 12px !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+  }
+
+  /* 3. Fluid Mobile App Workspace */
   .app-window-frame {
     width: 100% !important;
     max-width: 100vw !important;
@@ -2255,7 +1898,6 @@ html, body {
     display: block !important;
   }
 
-  /* Course Player Native Padding */
   .course-main-grid {
     display: block !important;
     width: 100% !important;
@@ -2271,10 +1913,9 @@ html, body {
     box-sizing: border-box !important;
     display: flex !important;
     flex-direction: column !important;
-    gap: 12px !important;
+    gap: 10px !important;
   }
 
-  /* Title & Buttons in Native View */
   .course-title-header {
     display: flex !important;
     flex-direction: column !important;
@@ -2286,17 +1927,14 @@ html, body {
 
   .course-main-h1 {
     font-size: 16.5px !important;
-    font-weight: 800 !important;
     line-height: 1.3 !important;
     margin: 0 !important;
     word-break: break-word !important;
-    color: var(--teal-dark) !important;
   }
 
   .course-arabic-sub-tag {
     font-size: 17px !important;
     display: inline-block !important;
-    color: var(--teal-primary) !important;
   }
 
   .course-meta-stats-row {
@@ -2304,14 +1942,13 @@ html, body {
     gap: 5px !important;
     line-height: 1.35 !important;
     flex-wrap: wrap !important;
-    color: var(--text-muted) !important;
   }
 
   .header-cta-buttons {
     display: flex !important;
     width: 100% !important;
     gap: 8px !important;
-    margin-top: 4px !important;
+    margin-top: 2px !important;
   }
 
   .btn-share-text {
@@ -2319,34 +1956,31 @@ html, body {
     border: 1px solid #E2ECEB !important;
     background: #FFFFFF !important;
     color: var(--teal-dark) !important;
-    padding: 9px 12px !important;
+    padding: 8px 12px !important;
     font-size: 12px !important;
     font-weight: 700 !important;
     justify-content: center !important;
     border-radius: 9999px !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.03) !important;
   }
 
   .btn-enroll-primary {
     flex: 1.4 !important;
-    padding: 9px 14px !important;
+    padding: 8px 14px !important;
     font-size: 12px !important;
     font-weight: 700 !important;
     justify-content: center !important;
     border-radius: 9999px !important;
   }
 
-  /* 16:9 Video Player */
   .ref-video-player-box {
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
     aspect-ratio: 16 / 9 !important;
     max-height: 215px !important;
-    border-radius: 14px !important;
+    border-radius: 12px !important;
     overflow: hidden !important;
     box-sizing: border-box !important;
-    box-shadow: 0 4px 16px rgba(7, 40, 38, 0.12) !important;
   }
 
   .video-screen-content {
@@ -2369,17 +2003,16 @@ html, body {
   }
 
   #currentVideoSubtitle {
-    font-size: 10.5px !important;
+    font-size: 10px !important;
     margin-bottom: 8px !important;
   }
 
   .center-glass-play {
-    width: 46px !important;
-    height: 46px !important;
-    font-size: 19px !important;
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 18px !important;
   }
 
-  /* Sub Tabs Horizontal Scroll */
   .ref-sub-tabs-bar {
     display: flex !important;
     overflow-x: auto !important;
@@ -2401,7 +2034,6 @@ html, body {
     flex-shrink: 0 !important;
   }
 
-  /* Word Audio Cards */
   #subtab-audio > div > div:last-child {
     grid-template-columns: 1fr !important;
     gap: 8px !important;
@@ -2416,7 +2048,7 @@ html, body {
     font-size: 20px !important;
   }
 
-  /* 4. COMPACT NATIVE BERANDA DASHBOARD */
+  /* Compact Beranda Dashboard */
   .beranda-view-layout {
     padding: 12px 14px !important;
     gap: 12px !important;
@@ -2425,7 +2057,6 @@ html, body {
   .beranda-welcome-banner {
     padding: 14px 16px !important;
     border-radius: 14px !important;
-    gap: 10px !important;
   }
 
   .beranda-banner-title {
@@ -2436,7 +2067,6 @@ html, body {
     font-size: 11.5px !important;
   }
 
-  /* High Density 2x2 Metric Grid */
   .beranda-metrics-grid {
     grid-template-columns: 1fr 1fr !important;
     gap: 8px !important;
@@ -2445,21 +2075,6 @@ html, body {
   .beranda-metric-card {
     padding: 10px 12px !important;
     border-radius: 12px !important;
-    gap: 10px !important;
-  }
-
-  .beranda-metric-card > div:first-child {
-    width: 36px !important;
-    height: 36px !important;
-    font-size: 18px !important;
-  }
-
-  .beranda-metric-card > div:last-child > div:first-child {
-    font-size: 15px !important;
-  }
-
-  .beranda-metric-card > div:last-child > div:last-child {
-    font-size: 10px !important;
   }
 
   .beranda-two-col {
@@ -2467,18 +2082,38 @@ html, body {
     gap: 12px !important;
   }
 
-  .beranda-continue-card, .beranda-schedule-card {
-    padding: 14px !important;
-    border-radius: 14px !important;
+  .right-sidebar-column {
+    width: 100% !important;
+    margin-top: 14px !important;
+    box-sizing: border-box !important;
   }
 
-  .beranda-continue-preview {
-    padding: 12px !important;
-    border-radius: 12px !important;
+  .pdf-library-layout {
+    padding: 14px !important;
+  }
+
+  .pdf-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .seto-dashboard-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .seto-main-hub {
+    padding: 16px 14px !important;
+  }
+
+  .seto-cards-grid {
+    grid-template-columns: 1fr !important;
     gap: 10px !important;
   }
 
-  /* 5. NATIVE BOTTOM NAVIGATION BAR (Thumb-Friendly) */
+  .seto-history-column {
+    padding: 14px !important;
+  }
+
+  /* 4. Native Bottom Navigation Bar */
   .mobile-bottom-nav {
     display: flex !important;
     position: fixed !important;
@@ -2509,24 +2144,13 @@ html, body {
     flex: 1 !important;
     height: 100% !important;
     cursor: pointer !important;
-    transition: all 0.15s ease !important;
   }
 
   .bottom-nav-item i {
     font-size: 20px !important;
-    transition: transform 0.15s ease !important;
   }
 
   .bottom-nav-item.active {
     color: var(--teal-primary) !important;
-  }
-
-  .bottom-nav-item.active i {
-    transform: scale(1.1) !important;
-    color: var(--teal-primary) !important;
-  }
-
-  .bottom-nav-item:active {
-    transform: scale(0.94) !important;
   }
 }

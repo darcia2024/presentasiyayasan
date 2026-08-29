@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistem Informasi Pembelajaran Bahasa Arab — Yayasan Peradaban Islam Azhariyah</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PERISA — Yayasan Peradaban Islam Azhariyah</title>
 
   <!-- Google Fonts: Plus Jakarta Sans & Amiri -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,358 +15,20 @@
   <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
   <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
 
-  <link rel="stylesheet" href="prototype.css?v=2.7.0">
-
-  <!-- CRITICAL ZERO-CACHE MOBILE ENGINE (Direct In-Head Injection) -->
-  <style>
-    *, *::before, *::after {
-      box-sizing: border-box !important;
-    }
-    
-    html, body {
-      width: 100% !important;
-      max-width: 100vw !important;
-      overflow-x: hidden !important;
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-
-    /* MOBILE ELEMENTS ARE STRICTLY HIDDEN ON DESKTOP */
-    .mobile-top-nav {
-      display: none !important;
-    }
-
-    /* DRAWER IS STRICTLY A FIXED MODAL AND HIDDEN BY DEFAULT */
-    .mobile-drawer-overlay {
-      display: none !important;
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      bottom: 0 !important;
-      width: 100vw !important;
-      height: 100vh !important;
-      background: rgba(7, 40, 38, 0.75) !important;
-      backdrop-filter: blur(8px) !important;
-      z-index: 99999 !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      align-items: stretch !important;
-      justify-content: flex-start !important;
-    }
-
-    .mobile-drawer-overlay.open {
-      display: flex !important;
-    }
-
-    .mobile-drawer-menu {
-      width: 82% !important;
-      max-width: 320px !important;
-      height: 100% !important;
-      background: #FFFFFF !important;
-      padding: 24px 20px !important;
-      display: flex !important;
-      flex-direction: column !important;
-      gap: 16px !important;
-      box-shadow: 10px 0 35px rgba(0, 0, 0, 0.4) !important;
-      overflow-y: auto !important;
-      box-sizing: border-box !important;
-    }
-
-    @media (min-width: 769px) {
-      html, body {
-        height: 100vh !important;
-        overflow: hidden !important;
-      }
-
-      .demo-control-bar {
-        height: 46px !important;
-        flex-shrink: 0 !important;
-        position: sticky !important;
-        top: 0 !important;
-        z-index: 1000 !important;
-      }
-
-      .app-window-frame {
-        height: calc(100vh - 46px) !important;
-        max-height: calc(100vh - 46px) !important;
-        display: flex !important;
-        overflow: hidden !important;
-      }
-
-      /* 1. LEFT SIDEBAR: Independent Scroll */
-      .ref-sidebar {
-        width: 250px !important;
-        min-width: 250px !important;
-        height: 100% !important;
-        overflow-y: auto !important;
-        flex-shrink: 0 !important;
-        border-right: 1px solid var(--border-color) !important;
-        scrollbar-width: thin;
-        scrollbar-color: rgba(0, 135, 122, 0.2) transparent;
-      }
-
-      /* 2. CENTER WORKSPACE: Fluid Scroll for main content */
-      .ref-main-workspace {
-        flex: 1 !important;
-        height: 100% !important;
-        overflow-y: auto !important;
-        scrollbar-width: thin;
-        scrollbar-color: rgba(0, 135, 122, 0.25) transparent;
-      }
-
-      .course-main-grid {
-        display: grid !important;
-        grid-template-columns: 1.68fr 1fr !important;
-        gap: 32px !important;
-        align-items: start !important;
-        padding: 24px 32px 48px 32px !important;
-      }
-
-      /* 3. RIGHT COLUMN: Pinned Sticky In Place */
-      .right-sidebar-column {
-        position: sticky !important;
-        top: 20px !important;
-        max-height: calc(100vh - 46px - 40px) !important;
-        overflow-y: auto !important;
-        align-self: start !important;
-        padding-right: 4px !important;
-        scrollbar-width: thin;
-        scrollbar-color: rgba(0, 135, 122, 0.2) transparent;
-      }
-
-      .mobile-top-nav {
-        display: none !important;
-      }
-      .course-title-header {
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: space-between !important;
-        align-items: flex-start !important;
-        margin-bottom: 12px !important;
-        gap: 16px !important;
-      }
-      .header-cta-buttons {
-        display: flex !important;
-        width: auto !important;
-        gap: 10px !important;
-      }
-      .course-main-h1 {
-        display: flex !important;
-        align-items: center !important;
-        gap: 12px !important;
-        margin-bottom: 4px !important;
-      }
-    }
-
-    @media (max-width: 768px) {
-      /* 1. HIDE ALL CLUTTERED DESKTOP BARS ON MOBILE */
-      .demo-control-bar,
-      aside.demo-control-bar,
-      .ref-sidebar,
-      aside.ref-sidebar,
-      .ref-top-header,
-      header.ref-top-header {
-        display: none !important;
-        visibility: hidden !important;
-        height: 0 !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        overflow: hidden !important;
-      }
-
-      /* 2. COMPACT 52PX SLIM MOBILE NAVBAR */
-      .mobile-top-nav {
-        display: flex !important;
-        position: sticky !important;
-        top: 0 !important;
-        z-index: 1000 !important;
-        height: 52px !important;
-        padding: 0 16px !important;
-        background: #072826 !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
-      }
-
-      /* 3. FLUID FULL-BLEED MOBILE WORKSPACE */
-      .app-window-frame {
-        width: 100% !important;
-        max-width: 100vw !important;
-        overflow-x: hidden !important;
-        display: block !important;
-      }
-
-      .ref-main-workspace {
-        width: 100% !important;
-        max-width: 100vw !important;
-        overflow-x: hidden !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        display: block !important;
-      }
-
-      .course-main-grid {
-        display: block !important;
-        width: 100% !important;
-        max-width: 100vw !important;
-        padding: 14px 14px 30px 14px !important;
-        margin: 0 !important;
-        box-sizing: border-box !important;
-      }
-
-      .left-player-column {
-        width: 100% !important;
-        max-width: 100% !important;
-        box-sizing: border-box !important;
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 12px !important;
-      }
-
-      /* 4. TITLE & CTA BUTTONS */
-      .course-title-header {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 10px !important;
-        width: 100% !important;
-        margin-bottom: 4px !important;
-      }
-
-      .course-main-h1 {
-        font-size: 17.5px !important;
-        line-height: 1.35 !important;
-        margin: 0 !important;
-        word-break: break-word !important;
-      }
-
-      .course-arabic-sub-tag {
-        font-size: 18px !important;
-        display: inline-block !important;
-      }
-
-      .course-meta-stats-row {
-        font-size: 11px !important;
-        gap: 5px !important;
-        line-height: 1.4 !important;
-        flex-wrap: wrap !important;
-      }
-
-      .header-cta-buttons {
-        display: flex !important;
-        width: 100% !important;
-        gap: 8px !important;
-        margin-top: 4px !important;
-      }
-
-      .btn-share-text {
-        flex: 1 !important;
-        border: 1px solid #E2ECEB !important;
-        background: #F8FAFA !important;
-        color: #08201E !important;
-        padding: 8px 10px !important;
-        font-size: 12px !important;
-        justify-content: center !important;
-        border-radius: 9999px !important;
-      }
-
-      .btn-enroll-primary {
-        flex: 1.4 !important;
-        padding: 8px 12px !important;
-        font-size: 12px !important;
-        justify-content: center !important;
-        border-radius: 9999px !important;
-      }
-
-      /* 5. 16:9 VIDEO SCREEN WITHOUT CUTOFF */
-      .ref-video-player-box {
-        width: 100% !important;
-        max-width: 100% !important;
-        height: auto !important;
-        aspect-ratio: 16 / 9 !important;
-        max-height: 220px !important;
-        border-radius: 12px !important;
-        overflow: hidden !important;
-        box-sizing: border-box !important;
-      }
-
-      .video-screen-content {
-        width: 100% !important;
-        height: 100% !important;
-        padding: 10px !important;
-        box-sizing: border-box !important;
-      }
-
-      .ref-video-watermark {
-        font-size: 8px !important;
-        padding: 2px 6px !important;
-        top: 6px !important;
-        left: 6px !important;
-      }
-
-      #currentVideoArabic {
-        font-size: 17px !important;
-        margin-bottom: 2px !important;
-      }
-
-      #currentVideoSubtitle {
-        font-size: 10px !important;
-        margin-bottom: 8px !important;
-      }
-
-      .center-glass-play {
-        width: 46px !important;
-        height: 46px !important;
-        font-size: 19px !important;
-      }
-
-      /* 6. SUB TABS SCROLL */
-      .ref-sub-tabs-bar {
-        display: flex !important;
-        overflow-x: auto !important;
-        white-space: nowrap !important;
-        gap: 14px !important;
-        padding-bottom: 6px !important;
-        -webkit-overflow-scrolling: touch !important;
-        scrollbar-width: none !important;
-      }
-
-      .ref-sub-tabs-bar::-webkit-scrollbar {
-        display: none !important;
-      }
-
-      .sub-tab-btn {
-        font-size: 12px !important;
-        flex-shrink: 0 !important;
-      }
-
-      /* 7. WORD CARDS */
-      #subtab-audio > div > div:last-child {
-        grid-template-columns: 1fr !important;
-      }
-
-      /* 8. RIGHT ACCORDION COLUMN UNDERNEATH */
-      .right-sidebar-column {
-        width: 100% !important;
-        margin-top: 14px !important;
-        box-sizing: border-box !important;
-      }
-    }
-  </style>
+  <!-- Core App Stylesheet -->
+  <link rel="stylesheet" href="prototype.css?v=4.0.0">
 </head>
 <body>
 
   <!-- ============================================================
-       TOP PRESENTER DOCK (PERSPECTIVE SELECTOR)
+       1. TOP PRESENTER DOCK (DESKTOP DEMO CONTROLLER)
        ============================================================ -->
   <aside class="demo-control-bar">
     <div class="demo-left-meta">
-      <span style="font-weight: 700; color: #A7F3EC; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em;">
-        Simulasi Sistem
+      <span class="demo-tag-pill">
+        <i class="ph ph-sliders"></i> SIMULASI SISTEM
       </span>
-      <span style="color: rgba(255,255,255,0.4);">|</span>
+      <span style="color: rgba(255,255,255,0.35);">|</span>
       <span>Perspektif Pengguna:</span>
     </div>
 
@@ -383,7 +45,7 @@
       <button class="role-btn admin-btn" data-role="admin" onclick="PrototypeApp.setRole('admin')">
         <i class="ph ph-shield-check"></i> Panel Pengurus Yayasan
       </button>
-      <a href="game2d.html" class="role-btn" style="background: rgba(255, 255, 255, 0.12); color: #FFFFFF; text-decoration: none;">
+      <a href="game2d.html" class="role-btn" style="background: rgba(0, 210, 190, 0.18); color: #A7F3EC; border: 1px solid rgba(0, 210, 190, 0.4); text-decoration: none;">
         <i class="ph ph-microphone"></i> Simulasi Percakapan Suara
       </a>
     </div>
@@ -395,8 +57,10 @@
     </div>
   </aside>
 
-    <!-- MOBILE TOP BAR (Native App Style: Left Hamburger + Prominent Brand + Right Actions) -->
-  <div class="mobile-top-nav">
+  <!-- ============================================================
+       2. NATIVE MOBILE APP TOP BAR (LEFT HAMBURGER + PROMINENT BRAND)
+       ============================================================ -->
+  <header class="mobile-top-nav">
     <div class="mobile-top-left">
       <!-- Animated Hamburger Button on the Left -->
       <button class="mobile-hamburger-btn" onclick="PrototypeApp.toggleMobileDrawer()" title="Buka Menu">
@@ -405,7 +69,7 @@
 
       <!-- Prominent Brand Title -->
       <div class="mobile-brand-wrap" onclick="PrototypeApp.switchMainView('beranda')" style="cursor: pointer;">
-        <img src="logo-perisa-emblem.png?v=3.2" alt="PERISA">
+        <img src="logo-perisa-emblem.png?v=4.0" alt="PERISA">
         <div>
           <div class="mobile-brand-text">PERISA Azhariyah</div>
           <div class="mobile-brand-sub">Yayasan Peradaban Islam</div>
@@ -422,43 +86,36 @@
         AF
       </div>
     </div>
-  </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <a href="game2d.html" class="icon-circle-btn" style="width: 34px; height: 34px; background: rgba(0, 135, 122, 0.3); color: #A7F3EC; border-color: transparent;" title="Simulasi Suara">
-        <i class="ph ph-microphone"></i>
-      </a>
-      <button class="mobile-hamburger-btn" onclick="PrototypeApp.toggleMobileDrawer()">
-        <i class="ph ph-list" id="mobileDrawerIcon"></i>
-      </button>
-    </div>
-  </div>
+  </header>
 
-  <!-- MOBILE SLIDING DRAWER MENU -->
+  <!-- ============================================================
+       3. ANIMATED MOBILE SLIDING DRAWER MENU (LEFT-TO-RIGHT)
+       ============================================================ -->
   <div class="mobile-drawer-overlay" id="mobileDrawerOverlay" onclick="if(event.target===this) PrototypeApp.toggleMobileDrawer()">
     <div class="mobile-drawer-menu">
       
+      <!-- Drawer Header -->
       <div class="drawer-header-row">
         <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
-          <img src="logo-perisa-horizontal.png?v=3.0" alt="PERISA Azhariyah" style="width: 100%; max-width: 200px; height: auto; object-fit: contain;">
+          <img src="logo-perisa-horizontal.png?v=4.0" alt="PERISA Azhariyah" style="width: 100%; max-width: 195px; height: auto; object-fit: contain;">
         </div>
-        <i class="ph ph-x" style="cursor: pointer; font-size: 20px; color: var(--text-muted);" onclick="PrototypeApp.toggleMobileDrawer()"></i>
+        <i class="ph ph-x" style="cursor: pointer; font-size: 22px; color: var(--text-muted); padding: 4px;" onclick="PrototypeApp.toggleMobileDrawer()"></i>
       </div>
 
       <!-- Perspective Role Selector in Drawer -->
       <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px; display: flex; flex-direction: column; gap: 8px;">
         <span style="font-size: 10.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Ganti Perspektif Pengguna:</span>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-          <button class="role-btn" style="padding: 6px 8px; font-size: 11px; justify-content: center;" onclick="PrototypeApp.setRole('santri-sd'); PrototypeApp.toggleMobileDrawer();">
+          <button class="role-btn" style="padding: 7px 8px; font-size: 11px; justify-content: center;" onclick="PrototypeApp.setRole('santri-sd'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-student"></i> Santri SD
           </button>
-          <button class="role-btn active" style="padding: 6px 8px; font-size: 11px; justify-content: center;" onclick="PrototypeApp.setRole('santri-smp'); PrototypeApp.toggleMobileDrawer();">
+          <button class="role-btn active" style="padding: 7px 8px; font-size: 11px; justify-content: center;" onclick="PrototypeApp.setRole('santri-smp'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-student"></i> Santri SMP
           </button>
-          <button class="role-btn" style="padding: 6px 8px; font-size: 11px; justify-content: center;" onclick="PrototypeApp.setRole('santri-sma'); PrototypeApp.toggleMobileDrawer();">
+          <button class="role-btn" style="padding: 7px 8px; font-size: 11px; justify-content: center;" onclick="PrototypeApp.setRole('santri-sma'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-student"></i> Santri SMA
           </button>
-          <button class="role-btn admin-btn" style="padding: 6px 8px; font-size: 11px; justify-content: center;" onclick="PrototypeApp.setRole('admin'); PrototypeApp.toggleMobileDrawer();">
+          <button class="role-btn admin-btn" style="padding: 7px 8px; font-size: 11px; justify-content: center;" onclick="PrototypeApp.setRole('admin'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-shield-check"></i> Pengurus
           </button>
         </div>
@@ -504,7 +161,7 @@
         </li>
       </ul>
 
-      <div style="margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 8px;">
+      <div style="margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 8px;">
         <a href="index.html" class="btn-enroll-primary" style="width: 100%; justify-content: center; font-size: 12px; padding: 10px; background: var(--teal-dark); text-decoration: none;">
           <i class="ph ph-arrow-left"></i> Kembali ke Paparan
         </a>
@@ -513,19 +170,19 @@
   </div>
 
   <!-- ============================================================
-       MAIN APP CONTAINER (FULL-BLEED 100VW / 100VH)
+       4. MAIN APP CONTAINER (FULL-BLEED DESKTOP / FLUID MOBILE)
        ============================================================ -->
   <div class="app-window-frame">
 
-    <!-- LEFT SIDEBAR NAVIGATION -->
+    <!-- LEFT SIDEBAR NAVIGATION (DESKTOP) -->
     <aside class="ref-sidebar">
       
       <!-- Brand Header -->
-      <div class="ref-brand-logo" style="margin-bottom: 22px; padding: 2px 4px 6px 2px;">
-        <img src="logo-perisa-horizontal.png?v=3.0" alt="Yayasan Peradaban Islam Azhariyah" style="width: 100%; max-width: 210px; height: auto; display: block; object-fit: contain;">
+      <div class="ref-brand-logo" style="margin-bottom: 20px; padding: 2px 4px 6px 2px;">
+        <img src="logo-perisa-horizontal.png?v=4.0" alt="Yayasan Peradaban Islam Azhariyah" style="width: 100%; max-width: 210px; height: auto; display: block; object-fit: contain;">
       </div>
 
-            <!-- User Profile Card (Interactive Profile Switcher Dropdown) -->
+      <!-- User Profile Card (Interactive Profile Switcher Dropdown) -->
       <div style="position: relative;">
         <div class="sidebar-user-card" id="sidebarUserCard" onclick="PrototypeApp.toggleProfileDropdown(event)">
           <div class="user-left-info">
@@ -645,7 +302,7 @@
           </a>
         </li>
         <li>
-          <a class="ref-nav-item" id="nav-admin" onclick="PrototypeApp.switchMainView('admin')">
+          <a class="ref-nav-item" id="nav-admin-panel" onclick="PrototypeApp.switchMainView('admin')">
             <i class="ph ph-shield-check"></i>
             <span>Panel Otoritas Yayasan</span>
           </a>
@@ -669,7 +326,7 @@
     <!-- RIGHT MAIN WORKSPACE -->
     <main class="ref-main-workspace" id="refMainWorkspace">
       
-      <!-- Top Breadcrumbs Header Bar -->
+      <!-- Top Breadcrumbs Header Bar (Desktop Only) -->
       <header class="ref-top-header">
         <div class="breadcrumb-trail">
           <span id="breadcrumbRoot">Kurikulum</span>
@@ -695,49 +352,51 @@
       <div id="viewBerandaUtama" style="display: none; width: 100%;">
         <div class="beranda-view-layout">
           
+          <!-- Compact Welcome Banner -->
           <div class="beranda-welcome-banner">
             <div>
-              <div class="beranda-banner-title">Ahlan wa Sahlan, Ahmad Fauzan</div>
+              <div class="beranda-banner-title">Ahlan wa Sahlan, Ahmad Fauzan!</div>
               <div class="beranda-banner-sub">
-                Selamat datang di Sistem Informasi Pembelajaran Bahasa Arab Terpadu Yayasan Peradaban Islam Azhariyah asuhan Umi Elly.
+                Selamat melanjutkan pembelajaran Bahasa Arab terstruktur asuhan <strong>Umi Elly</strong>.
               </div>
             </div>
-            <button class="btn-enroll-primary" style="background: #FFFFFF; color: var(--teal-dark); padding: 10px 20px;" onclick="PrototypeApp.switchMainView('kurikulum')">
-              <i class="ph ph-play-circle"></i> Lanjutkan Belajar
+            <button class="btn-enroll-primary" style="background: #FFFFFF; color: var(--teal-dark); border: none; font-weight: 800;" onclick="PrototypeApp.switchMainView('kurikulum')">
+              <i class="ph ph-play-circle" style="color: var(--teal-primary); font-size: 18px;"></i> Lanjutkan Belajar
             </button>
           </div>
 
+          <!-- 4 Compact High-Density Metrics -->
           <div class="beranda-metrics-grid">
             <div class="beranda-metric-card">
-              <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: var(--teal-light); color: var(--teal-primary); display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="ph ph-check-circle"></i></div>
-              <div><div style="font-size: 18px; font-weight: 800; color: var(--teal-dark);">8 / 12 Modul</div><div style="font-size: 11px; color: var(--text-muted);">Ketuntasan Materi (66%)</div></div>
+              <div style="width: 40px; height: 40px; border-radius: var(--radius-sm); background: var(--teal-light); color: var(--teal-primary); display: flex; align-items: center; justify-content: center; font-size: 20px;"><i class="ph ph-trophy"></i></div>
+              <div><div style="font-size: 16px; font-weight: 800; color: var(--teal-dark);">2.850 XP</div><div style="font-size: 10.5px; color: var(--text-muted);">Peringkat Santri Teladan</div></div>
             </div>
             <div class="beranda-metric-card">
-              <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: var(--gold-light); color: var(--gold-dark); display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="ph ph-clock"></i></div>
-              <div><div style="font-size: 18px; font-weight: 800; color: var(--teal-dark);">4 Jam 20 Menit</div><div style="font-size: 11px; color: var(--text-muted);">Durasi Belajar Pekan Ini</div></div>
+              <div style="width: 40px; height: 40px; border-radius: var(--radius-sm); background: var(--gold-light); color: var(--gold-dark); display: flex; align-items: center; justify-content: center; font-size: 20px;"><i class="ph ph-clock"></i></div>
+              <div><div style="font-size: 16px; font-weight: 800; color: var(--teal-dark);">4j 20m</div><div style="font-size: 10.5px; color: var(--text-muted);">Durasi Belajar Pekan Ini</div></div>
             </div>
             <div class="beranda-metric-card">
-              <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: var(--teal-light); color: var(--teal-primary); display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="ph ph-seal-check"></i></div>
-              <div><div style="font-size: 18px; font-weight: 800; color: var(--teal-dark);">94 / 100</div><div style="font-size: 11px; color: var(--text-muted);">Indeks Pemahaman (Mumtaz)</div></div>
+              <div style="width: 40px; height: 40px; border-radius: var(--radius-sm); background: var(--teal-light); color: var(--teal-primary); display: flex; align-items: center; justify-content: center; font-size: 20px;"><i class="ph ph-seal-check"></i></div>
+              <div><div style="font-size: 16px; font-weight: 800; color: var(--teal-dark);">94 / 100</div><div style="font-size: 10.5px; color: var(--text-muted);">Indeks Mumtaz</div></div>
             </div>
             <div class="beranda-metric-card">
-              <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: var(--bg-subtle); color: var(--text-body); display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="ph ph-shield-check"></i></div>
-              <div><div style="font-size: 18px; font-weight: 800; color: var(--teal-dark);">Terverifikasi</div><div style="font-size: 11px; color: var(--text-muted);">Status Infaq Santri</div></div>
+              <div style="width: 40px; height: 40px; border-radius: var(--radius-sm); background: var(--bg-subtle); color: var(--text-body); display: flex; align-items: center; justify-content: center; font-size: 20px;"><i class="ph ph-shield-check"></i></div>
+              <div><div style="font-size: 16px; font-weight: 800; color: var(--teal-dark);">Terverifikasi</div><div style="font-size: 10.5px; color: var(--text-muted);">Status Infaq Santri</div></div>
             </div>
           </div>
 
           <div class="beranda-two-col">
             <div class="beranda-continue-card">
-              <h3 style="font-size: 16px; font-weight: 800; color: var(--teal-dark);">Modul Aktif Terakhir</h3>
+              <h3 style="font-size: 15px; font-weight: 800; color: var(--teal-dark);">Modul Aktif Terakhir</h3>
               <div class="beranda-continue-preview">
-                <div style="display: flex; align-items: center; gap: 14px;">
-                  <div style="width: 48px; height: 48px; border-radius: var(--radius-sm); background: var(--teal-primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: var(--teal-primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px;">
                     <i class="ph ph-play"></i>
                   </div>
                   <div>
-                    <div style="font-size: 14px; font-weight: 700; color: var(--teal-dark);">Bahasa Arab SMP: Jumlah Ismiyyah</div>
-                    <div style="font-size: 12px; color: var(--text-muted);">Modul 02: Kosakata Fasilitas Perpustakaan (المَكْتَبَةُ)</div>
-                    <div style="font-size: 11px; color: var(--teal-primary); font-weight: 600; margin-top: 3px;">Progres: 65% Selesai</div>
+                    <div style="font-size: 13.5px; font-weight: 700; color: var(--teal-dark);">Bahasa Arab SMP: Jumlah Ismiyyah</div>
+                    <div style="font-size: 11.5px; color: var(--text-muted);">Modul 02: Fasilitas Perpustakaan (المَكْتَبَةُ)</div>
+                    <div style="font-size: 10.5px; color: var(--teal-primary); font-weight: 700; margin-top: 2px;">Progres: 65% Selesai</div>
                   </div>
                 </div>
                 <button class="btn-enroll-primary" onclick="PrototypeApp.switchMainView('kurikulum')">
@@ -745,25 +404,25 @@
                 </button>
               </div>
 
-              <h4 style="font-size: 14px; font-weight: 700; color: var(--teal-dark); margin-top: 8px;">Pilihan Kurikulum Jenjang Lainnya</h4>
-              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
-                <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px; cursor: pointer;" onclick="PrototypeApp.setRole('santri-sd'); PrototypeApp.switchMainView('kurikulum');">
-                  <div style="font-size: 13px; font-weight: 700; color: var(--teal-dark);">Jenjang SD</div>
-                  <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Mufrodat Cilik & Hiwar</div>
+              <h4 style="font-size: 13px; font-weight: 700; color: var(--teal-dark); margin-top: 10px;">Pilihan Jenjang Lainnya</h4>
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 10px; cursor: pointer; text-align: center;" onclick="PrototypeApp.setRole('santri-sd'); PrototypeApp.switchMainView('kurikulum');">
+                  <div style="font-size: 12px; font-weight: 700; color: var(--teal-dark);">Jenjang SD</div>
+                  <div style="font-size: 10px; color: var(--text-muted);">Mufrodat Cilik</div>
                 </div>
-                <div style="background: var(--teal-light); border: 1.5px solid var(--teal-primary); border-radius: var(--radius-md); padding: 14px; cursor: pointer;" onclick="PrototypeApp.setRole('santri-smp'); PrototypeApp.switchMainView('kurikulum');">
-                  <div style="font-size: 13px; font-weight: 700; color: var(--teal-primary);">Jenjang SMP (Aktif)</div>
-                  <div style="font-size: 11px; color: #006D63; margin-top: 2px;">Jumlah Ismiyyah & Dhomir</div>
+                <div style="background: var(--teal-light); border: 1.5px solid var(--teal-primary); border-radius: var(--radius-md); padding: 10px; cursor: pointer; text-align: center;" onclick="PrototypeApp.setRole('santri-smp'); PrototypeApp.switchMainView('kurikulum');">
+                  <div style="font-size: 12px; font-weight: 700; color: var(--teal-primary);">Jenjang SMP (Aktif)</div>
+                  <div style="font-size: 10px; color: #006D63;">Jumlah Ismiyyah</div>
                 </div>
-                <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px; cursor: pointer;" onclick="PrototypeApp.setRole('santri-sma'); PrototypeApp.switchMainView('kurikulum');">
-                  <div style="font-size: 13px; font-weight: 700; color: var(--teal-dark);">Jenjang SMA</div>
-                  <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Nahwu-Shorof & Tashrif</div>
+                <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 10px; cursor: pointer; text-align: center;" onclick="PrototypeApp.setRole('santri-sma'); PrototypeApp.switchMainView('kurikulum');">
+                  <div style="font-size: 12px; font-weight: 700; color: var(--teal-dark);">Jenjang SMA</div>
+                  <div style="font-size: 10px; color: var(--text-muted);">Nahwu-Shorof</div>
                 </div>
               </div>
             </div>
 
             <div class="beranda-schedule-card">
-              <h3 style="font-size: 16px; font-weight: 800; color: var(--teal-dark);">Agenda Bimbingan Yayasan</h3>
+              <h3 style="font-size: 15px; font-weight: 800; color: var(--teal-dark);">Agenda Bimbingan Umi Elly</h3>
               <div class="schedule-item">
                 <div style="font-size: 12px; font-weight: 700; color: var(--teal-dark);">Bimbingan Makhraj Huruf & Hiwar</div>
                 <div style="font-size: 11px; color: var(--text-muted);">Bersama Umi Elly via Ruang Tatap Maya Zoom</div>
@@ -786,7 +445,7 @@
       <div id="viewCoursePlayer" style="display: block; width: 100%;">
         <div class="course-main-grid">
 
-                    <!-- LEFT COLUMN: PLAYER & TABS -->
+          <!-- LEFT COLUMN: PLAYER & TABS -->
           <div class="left-player-column">
             
             <!-- CLEAN UNBOXED CODELINGO HEADER (ZERO BADGES) -->
@@ -828,10 +487,10 @@
                   <i class="ph ph-shield-check"></i> Ahmad Fauzan • 0812-8921-9921 • Hak Cipta PERISA Azhariyah
                 </div>
 
-                <div style="font-size: 26px; font-weight: 700; font-family: 'Amiri', 'Traditional Arabic', Arial; margin-bottom: 6px;" id="currentVideoArabic">
+                <div style="font-size: 24px; font-weight: 700; font-family: 'Amiri', 'Traditional Arabic', Arial; margin-bottom: 4px;" id="currentVideoArabic">
                   الوَحْدَةُ الثَّانِيَةُ : فِي المَدْرَسَةِ
                 </div>
-                <div style="font-size: 13px; color: #A7F3EC; margin-bottom: 20px;" id="currentVideoSubtitle">
+                <div style="font-size: 12px; color: #A7F3EC; margin-bottom: 16px;" id="currentVideoSubtitle">
                   Modul 02: Kosakata Fasilitas Perpustakaan (المَكْتَبَةُ)
                 </div>
 
@@ -852,7 +511,7 @@
             </div>
 
             <!-- SUB-TAB CONTENT CONTAINER -->
-            <div class="sub-tab-viewport" style="margin-top: 14px;">
+            <div class="sub-tab-viewport" style="margin-top: 10px;">
 
               <!-- 1. TAB RINGKASAN MATERI -->
               <div id="subtab-ringkasan" class="subtab-pane active">
@@ -874,15 +533,15 @@
                     </div>
                   </div>
 
-                  <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
+                  <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
                     <div style="display: flex; align-items: center; gap: 12px;">
-                      <i class="ph ph-file-pdf" style="font-size: 26px; color: var(--teal-primary);"></i>
+                      <i class="ph ph-file-pdf" style="font-size: 24px; color: var(--teal-primary);"></i>
                       <div>
-                        <div style="font-size: 13px; font-weight: 700; color: var(--teal-dark);">Dokumen Silabus & Ringkasan Resmi (Modul 02)</div>
-                        <div style="font-size: 11px; color: var(--text-muted);">Format: PDF • Dokumen Resmi Yayasan Peradaban Islam Azhariyah</div>
+                        <div style="font-size: 12.5px; font-weight: 700; color: var(--teal-dark);">Dokumen Silabus & Ringkasan Resmi (Modul 02)</div>
+                        <div style="font-size: 10.5px; color: var(--text-muted);">Format: PDF • Yayasan Peradaban Islam Azhariyah</div>
                       </div>
                     </div>
-                    <button class="btn-enroll-primary" style="padding: 6px 14px; font-size: 11.5px;" onclick="PrototypeApp.openDocReader(1)">
+                    <button class="btn-enroll-primary" style="padding: 6px 12px; font-size: 11.5px;" onclick="PrototypeApp.openDocReader(1)">
                       <i class="ph ph-book-open"></i> Buka Silabus
                     </button>
                   </div>
@@ -891,23 +550,23 @@
 
               <!-- 2. TAB PELAFALAN AUDIO (REAL ARABIC VOICE SYNTHESIS) -->
               <div id="subtab-audio" class="subtab-pane" style="display: none;">
-                <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 22px;">
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px;">
+                <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
                     <div>
-                      <h3 style="font-size: 15px; font-weight: 800; color: var(--teal-dark); display: flex; align-items: center; gap: 8px;">
-                        <i class="ph ph-speaker-high" style="color: var(--teal-primary);"></i> Panduan Pelafalan dan Makhraj Huruf (Asuhan Umi Elly)
+                      <h3 style="font-size: 14px; font-weight: 800; color: var(--teal-dark); display: flex; align-items: center; gap: 8px;">
+                        <i class="ph ph-speaker-high" style="color: var(--teal-primary);"></i> Panduan Pelafalan & Makhraj Huruf (Asuhan Umi Elly)
                       </h3>
-                      <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
-                        Klik tombol audio pada masing-masing mufrodat untuk mendengarkan suara penutur bahasa Arab standar sanad secara langsung.
+                      <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">
+                        Klik pada kartu mufrodat untuk mendengarkan pelafalan penutur bahasa Arab standar sanad secara langsung.
                       </p>
                     </div>
-                    <button class="btn-enroll-primary" style="padding: 7px 16px; font-size: 12px;" onclick="PrototypeApp.playAllMufrodatSequence()">
+                    <button class="btn-enroll-primary" style="padding: 6px 14px; font-size: 11.5px;" onclick="PrototypeApp.playAllMufrodatSequence()">
                       <i class="ph ph-speaker-high"></i> Putar Keseluruhan
                     </button>
                   </div>
 
                   <!-- Word Cards Grid -->
-                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     
                     <div id="wordCard-1" class="arabic-word-card" onclick="PrototypeApp.speakArabic('المَكْتَبَةُ', 'Al-Maktabatu (Perpustakaan)', 'wordCard-1')">
                       <div>
@@ -955,22 +614,22 @@
 
               <!-- 3. TAB EVALUASI PEMAHAMAN -->
               <div id="subtab-kuis" class="subtab-pane" style="display: none;">
-                <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 22px;">
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                     <span style="font-size: 11px; font-weight: 700; color: var(--teal-primary); text-transform: uppercase;">Evaluasi Mandiri Modul 02</span>
-                    <span style="font-size: 11.5px; color: var(--text-muted);">Status: Uji Pemahaman</span>
+                    <span style="font-size: 11px; color: var(--text-muted);">Status: Uji Pemahaman</span>
                   </div>
-                  <div style="font-size: 14px; font-weight: 700; color: var(--teal-dark); line-height: 1.5; margin-bottom: 14px;">
-                    Pilihlah makna kosakata (mufrodat) yang tepat untuk kata: <strong style="color: var(--teal-primary); font-size: 20px; font-family: 'Amiri', Arial;">"المَكْتَبَةُ" (Al-Maktabatu)</strong>:
+                  <div style="font-size: 13.5px; font-weight: 700; color: var(--teal-dark); line-height: 1.5; margin-bottom: 12px;">
+                    Pilihlah makna kosakata (mufrodat) yang tepat untuk kata: <strong style="color: var(--teal-primary); font-size: 19px; font-family: 'Amiri', Arial;">"المَكْتَبَةُ" (Al-Maktabatu)</strong>:
                   </div>
-                  <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
-                    <button class="btn-enroll-primary" style="background: #FFFFFF; border: 1px solid var(--border-color); color: var(--text-main); text-align: left; justify-content: flex-start; padding: 10px 16px;" onclick="PrototypeApp.showToast('Jawaban belum tepat. Silakan telaah kembali modul.');">
+                  <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+                    <button class="btn-enroll-primary" style="background: #FFFFFF; border: 1px solid var(--border-color); color: var(--text-main); text-align: left; justify-content: flex-start; padding: 10px 14px;" onclick="PrototypeApp.showToast('Jawaban belum tepat. Silakan telaah kembali modul.');">
                       A. Ruang Komputer
                     </button>
-                    <button class="btn-enroll-primary" style="background: var(--teal-light); border: 1.5px solid var(--teal-primary); color: #006D63; text-align: left; justify-content: flex-start; padding: 10px 16px;" onclick="PrototypeApp.claimGameXp();">
+                    <button class="btn-enroll-primary" style="background: var(--teal-light); border: 1.5px solid var(--teal-primary); color: #006D63; text-align: left; justify-content: flex-start; padding: 10px 14px;" onclick="PrototypeApp.claimGameXp();">
                       B. Perpustakaan Sekolah (Jawaban Tepat)
                     </button>
-                    <button class="btn-enroll-primary" style="background: #FFFFFF; border: 1px solid var(--border-color); color: var(--text-main); text-align: left; justify-content: flex-start; padding: 10px 16px;" onclick="PrototypeApp.showToast('Jawaban belum tepat. Silakan telaah kembali modul.');">
+                    <button class="btn-enroll-primary" style="background: #FFFFFF; border: 1px solid var(--border-color); color: var(--text-main); text-align: left; justify-content: flex-start; padding: 10px 14px;" onclick="PrototypeApp.showToast('Jawaban belum tepat. Silakan telaah kembali modul.');">
                       C. Ruang Guru
                     </button>
                   </div>
@@ -979,12 +638,12 @@
 
               <!-- 4. TAB PEMBERITAHUAN -->
               <div id="subtab-pengumuman" class="subtab-pane" style="display: none;">
-                <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px;">
+                <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <strong style="color: var(--teal-dark); font-size: 13px;">Kajian dan Bimbingan Bahasa Arab Bersama Umi Elly</strong>
+                    <strong style="color: var(--teal-dark); font-size: 12.5px;">Kajian dan Bimbingan Bahasa Arab Bersama Umi Elly</strong>
                     <span style="font-size: 10.5px; color: var(--text-muted);">28 Agustus 2026</span>
                   </div>
-                  <p style="font-size: 12px; color: var(--text-body); line-height: 1.5;">
+                  <p style="font-size: 11.5px; color: var(--text-body); line-height: 1.5;">
                     Bimbingan muhadatsah dan pembinaan makhraj huruf pekanan dijadwalkan setiap hari Ahad pukul 16.00 WIB melalui ruang tatap maya yayasan.
                   </p>
                 </div>
@@ -992,18 +651,18 @@
 
               <!-- 5. TAB ULASAN -->
               <div id="subtab-ulasan" class="subtab-pane" style="display: none;">
-                <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px;">
+                <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                     <div style="display: flex; align-items: center; gap: 8px;">
                       <div class="user-avatar-small">IR</div>
                       <div>
-                        <strong style="font-size: 12.5px; color: var(--teal-dark);">Ibu Rina (Wali Santri Ahmad Fauzan)</strong>
+                        <strong style="font-size: 12px; color: var(--teal-dark);">Ibu Rina (Wali Santri Ahmad Fauzan)</strong>
                         <div style="font-size: 10px; color: var(--text-muted);">Wali Santri Jenjang SMP</div>
                       </div>
                     </div>
-                    <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;">Terverifikasi</span>
+                    <span style="font-size: 10.5px; color: var(--text-muted); font-weight: 600;">Terverifikasi</span>
                   </div>
-                  <p style="font-size: 12px; color: var(--text-body); line-height: 1.5;">
+                  <p style="font-size: 11.5px; color: var(--text-body); line-height: 1.5;">
                     "Materi pembelajaran terstruktur dengan sangat baik. Penjelasan Umi Elly mengenai kaidah bahasa Arab memudahkan pemahaman santri secara bertahap."
                   </p>
                 </div>
@@ -1013,74 +672,118 @@
 
           </div>
 
-          <!-- RIGHT COLUMN: ACCORDION SYLLABUS -->
+          <!-- RIGHT COLUMN: SYLLABUS & AUTHOR -->
           <div class="right-sidebar-column">
             
+            <!-- Syllabus Accordion -->
             <div class="course-content-accordion-card">
-              <div class="accordion-main-title">Struktur Silabus Pembelajaran</div>
+              <div class="accordion-main-title">
+                Struktur Silabus Pembelajaran
+              </div>
 
+              <!-- Modul 1 -->
               <div class="accordion-section">
-                <div class="section-head" onclick="PrototypeApp.showToast('Membuka Bab 1: Mufrodat Sekolah')">
-                  <span>01: Kosakata dan Fasilitas Sekolah</span>
-                  <span class="section-duration">22 Menit <i class="ph ph-caret-up"></i></span>
+                <div class="section-head" onclick="PrototypeApp.toggleAccordion(this)">
+                  <div class="section-head-left">
+                    <span class="section-badge-num">01: Kosakata dan Fasilitas Sekolah</span>
+                  </div>
+                  <div class="section-head-right">
+                    <span class="section-dur-text">22 Menit</span>
+                    <i class="ph ph-caret-up toggle-caret"></i>
+                  </div>
                 </div>
                 <div class="lesson-sub-list">
-                  <div class="lesson-sub-row" onclick="PrototypeApp.showToast('Memutar Modul 01')">
+                  <div class="lesson-sub-row" onclick="PrototypeApp.showToast('Memutar: Pengenalan Ruang Kelas')">
                     <div class="lesson-left-title"><i class="ph ph-play-circle"></i><span>Pengenalan Ruang Kelas</span></div>
                     <span class="lesson-time">2 Menit</span>
                   </div>
-                  <div class="lesson-sub-row active" onclick="PrototypeApp.showToast('Memutar Modul 02: Perpustakaan')">
+                  <div class="lesson-sub-row active" onclick="PrototypeApp.showToast('Memutar: Fasilitas Perpustakaan')">
                     <div class="lesson-left-title"><i class="ph ph-play-circle"></i><span>Perpustakaan (المَكْتَبَةُ)</span></div>
                     <span class="lesson-time">5 Menit</span>
                   </div>
-                  <div class="lesson-sub-row" onclick="PrototypeApp.showToast('Memutar Modul 03: Jumlah Ismiyyah')">
+                  <div class="lesson-sub-row" onclick="PrototypeApp.showToast('Memutar: Kaidah Jumlah Ismiyyah Dasar')">
                     <div class="lesson-left-title"><i class="ph ph-play-circle"></i><span>Kaidah Jumlah Ismiyyah Dasar</span></div>
                     <span class="lesson-time">12 Menit</span>
                   </div>
-                  <div class="lesson-sub-row" onclick="PrototypeApp.switchSubTab('kuis')">
+                  <div class="lesson-sub-row" onclick="PrototypeApp.showToast('Membuka: Lembar Evaluasi Mandiri')">
                     <div class="lesson-left-title"><i class="ph ph-check-circle"></i><span>Lembar Evaluasi Mandiri</span></div>
                     <span class="lesson-time">3 Menit</span>
                   </div>
                 </div>
               </div>
 
+              <!-- Modul 2 -->
               <div class="accordion-section">
-                <div class="section-head" onclick="PrototypeApp.showToast('Membuka Bab 2: Kaidah Dhomir')">
-                  <span>02: Kaidah Kata Ganti (Dhomir)</span>
-                  <span class="section-duration">1 Jam 20 Menit <i class="ph ph-caret-down"></i></span>
+                <div class="section-head" onclick="PrototypeApp.toggleAccordion(this)">
+                  <div class="section-head-left">
+                    <span class="section-badge-num">02: Kaidah Kata Ganti (Dhomir)</span>
+                  </div>
+                  <div class="section-head-right">
+                    <span class="section-dur-text">1 Jam 20 Menit</span>
+                    <i class="ph ph-caret-down toggle-caret"></i>
+                  </div>
+                </div>
+                <div class="lesson-sub-list" style="display: none;">
+                  <div class="lesson-sub-row"><div class="lesson-left-title"><i class="ph ph-lock"></i><span>Dhomir Munfashil (هُوَ ، هِيَ)</span></div><span class="lesson-time">25 Menit</span></div>
+                  <div class="lesson-sub-row"><div class="lesson-left-title"><i class="ph ph-lock"></i><span>Dhomir Muttashil (ـهُ ، ـهَا)</span></div><span class="lesson-time">35 Menit</span></div>
+                  <div class="lesson-sub-row"><div class="lesson-left-title"><i class="ph ph-lock"></i><span>Latihan Kalimat Mandiri</span></div><span class="lesson-time">20 Menit</span></div>
                 </div>
               </div>
 
+              <!-- Modul 3 -->
               <div class="accordion-section">
-                <div class="section-head" onclick="PrototypeApp.showToast('Membuka Bab 3: Tashrif Fi\'il')">
-                  <span>03: Kaidah Perubahan Kata (Tashrif)</span>
-                  <span class="section-duration">36 Menit <i class="ph ph-caret-down"></i></span>
+                <div class="section-head" onclick="PrototypeApp.toggleAccordion(this)">
+                  <div class="section-head-left">
+                    <span class="section-badge-num">03: Kaidah Perubahan Kata (Tashrif)</span>
+                  </div>
+                  <div class="section-head-right">
+                    <span class="section-dur-text">36 Menit</span>
+                    <i class="ph ph-caret-down toggle-caret"></i>
+                  </div>
+                </div>
+                <div class="lesson-sub-list" style="display: none;">
+                  <div class="lesson-sub-row"><div class="lesson-left-title"><i class="ph ph-lock"></i><span>Pola Fi'il Madhi & Mudhari'</span></div><span class="lesson-time">36 Menit</span></div>
                 </div>
               </div>
 
+              <!-- Modul 4 -->
               <div class="accordion-section">
-                <div class="section-head" onclick="PrototypeApp.openCertModal('Ahmad Fauzan')">
-                  <span>04: Sertifikat Kelulusan Resmi</span>
-                  <span class="section-duration">Verifikasi Sanad <i class="ph ph-seal-check"></i></span>
+                <div class="section-head" onclick="PrototypeApp.toggleAccordion(this)">
+                  <div class="section-head-left">
+                    <span class="section-badge-num">04: Sertifikat Kelulusan Resmi</span>
+                  </div>
+                  <div class="section-head-right">
+                    <span class="section-dur-text" style="color: var(--gold-dark); font-weight: 700;">Verifikasi Sanad</span>
+                    <i class="ph ph-caret-down toggle-caret"></i>
+                  </div>
+                </div>
+                <div class="lesson-sub-list" style="display: none;">
+                  <div class="lesson-sub-row" onclick="PrototypeApp.openCertificate()">
+                    <div class="lesson-left-title"><i class="ph ph-certificate" style="color: var(--gold-dark);"></i><span>Piagam Kelulusan Sanad</span></div>
+                    <span class="lesson-time" style="color: var(--teal-primary); font-weight: 700;">Buka Dokumen</span>
+                  </div>
                 </div>
               </div>
+
             </div>
 
-            <div class="author-profile-box">
-              <div class="author-title-label">Pengasuh & Penyusun Kurikulum</div>
-              <div class="author-header-row">
-                <div class="author-avatar-img">UE</div>
-                <div class="author-info-side">
-                  <div class="author-name-verified">
-                    <span>Umi Elly</span>
-                    <i class="ph-fill ph-seal-check" style="color: var(--teal-primary); font-size: 14px;"></i>
-                  </div>
+            <!-- Author Box Umi Elly -->
+            <div class="author-profile-card">
+              <div class="author-head-row">
+                <div class="author-avatar-circle">UE</div>
+                <div>
+                  <div class="author-name-text">Umi Elly <i class="ph ph-seal-check" style="color: var(--teal-primary);"></i></div>
                   <div class="author-role-sub">Pengasuh Yayasan Peradaban Islam Azhariyah</div>
                 </div>
               </div>
-              <p class="author-bio-paragraph">
-                Pendidik dan pengasuh bidang studi bahasa Arab dan Al-Qur'an dengan sanad keilmuan yang berkesinambungan dalam membina generasi santri peradaban Islam.
+              <p class="author-bio-p">
+                Pendidik dan pengasuh bidang studi bahasa Arab dan Al-Qur'an dengan sanad keilmuan yang berkesinambungan, berfokus membina pemahaman generasi muda dalam menguasai kaidah tata bahasa Al-Qur'an.
               </p>
+              <div class="author-stat-strip">
+                <div class="author-stat-cell"><strong>12</strong><span>Modul Resmi</span></div>
+                <div class="author-stat-cell"><strong>450+</strong><span>Santri Aktif</span></div>
+                <div class="author-stat-cell"><strong>Sanad</strong><span>Terverifikasi</span></div>
+              </div>
             </div>
 
           </div>
@@ -1089,241 +792,120 @@
       </div>
 
       <!-- ======================================================
-           VIEW 3: ASISTEN PINTAR BAHASA ARAB (SETO AI STUDIO)
+           VIEW 3: STUDIO ASISTEN AI BAHASA ARAB
            ====================================================== -->
       <div id="viewAiAssistant" style="display: none; width: 100%;">
         <div class="seto-dashboard-layout">
           
           <div class="seto-main-hub">
-            <div></div>
+            <div class="seto-emblem-star">
+              <img src="logo-perisa-emblem.png?v=4.0" alt="PERISA" style="width: 58px; height: 58px; object-fit: contain;">
+            </div>
+            <h1 class="seto-h1-welcome">Asisten Kaidah Bahasa Arab PERISA</h1>
+            <p class="seto-p-sub">
+              Konsultasikan kaidah tata bahasa (Nahwu-Shorof), pelafalan mufrodat, dan susunan kalimat sesuai panduan asuhan <strong>Umi Elly</strong>.
+            </p>
 
-            <div class="seto-center-content">
-              <div class="seto-emblem-star">
-                <i class="ph ph-sparkle"></i>
+            <div class="seto-cards-grid">
+              <div class="seto-card-item" onclick="PrototypeApp.fillAiPrompt('Tolong jelaskan kaidah Tashrif Fi\'il Madhi ke Fi\'il Mudhari\' secara bertahap')">
+                <div class="seto-card-icon"><i class="ph ph-translate"></i></div>
+                <div class="seto-card-title">Kaidah Tashrif & Shorof</div>
+                <div class="seto-card-desc">Bimbingan pembentukan kata kerja, wazan, dan derivasi makna.</div>
               </div>
-
-              <h1 class="seto-h1-welcome" id="setoWelcomeTitle">Ahlan wa Sahlan, Ahmad Fauzan</h1>
-              <p class="seto-p-sub">
-                Pusat Asisten Pembelajaran Bahasa Arab Terpadu. Tanyakan kaidah Nahwu, konjugasi Tashrif, atau mufrodat kitab asuhan Umi Elly.
-              </p>
-
-              <div class="seto-cards-grid">
-                <div class="seto-action-card" onclick="PrototypeApp.askAiQuestion('Tashrif kata kerja كَتَبَ (Kataba) ke dalam Fi\'il Madhi, Mudhari\', dan Amr')">
-                  <div class="seto-card-icon"><i class="ph ph-arrows-left-right"></i></div>
-                  <div class="seto-card-title">Tashrif Kata Kerja</div>
-                  <div class="seto-card-desc">Konjugasi wazan Fi'il Madhi, Mudhari', dan Amr otomatis sesuai sanad.</div>
-                </div>
-
-                <div class="seto-action-card" onclick="PrototypeApp.askAiQuestion('Analisis I\'rob struktur kalimat: الأُسْتَاذُ فِي الفَصْلِ (Al-Ustadzu fil fashli)')">
-                  <div class="seto-card-icon"><i class="ph ph-tree-structure"></i></div>
-                  <div class="seto-card-title">Analisis I'rob Kalimat</div>
-                  <div class="seto-card-desc">Urai kedudukan Mubtada, Khobar, Fa'il, dan tanda I'rob dalam kalimat.</div>
-                </div>
-
-                <div class="seto-action-card" onclick="PrototypeApp.askAiQuestion('Simulasi hiwar percakapan tematik di perpustakaan sekolah')">
-                  <div class="seto-card-icon"><i class="ph ph-chat-teardrop-text"></i></div>
-                  <div class="seto-card-title">Latihan Hiwar Santri</div>
-                  <div class="seto-card-desc">Simulasi percakapan tematik harian sesuai modul asuhan Umi Elly.</div>
-                </div>
+              <div class="seto-card-item" onclick="PrototypeApp.fillAiPrompt('Bagaimana cara menentukan I\'rob pada susunan Jumlah Ismiyyah?')">
+                <div class="seto-card-icon"><i class="ph ph-tree-structure"></i></div>
+                <div class="seto-card-title">Analisis I'rob Nahwu</div>
+                <div class="seto-card-desc">Penjelasan kedudukan kata (Mubtada, Khobar, Fa'il, Maf'ul).</div>
               </div>
-
-              <div id="aiResponseBox" style="display: none; background: #FFFFFF; border: 1.5px solid var(--teal-border); border-radius: var(--radius-lg); padding: 20px 24px; text-align: left; width: 100%; margin-bottom: 24px; box-shadow: var(--shadow-sm);">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 8px;">
-                  <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--teal-primary);">
-                    <i class="ph ph-sparkle"></i> Analisis Kaidah Bahasa Arab (Asuhan Umi Elly)
-                  </div>
-                  <button class="btn-share-text" style="font-size: 11px; padding: 2px 8px;" onclick="document.getElementById('aiResponseBox').style.display='none'">Tutup</button>
-                </div>
-                <div id="aiResponseContent" style="font-size: 13px; color: var(--text-body); line-height: 1.6;"></div>
+              <div class="seto-card-item" onclick="PrototypeApp.fillAiPrompt('Berikan contoh percakapan (Hiwar) di perpustakaan sekolah beserta artinya')">
+                <div class="seto-card-icon"><i class="ph ph-chat-centered-text"></i></div>
+                <div class="seto-card-title">Praktik Hiwar Tematik</div>
+                <div class="seto-card-desc">Simulasi dialog percakapan tematik santri dan mufrodat harian.</div>
               </div>
-
-              <div class="seto-prompt-dock">
-                <input type="text" id="aiInputPrompt" class="seto-input-field" placeholder="Ketik pertanyaan kaidah bahasa Arab, mufrodat, atau kalimat..." onkeydown="if(event.key==='Enter') PrototypeApp.handleAiSend();">
-                <div class="seto-prompt-bottom-bar">
-                  <div class="seto-pill-actions">
-                    <button class="seto-pill-btn" onclick="PrototypeApp.showToast('Lampiran teks rujukan diaktifkan')"><i class="ph ph-paperclip"></i> Rujukan</button>
-                    <button class="seto-pill-btn" onclick="PrototypeApp.showToast('Mode Analisis I\'rob diaktifkan')"><i class="ph ph-tree-structure"></i> Mode I'rob</button>
-                    <button class="seto-pill-btn" onclick="PrototypeApp.showToast('Mode Tashrif diaktifkan')"><i class="ph ph-arrows-left-right"></i> Mode Tashrif</button>
-                  </div>
-                  <button class="seto-send-btn" title="Kirim Pertanyaan" onclick="PrototypeApp.handleAiSend()">
-                    <i class="ph ph-arrow-up"></i>
-                  </button>
-                </div>
-              </div>
-
             </div>
 
-            <div></div>
+            <div class="seto-prompt-dock">
+              <div class="seto-pill-actions">
+                <span class="seto-pill-badge" onclick="PrototypeApp.fillAiPrompt('Jelaskan perbedaan Mubtada dan Khobar')">Mubtada vs Khobar</span>
+                <span class="seto-pill-badge" onclick="PrototypeApp.fillAiPrompt('Apa saja huruf Jer dalam bahasa Arab?')">Huruf Jer</span>
+                <span class="seto-pill-badge" onclick="PrototypeApp.fillAiPrompt('Bagaimana rumus Dhomir Munfashil?')">Dhomir Munfashil</span>
+              </div>
+              <div class="seto-input-wrap">
+                <input type="text" id="aiInputPrompt" class="seto-text-input" placeholder="Ketik pertanyaan kaidah bahasa Arab di sini..." onkeypress="if(event.key==='Enter') PrototypeApp.handleAiSend()">
+                <button class="seto-send-btn" onclick="PrototypeApp.handleAiSend()"><i class="ph ph-paper-plane-right"></i> Kirim</button>
+              </div>
+            </div>
           </div>
 
-          <aside class="seto-history-column">
-            <div class="seto-history-title-row">
-              <div class="seto-history-h3">Riwayat Konsultasi</div>
-              <button class="icon-circle-btn" style="width: 28px; height: 28px; font-size: 14px;" onclick="PrototypeApp.showToast('Membuat sesi konsultasi baru...')">
-                <i class="ph ph-plus"></i>
-              </button>
-            </div>
-
-            <div class="seto-search-box">
-              <i class="ph ph-magnifying-glass"></i>
-              <input type="text" class="seto-search-input" placeholder="Cari arsip pertanyaan...">
-            </div>
-
-            <div class="seto-history-list">
-              <div class="seto-history-card" onclick="PrototypeApp.askAiQuestion('Penjelasan kaidah Jumlah Ismiyyah')">
-                <div class="seto-history-heading">Kaidah Jumlah Ismiyyah</div>
-                <div class="seto-history-snippet">Pembahasan struktur Mubtada dan Khobar dalam kalimat sempurna.</div>
-                <div class="seto-history-time">2 Jam yang lalu</div>
+          <div class="seto-history-column">
+            <h3 style="font-size: 14px; font-weight: 800; color: var(--teal-dark); margin-bottom: 12px;">Riwayat Konsultasi</h3>
+            <div style="display: flex; flex-direction: column; gap: 8px;" id="aiHistoryList">
+              <div style="padding: 10px 12px; background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 12px; color: var(--teal-dark); cursor: pointer;" onclick="PrototypeApp.showToast('Membuka riwayat: Jumlah Ismiyyah')">
+                <div style="font-weight: 700;">Kaidah Jumlah Ismiyyah</div>
+                <div style="font-size: 10px; color: var(--text-muted);">Hari ini • 14.30 WIB</div>
               </div>
-
-              <div class="seto-history-card" onclick="PrototypeApp.askAiQuestion('Tashrif Fi\'il Tsulatsi Mujarrad')">
-                <div class="seto-history-heading">Tashrif Fi'il Tsulatsi</div>
-                <div class="seto-history-snippet">Pola wazan Fa'ala Yaf'ulu untuk kata kerja dasar.</div>
-                <div class="seto-history-time">Kemarin</div>
-              </div>
-
-              <div class="seto-history-card" onclick="PrototypeApp.askAiQuestion('Daftar 20 Mufrodat Perpustakaan')">
-                <div class="seto-history-heading">Mufrodat Fasilitas Sekolah</div>
-                <div class="seto-history-snippet">Daftar kosakata sarana perpustakaan dan ruang kelas.</div>
-                <div class="seto-history-time">3 Hari yang lalu</div>
+              <div style="padding: 10px 12px; background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 12px; color: var(--teal-dark); cursor: pointer;" onclick="PrototypeApp.showToast('Membuka riwayat: Tashrif Lughowi')">
+                <div style="font-weight: 700;">Tashrif Lughowi Fi'il Madhi</div>
+                <div style="font-size: 10px; color: var(--text-muted);">Kemarin • 19.15 WIB</div>
               </div>
             </div>
-
-            <button class="btn-enroll-primary" style="width: 100%; justify-content: center; padding: 10px;" onclick="PrototypeApp.showToast('Membuka sesi konsultasi baru bersama Umi Elly...')">
-              <i class="ph ph-chat-circle-dots"></i> Mulai Konsultasi Baru
-            </button>
-          </aside>
+          </div>
 
         </div>
       </div>
 
       <!-- ======================================================
-           VIEW 4: MODUL & SILABUS PDF (LIBRARY & DOCUMENTS)
+           VIEW 4: PERPUSTAKAAN SILABUS & MODUL PDF
            ====================================================== -->
       <div id="viewModulPdf" style="display: none; width: 100%;">
         <div class="pdf-library-layout">
           
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
             <div>
-              <h2 style="font-size: 21px; font-weight: 800; color: var(--teal-dark);">Arsip Modul dan Silabus Resmi</h2>
-              <p style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">Dokumen kurikulum, ringkasan kaidah nahwu-shorof, dan lembar kerja santri Yayasan PERISA Azhariyah.</p>
+              <h2 style="font-size: 20px; font-weight: 800; color: var(--teal-dark);">Perpustakaan Modul & Dokumen Silabus</h2>
+              <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Dokumen resmi terverifikasi Yayasan Peradaban Islam Azhariyah asuhan Umi Elly.</p>
             </div>
-            
+
             <div class="pdf-filter-bar">
-              <button class="role-btn active pdf-filter-tab" data-filter="all" onclick="PrototypeApp.filterPdfLibrary('all')">Semua Dokumen (6)</button>
-              <button class="role-btn pdf-filter-tab" data-filter="sd" style="background: var(--bg-subtle); color: var(--text-body); border: 1px solid var(--border-color);" onclick="PrototypeApp.filterPdfLibrary('sd')">Jenjang SD</button>
-              <button class="role-btn pdf-filter-tab" data-filter="smp" style="background: var(--bg-subtle); color: var(--text-body); border: 1px solid var(--border-color);" onclick="PrototypeApp.filterPdfLibrary('smp')">Jenjang SMP</button>
-              <button class="role-btn pdf-filter-tab" data-filter="sma" style="background: var(--bg-subtle); color: var(--text-body); border: 1px solid var(--border-color);" onclick="PrototypeApp.filterPdfLibrary('sma')">Jenjang SMA</button>
+              <button class="pdf-filter-btn active" onclick="PrototypeApp.filterPdfLibrary('all', this)">Semua Dokumen</button>
+              <button class="pdf-filter-btn" onclick="PrototypeApp.filterPdfLibrary('sd', this)">Jenjang SD</button>
+              <button class="pdf-filter-btn" onclick="PrototypeApp.filterPdfLibrary('smp', this)">Jenjang SMP</button>
+              <button class="pdf-filter-btn" onclick="PrototypeApp.filterPdfLibrary('sma', this)">Jenjang SMA</button>
             </div>
           </div>
 
-          <div class="pdf-grid" id="pdfDocumentGrid">
+          <div class="pdf-grid" id="pdfDocsGrid">
             
-            <!-- Doc 1: SMP -->
             <div class="pdf-card" data-category="smp">
-              <div class="pdf-card-top">
-                <div class="pdf-icon-box"><i class="ph ph-file-pdf"></i></div>
-                <div>
-                  <div class="pdf-card-title">Silabus Resmi Bahasa Arab SMP</div>
-                  <div class="pdf-card-meta">Penyusun: Umi Elly • 2.4 MB • PDF</div>
-                </div>
-              </div>
-              <p style="font-size: 12px; color: var(--text-body); line-height: 1.5;">Panduan lengkap struktur kaidah Jumlah Ismiyyah, pembagian isim, fi'il, dan dhomir untuk santri jenjang SMP.</p>
+              <div class="pdf-card-badge">Jenjang SMP</div>
+              <div class="pdf-card-arabic">الجُمْلَةُ الإِسْمِيَّةُ</div>
+              <div class="pdf-card-title">Silabus Modul 02: Kaidah Jumlah Ismiyyah</div>
+              <div class="pdf-card-meta">Format: PDF • 14 Halaman • Asuhan Umi Elly</div>
               <div class="pdf-card-actions">
-                <span class="jenjang-pill-tag">SMP Kelas 8</span>
-                <button class="btn-enroll-primary" style="padding: 6px 14px; font-size: 11.5px;" onclick="PrototypeApp.openDocReader(1)">
-                  <i class="ph ph-book-open"></i> Lihat Berkas
-                </button>
+                <button class="btn-enroll-primary" style="flex: 1; padding: 7px 12px; font-size: 12px;" onclick="PrototypeApp.openDocReader(1)"><i class="ph ph-book-open"></i> Buka Silabus</button>
+                <button class="btn-share-text" style="padding: 7px 10px;" onclick="PrototypeApp.showToast('Mengunduh berkas PDF...')"><i class="ph ph-download-simple"></i></button>
               </div>
             </div>
 
-            <!-- Doc 2: SD & SMP -->
-            <div class="pdf-card" data-category="sd smp">
-              <div class="pdf-card-top">
-                <div class="pdf-icon-box"><i class="ph ph-file-pdf"></i></div>
-                <div>
-                  <div class="pdf-card-title">Ringkasan Mufrodat Fasilitas Sekolah</div>
-                  <div class="pdf-card-meta">Penyusun: Umi Elly • 1.2 MB • PDF</div>
-                </div>
-              </div>
-              <p style="font-size: 12px; color: var(--text-body); line-height: 1.5;">Daftar 20 kosakata tematik sarana perpustakaan, ruang kelas, dan laboratorium beserta contoh kalimatnya.</p>
+            <div class="pdf-card" data-category="sd">
+              <div class="pdf-card-badge">Jenjang SD</div>
+              <div class="pdf-card-arabic">الأَدَوَاتُ المَدْرَسِيَّةُ</div>
+              <div class="pdf-card-title">Silabus Modul 01: Mufrodat Fasilitas Belajar</div>
+              <div class="pdf-card-meta">Format: PDF • 10 Halaman • Asuhan Umi Elly</div>
               <div class="pdf-card-actions">
-                <span class="jenjang-pill-tag">SMP & SD</span>
-                <button class="btn-enroll-primary" style="padding: 6px 14px; font-size: 11.5px;" onclick="PrototypeApp.openDocReader(2)">
-                  <i class="ph ph-book-open"></i> Lihat Berkas
-                </button>
+                <button class="btn-enroll-primary" style="flex: 1; padding: 7px 12px; font-size: 12px;" onclick="PrototypeApp.openDocReader(2)"><i class="ph ph-book-open"></i> Buka Silabus</button>
+                <button class="btn-share-text" style="padding: 7px 10px;" onclick="PrototypeApp.showToast('Mengunduh berkas PDF...')"><i class="ph ph-download-simple"></i></button>
               </div>
             </div>
 
-            <!-- Doc 3: SMA -->
             <div class="pdf-card" data-category="sma">
-              <div class="pdf-card-top">
-                <div class="pdf-icon-box"><i class="ph ph-file-pdf"></i></div>
-                <div>
-                  <div class="pdf-card-title">Tabel Tashrif Fi'il Tsulatsi Mujarrad</div>
-                  <div class="pdf-card-meta">Penyusun: Umi Elly • 3.1 MB • PDF</div>
-                </div>
-              </div>
-              <p style="font-size: 12px; color: var(--text-body); line-height: 1.5;">Matriks komprehensif perubahan kata kerja Madhi, Mudhari', Amr, dan Masdar berstandar sanad Azhariyah.</p>
+              <div class="pdf-card-badge">Jenjang SMA</div>
+              <div class="pdf-card-arabic">تَصْرِيْفُ الأَفْعَالِ</div>
+              <div class="pdf-card-title">Silabus Modul 03: Kaidah Tashrif & Shorof</div>
+              <div class="pdf-card-meta">Format: PDF • 22 Halaman • Asuhan Umi Elly</div>
               <div class="pdf-card-actions">
-                <span class="jenjang-pill-tag">SMA Kelas 11</span>
-                <button class="btn-enroll-primary" style="padding: 6px 14px; font-size: 11.5px;" onclick="PrototypeApp.openDocReader(3)">
-                  <i class="ph ph-book-open"></i> Lihat Berkas
-                </button>
-              </div>
-            </div>
-
-            <!-- Doc 4: SD, SMP, SMA -->
-            <div class="pdf-card" data-category="sd smp sma">
-              <div class="pdf-card-top">
-                <div class="pdf-icon-box"><i class="ph ph-file-pdf"></i></div>
-                <div>
-                  <div class="pdf-card-title">Kumpulan Hiwar Percakapan Santri</div>
-                  <div class="pdf-card-meta">Penyusun: Umi Elly • 1.8 MB • PDF</div>
-                </div>
-              </div>
-              <p style="font-size: 12px; color: var(--text-body); line-height: 1.5;">Dialog tematik percakapan harian untuk melatih kelancaran lisan santri dalam lingkungan asrama dan sekolah.</p>
-              <div class="pdf-card-actions">
-                <span class="jenjang-pill-tag">Semua Jenjang</span>
-                <button class="btn-enroll-primary" style="padding: 6px 14px; font-size: 11.5px;" onclick="PrototypeApp.openDocReader(4)">
-                  <i class="ph ph-book-open"></i> Lihat Berkas
-                </button>
-              </div>
-            </div>
-
-            <!-- Doc 5: Sanad / SD / SMP -->
-            <div class="pdf-card" data-category="sd smp">
-              <div class="pdf-card-top">
-                <div class="pdf-icon-box"><i class="ph ph-file-pdf"></i></div>
-                <div>
-                  <div class="pdf-card-title">Panduan Makhraj Huruf Arab</div>
-                  <div class="pdf-card-meta">Penyusun: Umi Elly • 4.0 MB • PDF</div>
-                </div>
-              </div>
-              <p style="font-size: 12px; color: var(--text-body); line-height: 1.5;">Buku rujukan tempat keluarnya huruf (Makharijul Huruf) dan sifat-sifatnya untuk pembacaan Al-Qur'an dan bahasa Arab.</p>
-              <div class="pdf-card-actions">
-                <span class="jenjang-pill-tag">Standar Sanad</span>
-                <button class="btn-enroll-primary" style="padding: 6px 14px; font-size: 11.5px;" onclick="PrototypeApp.openDocReader(5)">
-                  <i class="ph ph-book-open"></i> Lihat Berkas
-                </button>
-              </div>
-            </div>
-
-            <!-- Doc 6: SMP & SMA -->
-            <div class="pdf-card" data-category="smp sma">
-              <div class="pdf-card-top">
-                <div class="pdf-icon-box"><i class="ph ph-file-pdf"></i></div>
-                <div>
-                  <div class="pdf-card-title">Kaidah I'rob Praktis Pemula</div>
-                  <div class="pdf-card-meta">Penyusun: Umi Elly • 2.1 MB • PDF</div>
-                </div>
-              </div>
-              <p style="font-size: 12px; color: var(--text-body); line-height: 1.5;">Penjelasan ringkas tanda-tanda I'rob (Rofa', Nashob, Jer, Jazm) disertai contoh analisis kalimat sederhana.</p>
-              <div class="pdf-card-actions">
-                <span class="jenjang-pill-tag">SMP & SMA</span>
-                <button class="btn-enroll-primary" style="padding: 6px 14px; font-size: 11.5px;" onclick="PrototypeApp.openDocReader(6)">
-                  <i class="ph ph-book-open"></i> Lihat Berkas
-                </button>
+                <button class="btn-enroll-primary" style="flex: 1; padding: 7px 12px; font-size: 12px;" onclick="PrototypeApp.openDocReader(3)"><i class="ph ph-book-open"></i> Buka Silabus</button>
+                <button class="btn-share-text" style="padding: 7px 10px;" onclick="PrototypeApp.showToast('Mengunduh berkas PDF...')"><i class="ph ph-download-simple"></i></button>
               </div>
             </div>
 
@@ -1333,208 +915,75 @@
       </div>
 
       <!-- ======================================================
-           VIEW 5: PANEL OTORITAS YAYASAN (ADMIN / UMI ELLY)
+           VIEW 5: PANEL KENDALI OTORITAS YAYASAN (ADMIN)
            ====================================================== -->
-      <div id="viewAdminPanel" style="display: none; padding: 28px 36px; max-width: 1600px; width: 100%;">
-        
-        <div style="margin-bottom: 22px;">
-          <h2 style="font-size: 21px; font-weight: 800; color: var(--teal-dark);">Panel Otoritas dan Tata Kelola Yayasan</h2>
-          <p style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">Pengelolaan hak akses materi, verifikasi infaq santri, dan penetapan beasiswa pendidikan asuhan Umi Elly.</p>
+      <div id="viewAdminPanel" style="display: none; width: 100%; padding: 24px 32px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h2 style="font-size: 20px; font-weight: 800; color: var(--teal-dark);">Panel Kendali Otoritas Yayasan PERISA</h2>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Tata kelola santri, verifikasi infaq, dan otentikasi sertifikat sanad.</p>
+          </div>
+          <button class="btn-enroll-primary" onclick="PrototypeApp.showToast('Sinkronisasi data santri berhasil!')">
+            <i class="ph ph-arrows-clockwise"></i> Sinkronkan Data
+          </button>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 22px;">
-          <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; display: flex; align-items: center; gap: 14px;">
-            <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: var(--teal-light); color: var(--teal-primary); display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="ph ph-users"></i></div>
-            <div><div style="font-size: 20px; font-weight: 800; color: var(--teal-dark);">1.284</div><div style="font-size: 11px; color: var(--text-muted);">Santri Terdaftar</div></div>
-          </div>
-          <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; display: flex; align-items: center; gap: 14px;">
-            <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: var(--gold-light); color: var(--gold-dark); display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="ph ph-hand-heart"></i></div>
-            <div><div style="font-size: 20px; font-weight: 800; color: var(--teal-dark);" id="adminBeasiswaCount">42 Santri</div><div style="font-size: 11px; color: var(--text-muted);">Penerima Beasiswa</div></div>
-          </div>
-          <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; display: flex; align-items: center; gap: 14px;">
-            <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: var(--bg-subtle); color: var(--text-body); display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="ph ph-hourglass-simple"></i></div>
-            <div><div style="font-size: 20px; font-weight: 800; color: var(--teal-dark);" id="adminPendingCount">2 Santri</div><div style="font-size: 11px; color: var(--text-muted);">Menunggu Verifikasi</div></div>
-          </div>
-          <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; display: flex; align-items: center; gap: 14px;">
-            <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: var(--teal-light); color: var(--teal-primary); display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="ph ph-shield-check"></i></div>
-            <div><div style="font-size: 20px; font-weight: 800; color: var(--teal-dark);">100% Amanah</div><div style="font-size: 11px; color: var(--text-muted);">Proteksi Watermark</div></div>
-          </div>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px;">
+          <div class="beranda-metric-card"><div><div style="font-size: 18px; font-weight: 800; color: var(--teal-dark);">450 Santri</div><div style="font-size: 11px; color: var(--text-muted);">Total Terdaftar Aktif</div></div></div>
+          <div class="beranda-metric-card"><div><div style="font-size: 18px; font-weight: 800; color: var(--teal-dark);">98%</div><div style="font-size: 11px; color: var(--text-muted);">Tingkat Kelulusan Evaluasi</div></div></div>
+          <div class="beranda-metric-card"><div><div style="font-size: 18px; font-weight: 800; color: var(--teal-dark);">100% Terverifikasi</div><div style="font-size: 11px; color: var(--text-muted);">Kepatuhan Infaq Syariah</div></div></div>
+          <div class="beranda-metric-card"><div><div style="font-size: 18px; font-weight: 800; color: var(--teal-dark);">128 Piagam</div><div style="font-size: 11px; color: var(--text-muted);">Sertifikat QR Diterbitkan</div></div></div>
         </div>
 
-        <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 22px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px;">
-            <div style="display: flex; gap: 6px;">
-              <button class="role-btn active" style="padding: 6px 14px; font-size: 11.5px; border-radius: var(--radius-full);">Semua Data (1.284)</button>
-              <button class="role-btn" style="padding: 6px 14px; font-size: 11.5px; border-radius: var(--radius-full); background: var(--bg-subtle); color: var(--text-body); border: 1px solid var(--border-color);">Menunggu (2)</button>
-              <button class="role-btn" style="padding: 6px 14px; font-size: 11.5px; border-radius: var(--radius-full); background: var(--bg-subtle); color: var(--text-body); border: 1px solid var(--border-color);">Beasiswa Yayasan (42)</button>
-            </div>
-            <button class="btn-enroll-primary" style="padding: 7px 16px; font-size: 12px;" onclick="PrototypeApp.showToast('Mengekspor rekapitulasi data santri ke format spreadsheet...')">
-              <i class="ph ph-file-arrow-down"></i> Ekspor Rekapitulasi
-            </button>
-          </div>
-
-          <table style="width: 100%; border-collapse: collapse;">
+        <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; padding: 20px;">
+          <h3 style="font-size: 15px; font-weight: 800; color: var(--teal-dark); margin-bottom: 14px;">Daftar Santri & Status Progres Belajar</h3>
+          <table style="width: 100%; border-collapse: collapse; font-size: 12.5px; text-align: left;">
             <thead>
-              <tr style="background: var(--bg-subtle); text-align: left; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em;">
-                <th style="padding: 12px 16px; border-bottom: 1px solid var(--border-color);">Identitas Santri</th>
-                <th style="padding: 12px 16px; border-bottom: 1px solid var(--border-color);">Jenjang Studi</th>
-                <th style="padding: 12px 16px; border-bottom: 1px solid var(--border-color);">Status Administrasi Infaq</th>
-                <th style="padding: 12px 16px; border-bottom: 1px solid var(--border-color);">Ketuntasan</th>
-                <th style="padding: 12px 16px; border-bottom: 1px solid var(--border-color);">Hak Akses</th>
-                <th style="padding: 12px 16px; border-bottom: 1px solid var(--border-color);">Otoritas Tindakan</th>
+              <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-muted);">
+                <th style="padding: 10px;">Nama Santri</th>
+                <th style="padding: 10px;">Jenjang</th>
+                <th style="padding: 10px;">Modul Aktif</th>
+                <th style="padding: 10px;">Indeks Nilai</th>
+                <th style="padding: 10px;">Status Infaq</th>
+                <th style="padding: 10px; text-align: right;">Aksi</th>
               </tr>
             </thead>
             <tbody>
-              <tr style="border-bottom: 1px solid var(--border-subtle); font-size: 12.5px;">
-                <td style="padding: 14px 16px;"><strong style="color: var(--teal-dark);">Ahmad Fauzan</strong><div style="font-size: 10.5px; color: var(--text-muted);">0812-8921-9921</div></td>
-                <td style="padding: 14px 16px;"><span class="jenjang-pill-tag">SMP Kelas 8</span></td>
-                <td style="padding: 14px 16px;"><span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; background: #E1F5F2; color: #006D63; border-radius: var(--radius-full); font-size: 11px; font-weight: 600;"><i class="ph ph-check"></i> Infaq Terverifikasi</span></td>
-                <td style="padding: 14px 16px;"><strong>62%</strong></td>
-                <td style="padding: 14px 16px;">
-                  <input type="checkbox" checked style="accent-color: var(--teal-primary); width: 16px; height: 16px; cursor: pointer;" onchange="PrototypeApp.showToast('Hak akses santri Ahmad Fauzan diperbarui')">
-                </td>
-                <td style="padding: 14px 16px;"><button class="btn-share-text" style="font-size: 11.5px; padding: 3px 8px;" onclick="PrototypeApp.showToast('Detail profil santri dibuka')">Lihat Berkas</button></td>
+              <tr style="border-bottom: 1px solid var(--border-subtle);">
+                <td style="padding: 12px 10px; font-weight: 700; color: var(--teal-dark);">Ahmad Fauzan</td>
+                <td style="padding: 12px 10px;">SMP Kelas 8</td>
+                <td style="padding: 12px 10px;">Modul 02: Jumlah Ismiyyah</td>
+                <td style="padding: 12px 10px; font-weight: 700; color: var(--teal-primary);">94 (Mumtaz)</td>
+                <td style="padding: 12px 10px;"><span style="background: var(--teal-light); color: var(--teal-primary); padding: 3px 8px; border-radius: 4px; font-size: 10.5px; font-weight: 700;">Terverifikasi</span></td>
+                <td style="padding: 12px 10px; text-align: right;"><button class="btn-enroll-primary" style="padding: 4px 10px; font-size: 11px;" onclick="PrototypeApp.openCertificate()">Lihat Piagam</button></td>
               </tr>
-              <tr style="border-bottom: 1px solid var(--border-subtle); font-size: 12.5px;">
-                <td style="padding: 14px 16px;"><strong style="color: var(--teal-dark);">Siti Nurhaliza</strong><div style="font-size: 10.5px; color: var(--text-muted);">0857-1122-3344</div></td>
-                <td style="padding: 14px 16px;"><span class="jenjang-pill-tag">SMP Kelas 8</span></td>
-                <td style="padding: 14px 16px;"><span id="adminBadge-2" style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; background: #FEF3C7; color: #92400E; border-radius: var(--radius-full); font-size: 11px; font-weight: 600;"><i class="ph ph-clock"></i> Konfirmasi Pembayaran</span></td>
-                <td style="padding: 14px 16px;"><span style="color: var(--text-muted);">Belum Aktif</span></td>
-                <td style="padding: 12px 14px;">
-                  <input type="checkbox" id="adminSwitch-2" style="accent-color: var(--teal-primary); width: 16px; height: 16px; cursor: pointer;" onchange="PrototypeApp.showToast('Hak akses diperbarui')">
-                </td>
-                <td style="padding: 14px 16px;">
-                  <button id="adminBtn-2" class="btn-enroll-primary" style="padding: 5px 12px; font-size: 11px;" onclick="PrototypeApp.verifySantri(2)">
-                    <i class="ph ph-check"></i> Setujui Akses
-                  </button>
-                </td>
+              <tr style="border-bottom: 1px solid var(--border-subtle);">
+                <td style="padding: 12px 10px; font-weight: 700; color: var(--teal-dark);">Aisyah Zahra</td>
+                <td style="padding: 12px 10px;">SD Kelas 5</td>
+                <td style="padding: 12px 10px;">Modul 01: Mufrodat Cilik</td>
+                <td style="padding: 12px 10px; font-weight: 700; color: var(--teal-primary);">96 (Mumtaz)</td>
+                <td style="padding: 12px 10px;"><span style="background: var(--teal-light); color: var(--teal-primary); padding: 3px 8px; border-radius: 4px; font-size: 10.5px; font-weight: 700;">Terverifikasi</span></td>
+                <td style="padding: 12px 10px; text-align: right;"><button class="btn-enroll-primary" style="padding: 4px 10px; font-size: 11px;" onclick="PrototypeApp.openCertificate()">Lihat Piagam</button></td>
               </tr>
-              <tr style="border-bottom: 1px solid var(--border-subtle); font-size: 12.5px;">
-                <td style="padding: 14px 16px;"><strong style="color: var(--teal-dark);">Fajar Alamsyah</strong><div style="font-size: 10.5px; color: var(--text-muted);">0821-4455-6677 • Dhuafa</div></td>
-                <td style="padding: 14px 16px;"><span class="jenjang-pill-tag">SD Kelas 5</span></td>
-                <td style="padding: 14px 16px;"><span id="adminBadge-3" style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; background: #FEF3C7; color: #92400E; border-radius: var(--radius-full); font-size: 11px; font-weight: 600;"><i class="ph ph-hand-heart"></i> Permohonan Beasiswa</span></td>
-                <td style="padding: 14px 16px;"><span style="color: var(--text-muted);">Menunggu Penetapan</span></td>
-                <td style="padding: 12px 14px;">
-                  <input type="checkbox" id="adminSwitch-3" style="accent-color: var(--teal-primary); width: 16px; height: 16px; cursor: pointer;" onchange="PrototypeApp.showToast('Hak akses diperbarui')">
-                </td>
-                <td style="padding: 14px 16px;">
-                  <button id="adminBtn-3" class="btn-enroll-primary" style="background: #D97706; padding: 5px 12px; font-size: 11px;" onclick="PrototypeApp.verifyBeasiswa(3)">
-                    <i class="ph ph-hand-heart"></i> Tetapkan Beasiswa
-                  </button>
-                </td>
+              <tr>
+                <td style="padding: 12px 10px; font-weight: 700; color: var(--teal-dark);">M. Rizky Pratama</td>
+                <td style="padding: 12px 10px;">SMA Kelas 11</td>
+                <td style="padding: 12px 10px;">Modul 03: Tashrif Shorof</td>
+                <td style="padding: 12px 10px; font-weight: 700; color: var(--teal-primary);">92 (Jayyid Jiddan)</td>
+                <td style="padding: 12px 10px;"><span style="background: var(--teal-light); color: var(--teal-primary); padding: 3px 8px; border-radius: 4px; font-size: 10.5px; font-weight: 700;">Terverifikasi</span></td>
+                <td style="padding: 12px 10px; text-align: right;"><button class="btn-enroll-primary" style="padding: 4px 10px; font-size: 11px;" onclick="PrototypeApp.openCertificate()">Lihat Piagam</button></td>
               </tr>
             </tbody>
           </table>
         </div>
-
       </div>
 
     </main>
-
   </div>
 
-  <!-- REALISTIC PDF DOCUMENT VIEWER MODAL -->
-  <div class="modal-overlay" id="docReaderModal">
-    <div class="pdf-reader-modal-box">
-      
-      <div class="pdf-reader-topbar">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <i class="ph ph-file-pdf" style="font-size: 20px; color: #A7F3EC;"></i>
-          <span style="font-size: 13px; font-weight: 700;" id="readerHeaderDocTitle">Silabus Resmi Bahasa Arab SMP.pdf</span>
-        </div>
-
-        <div class="pdf-reader-toolbar">
-          <button class="pdf-toolbar-btn" onclick="PrototypeApp.showToast('Halaman sebelumnya')"><i class="ph ph-caret-left"></i></button>
-          <span style="font-size: 11px; font-weight: 600;">Halaman 1 / 14</span>
-          <button class="pdf-toolbar-btn" onclick="PrototypeApp.showToast('Halaman berikutnya')"><i class="ph ph-caret-right"></i></button>
-          <span style="color: rgba(255,255,255,0.3);">|</span>
-          <button class="pdf-toolbar-btn" onclick="PrototypeApp.showToast('Tampilan diperbesar (125%)')"><i class="ph ph-magnifying-glass-plus"></i></button>
-          <button class="pdf-toolbar-btn" onclick="PrototypeApp.showToast('Tampilan normal (100%)')">100%</button>
-          <span style="color: rgba(255,255,255,0.3);">|</span>
-          <button class="pdf-toolbar-btn" style="background: var(--teal-primary);" onclick="PrototypeApp.showToast('Mengunduh dokumen PDF resmi...');">
-            <i class="ph ph-download-simple"></i> Unduh
-          </button>
-          <button class="pdf-toolbar-btn" style="background: rgba(239, 68, 68, 0.2); border-color: #EF4444;" onclick="PrototypeApp.closeDocReader()">
-            <i class="ph ph-x"></i> Tutup
-          </button>
-        </div>
-      </div>
-
-      <div class="pdf-reader-viewport">
-        <div class="pdf-sheet-paper">
-          
-          <div class="pdf-sheet-watermark">PERISA AZHARIYAH • UMI ELLY</div>
-
-          <div>
-            <div class="pdf-sheet-header">
-              <div>
-                <div style="font-size: 11px; font-weight: 800; color: var(--teal-primary); letter-spacing: 0.08em; text-transform: uppercase;">
-                  Yayasan Peradaban Islam Azhariyah
-                </div>
-                <h2 style="font-size: 18px; font-weight: 800; color: var(--teal-dark); margin-top: 4px;" id="readerSheetTitle">
-                  Silabus Kurikulum Bahasa Arab Jenjang SMP
-                </h2>
-                <div style="font-size: 11px; color: var(--text-muted);" id="readerSheetSub">
-                  Modul 02: Kaidah Jumlah Ismiyyah & Mufrodat Fasilitas Sekolah
-                </div>
-              </div>
-              <div style="text-align: right; font-size: 10.5px; color: var(--text-muted);">
-                <strong>Asuhan: Umi Elly</strong><br>
-                Tahun Ajaran 2026/2027
-              </div>
-            </div>
-
-            <div style="font-size: 12.5px; color: var(--text-body); line-height: 1.7;" id="readerSheetBody">
-              <h3 style="font-size: 14px; font-weight: 700; color: var(--teal-dark); margin-bottom: 8px;">A. Kaidah Tata Bahasa (القَوَاعِدُ النَّحْوِيَّةُ)</h3>
-              <p style="margin-bottom: 12px;">
-                <strong>Jumlah Ismiyyah</strong> adalah kalimat sempurna dalam bahasa Arab yang diawali oleh <em>Isim (Kata Benda)</em>. Struktur pokoknya terdiri atas dua unsur:
-              </p>
-              <ol style="margin-left: 20px; margin-bottom: 16px;">
-                <li><strong>Mubtada' (مُبْتَدَأٌ)</strong>: Kata benda pokok di awal kalimat yang berharkat Rofa' (Dhammah).</li>
-                <li><strong>Khobar (خَبَرٌ)</strong>: Keterangan penjelas yang menyempurnakan makna Mubtada'.</li>
-              </ol>
-            </div>
-          </div>
-
-          <div class="pdf-sheet-footer">
-            <div>Dokumen Resmi Yayasan Peradaban Islam Azhariyah • Hak Cipta Dilindungi</div>
-            <div>Halaman 1 dari 14</div>
-          </div>
-
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Certificate Modal (Dignified Sanad Certificate) -->
-  <div class="modal-overlay" id="certModal">
-    <div class="modal-box" style="text-align: center; border: 2px solid var(--teal-primary);">
-      <div style="font-size: 12px; font-weight: 700; color: var(--teal-primary); letter-spacing: 0.1em; text-transform: uppercase;">Yayasan Peradaban Islam Azhariyah</div>
-      <h2 style="font-size: 18px; font-weight: 800; color: var(--teal-dark); margin: 6px 0;">PIAGAM PENGESAHAN KELULUSAN</h2>
-      <div style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 16px;">Bidang Studi: Bahasa Arab Standar Sanad</div>
-      
-      <div style="font-size: 22px; font-weight: 800; color: var(--teal-dark); margin-bottom: 8px;">Ahmad Fauzan</div>
-      <p style="font-size: 12.5px; color: var(--text-body); line-height: 1.6; max-width: 480px; margin: 0 auto 18px auto;">
-        Dinyatakan telah menuntaskan seluruh kurikulum pembelajaran Bahasa Arab Jenjang SMP dengan predikat <strong>Mumtaz (Sangat Baik)</strong> di bawah bimbingan Umi Elly.
-      </p>
-
-      <div style="display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border-color); padding-top: 16px;">
-        <div style="font-size: 10.5px; color: var(--text-muted); text-align: left;">
-          Nomor Dokumen: AZH-2026-SMP-0129<br>
-          Verifikasi: perisa-azhariyah.org/sanad
-        </div>
-        <i class="ph ph-qr-code" style="font-size: 40px; color: var(--teal-dark);"></i>
-        <div style="font-size: 10.5px; text-align: right; color: var(--teal-dark);">
-          <strong>Umi Elly</strong><br>
-          <span style="font-size: 9.5px; color: var(--text-muted);">Pengasuh Yayasan</span>
-        </div>
-      </div>
-      <button class="btn-enroll-primary" style="margin-top: 18px;" onclick="PrototypeApp.closeCertModal()">Tutup Pratinjau</button>
-    </div>
-  </div>
-
-  <!-- MOBILE BOTTOM NAVIGATION BAR (Native App Style) -->
+  <!-- ============================================================
+       5. NATIVE MOBILE BOTTOM NAVIGATION BAR
+       ============================================================ -->
   <nav class="mobile-bottom-nav" id="mobileBottomNav">
     <a class="bottom-nav-item" id="bnav-beranda" onclick="PrototypeApp.switchMainView('beranda'); PrototypeApp.updateBottomNav('beranda');">
       <i class="ph ph-squares-four"></i>
@@ -1558,8 +1007,82 @@
     </a>
   </nav>
 
+  <!-- ============================================================
+       6. MODALS (PDF READER & CERTIFICATE)
+       ============================================================ -->
+  <!-- Document PDF Reader Modal -->
+  <div class="pdf-reader-overlay" id="docReaderModal" style="display: none;">
+    <div class="pdf-reader-modal-box">
+      <div class="pdf-reader-topbar">
+        <div class="pdf-topbar-left">
+          <i class="ph ph-file-pdf" style="font-size: 22px; color: var(--teal-primary);"></i>
+          <div>
+            <strong style="font-size: 13.5px; color: var(--teal-dark);" id="modalDocTitle">Dokumen Silabus & Ringkasan Resmi</strong>
+            <div style="font-size: 10.5px; color: var(--text-muted);" id="modalDocSub">Format: PDF • Yayasan Peradaban Islam Azhariyah</div>
+          </div>
+        </div>
+        <div class="pdf-topbar-actions">
+          <button class="icon-circle-btn" onclick="PrototypeApp.showToast('Memperbesar tampilan dokumen')"><i class="ph ph-magnifying-glass-plus"></i></button>
+          <button class="icon-circle-btn" onclick="PrototypeApp.showToast('Dokumen berhasil diunduh')"><i class="ph ph-download-simple"></i></button>
+          <button class="icon-circle-btn close-btn" onclick="PrototypeApp.closeDocReader()"><i class="ph ph-x"></i></button>
+        </div>
+      </div>
+
+      <div class="pdf-reader-viewport">
+        <div class="pdf-sheet-paper" id="modalDocSheet">
+          <div class="pdf-sheet-header">
+            <img src="logo-perisa-horizontal.png?v=4.0" alt="PERISA" style="height: 38px; object-fit: contain;">
+            <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">DOKUMEN RESMI KURIKULUM BAHASA ARAB</div>
+          </div>
+          <hr style="border: none; border-top: 1.5px solid var(--border-color); margin: 14px 0;">
+          <h2 style="font-size: 18px; font-weight: 800; color: var(--teal-dark); text-align: center; margin-bottom: 6px;" id="modalSheetH2">
+            MODUL 02: KAIDAH JUMLAH ISMIYYAH
+          </h2>
+          <div style="text-align: center; font-size: 24px; font-family: 'Amiri', Arial; color: var(--teal-primary); font-weight: 700; margin-bottom: 18px;" id="modalSheetArabic">
+            الجُمْلَةُ الإِسْمِيَّةُ (المُبْتَدَأُ وَ الخَبَرُ)
+          </div>
+          <div style="font-size: 13px; line-height: 1.7; color: var(--text-body);" id="modalSheetContent">
+            <p><strong>1. Pengertian Jumlah Ismiyyah:</strong><br>
+            Jumlah Ismiyyah adalah kalimat sempurna (kalam mufid) dalam tata bahasa Arab yang diawali dengan kata benda (Isim). Struktur utamanya terdiri dari dua rukun penting, yaitu <em>Mubtada</em> (subjek pembuka) dan <em>Khobar</em> (predikat penyempurna berita).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Certificate Modal -->
+  <div class="modal-overlay" id="certModal" style="display: none;">
+    <div class="modal-box" style="text-align: center;">
+      <div style="margin-bottom: 12px;">
+        <img src="logo-perisa-horizontal.png?v=4.0" alt="PERISA" style="height: 42px; object-fit: contain;">
+      </div>
+      <h3 style="font-size: 18px; font-weight: 800; color: var(--teal-dark); margin-bottom: 4px;">PIAGAM KELULUSAN SANAD</h3>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Yayasan Peradaban Islam Azhariyah — Asuhan Umi Elly</p>
+      
+      <div style="background: var(--bg-subtle); border: 1.5px dashed var(--teal-primary); border-radius: var(--radius-md); padding: 18px; margin-bottom: 18px;">
+        <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Diberikan kepada santri:</div>
+        <div style="font-size: 20px; font-weight: 800; color: var(--teal-primary); margin: 6px 0;" id="certStudentName">Ahmad Fauzan</div>
+        <div style="font-size: 12px; color: var(--text-body);">Telah menyelesaikan seluruh rangkaian evaluasi kaidah Bahasa Arab dengan predikat:</div>
+        <div style="font-size: 15px; font-weight: 800; color: var(--gold-dark); margin-top: 6px;">MUMTAZ (94 / 100) ★★★★★</div>
+      </div>
+
+      <div style="display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border-color); padding-top: 14px;">
+        <div style="font-size: 10px; color: var(--text-muted); text-align: left;">
+          Nomor: AZH-2026-SMP-0129<br>
+          Verifikasi: perisa-azhariyah.org/sanad
+        </div>
+        <i class="ph ph-qr-code" style="font-size: 38px; color: var(--teal-dark);"></i>
+        <div style="font-size: 10px; text-align: right; color: var(--teal-dark);">
+          <strong>Umi Elly</strong><br>
+          <span style="font-size: 9px; color: var(--text-muted);">Pengasuh Yayasan</span>
+        </div>
+      </div>
+      <button class="btn-enroll-primary" style="margin-top: 16px; width: 100%; justify-content: center;" onclick="PrototypeApp.closeCertModal()">Tutup Pratinjau</button>
+    </div>
+  </div>
+
   <div class="toast-bar" id="prototypeToast">Pemberitahuan</div>
 
-  <script src="prototype.js?v=3.5.0"></script>
+  <script src="prototype.js?v=4.0.0"></script>
 </body>
 </html>
