@@ -74,6 +74,67 @@
     }
 
     @media (min-width: 769px) {
+      html, body {
+        height: 100vh !important;
+        overflow: hidden !important;
+      }
+
+      .demo-control-bar {
+        height: 46px !important;
+        flex-shrink: 0 !important;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 1000 !important;
+      }
+
+      .app-window-frame {
+        height: calc(100vh - 46px) !important;
+        max-height: calc(100vh - 46px) !important;
+        display: flex !important;
+        overflow: hidden !important;
+      }
+
+      /* 1. LEFT SIDEBAR: Independent Scroll */
+      .ref-sidebar {
+        width: 250px !important;
+        min-width: 250px !important;
+        height: 100% !important;
+        overflow-y: auto !important;
+        flex-shrink: 0 !important;
+        border-right: 1px solid var(--border-color) !important;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(0, 135, 122, 0.2) transparent;
+      }
+
+      /* 2. CENTER WORKSPACE: Fluid Scroll for main content */
+      .ref-main-workspace {
+        flex: 1 !important;
+        height: 100% !important;
+        overflow-y: auto !important;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(0, 135, 122, 0.25) transparent;
+      }
+
+      .course-main-grid {
+        display: grid !important;
+        grid-template-columns: 1.68fr 1fr !important;
+        gap: 32px !important;
+        align-items: start !important;
+        padding: 24px 32px 48px 32px !important;
+      }
+
+      /* 3. RIGHT COLUMN: Pinned Sticky In Place */
+      .right-sidebar-column {
+        position: sticky !important;
+        top: 20px !important;
+        max-height: calc(100vh - 46px - 40px) !important;
+        overflow-y: auto !important;
+        align-self: start !important;
+        padding-right: 4px !important;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(0, 135, 122, 0.2) transparent;
+      }
+
       .mobile-top-nav {
         display: none !important;
       }
