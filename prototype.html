@@ -395,14 +395,34 @@
     </div>
   </aside>
 
-  <!-- MOBILE TOP BAR (For Smartphones & Tablets) -->
+    <!-- MOBILE TOP BAR (Native App Style: Left Hamburger + Prominent Brand + Right Actions) -->
   <div class="mobile-top-nav">
-    <div class="mobile-brand-wrap">
-      <img src="logo-perisa-emblem.png?v=3.0" alt="PERISA" style="height: 36px; width: 32px; object-fit: contain; border-radius: 6px; background: #FFFFFF; padding: 2px;">
-      <div>
-        <div class="mobile-brand-text">PERISA Azhariyah</div>
-        <div style="font-size: 10px; color: #A7F3EC;">Yayasan Peradaban Islam</div>
+    <div class="mobile-top-left">
+      <!-- Animated Hamburger Button on the Left -->
+      <button class="mobile-hamburger-btn" onclick="PrototypeApp.toggleMobileDrawer()" title="Buka Menu">
+        <i class="ph ph-list" id="mobileDrawerIcon"></i>
+      </button>
+
+      <!-- Prominent Brand Title -->
+      <div class="mobile-brand-wrap" onclick="PrototypeApp.switchMainView('beranda')" style="cursor: pointer;">
+        <img src="logo-perisa-emblem.png?v=3.2" alt="PERISA">
+        <div>
+          <div class="mobile-brand-text">PERISA Azhariyah</div>
+          <div class="mobile-brand-sub">Yayasan Peradaban Islam</div>
+        </div>
       </div>
+    </div>
+
+    <!-- Right Quick Actions -->
+    <div class="mobile-top-right">
+      <a href="game2d.html" class="mobile-action-icon" title="Simulasi Percakapan Suara">
+        <i class="ph ph-microphone"></i>
+      </a>
+      <div class="mobile-user-avatar-tag" id="mobileUserAvatarTag" onclick="PrototypeApp.toggleMobileDrawer()" title="Profil Santri">
+        AF
+      </div>
+    </div>
+  </div>
     </div>
     <div style="display: flex; align-items: center; gap: 8px;">
       <a href="game2d.html" class="icon-circle-btn" style="width: 34px; height: 34px; background: rgba(0, 135, 122, 0.3); color: #A7F3EC; border-color: transparent;" title="Simulasi Suara">
@@ -1514,8 +1534,32 @@
     </div>
   </div>
 
+  <!-- MOBILE BOTTOM NAVIGATION BAR (Native App Style) -->
+  <nav class="mobile-bottom-nav" id="mobileBottomNav">
+    <a class="bottom-nav-item" id="bnav-beranda" onclick="PrototypeApp.switchMainView('beranda'); PrototypeApp.updateBottomNav('beranda');">
+      <i class="ph ph-squares-four"></i>
+      <span>Beranda</span>
+    </a>
+    <a class="bottom-nav-item" id="bnav-modul-pdf" onclick="PrototypeApp.switchMainView('modul-pdf'); PrototypeApp.updateBottomNav('modul-pdf');">
+      <i class="ph ph-book-open-text"></i>
+      <span>Silabus</span>
+    </a>
+    <a class="bottom-nav-item active" id="bnav-kurikulum" onclick="PrototypeApp.switchMainView('kurikulum'); PrototypeApp.updateBottomNav('kurikulum');">
+      <i class="ph ph-graduation-cap"></i>
+      <span>Belajar</span>
+    </a>
+    <a href="game2d.html" class="bottom-nav-item" id="bnav-suara">
+      <i class="ph ph-microphone"></i>
+      <span>Suara</span>
+    </a>
+    <a class="bottom-nav-item" id="bnav-ai-assistant" onclick="PrototypeApp.switchMainView('ai-assistant'); PrototypeApp.updateBottomNav('ai-assistant');">
+      <i class="ph ph-sparkle"></i>
+      <span>AI Asisten</span>
+    </a>
+  </nav>
+
   <div class="toast-bar" id="prototypeToast">Pemberitahuan</div>
 
-  <script src="prototype.js?v=3.1.0"></script>
+  <script src="prototype.js?v=3.5.0"></script>
 </body>
 </html>

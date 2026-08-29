@@ -779,9 +779,20 @@ const PrototypeApp = (() => {
     }
   });
 
+
+  // Update Mobile Bottom Nav Active State
+  function updateBottomNav(viewKey) {
+    document.querySelectorAll('.bottom-nav-item').forEach(item => {
+      item.classList.remove('active');
+    });
+    const target = document.getElementById(`bnav-${viewKey}`);
+    if (target) target.classList.add('active');
+  }
+
   return {
     setRole,
     toggleProfileDropdown,
+    updateBottomNav,
     toggleMobileDrawer,
     switchMainView,
     askAiQuestion,
