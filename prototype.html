@@ -274,36 +274,66 @@
                 </div>
               </div>
 
-              <!-- 2. TAB PELAFALAN AUDIO -->
+              <!-- 2. TAB PELAFALAN AUDIO (REAL ARABIC VOICE SYNTHESIS) -->
               <div id="subtab-audio" class="subtab-pane" style="display: none;">
-                <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 22px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px;">
                     <div>
-                      <h3 style="font-size: 14.5px; font-weight: 700; color: var(--teal-dark);">Panduan Pelafalan dan Makhraj Huruf (Asuhan Umi Elly)</h3>
-                      <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">Dengarkan pelafalan makhraj huruf dan intonasi baku sesuai standar pembelajaran.</p>
+                      <h3 style="font-size: 15px; font-weight: 800; color: var(--teal-dark); display: flex; align-items: center; gap: 8px;">
+                        <i class="ph ph-speaker-high" style="color: var(--teal-primary);"></i> Panduan Pelafalan dan Makhraj Huruf (Asuhan Umi Elly)
+                      </h3>
+                      <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                        Klik tombol audio pada masing-masing mufrodat untuk mendengarkan suara penutur bahasa Arab standar sanad secara langsung.
+                      </p>
                     </div>
-                    <button class="btn-enroll-primary" style="padding: 6px 14px; font-size: 11.5px;" onclick="PrototypeApp.playPronunciationAudio()">
+                    <button class="btn-enroll-primary" style="padding: 7px 16px; font-size: 12px;" onclick="PrototypeApp.playAllMufrodatSequence()">
                       <i class="ph ph-speaker-high"></i> Putar Keseluruhan
                     </button>
                   </div>
 
-                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                    <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
-                      <div><div style="font-size: 20px; font-weight: 700; color: var(--teal-primary); font-family: 'Amiri', 'Traditional Arabic', Arial;">المَكْتَبَةُ</div><div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Al-Maktabatu (Perpustakaan)</div></div>
-                      <button class="icon-circle-btn" onclick="PrototypeApp.playTone(600, 'sine', 0.15); PrototypeApp.showToast('Memutar pelafalan: Al-Maktabatu');"><i class="ph ph-speaker-high"></i></button>
+                  <!-- Word Cards Grid -->
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                    
+                    <div id="wordCard-1" class="arabic-word-card" onclick="PrototypeApp.speakArabic('المَكْتَبَةُ', 'Al-Maktabatu (Perpustakaan)', 'wordCard-1')">
+                      <div>
+                        <div class="arabic-text-large">المَكْتَبَةُ</div>
+                        <div class="latin-meaning-text">Al-Maktabatu (Perpustakaan)</div>
+                      </div>
+                      <button class="icon-circle-btn speaker-play-btn" title="Dengarkan Suara">
+                        <i class="ph ph-speaker-high"></i>
+                      </button>
                     </div>
-                    <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
-                      <div><div style="font-size: 20px; font-weight: 700; color: var(--teal-primary); font-family: 'Amiri', 'Traditional Arabic', Arial;">الكِتَابُ</div><div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Al-Kitabu (Buku Pelajaran)</div></div>
-                      <button class="icon-circle-btn" onclick="PrototypeApp.playTone(680, 'sine', 0.15); PrototypeApp.showToast('Memutar pelafalan: Al-Kitabu');"><i class="ph ph-speaker-high"></i></button>
+
+                    <div id="wordCard-2" class="arabic-word-card" onclick="PrototypeApp.speakArabic('الكِتَابُ', 'Al-Kitabu (Buku Pelajaran)', 'wordCard-2')">
+                      <div>
+                        <div class="arabic-text-large">الكِتَابُ</div>
+                        <div class="latin-meaning-text">Al-Kitabu (Buku Pelajaran)</div>
+                      </div>
+                      <button class="icon-circle-btn speaker-play-btn" title="Dengarkan Suara">
+                        <i class="ph ph-speaker-high"></i>
+                      </button>
                     </div>
-                    <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
-                      <div><div style="font-size: 20px; font-weight: 700; color: var(--teal-primary); font-family: 'Amiri', 'Traditional Arabic', Arial;">القَلَمُ</div><div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Al-Qalamu (Pena)</div></div>
-                      <button class="icon-circle-btn" onclick="PrototypeApp.playTone(540, 'sine', 0.15); PrototypeApp.showToast('Memutar pelafalan: Al-Qalamu');"><i class="ph ph-speaker-high"></i></button>
+
+                    <div id="wordCard-3" class="arabic-word-card" onclick="PrototypeApp.speakArabic('القَلَمُ', 'Al-Qalamu (Pena)', 'wordCard-3')">
+                      <div>
+                        <div class="arabic-text-large">القَلَمُ</div>
+                        <div class="latin-meaning-text">Al-Qalamu (Pena)</div>
+                      </div>
+                      <button class="icon-circle-btn speaker-play-btn" title="Dengarkan Suara">
+                        <i class="ph ph-speaker-high"></i>
+                      </button>
                     </div>
-                    <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
-                      <div><div style="font-size: 20px; font-weight: 700; color: var(--teal-primary); font-family: 'Amiri', 'Traditional Arabic', Arial;">الفَصْلُ</div><div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Al-Fashlu (Ruang Kelas)</div></div>
-                      <button class="icon-circle-btn" onclick="PrototypeApp.playTone(720, 'sine', 0.15); PrototypeApp.showToast('Memutar pelafalan: Al-Fashlu');"><i class="ph ph-speaker-high"></i></button>
+
+                    <div id="wordCard-4" class="arabic-word-card" onclick="PrototypeApp.speakArabic('الفَصْلُ', 'Al-Fashlu (Ruang Kelas)', 'wordCard-4')">
+                      <div>
+                        <div class="arabic-text-large">الفَصْلُ</div>
+                        <div class="latin-meaning-text">Al-Fashlu (Ruang Kelas)</div>
+                      </div>
+                      <button class="icon-circle-btn speaker-play-btn" title="Dengarkan Suara">
+                        <i class="ph ph-speaker-high"></i>
+                      </button>
                     </div>
+
                   </div>
                 </div>
               </div>

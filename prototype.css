@@ -1143,3 +1143,56 @@ html, body {
   margin-top: 6px;
   text-align: right;
 }
+
+
+/* Word Card Audio Speaking State */
+.arabic-word-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.arabic-word-card:hover {
+  border-color: var(--teal-primary);
+  background: var(--bg-subtle);
+  transform: translateY(-1px);
+}
+
+.arabic-word-card.speaking-active {
+  border-color: var(--teal-primary) !important;
+  background: var(--teal-light) !important;
+  box-shadow: 0 0 0 3px rgba(0, 135, 122, 0.2) !important;
+  transform: scale(1.01);
+}
+
+.arabic-text-large {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--teal-primary);
+  font-family: 'Amiri', 'Traditional Arabic', 'Scheherazade New', Arial, sans-serif;
+  line-height: 1.3;
+}
+
+.latin-meaning-text {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 3px;
+  font-weight: 600;
+}
+
+.speaker-play-btn {
+  background: var(--teal-light);
+  color: var(--teal-primary);
+  border-color: var(--teal-border);
+}
+
+.arabic-word-card.speaking-active .speaker-play-btn {
+  background: var(--teal-primary);
+  color: #FFFFFF;
+}

@@ -191,7 +191,7 @@ const PrototypeApp = (() => {
     }
   }
 
-  function playPronunciationAudio() {
+  function _old_playPronunciationAudio() {
     playTone(480, 'sine', 0.12, 0.08);
     setTimeout(() => playTone(620, 'sine', 0.16, 0.08), 80);
     setTimeout(() => playTone(540, 'sine', 0.2, 0.06), 180);
@@ -349,13 +349,93 @@ const PrototypeApp = (() => {
       `<strong>Rujukan Silabus:</strong> Modul 02 Hal. 14 — Yayasan Peradaban Islam Azhariyah.</div>`;
   }
 
+
+  // Real Native Arabic Speech Engine (Web Speech API ar-SA)
+  let speakingQueue = [];
+  let isSpeakingAll = false;
+
+  function speakArabic(arabicText, latinText, elementId = null) {
+    // Visual Highlight
+    if (elementId) {
+      document.querySelectorAll('.arabic-word-card').forEach(c => c.classList.remove('speaking-active'));
+      const activeEl = document.getElementById(elementId);
+      if (activeEl) activeEl.classList.add('speaking-active');
+    }
+
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel(); // Stop ongoing speech
+
+      const utterance = new SpeechSynthesisUtterance(arabicText);
+      utterance.lang = 'ar-SA';
+      utterance.rate = 0.85; // Clear pedagogical speed
+      utterance.pitch = 1.05;
+
+      const voices = window.speechSynthesis.getVoices();
+      const arVoice = voices.find(v => v.lang.startsWith('ar') || v.name.toLowerCase().includes('arabic') || v.name.toLowerCase().includes('maged') || v.name.toLowerCase().includes('tarik') || v.name.toLowerCase().includes('laila'));
+      if (arVoice) {
+        utterance.voice = arVoice;
+      }
+
+      utterance.onstart = () => {
+        showToast(`Memutar pelafalan fasih: "${latinText}" (${arabicText})`);
+      };
+
+      utterance.onend = () => {
+        if (elementId) {
+          const el = document.getElementById(elementId);
+          if (el) el.classList.remove('speaking-active');
+        }
+      };
+
+      utterance.onerror = () => {
+        // Web Audio harmonic fallback if device has no TTS pack installed
+        playTone(560, 'sine', 0.2, 0.1);
+        if (elementId) {
+          const el = document.getElementById(elementId);
+          if (el) el.classList.remove('speaking-active');
+        }
+      };
+
+      window.speechSynthesis.speak(utterance);
+    } else {
+      playTone(560, 'sine', 0.2, 0.1);
+      showToast(`Audio: "${latinText}" (${arabicText})`);
+    }
+  }
+
+  function playAllMufrodatSequence() {
+    const playlist = [
+      { arabic: 'المَكْتَبَةُ', latin: 'Al-Maktabatu (Perpustakaan)', id: 'wordCard-1' },
+      { arabic: 'الكِتَابُ', latin: 'Al-Kitabu (Buku Pelajaran)', id: 'wordCard-2' },
+      { arabic: 'القَلَمُ', latin: 'Al-Qalamu (Pena Tulis)', id: 'wordCard-3' },
+      { arabic: 'الفَصْلُ', latin: 'Al-Fashlu (Ruang Kelas)', id: 'wordCard-4' }
+    ];
+
+    let currentIndex = 0;
+
+    function playNext() {
+      if (currentIndex >= playlist.length) {
+        showToast('Selesai memutar seluruh pelafalan mufrodat.');
+        return;
+      }
+      const item = playlist[currentIndex];
+      speakArabic(item.arabic, item.latin, item.id);
+      currentIndex++;
+      setTimeout(playNext, 2200);
+    }
+
+    playNext();
+  }
+
   return {
     setRole,
     switchMainView,
     askAiQuestion,
     handleAiSend,
     togglePlayVideo,
-    playPronunciationAudio,
+    playPronunciationAudio: playAllMufrodatSequence,
+    speakArabic,
+    playAllMufrodatSequence,
     switchSubTab,
     claimGameXp,
     openCertModal,
