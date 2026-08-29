@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>PERISA — Dashboard Belajar Bahasa Arab & Panel Otoritas Yayasan</title>
-  <meta name="description" content="Dashboard LMS Pembelajaran Bahasa Arab SD, SMP, SMA asuhan Umi Elly & Yayasan Peradaban Islam Azhariyah.">
+  <title>PERISA — Platform Belajar Bahasa Arab & Panel Yayasan (Asuhan Umi Elly)</title>
 
   <!-- Google Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,15 +20,16 @@
 <body>
 
   <!-- ============================================================
-       TOP PRESENTER CONTROLLER BAR
+       TOP PRESENTER CONTROLLER BAR (UNTUK PITCHING DEMO)
        ============================================================ -->
   <aside class="demo-control-bar">
-    <div class="demo-left-meta">
-      <span class="demo-tag-pill"><i class="ph ph-sparkle"></i> LIVE DEMO PROTOTYPE</span>
-      <span>Perspektif Demo:</span>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="background: rgba(0, 210, 190, 0.2); border: 1px solid #00D2BE; color: #A7F3EC; padding: 2px 8px; border-radius: 9999px; font-size: 10.5px; font-weight: 800;">
+        <i class="ph ph-sparkle"></i> LIVE DEMO
+      </span>
+      <span>Pilih Perspektif Demo:</span>
     </div>
 
-    <!-- Quick Role Switcher -->
     <div class="demo-role-switcher">
       <button class="role-btn" data-role="santri-sd" onclick="PrototypeApp.setRole('santri-sd')">
         <i class="ph ph-baby"></i> Santri SD
@@ -41,617 +41,347 @@
         <i class="ph ph-graduation-cap"></i> Santri SMA
       </button>
       <button class="role-btn admin-btn" data-role="admin" onclick="PrototypeApp.setRole('admin')">
-        <i class="ph ph-shield-star"></i> Panel Otoritas Yayasan
+        <i class="ph ph-shield-star"></i> Panel Admin Umi
       </button>
       <a href="game2d.html" class="role-btn" style="background: rgba(251, 191, 36, 0.2); border: 1px solid #FBBF24; color: #FDF3C7; text-decoration: none;">
         <i class="ph ph-game-controller"></i> Game 2D Canvas 🕹️
       </a>
     </div>
 
-    <div class="demo-right-actions">
-      <a href="index.html" class="demo-link-pitch">
-        <i class="ph ph-presentation"></i>
-        <span>Kembali ke Slide Presentasi</span>
+    <div>
+      <a href="index.html" style="color: #A7F3EC; text-decoration: none; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+        <i class="ph ph-presentation"></i> Kembali ke Slide
       </a>
     </div>
   </aside>
 
   <!-- ============================================================
-       MAIN UDEMY-STYLE DASHBOARD WRAPPER
+       MAIN APP WINDOW (EXACTLY MATCHING USER REFERENCE IMAGE)
        ============================================================ -->
-  <div class="dashboard-app-wrapper">
+  <div class="app-window-frame">
 
     <!-- ==========================================================
-         LEFT SIDEBAR NAVIGATION (UDEMY STYLE)
+         LEFT SIDEBAR (CODELINGO / PERISA STYLE)
          ========================================================== -->
-    <aside class="lms-sidebar">
+    <aside class="ref-sidebar">
       
       <!-- Brand Header -->
-      <div class="sidebar-brand-header">
-        <div class="sidebar-crest">
-          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M50 14L28 36V50H72V36L50 14Z" stroke="#00877A" stroke-width="5" stroke-linejoin="round"/>
-            <rect x="46" y="28" width="8" height="8" rx="1.5" fill="#C5921B" stroke="#C5921B" stroke-width="1"/>
-            <path d="M18 48H28V72H18V48Z" stroke="#00877A" stroke-width="4.5"/>
-            <path d="M34 40H44V72H34V40Z" stroke="#00877A" stroke-width="4.5"/>
-            <path d="M48 40H56V72H48V40Z" stroke="#00877A" stroke-width="4.5"/>
-            <path d="M60 44H68V72H60V44Z" stroke="#00877A" stroke-width="4.5"/>
-            <path d="M72 48H82V72H72V48Z" stroke="#00877A" stroke-width="4.5"/>
-            <line x1="14" y1="78" x2="86" y2="78" stroke="#00877A" stroke-width="4.5" stroke-linecap="round"/>
-            <line x1="10" y1="86" x2="90" y2="86" stroke="#00877A" stroke-width="5.5" stroke-linecap="round"/>
-          </svg>
+      <div class="ref-brand-logo">
+        <div class="brand-icon-box">
+          <i class="ph-bold ph-hourglass-high"></i>
         </div>
-        <div>
-          <div class="sidebar-brand-title">PERISA AZHARIYAH</div>
-          <div class="sidebar-brand-sub">Asuhan Umi Elly</div>
-        </div>
+        <div class="brand-name-text">PERISA Azhariyah</div>
       </div>
 
-      <!-- Nav Group 1: Pembelajaran -->
-      <div class="sidebar-nav-group">
-        <div class="nav-group-label">Menu Belajar</div>
-        <ul class="sidebar-nav-list">
-          <li>
-            <a class="sidebar-nav-item active" data-view="ruang-belajar" onclick="PrototypeApp.switchDashboardView('ruang-belajar')">
-              <i class="ph ph-video"></i>
-              <span>Ruang Belajar</span>
-              <span class="sidebar-badge-pill">Aktif</span>
-            </a>
-          </li>
-          <li>
-            <a class="sidebar-nav-item" data-view="katalog" onclick="PrototypeApp.switchDashboardView('katalog')">
-              <i class="ph ph-books"></i>
-              <span>Katalog Kursus</span>
-            </a>
-          </li>
-          <li>
-            <a href="game2d.html" class="sidebar-nav-item" style="color: #D97706;">
-              <i class="ph ph-game-controller"></i>
-              <span>Game 2D Santri</span>
-              <span class="sidebar-badge-pill" style="background: #FEF3C7; color: #92400E;">+50 XP</span>
-            </a>
-          </li>
-          <li>
-            <a class="sidebar-nav-item" onclick="PrototypeApp.showToast('Membuka daftar 24 berkas PDF resmi Umi Elly...')">
-              <i class="ph ph-file-pdf"></i>
-              <span>Modul Silabus PDF</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Nav Group 2: Prestasi & Akun -->
-      <div class="sidebar-nav-group">
-        <div class="nav-group-label">Pencapaian</div>
-        <ul class="sidebar-nav-list">
-          <li>
-            <a class="sidebar-nav-item" data-view="profil" onclick="PrototypeApp.switchDashboardView('profil')">
-              <i class="ph ph-user-circle"></i>
-              <span>Profil & Lencana</span>
-            </a>
-          </li>
-          <li>
-            <a class="sidebar-nav-item" onclick="PrototypeApp.openCertModal('Ahmad Fauzan')">
-              <i class="ph ph-certificate"></i>
-              <span>Sertifikat Resmi</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Nav Group 3: Otoritas Yayasan -->
-      <div class="sidebar-nav-group">
-        <div class="nav-group-label">Otoritas Yayasan</div>
-        <ul class="sidebar-nav-list">
-          <li>
-            <a class="sidebar-nav-item" data-view="admin" onclick="PrototypeApp.switchDashboardView('admin')">
-              <i class="ph ph-shield-star"></i>
-              <span>Panel Admin Umi</span>
-              <span class="sidebar-badge-pill" style="background: #E0F2FE; color: #0284C7;">2 Baru</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Footer Profile Mini Card -->
-      <div class="sidebar-footer-profile">
-        <div class="profile-mini-pill">
-          <div class="profile-avatar-mini">AF</div>
+      <!-- User Profile Card -->
+      <div class="sidebar-user-card" onclick="PrototypeApp.showToast('Profil Santri Aktif: Ahmad Fauzan (Kelas 8 SMP)')">
+        <div class="user-left-info">
+          <div class="user-avatar-small">AF</div>
           <div>
-            <div style="font-size: 12px; font-weight: 800; color: var(--md-text-title);">Ahmad Fauzan</div>
-            <div style="font-size: 10px; color: var(--md-text-muted);">SMP Kelas 8 • Mumtaz</div>
+            <div class="user-name-small">Ahmad Fauzan</div>
+            <div style="font-size: 9.5px; color: var(--text-muted);">SMP Kelas 8</div>
           </div>
         </div>
+        <i class="ph ph-caret-down" style="color: var(--text-muted); font-size: 12px;"></i>
+      </div>
+
+      <!-- Navigation Menu -->
+      <ul class="ref-nav-list">
+        <li>
+          <a class="ref-nav-item" onclick="PrototypeApp.showToast('Menampilkan Dashboard Utama')">
+            <i class="ph ph-house"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a class="ref-nav-item" onclick="PrototypeApp.showToast('Membuka Modul Ringkasan & eBook PDF')">
+            <i class="ph ph-book-open"></i>
+            <span>Modul & eBook</span>
+          </a>
+        </li>
+        <li>
+          <a class="ref-nav-item active" onclick="PrototypeApp.showToast('Ruang Belajar Kursus Aktif')">
+            <i class="ph ph-stack"></i>
+            <span>Kursus Bahasa Arab</span>
+          </a>
+        </li>
+        <li>
+          <a href="game2d.html" class="ref-nav-item" style="color: #D97706;">
+            <i class="ph ph-game-controller"></i>
+            <span>Game 2D Mufrodat</span>
+          </a>
+        </li>
+        <li>
+          <a class="ref-nav-item" onclick="PrototypeApp.showToast('Komunitas Santri & Forum Diskusi')">
+            <i class="ph ph-chats-circle"></i>
+            <span>Komunitas Santri</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Bottom Sidebar Links -->
+      <div class="sidebar-bottom-links">
+        <a class="ref-nav-item" onclick="PrototypeApp.showToast('Pengaturan Akun Santri')">
+          <i class="ph ph-gear"></i>
+          <span>Pengaturan</span>
+        </a>
+        <a class="ref-nav-item" onclick="PrototypeApp.showToast('Bantuan & Konsultasi Umi Elly')">
+          <i class="ph ph-headphones"></i>
+          <span>Bantuan & Umi</span>
+        </a>
       </div>
 
     </aside>
 
     <!-- ==========================================================
-         RIGHT MAIN WORKSPACE
+         RIGHT WORKSPACE (EXACT REFERENCE CONTENT AREA)
          ========================================================== -->
-    <main class="lms-main-workspace">
+    <main class="ref-main-workspace">
       
-      <!-- Top Workspace Bar -->
-      <header class="workspace-top-bar">
-        <div class="workspace-search-bar">
-          <i class="ph ph-magnifying-glass" style="color: var(--md-text-muted);"></i>
-          <input type="text" placeholder="Cari materi mufrodat, kaidah nahwu, video...">
+      <!-- Top Breadcrumbs Header Bar -->
+      <header class="ref-top-header">
+        <div class="breadcrumb-trail">
+          <i class="ph ph-stack"></i>
+          <span>Kursus</span>
+          <span>/</span>
+          <span>Bahasa Arab SMP</span>
+          <span>/</span>
+          <span class="active" id="breadcrumbActiveTitle">Jumlah Ismiyyah & Fasilitas Sekolah</span>
         </div>
 
-        <div class="workspace-top-actions">
-          <div class="top-action-pill streak"><i class="ph ph-fire"></i> <span>5 Hari 🔥</span></div>
-          <div class="top-action-pill xp"><i class="ph ph-sparkle"></i> <span id="topBarXpVal">420 XP</span></div>
-          <button class="ctrl-btn" onclick="PrototypeApp.showToast('Tidak ada notifikasi baru')"><i class="ph ph-bell"></i></button>
+        <div class="top-header-right-actions">
+          <button class="icon-circle-btn" onclick="PrototypeApp.showToast('Materi disimpan ke favorit')"><i class="ph ph-bookmark-simple"></i></button>
+          <button class="icon-circle-btn" onclick="PrototypeApp.showToast('1 Notifikasi: Umi Elly merilis game level baru')">
+            <i class="ph ph-bell"></i>
+            <span class="notification-dot"></span>
+          </button>
         </div>
       </header>
 
-      <!-- Dynamic Content Viewport -->
-      <div class="workspace-content-body">
+      <!-- Main Two-Column Course Viewport -->
+      <div class="course-main-grid">
 
-        <!-- ========================================================
-             VIEW 1: RUANG BELAJAR AKTIF (VIDEO PLAYER + WATERMARK)
-             ======================================================== -->
-        <section class="workspace-view active" id="viewRuangBelajar">
+        <!-- ======================================================
+             LEFT COLUMN: PLAYER, TABS, & OVERVIEW
+             ====================================================== -->
+        <div class="left-player-column">
           
-          <!-- Banner -->
-          <div class="santri-hero-banner">
-            <div class="banner-left">
-              <div class="banner-greeting-tag">
-                <i class="ph ph-hand-waving"></i>
-                <span>Ahlan wa Sahlan, Ahmad Fauzan</span>
-              </div>
-              <h1 class="banner-heading" id="bannerJenjangTitle">Tata Bahasa Arab Dasar & Kosakata Harian (SMP)</h1>
-              <p class="banner-sub" id="bannerJenjangSub">Mendalami kaidah Jumlah Ismiyyah, kata ganti (Dhomir), dan percakapan tematik sekolah asuhan Umi Elly.</p>
-            </div>
-
-            <div class="banner-stats-box">
-              <div class="banner-stat-item">
-                <div class="stat-num" id="bannerXpVal">420 XP</div>
-                <div class="stat-lbl">Poin Belajar</div>
-              </div>
-              <div class="banner-stat-item">
-                <div class="stat-num gold">62%</div>
-                <div class="stat-lbl">Silabus Tuntas</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Jenjang Switcher -->
-          <div class="jenjang-selector-bar">
-            <button class="jenjang-tab-btn" data-jenjang="sd" onclick="PrototypeApp.setJenjang('sd')">
-              <i class="ph ph-book-open"></i> SD (Mufrodat Cilik)
-            </button>
-            <button class="jenjang-tab-btn active" data-jenjang="smp" onclick="PrototypeApp.setJenjang('smp')">
-              <i class="ph ph-scales"></i> SMP (Kaidah Nahwu)
-            </button>
-            <button class="jenjang-tab-btn" data-jenjang="sma" onclick="PrototypeApp.setJenjang('sma')">
-              <i class="ph ph-graduation-cap"></i> SMA (Shorof & Tashrif)
-            </button>
-          </div>
-
-          <!-- Grid Layout -->
-          <div class="student-grid-layout">
-            
-            <!-- Left: Video Player -->
-            <div class="video-module-card">
-              <div class="video-container">
-                <!-- Floating Dynamic Watermark -->
-                <div class="video-dynamic-watermark">
-                  <i class="ph ph-shield-check"></i> Ahmad Fauzan • 0812-8921-9921 • PERISA Azhariyah
-                </div>
-
-                <div class="video-screen-backdrop">
-                  <div class="arabic-video-title" id="currentVideoArabicTitle">الوَحْدَةُ الثَّانِيَةُ : فِي المَدْرَسَةِ</div>
-                  <div class="arabic-video-translation" id="currentVideoTranslation">Modul 02: Jumlah Ismiyyah & Fasilitas Sekolah</div>
-                  <button class="play-central-btn" id="btnPlayCentral" onclick="PrototypeApp.togglePlayVideo()">
-                    <i class="ph ph-play" id="playCentralIcon"></i>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Audio Pronunciation Card -->
-              <div class="audio-pronounce-card">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <button class="pronounce-btn" onclick="PrototypeApp.playPronunciationAudio()" title="Dengar Pelafalan Mufrodat">
-                    <i class="ph ph-speaker-high"></i>
-                  </button>
-                  <div>
-                    <div style="font-size: 12px; font-weight: 700; color: var(--md-text-title);">Dengar Pelafalan Mufrodat (Asuhan Umi Elly)</div>
-                    <div style="font-size: 10.5px; color: var(--md-text-muted);">Latihan makhraj & intonasi huruf Arab resmi</div>
-                  </div>
-                </div>
-                <button class="btn-pdf-download" style="padding: 4px 10px; font-size: 11px;" onclick="PrototypeApp.playPronunciationAudio()">
-                  <i class="ph ph-play-circle"></i> Putar
-                </button>
-              </div>
-
-              <!-- Video Controls -->
-              <div class="video-controls-bar">
-                <button class="ctrl-btn" onclick="PrototypeApp.togglePlayVideo()"><i class="ph ph-play" id="playPauseIcon"></i></button>
-                <div class="video-progress-track" onclick="PrototypeApp.showToast('Melompat durasi video')"><div class="video-progress-fill" id="videoProgressFill"></div></div>
-                <div class="time-display" id="videoTimeDisplay">07:00 / 12:00</div>
-                <button class="speed-select-btn" id="btnSpeedToggle" onclick="PrototypeApp.toggleSpeed()">1.0x</button>
-              </div>
-
-              <!-- Meta Actions -->
-              <div class="video-module-meta">
-                <div>
-                  <h3 id="metaModuleTitle" style="font-size: 15px; font-weight: 800; color: var(--md-text-title);">Modul 02: Jumlah Ismiyyah & Fasilitas</h3>
-                  <p id="metaModuleDesc" style="font-size: 11.5px; color: var(--md-text-muted);">Kaidah menyusun mubtada khobar lingkungan sekolah.</p>
-                </div>
-
-                <div class="meta-actions-group">
-                  <button class="btn-game-launcher" onclick="PrototypeApp.openGameModal(0)">
-                    <i class="ph ph-game-controller"></i>
-                    <span>Mainkan Kuis Game (+50 XP)</span>
-                  </button>
-                  <a href="game2d.html" class="btn-game-launcher" style="background: linear-gradient(135deg, #00877A 0%, #005F55 100%); text-decoration: none;">
-                    <i class="ph ph-game-controller"></i> Game 2D Canvas
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <!-- Right: Sidebar Syllabus -->
-            <aside class="santri-sidebar">
-              <div class="sidebar-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                  <span style="font-size: 13px; font-weight: 800; color: var(--md-text-title);">Silabus Modul Video</span>
-                  <span style="font-size: 11px; font-weight: 700; color: var(--md-primary);">62% Tuntas</span>
-                </div>
-                <div class="syllabus-items-list" id="syllabusItemsList"></div>
-              </div>
-
-              <div class="cert-promo-box">
-                <i class="ph ph-certificate" style="font-size: 28px; color: var(--md-on-secondary-container);"></i>
-                <div style="font-size: 12px; font-weight: 800; color: var(--md-on-secondary-container);">Sertifikat Digital Resmi</div>
-                <p style="font-size: 10.5px; color: var(--md-text-muted);">Tuntaskan modul untuk mengklaim sertifikat QR sanad.</p>
-                <button class="btn-open-cert" onclick="PrototypeApp.openCertModal('Ahmad Fauzan')">Lihat Sertifikat</button>
-              </div>
-            </aside>
-
-          </div>
-        </section>
-
-        <!-- ========================================================
-             VIEW 2: KATALOG KURSUS
-             ======================================================== -->
-        <section class="workspace-view" id="viewKatalog">
-          <div class="catalog-header-box">
+          <!-- Course Header Strip -->
+          <div class="course-title-header">
             <div>
-              <h2 style="font-size: 20px; font-weight: 800; color: var(--md-text-title);">Katalog Kelas Bahasa Arab Yayasan PERISA</h2>
-              <p style="font-size: 12.5px; color: var(--md-text-muted);">Pilihan kurikulum berjenjang dari tingkat SD, SMP, hingga SMA asuhan Umi Elly.</p>
+              <div class="title-back-row">
+                <div class="btn-back-square" onclick="PrototypeApp.showToast('Kembali ke daftar modul')"><i class="ph ph-caret-left"></i></div>
+                <h1 class="course-main-h1">
+                  <span id="courseMainTitle">Bahasa Arab SMP: Jumlah Ismiyyah</span>
+                  <span class="jenjang-pill-tag" id="courseJenjangPill">Tingkat SMP Kelas 8</span>
+                </h1>
+              </div>
+
+              <div class="course-meta-stats-row">
+                <span><i class="ph ph-play-circle"></i> 12 Modul Video</span>
+                <span>•</span>
+                <span><i class="ph ph-clock"></i> 2j 30m</span>
+                <span>•</span>
+                <span class="star-rating-pill"><i class="ph-fill ph-star"></i> 4.9 (128 ulasan santri)</span>
+              </div>
             </div>
 
-            <div class="catalog-filters">
-              <button class="catalog-filter-btn active" onclick="PrototypeApp.filterCatalog('all', this)">Semua Jenjang</button>
-              <button class="catalog-filter-btn" onclick="PrototypeApp.filterCatalog('sd', this)">Tingkat SD</button>
-              <button class="catalog-filter-btn" onclick="PrototypeApp.filterCatalog('smp', this)">Tingkat SMP</button>
-              <button class="catalog-filter-btn" onclick="PrototypeApp.filterCatalog('sma', this)">Tingkat SMA</button>
+            <div class="header-cta-buttons">
+              <button class="btn-share-text" onclick="PrototypeApp.showToast('Tautan materi disalin ke clipboard')">Bagikan</button>
+              <button class="btn-enroll-primary" onclick="PrototypeApp.openGameModal(0)">
+                <i class="ph ph-game-controller"></i>
+                <span>Mainkan Game</span>
+              </button>
             </div>
           </div>
 
-          <div class="catalog-grid">
-            
-            <div class="course-card" data-jenjang="sd">
-              <div class="course-thumbnail-area">
-                <span class="course-level-tag"><i class="ph ph-baby"></i> Tingkat SD</span>
-                <div class="course-arabic-name">الأَدَوَاتُ المَدْرَسِيَّةُ</div>
+          <!-- Cinematic Video Player Screen -->
+          <div class="ref-video-player-box">
+            <div class="video-screen-content">
+              
+              <!-- Floating Dynamic Moving Watermark -->
+              <div class="ref-video-watermark">
+                <i class="ph ph-shield-check"></i> Ahmad Fauzan • 0812-8921-9921 • PERISA Azhariyah
               </div>
-              <div class="course-content-area">
-                <h3 class="course-title">Mufrodat Cilik: Benda Sekolah & Rumah</h3>
-                <p class="course-desc">Mengenal kosakata dasar dan alat tulis dengan visual ceria.</p>
-                <div class="course-instructor-row"><i class="ph ph-chalkboard-teacher"></i><span>Pengajar: Umi Elly • 8 Modul</span></div>
-                <div class="course-bottom-action-row">
-                  <span class="course-infaq-tag beasiswa">Beasiswa / Gratis</span>
-                  <button class="btn-enroll-course" onclick="PrototypeApp.setJenjang('sd'); PrototypeApp.switchDashboardView('ruang-belajar');">Mulai Belajar</button>
+
+              <div style="font-size: 26px; font-weight: 800; font-family: Arial; margin-bottom: 4px;" id="currentVideoArabic">
+                الوَحْدَةُ الثَّانِيَةُ : فِي المَدْرَسَةِ
+              </div>
+              <div style="font-size: 13px; color: #A7F3EC; margin-bottom: 16px;" id="currentVideoSubtitle">
+                Modul 02: Benda di Perpustakaan (المَكْتَبَةُ)
+              </div>
+
+              <button class="center-glass-play" onclick="PrototypeApp.togglePlayVideo()">
+                <i class="ph ph-play" id="playIcon"></i>
+              </button>
+
+            </div>
+          </div>
+
+          <!-- Horizontal Sub-Tabs -->
+          <div class="ref-sub-tabs-bar">
+            <button class="sub-tab-btn active" onclick="PrototypeApp.showToast('Menampilkan Ringkasan Materi')">Ringkasan Materi</button>
+            <button class="sub-tab-btn" onclick="PrototypeApp.playPronunciationAudio()">Pelafalan Audio (Umi)</button>
+            <button class="sub-tab-btn" onclick="PrototypeApp.openGameModal(0)">Kuis Interaktif</button>
+            <button class="sub-tab-btn" onclick="PrototypeApp.showToast('Pengumuman resmi dari Umi Elly')">Pengumuman</button>
+            <button class="sub-tab-btn" onclick="PrototypeApp.showToast('Ulasan dari para santri')">Ulasan Santri</button>
+          </div>
+
+          <!-- About Course Details Block -->
+          <div class="about-course-block">
+            <h3>Tentang Modul Bahasa Arab Ini</h3>
+            <p id="aboutCourseDesc">
+              Modul ini dirancang khusus oleh <strong>Umi Elly</strong> untuk santri SMP agar mampu memahami struktur kalimat <em>Jumlah Ismiyyah</em> (Mubtada dan Khobar) serta menguasai kosakata tematik fasilitas sekolah dan perpustakaan secara interaktif.
+            </p>
+
+            <!-- What You'll Learn Grid (Exact Reference Style) -->
+            <div class="what-learn-card">
+              <h4 style="font-size: 14px; font-weight: 800; color: var(--teal-dark);">Yang Akan Dikuasai Santri</h4>
+              <div class="what-learn-grid">
+                <div class="learn-item"><i class="ph-bold ph-check"></i><span>Memahami struktur Mubtada dan Khobar dasar</span></div>
+                <div class="learn-item"><i class="ph-bold ph-check"></i><span>Menguasai 20 kosakata (mufrodat) fasilitas sekolah</span></div>
+                <div class="learn-item"><i class="ph-bold ph-check"></i><span>Mengenal 14 kata ganti (Dhomir Munfashil)</span></div>
+                <div class="learn-item"><i class="ph-bold ph-check"></i><span>Praktik percakapan (hiwar) tematik di kelas</span></div>
+                <div class="learn-item"><i class="ph-bold ph-check"></i><span>Menuntaskan mini-game kaidah berhadiah +50 XP</span></div>
+                <div class="learn-item"><i class="ph-bold ph-check"></i><span>Mendapatkan sertifikat resmi ber-QR Code Umi Elly</span></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ======================================================
+             RIGHT COLUMN: ACCORDION SYLLABUS & AUTHOR BOX
+             ====================================================== -->
+        <div class="right-sidebar-column">
+          
+          <!-- Course Content Accordion Card (Exact Reference Style) -->
+          <div class="course-content-accordion-card">
+            <div class="accordion-main-title">Daftar Materi Silabus</div>
+
+            <!-- Section 1 (Expanded) -->
+            <div class="accordion-section">
+              <div class="section-head" onclick="PrototypeApp.showToast('Bagian 1: Mufrodat Sekolah')">
+                <span>01: Mufrodat & Fasilitas Sekolah</span>
+                <span class="section-duration">22 min <i class="ph ph-caret-up"></i></span>
+              </div>
+              <div class="lesson-sub-list">
+                <div class="lesson-sub-row" onclick="PrototypeApp.showToast('Memutar Modul 01: Pengenalan Sekolah')">
+                  <div class="lesson-left-title"><i class="ph ph-play-circle"></i><span>Pengenalan Ruang Kelas</span></div>
+                  <span class="lesson-time">2 min</span>
+                </div>
+                <div class="lesson-sub-row active" onclick="PrototypeApp.showToast('Memutar Modul 02: Perpustakaan')">
+                  <div class="lesson-left-title"><i class="ph ph-play-circle"></i><span>Perpustakaan (المَكْتَبَةُ)</span></div>
+                  <span class="lesson-time">5 min</span>
+                </div>
+                <div class="lesson-sub-row" onclick="PrototypeApp.showToast('Memutar Modul 03: Jumlah Ismiyyah')">
+                  <div class="lesson-left-title"><i class="ph ph-play-circle"></i><span>Kaidah Jumlah Ismiyyah</span></div>
+                  <span class="lesson-time">12 min</span>
+                </div>
+                <div class="lesson-sub-row" onclick="PrototypeApp.openGameModal(0)">
+                  <div class="lesson-left-title" style="color: #D97706;"><i class="ph ph-game-controller"></i><span>Latihan Game +50 XP</span></div>
+                  <span class="lesson-time">3 min</span>
                 </div>
               </div>
             </div>
 
-            <div class="course-card" data-jenjang="sd">
-              <div class="course-thumbnail-area">
-                <span class="course-level-tag"><i class="ph ph-baby"></i> Tingkat SD</span>
-                <div class="course-arabic-name">الأَلْوَانُ وَالأَرْقَامُ</div>
+            <!-- Section 2 (Collapsed) -->
+            <div class="accordion-section">
+              <div class="section-head" onclick="PrototypeApp.showToast('Bagian 2: Kaidah Dhomir')">
+                <span>02: Kaidah Dhomir (Kata Ganti)</span>
+                <span class="section-duration">1j 20m <i class="ph ph-caret-down"></i></span>
               </div>
-              <div class="course-content-area">
-                <h3 class="course-title">Lagu Angka & Warna Bahasa Arab</h3>
-                <p class="course-desc">Menghafal angka 1-20 dan warna primer dalam bahasa Arab.</p>
-                <div class="course-instructor-row"><i class="ph ph-chalkboard-teacher"></i><span>Pengajar: Umi Elly • 6 Modul</span></div>
-                <div class="course-bottom-action-row">
-                  <span class="course-infaq-tag beasiswa">Beasiswa / Gratis</span>
-                  <button class="btn-enroll-course" onclick="PrototypeApp.setJenjang('sd'); PrototypeApp.switchDashboardView('ruang-belajar');">Mulai Belajar</button>
+            </div>
+
+            <!-- Section 3 (Collapsed) -->
+            <div class="accordion-section">
+              <div class="section-head" onclick="PrototypeApp.showToast('Bagian 3: Tashrif Fi\'il')">
+                <span>03: Tashrif & Kaidah Fi'il</span>
+                <span class="section-duration">36 min <i class="ph ph-caret-down"></i></span>
+              </div>
+            </div>
+
+            <!-- Section 4 (Collapsed) -->
+            <div class="accordion-section">
+              <div class="section-head" onclick="PrototypeApp.showToast('Bagian 4: Muhadatsah')">
+                <span>04: Muhadatsah Harian (Hiwar)</span>
+                <span class="section-duration">40 min <i class="ph ph-caret-down"></i></span>
+              </div>
+            </div>
+
+            <!-- Section 5 (Collapsed) -->
+            <div class="accordion-section">
+              <div class="section-head" onclick="PrototypeApp.openCertModal('Ahmad Fauzan')">
+                <span>05: Sertifikat Kelulusan Resmi</span>
+                <span class="section-duration">QR Sanad <i class="ph ph-certificate"></i></span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Author Box Card (Exact Reference Style) -->
+          <div class="author-profile-box">
+            <div class="author-title-label">Pengasuh & Pengajar</div>
+            <div class="author-header-row">
+              <div class="author-avatar-img">UE</div>
+              <div class="author-info-side">
+                <div class="author-name-verified">
+                  <span>Umi Elly</span>
+                  <i class="ph-fill ph-seal-check" style="color: #00877A; font-size: 14px;"></i>
+                  <span style="font-size: 11px; color: var(--gold-dark); margin-left: 4px;"><i class="ph-fill ph-star"></i> (4.9)</span>
                 </div>
+                <div class="author-role-sub">Pengasuh Yayasan PERISA Azhariyah</div>
               </div>
             </div>
-
-            <div class="course-card" data-jenjang="smp">
-              <div class="course-thumbnail-area">
-                <span class="course-level-tag gold"><i class="ph ph-student"></i> Tingkat SMP</span>
-                <div class="course-arabic-name">فِي المَدْرَسَةِ وَالفَصْلِ</div>
-              </div>
-              <div class="course-content-area">
-                <h3 class="course-title">Tata Bahasa Arab: Jumlah Ismiyyah & Dhomir</h3>
-                <p class="course-desc">Mempelajari struktur kalimat mubtada khobar dan kata ganti.</p>
-                <div class="course-instructor-row"><i class="ph ph-chalkboard-teacher"></i><span>Pengajar: Umi Elly • 12 Modul</span></div>
-                <div class="course-bottom-action-row">
-                  <span class="course-infaq-tag">Infaq Terverifikasi</span>
-                  <button class="btn-enroll-course" onclick="PrototypeApp.setJenjang('smp'); PrototypeApp.switchDashboardView('ruang-belajar');">Lanjut Belajar</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="course-card" data-jenjang="smp">
-              <div class="course-thumbnail-area">
-                <span class="course-level-tag gold"><i class="ph ph-student"></i> Tingkat SMP</span>
-                <div class="course-arabic-name">القِصَصُ العَرَبِيَّةُ القَصِيْرَةُ</div>
-              </div>
-              <div class="course-content-area">
-                <h3 class="course-title">Membaca Cerita Bahasa Arab Pendek</h3>
-                <p class="course-desc">Melatih pemahaman teks cerita islami pendek santri.</p>
-                <div class="course-instructor-row"><i class="ph ph-chalkboard-teacher"></i><span>Pengajar: Ustadzah Salma • 10 Modul</span></div>
-                <div class="course-bottom-action-row">
-                  <span class="course-infaq-tag">Infaq Rp 150rb</span>
-                  <button class="btn-enroll-course" onclick="PrototypeApp.showToast('Silabus Cerita Pendek...')">Lihat Silabus</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="course-card" data-jenjang="sma">
-              <div class="course-thumbnail-area">
-                <span class="course-level-tag"><i class="ph ph-graduation-cap"></i> Tingkat SMA</span>
-                <div class="course-arabic-name">تَصْرِيْفُ الأَفْعَالِ وَالصَّرْفُ</div>
-              </div>
-              <div class="course-content-area">
-                <h3 class="course-title">Nahwu-Shorof Terapan: Tashrif Fi'il</h3>
-                <p class="course-desc">Kaidah perubahan bentuk kata kerja lampau, sekarang, perintah.</p>
-                <div class="course-instructor-row"><i class="ph ph-chalkboard-teacher"></i><span>Pengajar: Umi Elly • 14 Modul</span></div>
-                <div class="course-bottom-action-row">
-                  <span class="course-infaq-tag">Infaq Terverifikasi</span>
-                  <button class="btn-enroll-course" onclick="PrototypeApp.setJenjang('sma'); PrototypeApp.switchDashboardView('ruang-belajar');">Mulai Belajar</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="course-card" data-jenjang="sma">
-              <div class="course-thumbnail-area">
-                <span class="course-level-tag"><i class="ph ph-graduation-cap"></i> Tingkat SMA</span>
-                <div class="course-arabic-name">الخِطَابَةُ وَالمُحَادَثَةُ</div>
-              </div>
-              <div class="course-content-area">
-                <h3 class="course-title">Muhadatsah Dakwah & Pidato Khitobah</h3>
-                <p class="course-desc">Keterampilan pidato resmi bahasa Arab dan dialog tematik.</p>
-                <div class="course-instructor-row"><i class="ph ph-chalkboard-teacher"></i><span>Pengajar: Umi Elly • 10 Modul</span></div>
-                <div class="course-bottom-action-row">
-                  <span class="course-infaq-tag">Infaq Rp 175rb</span>
-                  <button class="btn-enroll-course" onclick="PrototypeApp.showToast('Silabus Khitobah...')">Lihat Silabus</button>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        <!-- ========================================================
-             VIEW 3: PROFIL & PRESTASI SANTRI
-             ======================================================== -->
-        <section class="workspace-view" id="viewProfil">
-          <div class="profile-card-header">
-            <div style="display: flex; align-items: center; gap: 16px;">
-              <div class="profile-avatar-giant">AF</div>
-              <div>
-                <h2 style="font-size: 20px; font-weight: 800;">Ahmad Fauzan</h2>
-                <div style="font-size: 12px; color: #A7F3EC; margin-top: 4px;">
-                  0812-8921-9921 • Kelas 8 SMP Azhariyah • Akses Aktif
-                </div>
-              </div>
-            </div>
-            <button class="btn-game-launcher" onclick="PrototypeApp.openCertModal('Ahmad Fauzan')">
-              <i class="ph ph-certificate"></i> Lihat Sertifikat
-            </button>
+            <p class="author-bio-paragraph">
+              Umi Elly adalah pendidik dan pengasuh bahasa Arab & Al-Qur'an yang telah membimbing ratusan santri generasi peradaban Islam di berbagai jenjang.
+            </p>
           </div>
 
-          <div class="profile-stats-grid">
-            <div class="profile-stat-box">
-              <div class="metric-icon-circle gold"><i class="ph ph-sparkle"></i></div>
-              <div><div style="font-size: 18px; font-weight: 800;">420 XP</div><div style="font-size: 11px; color: var(--md-text-muted);">Total Poin Belajar</div></div>
-            </div>
-            <div class="profile-stat-box">
-              <div class="metric-icon-circle"><i class="ph ph-trophy"></i></div>
-              <div><div style="font-size: 18px; font-weight: 800;">Rank 3 🏆</div><div style="font-size: 11px; color: var(--md-text-muted);">Leaderboard Santri</div></div>
-            </div>
-            <div class="profile-stat-box">
-              <div class="metric-icon-circle blue"><i class="ph ph-fire"></i></div>
-              <div><div style="font-size: 18px; font-weight: 800;">5 Hari 🔥</div><div style="font-size: 11px; color: var(--md-text-muted);">Daily Streak</div></div>
-            </div>
-            <div class="profile-stat-box">
-              <div class="metric-icon-circle"><i class="ph ph-check-circle"></i></div>
-              <div><div style="font-size: 18px; font-weight: 800;">62% Tuntas</div><div style="font-size: 11px; color: var(--md-text-muted);">Silabus Selesai</div></div>
-            </div>
-          </div>
-
-          <div class="profile-section-card">
-            <h3 style="font-size: 15px; font-weight: 800; color: var(--md-text-title);"><i class="ph ph-medal" style="color: var(--md-secondary);"></i> Lencana Prestasi Belajar Bahasa Arab</h3>
-            <div class="badges-grid">
-              <div class="badge-item-card"><div class="badge-icon-box"><i class="ph ph-star-fill"></i></div><strong>Bintang Mufrodat</strong><span style="font-size: 10px; color: var(--md-text-muted);">10 kuis kosakata tepat</span></div>
-              <div class="badge-item-card"><div class="badge-icon-box"><i class="ph ph-shield-check-fill"></i></div><strong>Penjaga Adab</strong><span style="font-size: 10px; color: var(--md-text-muted);">Tuntas video tanpa skip</span></div>
-              <div class="badge-item-card"><div class="badge-icon-box"><i class="ph ph-book-bookmark-fill"></i></div><strong>Khatam Modul 1</strong><span style="font-size: 10px; color: var(--md-text-muted);">Selesai tata bahasa dasar</span></div>
-              <div class="badge-item-card"><div class="badge-icon-box"><i class="ph ph-fire-fill"></i></div><strong>Santri Istiqomah</strong><span style="font-size: 10px; color: var(--md-text-muted);">Belajar 5 hari berturut</span></div>
-            </div>
-          </div>
-        </section>
-
-        <!-- ========================================================
-             VIEW 4: PANEL OTORITAS YAYASAN (ADMIN / UMI ELLY)
-             ======================================================== -->
-        <section class="workspace-view" id="viewAdmin">
-          <div style="margin-bottom: 16px;">
-            <h2 style="font-size: 20px; font-weight: 800; color: var(--md-text-title);">Panel Otoritas Izin Santri & Materi Yayasan</h2>
-            <p style="font-size: 12.5px; color: var(--md-text-muted);">Kendali 100% hak akses, verifikasi infaq, dan persetujuan beasiswa asuhan Umi Elly.</p>
-          </div>
-
-          <div class="admin-metrics-grid">
-            <div class="admin-metric-card"><div class="metric-icon-circle"><i class="ph ph-users-three"></i></div><div><div style="font-size: 18px; font-weight: 800;">1.284</div><div style="font-size: 11px; color: var(--md-text-muted);">Santri Terdaftar</div></div></div>
-            <div class="admin-metric-card"><div class="metric-icon-circle gold"><i class="ph ph-hand-heart"></i></div><div><div style="font-size: 18px; font-weight: 800;" id="adminBeasiswaCount">42 Santri</div><div style="font-size: 11px; color: var(--md-text-muted);">Beasiswa Umi Elly (Gratis)</div></div></div>
-            <div class="admin-metric-card"><div class="metric-icon-circle blue"><i class="ph ph-clock"></i></div><div><div style="font-size: 18px; font-weight: 800;" id="adminPendingCount">2 Santri</div><div style="font-size: 11px; color: var(--md-text-muted);">Menunggu Konfirmasi</div></div></div>
-            <div class="admin-metric-card"><div class="metric-icon-circle"><i class="ph ph-chart-line-up"></i></div><div><div style="font-size: 18px; font-weight: 800;">90% Hemat</div><div style="font-size: 11px; color: var(--md-text-muted);">Otomasi Rekap</div></div></div>
-          </div>
-
-          <div class="admin-table-container">
-            <div class="table-top-bar">
-              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                <button class="filter-pill active" onclick="PrototypeApp.filterAdminTable('all', this)">Semua (1.284)</button>
-                <button class="filter-pill" onclick="PrototypeApp.filterAdminTable('pending', this)">Menunggu (2)</button>
-                <button class="filter-pill" onclick="PrototypeApp.filterAdminTable('active', this)">Aktif (1.240)</button>
-                <button class="filter-pill beasiswa-pill" onclick="PrototypeApp.filterAdminTable('beasiswa', this)">Beasiswa (42)</button>
-              </div>
-              <button class="btn-export" onclick="PrototypeApp.showToast('Mengekspor data santri ke Excel...')"><i class="ph ph-file-arrow-down"></i> Ekspor Excel</button>
-            </div>
-
-            <table class="santri-data-table">
-              <thead>
-                <tr>
-                  <th>Santri</th>
-                  <th>Jenjang</th>
-                  <th>Status Infaq / Hak Akses</th>
-                  <th>Progres</th>
-                  <th>Switch</th>
-                  <th>Otoritas</th>
-                </tr>
-              </thead>
-              <tbody id="adminTableBody">
-                <tr data-status="active">
-                  <td><strong>Ahmad Fauzan</strong><div style="font-size: 10px; color: var(--md-text-muted);">0812-8921-9921</div></td>
-                  <td>SMP Kelas 8</td>
-                  <td><span class="status-badge-approved"><i class="ph ph-check-circle"></i> Infaq Terverifikasi</span></td>
-                  <td><strong>62%</strong> (420 XP)</td>
-                  <td><label class="switch-control"><input type="checkbox" checked onchange="PrototypeApp.toggleSantriAccess(1)"><span class="slider-knob"></span></label></td>
-                  <td><button class="btn-pdf-download" style="padding: 3px 8px; font-size: 10.5px;" onclick="PrototypeApp.showToast('Detail santri Ahmad Fauzan dibuka')">Detail</button></td>
-                </tr>
-
-                <tr data-status="pending">
-                  <td><strong>Siti Nurhaliza</strong><div style="font-size: 10px; color: var(--md-text-muted);">0857-1122-3344</div></td>
-                  <td>SMP Kelas 8</td>
-                  <td><span class="status-badge-pending" id="adminBadge-2"><i class="ph ph-clock"></i> Menunggu Infaq</span></td>
-                  <td><span style="color: var(--md-text-muted);">Belum Dibuka</span></td>
-                  <td><label class="switch-control"><input type="checkbox" id="adminSwitch-2" onchange="PrototypeApp.toggleSantriAccess(2)"><span class="slider-knob"></span></label></td>
-                  <td><button class="btn-action-verify" id="adminBtn-2" onclick="PrototypeApp.verifySantri(2)"><i class="ph ph-check"></i> Beri Izin</button></td>
-                </tr>
-
-                <tr data-status="pending">
-                  <td><strong>Fajar Alamsyah (Dhuafa)</strong><div style="font-size: 10px; color: var(--md-text-muted);">0821-4455-6677</div></td>
-                  <td>SD Kelas 5</td>
-                  <td><span class="status-badge-pending" id="adminBadge-3" style="background: #FEF3C7; color: #92400E;"><i class="ph ph-hand-heart"></i> Pengajuan Beasiswa</span></td>
-                  <td><span style="color: var(--md-text-muted);">Menunggu Restu</span></td>
-                  <td><label class="switch-control"><input type="checkbox" id="adminSwitch-3" onchange="PrototypeApp.toggleSantriAccess(3)"><span class="slider-knob"></span></label></td>
-                  <td><button class="btn-action-beasiswa" id="adminBtn-3" onclick="PrototypeApp.verifyBeasiswa(3)"><i class="ph ph-hand-heart"></i> Setujui (Gratis)</button></td>
-                </tr>
-
-                <tr data-status="active">
-                  <td><strong>M. Rizky Pratama</strong><div style="font-size: 10px; color: var(--md-text-muted);">0813-7788-9900</div></td>
-                  <td>SMA Kelas 11</td>
-                  <td><span class="status-badge-approved"><i class="ph ph-check-circle"></i> Infaq Terverifikasi</span></td>
-                  <td><strong style="color: var(--md-secondary);">100% Tuntas</strong></td>
-                  <td><label class="switch-control"><input type="checkbox" checked onchange="PrototypeApp.toggleSantriAccess(4)"><span class="slider-knob"></span></label></td>
-                  <td><button class="btn-pdf-download" style="padding: 3px 8px; font-size: 10.5px;" onclick="PrototypeApp.openCertModal('M. Rizky Pratama')">Sertifikat</button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
+        </div>
 
       </div>
+
     </main>
 
   </div>
 
-  <!-- ============================================================
-       MODAL 1: INTERACTIVE ARABIC GAME
-       ============================================================ -->
+  <!-- Game Modal & Certificate Modal -->
   <div class="modal-overlay" id="gameModal">
-    <div class="modal-box">
-      <div class="modal-head-row">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <div style="width: 34px; height: 34px; border-radius: 8px; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center; font-size: 18px;">
-            <i class="ph ph-game-controller"></i>
-          </div>
-          <div>
-            <h3 style="font-size: 15px; font-weight: 800; color: var(--md-text-title);">Game Edukasi Bahasa Arab Interaktif</h3>
-            <p style="font-size: 11px; color: var(--md-text-muted);">Uji Pemahaman Kosakata & Kaidah Nahwu Berhadiah XP</p>
-          </div>
+    <div class="modal-box" style="background:#fff; border-radius:18px; padding:24px; max-width:620px; width:90%; box-shadow:0 20px 50px rgba(0,0,0,0.2);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid #E2ECEB; padding-bottom:10px;">
+        <h3 style="font-size:16px; font-weight:800; color:var(--teal-dark);">Game Edukasi Bahasa Arab (+50 XP)</h3>
+        <i class="ph ph-x" style="cursor:pointer; font-size:18px;" onclick="PrototypeApp.closeGameModal()"></i>
+      </div>
+      <div style="background:#F8FAFA; border:1px solid #E2ECEB; padding:16px; border-radius:12px; margin-bottom:12px;">
+        <div style="font-size:14px; font-weight:700; color:var(--teal-dark);">
+          Manakah arti mufrodat untuk kata: <strong style="color:#00877A; font-size:22px; font-family:Arial;">"المَكْتَبَةُ"</strong>?
         </div>
-        <div class="modal-close-icon" onclick="PrototypeApp.closeGameModal()"><i class="ph ph-x"></i></div>
       </div>
-
-      <div style="display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;">
-        <button class="role-btn game-level-tab active" onclick="PrototypeApp.switchGameLevel(0)">Level 1: Mufrodat SD</button>
-        <button class="role-btn game-level-tab" onclick="PrototypeApp.switchGameLevel(1)">Level 2: Nahwu SMP</button>
-        <button class="role-btn game-level-tab" onclick="PrototypeApp.switchGameLevel(2)">Level 3: Susun SMA</button>
+      <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:14px;">
+        <button class="btn-enroll-primary" style="background:#fff; border:1px solid #E2ECEB; color:var(--text-main); text-align:left; justify-content:flex-start;" onclick="PrototypeApp.showToast('Afwan, salah!');">A. Lapangan Sekolah</button>
+        <button class="btn-enroll-primary" style="background:#E1F5F2; border:1.5px solid #00877A; color:#006D63; text-align:left; justify-content:flex-start;" onclick="PrototypeApp.claimGameXp();">B. Perpustakaan Sekolah (Mumtaz!)</button>
+        <button class="btn-enroll-primary" style="background:#fff; border:1px solid #E2ECEB; color:var(--text-main); text-align:left; justify-content:flex-start;" onclick="PrototypeApp.showToast('Afwan, salah!');">C. Ruang Guru</button>
       </div>
-
-      <div style="background: var(--md-surface-container-low); border: 1.5px solid var(--md-outline-variant); border-radius: 14px; padding: 16px; margin-bottom: 12px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <span id="gameTagText" style="font-size: 10.5px; font-weight: 800; color: var(--md-primary); text-transform: uppercase;">Level 1: Tebak Mufrodat Fasilitas</span>
-          <span style="font-size: 10.5px; font-weight: 700; color: var(--md-on-secondary-container);">Reward: +50 XP</span>
-        </div>
-        <div id="gameQuestionBody" style="font-size: 14px; font-weight: 700; color: var(--md-text-title); line-height: 1.5;"></div>
-      </div>
-
-      <div id="gameOptionsContainer" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;"></div>
-
-      <div id="gameFeedbackBox" style="display: none; background: #E6F7F5; border: 1.5px solid #00A396; border-radius: 10px; padding: 10px 14px; margin-bottom: 12px;">
-        <div style="font-size: 12px; font-weight: 700; color: #006D64;" id="gameFeedbackDesc">Mumtaz! Jawaban Benar!</div>
-      </div>
-
-      <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;">
-        <a href="game2d.html" class="btn-game-launcher" style="background: linear-gradient(135deg, #00877A 0%, #005F55 100%); text-decoration: none;">
-          <i class="ph ph-game-controller"></i> Buka Game 2D Canvas 🕹️
-        </a>
-        <div style="display: flex; gap: 8px;">
-          <button class="btn-pdf-download" onclick="PrototypeApp.closeGameModal()">Tutup</button>
-          <button class="btn-game-launcher" id="btnClaimGameXp" style="display: none;" onclick="PrototypeApp.claimGameXp()">
-            <i class="ph ph-trophy"></i> Klaim +50 XP
-          </button>
-        </div>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <a href="game2d.html" style="font-size:12px; font-weight:700; color:#00877A; text-decoration:none;"><i class="ph ph-game-controller"></i> Buka Versi 2D Canvas</a>
+        <button class="btn-enroll-primary" onclick="PrototypeApp.closeGameModal()">Tutup</button>
       </div>
     </div>
   </div>
 
-  <!-- ============================================================
-       MODAL 2: OFFICIAL DIGITAL CERTIFICATE
-       ============================================================ -->
   <div class="modal-overlay" id="certModal">
-    <div class="modal-box" style="max-width: 620px;">
-      <div class="modal-head-row">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <div style="width: 34px; height: 34px; border-radius: 8px; background: #E1F5F2; color: #00877A; display: flex; align-items: center; justify-content: center; font-size: 18px;">
-            <i class="ph ph-certificate"></i>
-          </div>
-          <div>
-            <h3 style="font-size: 15px; font-weight: 800; color: var(--md-text-title);">Sertifikat Kelulusan Digital Resmi</h3>
-            <p style="font-size: 11px; color: var(--md-text-muted);">Yayasan Peradaban Islam Azhariyah • Terverifikasi QR Sanad</p>
-          </div>
-        </div>
-        <div class="modal-close-icon" onclick="PrototypeApp.closeCertModal()"><i class="ph ph-x"></i></div>
+    <div class="modal-box" style="background:#fff; border-radius:18px; padding:24px; max-width:580px; width:90%; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,0.2);">
+      <h2 style="font-size:17px; font-weight:800; color:var(--teal-dark);">SERTIFIKAT KELULUSAN BAHASA ARAB</h2>
+      <div style="font-size:11px; color:var(--text-muted); margin-bottom:12px;">Yayasan Peradaban Islam Azhariyah</div>
+      <div style="font-size:20px; font-weight:800; color:var(--teal-primary); margin-bottom:8px;">Ahmad Fauzan</div>
+      <p style="font-size:12px; color:var(--text-body); margin-bottom:14px;">Telah menuntaskan kurikulum Bahasa Arab Jenjang SMP Asuhan Umi Elly.</p>
+      <div style="display:flex; justify-content:space-around; align-items:center; border-top:1px solid #E2ECEB; padding-top:12px;">
+        <div style="font-size:10px; color:var(--text-muted); text-align:left;">No. Seri: AZH-2026-SMP-0129<br>Verifikasi: azhariyah.org/verify</div>
+        <i class="ph ph-qr-code" style="font-size:36px; color:var(--teal-dark);"></i>
+        <div style="font-size:10px; text-align:right; font-weight:700; color:var(--teal-dark);">Umi Elly<br><span style="font-size:9px; color:var(--text-muted);">Pengasuh Yayasan</span></div>
       </div>
-
-      <div style="background: linear-gradient(135deg, #F8FCFB 0%, #EFF8F6 100%); border: 2px solid #00877A; border-radius: 14px; padding: 20px; text-align: center; margin-bottom: 12px;">
-        <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.15em; color: #00877A; text-transform: uppercase; margin-bottom: 4px;">YAYASAN PERADABAN ISLAM AZHARIYAH</div>
-        <h2 style="font-size: 17px; font-weight: 800; color: var(--md-text-title); margin-bottom: 6px;">SERTIFIKAT KELULUSAN BAHASA ARAB</h2>
-        <p style="font-size: 11px; color: var(--md-text-muted); margin-bottom: 10px;">Diberikan dengan penuh rasa syukur kepada:</p>
-        <div style="font-size: 20px; font-weight: 800; color: #00877A; border-bottom: 1.5px dashed rgba(0, 135, 122, 0.4); padding-bottom: 4px; margin-bottom: 10px; display: inline-block; min-width: 200px;" id="certStudentName">Ahmad Fauzan</div>
-        <p style="font-size: 11.5px; color: var(--md-text-body); line-height: 1.4; max-width: 440px; margin: 0 auto 12px auto;">Telah menyelesaikan seluruh materi video, latihan mufrodat, dan tantangan game kaidah Bahasa Arab.</p>
-        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(0, 135, 122, 0.2); padding-top: 10px;">
-          <div style="text-align: left; font-size: 10px; color: var(--md-text-muted);"><div>No. Seri: <strong style="color: #00877A;">AZH-2026-B4-0129</strong></div><div>Verifikasi: <strong style="color: #00877A;">azhariyah.org/verify</strong></div></div>
-          <div style="width: 42px; height: 42px; background-color: #FFF; border-radius: 4px; padding: 2px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--md-outline-variant);"><i class="ph ph-qr-code" style="font-size: 34px; color: #082D2B;"></i></div>
-          <div style="text-align: right; font-size: 10px; color: var(--md-text-title);"><div>Jakarta, 29 Agustus 2026</div><div style="font-weight: 800; color: #00877A;">Umi Elly</div><div style="font-size: 9px; color: var(--md-text-muted);">Pengasuh Yayasan</div></div>
-        </div>
-      </div>
-
-      <div style="display: flex; justify-content: flex-end; gap: 8px;">
-        <button class="btn-pdf-download" onclick="PrototypeApp.closeCertModal()">Tutup</button>
-        <button class="btn-game-launcher" onclick="PrototypeApp.showToast('Mengunduh Sertifikat PDF...')"><i class="ph ph-download-simple"></i> Unduh PDF</button>
-      </div>
+      <button class="btn-enroll-primary" style="margin-top:16px;" onclick="PrototypeApp.closeCertModal()">Tutup</button>
     </div>
   </div>
 
