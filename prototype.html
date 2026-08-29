@@ -714,7 +714,7 @@
 
 
       
-      <!-- ======================================================
+            <!-- ======================================================
            VIEW 4: MODUL & SILABUS PDF (LIBRARY & DOCUMENTS)
            ====================================================== -->
       <div id="viewModulPdf" style="display: none; width: 100%;">
@@ -725,19 +725,21 @@
               <h2 style="font-size: 21px; font-weight: 800; color: var(--teal-dark);">Arsip Modul dan Silabus Resmi</h2>
               <p style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">Dokumen kurikulum, ringkasan kaidah nahwu-shorof, dan lembar kerja santri Yayasan PERISA Azhariyah.</p>
             </div>
+            
+            <!-- Category Filter Tabs -->
             <div class="pdf-filter-bar">
-              <button class="role-btn active" style="padding: 6px 14px; font-size: 11.5px; border-radius: var(--radius-full);">Semua Dokumen (6)</button>
-              <button class="role-btn" style="padding: 6px 14px; font-size: 11.5px; border-radius: var(--radius-full); background: var(--bg-subtle); color: var(--text-body); border: 1px solid var(--border-color);" onclick="PrototypeApp.showToast('Menyaring dokumen Jenjang SD')">Jenjang SD</button>
-              <button class="role-btn" style="padding: 6px 14px; font-size: 11.5px; border-radius: var(--radius-full); background: var(--bg-subtle); color: var(--text-body); border: 1px solid var(--border-color);" onclick="PrototypeApp.showToast('Menyaring dokumen Jenjang SMP')">Jenjang SMP</button>
-              <button class="role-btn" style="padding: 6px 14px; font-size: 11.5px; border-radius: var(--radius-full); background: var(--bg-subtle); color: var(--text-body); border: 1px solid var(--border-color);" onclick="PrototypeApp.showToast('Menyaring dokumen Jenjang SMA')">Jenjang SMA</button>
+              <button class="role-btn active pdf-filter-tab" data-filter="all" onclick="PrototypeApp.filterPdfLibrary('all')">Semua Dokumen (6)</button>
+              <button class="role-btn pdf-filter-tab" data-filter="sd" style="background: var(--bg-subtle); color: var(--text-body); border: 1px solid var(--border-color);" onclick="PrototypeApp.filterPdfLibrary('sd')">Jenjang SD</button>
+              <button class="role-btn pdf-filter-tab" data-filter="smp" style="background: var(--bg-subtle); color: var(--text-body); border: 1px solid var(--border-color);" onclick="PrototypeApp.filterPdfLibrary('smp')">Jenjang SMP</button>
+              <button class="role-btn pdf-filter-tab" data-filter="sma" style="background: var(--bg-subtle); color: var(--text-body); border: 1px solid var(--border-color);" onclick="PrototypeApp.filterPdfLibrary('sma')">Jenjang SMA</button>
             </div>
           </div>
 
-          <!-- Document Cards Grid -->
-          <div class="pdf-grid">
+          <!-- Document Cards Grid (Filterable) -->
+          <div class="pdf-grid" id="pdfDocumentGrid">
             
-            <!-- Doc 1 -->
-            <div class="pdf-card">
+            <!-- Doc 1: SMP -->
+            <div class="pdf-card" data-category="smp">
               <div class="pdf-card-top">
                 <div class="pdf-icon-box"><i class="ph ph-file-pdf"></i></div>
                 <div>
@@ -745,6 +747,110 @@
                   <div class="pdf-card-meta">Penyusun: Umi Elly • 2.4 MB • PDF</div>
                 </div>
               </div>
+              <p style="font-size: 12px; color: var(--text-body); line-height: 1.5;">Panduan lengkap struktur kaidah Jumlah Ismiyyah, pembagian isim, fi'il, dan dhomir untuk santri jenjang SMP.</p>
+              <div class="pdf-card-actions">
+                <span class="jenjang-pill-tag">SMP Kelas 8</span>
+                <button class="btn-enroll-primary" style="padding: 6px 14px; font-size: 11.5px;" onclick="PrototypeApp.openDocReader(1)">
+                  <i class="ph ph-book-open"></i> Lihat Berkas
+                </button>
+              </div>
+            </div>
+
+            <!-- Doc 2: SD & SMP -->
+            <div class="pdf-card" data-category="sd smp">
+              <div class="pdf-card-top">
+                <div class="pdf-icon-box"><i class="ph ph-file-pdf"></i></div>
+                <div>
+                  <div class="pdf-card-title">Ringkasan Mufrodat Fasilitas Sekolah</div>
+                  <div class="pdf-card-meta">Penyusun: Umi Elly • 1.2 MB • PDF</div>
+                </div>
+              </div>
+              <p style="font-size: 12px; color: var(--text-body); line-height: 1.5;">Daftar 20 kosakata tematik sarana perpustakaan, ruang kelas, dan laboratorium beserta contoh kalimatnya.</p>
+              <div class="pdf-card-actions">
+                <span class="jenjang-pill-tag">SMP & SD</span>
+                <button class="btn-enroll-primary" style="padding: 6px 14px; font-size: 11.5px;" onclick="PrototypeApp.openDocReader(2)">
+                  <i class="ph ph-book-open"></i> Lihat Berkas
+                </button>
+              </div>
+            </div>
+
+            <!-- Doc 3: SMA -->
+            <div class="pdf-card" data-category="sma">
+              <div class="pdf-card-top">
+                <div class="pdf-icon-box"><i class="ph ph-file-pdf"></i></div>
+                <div>
+                  <div class="pdf-card-title">Tabel Tashrif Fi'il Tsulatsi Mujarrad</div>
+                  <div class="pdf-card-meta">Penyusun: Umi Elly • 3.1 MB • PDF</div>
+                </div>
+              </div>
+              <p style="font-size: 12px; color: var(--text-body); line-height: 1.5;">Matriks komprehensif perubahan kata kerja Madhi, Mudhari', Amr, dan Masdar berstandar sanad Azhariyah.</p>
+              <div class="pdf-card-actions">
+                <span class="jenjang-pill-tag">SMA Kelas 11</span>
+                <button class="btn-enroll-primary" style="padding: 6px 14px; font-size: 11.5px;" onclick="PrototypeApp.openDocReader(3)">
+                  <i class="ph ph-book-open"></i> Lihat Berkas
+                </button>
+              </div>
+            </div>
+
+            <!-- Doc 4: SD, SMP, SMA -->
+            <div class="pdf-card" data-category="sd smp sma">
+              <div class="pdf-card-top">
+                <div class="pdf-icon-box"><i class="ph ph-file-pdf"></i></div>
+                <div>
+                  <div class="pdf-card-title">Kumpulan Hiwar Percakapan Santri</div>
+                  <div class="pdf-card-meta">Penyusun: Umi Elly • 1.8 MB • PDF</div>
+                </div>
+              </div>
+              <p style="font-size: 12px; color: var(--text-body); line-height: 1.5;">Dialog tematik percakapan harian untuk melatih kelancaran lisan santri dalam lingkungan asrama dan sekolah.</p>
+              <div class="pdf-card-actions">
+                <span class="jenjang-pill-tag">Semua Jenjang</span>
+                <button class="btn-enroll-primary" style="padding: 6px 14px; font-size: 11.5px;" onclick="PrototypeApp.openDocReader(4)">
+                  <i class="ph ph-book-open"></i> Lihat Berkas
+                </button>
+              </div>
+            </div>
+
+            <!-- Doc 5: Sanad / SD / SMP -->
+            <div class="pdf-card" data-category="sd smp">
+              <div class="pdf-card-top">
+                <div class="pdf-icon-box"><i class="ph ph-file-pdf"></i></div>
+                <div>
+                  <div class="pdf-card-title">Panduan Makhraj Huruf Arab</div>
+                  <div class="pdf-card-meta">Penyusun: Umi Elly • 4.0 MB • PDF</div>
+                </div>
+              </div>
+              <p style="font-size: 12px; color: var(--text-body); line-height: 1.5;">Buku rujukan tempat keluarnya huruf (Makharijul Huruf) dan sifat-sifatnya untuk pembacaan Al-Qur'an dan bahasa Arab.</p>
+              <div class="pdf-card-actions">
+                <span class="jenjang-pill-tag">Standar Sanad</span>
+                <button class="btn-enroll-primary" style="padding: 6px 14px; font-size: 11.5px;" onclick="PrototypeApp.openDocReader(5)">
+                  <i class="ph ph-book-open"></i> Lihat Berkas
+                </button>
+              </div>
+            </div>
+
+            <!-- Doc 6: SMP & SMA -->
+            <div class="pdf-card" data-category="smp sma">
+              <div class="pdf-card-top">
+                <div class="pdf-icon-box"><i class="ph ph-file-pdf"></i></div>
+                <div>
+                  <div class="pdf-card-title">Kaidah I'rob Praktis Pemula</div>
+                  <div class="pdf-card-meta">Penyusun: Umi Elly • 2.1 MB • PDF</div>
+                </div>
+              </div>
+              <p style="font-size: 12px; color: var(--text-body); line-height: 1.5;">Penjelasan ringkas tanda-tanda I'rob (Rofa', Nashob, Jer, Jazm) disertai contoh analisis kalimat sederhana.</p>
+              <div class="pdf-card-actions">
+                <span class="jenjang-pill-tag">SMP & SMA</span>
+                <button class="btn-enroll-primary" style="padding: 6px 14px; font-size: 11.5px;" onclick="PrototypeApp.openDocReader(6)">
+                  <i class="ph ph-book-open"></i> Lihat Berkas
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
               <p style="font-size: 12px; color: var(--text-body); line-height: 1.5;">Panduan lengkap struktur kaidah Jumlah Ismiyyah, pembagian isim, fi'il, dan dhomir untuk santri jenjang SMP.</p>
               <div class="pdf-card-actions">
                 <span class="jenjang-pill-tag">SMP Kelas 8</span>
@@ -960,28 +1066,123 @@
   </div> <!-- End app-window-frame -->
 
   
-  <!-- PDF Preview Modal -->
-  <div class="modal-overlay" id="pdfModal">
-    <div class="modal-box" style="max-width: 680px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid #E2ECEB; padding-bottom:10px;">
-        <h3 style="font-size:16px; font-weight:800; color:var(--teal-dark);" id="pdfModalTitle">Pratinjau Dokumen Silabus PDF</h3>
-        <i class="ph ph-x" style="cursor:pointer; font-size:18px;" onclick="PrototypeApp.closePdfPreview()"></i>
+  
+  <!-- REALISTIC PDF DOCUMENT VIEWER MODAL -->
+  <div class="modal-overlay" id="docReaderModal">
+    <div class="pdf-reader-modal-box">
+      
+      <!-- Topbar Header -->
+      <div class="pdf-reader-topbar">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <i class="ph ph-file-pdf" style="font-size: 20px; color: #A7F3EC;"></i>
+          <span style="font-size: 13px; font-weight: 700;" id="readerHeaderDocTitle">Silabus Resmi Bahasa Arab SMP.pdf</span>
+        </div>
+
+        <div class="pdf-reader-toolbar">
+          <button class="pdf-toolbar-btn" onclick="PrototypeApp.showToast('Halaman sebelumnya')"><i class="ph ph-caret-left"></i></button>
+          <span style="font-size: 11px; font-weight: 600;">Halaman 1 / 14</span>
+          <button class="pdf-toolbar-btn" onclick="PrototypeApp.showToast('Halaman berikutnya')"><i class="ph ph-caret-right"></i></button>
+          <span style="color: rgba(255,255,255,0.3);">|</span>
+          <button class="pdf-toolbar-btn" onclick="PrototypeApp.showToast('Tampilan diperbesar (125%)')"><i class="ph ph-magnifying-glass-plus"></i></button>
+          <button class="pdf-toolbar-btn" onclick="PrototypeApp.showToast('Tampilan normal (100%)')">100%</button>
+          <span style="color: rgba(255,255,255,0.3);">|</span>
+          <button class="pdf-toolbar-btn" style="background: var(--teal-primary);" onclick="PrototypeApp.showToast('Mengunduh dokumen PDF resmi...');">
+            <i class="ph ph-download-simple"></i> Unduh
+          </button>
+          <button class="pdf-toolbar-btn" style="background: rgba(239, 68, 68, 0.2); border-color: #EF4444;" onclick="PrototypeApp.closeDocReader()">
+            <i class="ph ph-x"></i> Tutup
+          </button>
+        </div>
       </div>
-      <div style="background:#F8FAFA; border:1px solid #E2ECEB; padding:20px; border-radius:12px; margin-bottom:14px; text-align:center;">
-        <i class="ph ph-file-pdf" style="font-size:48px; color:var(--teal-primary); margin-bottom:8px;"></i>
-        <div style="font-size:15px; font-weight:800; color:var(--teal-dark);" id="pdfDocName">Silabus Resmi Bahasa Arab SMP</div>
-        <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;" id="pdfDocMeta">Penyusun: Umi Elly • 2.4 MB • Format PDF Resmi</div>
-        <p style="font-size:12px; color:var(--text-body); line-height:1.6; margin-top:10px; max-width:480px; margin-left:auto; margin-right:auto;">
-          Dokumen silabus ini memuat ringkasan materi, bagan kaidah tata bahasa Arab, mufrodat tematik, dan lembar evaluasi mandiri santri terstandar sanad Yayasan PERISA Azhariyah.
-        </p>
+
+      <!-- PDF Canvas Viewport -->
+      <div class="pdf-reader-viewport">
+        <div class="pdf-sheet-paper">
+          
+          <div class="pdf-sheet-watermark">PERISA AZHARIYAH • UMI ELLY</div>
+
+          <div>
+            <!-- Header Paper -->
+            <div class="pdf-sheet-header">
+              <div>
+                <div style="font-size: 11px; font-weight: 800; color: var(--teal-primary); letter-spacing: 0.08em; text-transform: uppercase;">
+                  Yayasan Peradaban Islam Azhariyah
+                </div>
+                <h2 style="font-size: 18px; font-weight: 800; color: var(--teal-dark); margin-top: 4px;" id="readerSheetTitle">
+                  Silabus Kurikulum Bahasa Arab Jenjang SMP
+                </h2>
+                <div style="font-size: 11px; color: var(--text-muted);" id="readerSheetSub">
+                  Modul 02: Kaidah Jumlah Ismiyyah & Mufrodat Fasilitas Sekolah
+                </div>
+              </div>
+              <div style="text-align: right; font-size: 10.5px; color: var(--text-muted);">
+                <strong>Asuhan: Umi Elly</strong><br>
+                Tahun Ajaran 2026/2027
+              </div>
+            </div>
+
+            <!-- Content Body Paper -->
+            <div style="font-size: 12.5px; color: var(--text-body); line-height: 1.7;" id="readerSheetBody">
+              <h3 style="font-size: 14px; font-weight: 700; color: var(--teal-dark); margin-bottom: 8px;">A. Kaidah Tata Bahasa (القَوَاعِدُ النَّحْوِيَّةُ)</h3>
+              <p style="margin-bottom: 12px;">
+                <strong>Jumlah Ismiyyah</strong> adalah kalimat sempurna dalam bahasa Arab yang diawali oleh <em>Isim (Kata Benda)</em>. Struktur pokoknya terdiri atas dua unsur:
+              </p>
+              <ol style="margin-left: 20px; margin-bottom: 16px;">
+                <li><strong>Mubtada' (مُبْتَدَأٌ)</strong>: Kata benda pokok di awal kalimat yang berharkat Rofa' (Dhammah).</li>
+                <li><strong>Khobar (خَبَرٌ)</strong>: Keterangan penjelas yang menyempurnakan makna Mubtada'.</li>
+              </ol>
+
+              <div style="background: var(--bg-subtle); border-left: 3px solid var(--teal-primary); padding: 12px 16px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-bottom: 16px;">
+                <div style="font-size: 18px; font-weight: 700; color: var(--teal-primary); font-family: 'Amiri', 'Traditional Arabic', Arial; margin-bottom: 4px;">
+                  الكِتَابُ عَلَى المَكْتَبِ
+                </div>
+                <div style="font-size: 11.5px; color: var(--text-body);">
+                  <em>"Buku itu berada di atas meja."</em> — <strong>الكِتَابُ</strong> berkedudukan sebagai Mubtada' Marfu', dan <strong>عَلَى المَكْتَبِ</strong> sebagai Khobar (Syibhul Jumlah).
+                </div>
+              </div>
+
+              <h3 style="font-size: 14px; font-weight: 700; color: var(--teal-dark); margin-bottom: 8px;">B. Daftar Kosakata Inti (المُفْرَدَاتُ)</h3>
+              <table style="width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 16px;">
+                <thead>
+                  <tr style="background: var(--bg-subtle); text-align: left; font-weight: 700; color: var(--teal-dark);">
+                    <th style="padding: 8px 12px; border: 1px solid var(--border-color);">Bahasa Arab</th>
+                    <th style="padding: 8px 12px; border: 1px solid var(--border-color);">Transliterasi</th>
+                    <th style="padding: 8px 12px; border: 1px solid var(--border-color);">Arti Bahasa Indonesia</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="padding: 8px 12px; border: 1px solid var(--border-color); font-size: 16px; font-family: 'Amiri', Arial; font-weight: 700; color: var(--teal-primary);">المَكْتَبَةُ</td>
+                    <td style="padding: 8px 12px; border: 1px solid var(--border-color);">Al-Maktabatu</td>
+                    <td style="padding: 8px 12px; border: 1px solid var(--border-color);">Perpustakaan Sekolah</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 12px; border: 1px solid var(--border-color); font-size: 16px; font-family: 'Amiri', Arial; font-weight: 700; color: var(--teal-primary);">الكِتَابُ</td>
+                    <td style="padding: 8px 12px; border: 1px solid var(--border-color);">Al-Kitabu</td>
+                    <td style="padding: 8px 12px; border: 1px solid var(--border-color);">Buku Pelajaran</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 12px; border: 1px solid var(--border-color); font-size: 16px; font-family: 'Amiri', Arial; font-weight: 700; color: var(--teal-primary);">الفَصْلُ</td>
+                    <td style="padding: 8px 12px; border: 1px solid var(--border-color);">Al-Fashlu</td>
+                    <td style="padding: 8px 12px; border: 1px solid var(--border-color);">Ruang Kelas Belajar</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Footer Paper -->
+          <div class="pdf-sheet-footer">
+            <div>Dokumen Resmi Yayasan Peradaban Islam Azhariyah • Hak Cipta Dilindungi</div>
+            <div>Halaman 1 dari 14</div>
+          </div>
+
+        </div>
       </div>
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <button class="btn-share-text" onclick="PrototypeApp.closePdfPreview()">Tutup</button>
-        <button class="btn-enroll-primary" onclick="PrototypeApp.showToast('Mengunduh dokumen PDF resmi ke perangkat...'); PrototypeApp.closePdfPreview();">
-          <i class="ph ph-download-simple"></i> Unduh Dokumen PDF
-        </button>
-      </div>
+
     </div>
+  </div>
+
   </div>
 
   <!-- Certificate Modal (Dignified Sanad Certificate) -->

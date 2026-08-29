@@ -1380,3 +1380,111 @@ html, body {
   border-top: 1px solid var(--border-subtle);
   padding-top: 14px;
 }
+
+
+/* ==========================================================================
+   INTERACTIVE ACADEMIC PDF DOCUMENT VIEWER MODAL
+   ========================================================================== */
+.pdf-reader-modal-box {
+  background: #FFFFFF;
+  border-radius: var(--radius-lg);
+  max-width: 900px;
+  width: 95%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.pdf-reader-topbar {
+  background: var(--teal-dark);
+  color: #FFFFFF;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pdf-reader-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pdf-toolbar-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  padding: 4px 10px;
+  border-radius: var(--radius-xs);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pdf-toolbar-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.pdf-reader-viewport {
+  padding: 32px 40px;
+  background: #525659; /* Authentic PDF Reader Canvas */
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.pdf-sheet-paper {
+  background: #FFFFFF;
+  width: 100%;
+  max-width: 720px;
+  min-height: 850px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  padding: 48px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  font-family: var(--font-family);
+}
+
+.pdf-sheet-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  font-size: 26px;
+  font-weight: 800;
+  color: rgba(0, 135, 122, 0.05);
+  pointer-events: none;
+  white-space: nowrap;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.pdf-sheet-header {
+  border-bottom: 2px solid var(--teal-primary);
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.pdf-sheet-footer {
+  border-top: 1px solid var(--border-color);
+  padding-top: 12px;
+  margin-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10.5px;
+  color: var(--text-muted);
+}
