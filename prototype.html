@@ -159,6 +159,7 @@
       </header>
 
       <!-- Main Two-Column Course Viewport -->
+      <div id="viewCoursePlayer">
       <div class="course-main-grid">
 
         <!-- ======================================================
@@ -345,6 +346,115 @@
     </main>
 
   </div>
+
+  </div> <!-- End #viewCoursePlayer -->
+
+
+      <!-- ======================================================
+           VIEW 2: PANEL OTORITAS YAYASAN (ADMIN / UMI ELLY)
+           ====================================================== -->
+      <div id="viewAdminPanel" style="display: none; padding: 26px 32px;">
+        
+        <div style="margin-bottom: 20px;">
+          <h2 style="font-size: 22px; font-weight: 800; color: var(--teal-dark);">Panel Otoritas Izin Santri & Materi Yayasan</h2>
+          <p style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">Kendali 100% hak akses video, verifikasi infaq, dan persetujuan beasiswa asuhan Umi Elly.</p>
+        </div>
+
+        <!-- Admin Metrics -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 22px;">
+          <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-sm);">
+            <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: var(--teal-light); color: var(--teal-primary); display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="ph ph-users-three"></i></div>
+            <div><div style="font-size: 19px; font-weight: 800; color: var(--teal-dark);">1.284</div><div style="font-size: 11px; color: var(--text-muted);">Santri Terdaftar</div></div>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-sm);">
+            <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: var(--gold-light); color: var(--gold-dark); display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="ph ph-hand-heart"></i></div>
+            <div><div style="font-size: 19px; font-weight: 800; color: var(--teal-dark);" id="adminBeasiswaCount">42 Santri</div><div style="font-size: 11px; color: var(--text-muted);">Beasiswa Umi (Gratis)</div></div>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-sm);">
+            <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: #E0F2FE; color: #0284C7; display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="ph ph-clock"></i></div>
+            <div><div style="font-size: 19px; font-weight: 800; color: var(--teal-dark);" id="adminPendingCount">2 Santri</div><div style="font-size: 11px; color: var(--text-muted);">Menunggu Konfirmasi</div></div>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-sm);">
+            <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: var(--teal-light); color: var(--teal-primary); display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="ph ph-chart-line-up"></i></div>
+            <div><div style="font-size: 19px; font-weight: 800; color: var(--teal-dark);">90% Hemat</div><div style="font-size: 11px; color: var(--text-muted);">Otomasi Rekap</div></div>
+          </div>
+        </div>
+
+        <!-- Table Card -->
+        <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-md);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; gap: 6px;">
+              <button class="role-btn active" style="padding: 6px 14px; font-size: 11.5px; border-radius: var(--radius-full);">Semua Santri (1.284)</button>
+              <button class="role-btn" style="padding: 6px 14px; font-size: 11.5px; border-radius: var(--radius-full); background: var(--bg-subtle); color: var(--text-body); border: 1px solid var(--border-color);">Menunggu (2)</button>
+              <button class="role-btn" style="padding: 6px 14px; font-size: 11.5px; border-radius: var(--radius-full); background: var(--bg-subtle); color: var(--text-body); border: 1px solid var(--border-color);">Beasiswa (42)</button>
+            </div>
+            <button class="btn-enroll-primary" style="padding: 7px 16px; font-size: 12px;" onclick="PrototypeApp.showToast('Mengekspor rekap santri ke file Excel...')">
+              <i class="ph ph-file-arrow-down"></i> Ekspor Excel
+            </button>
+          </div>
+
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="background: var(--bg-subtle); text-align: left; font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">
+                <th style="padding: 10px 14px; border-bottom: 1px solid var(--border-color);">Santri</th>
+                <th style="padding: 10px 14px; border-bottom: 1px solid var(--border-color);">Jenjang</th>
+                <th style="padding: 10px 14px; border-bottom: 1px solid var(--border-color);">Status Infaq / Hak Akses</th>
+                <th style="padding: 10px 14px; border-bottom: 1px solid var(--border-color);">Progres</th>
+                <th style="padding: 10px 14px; border-bottom: 1px solid var(--border-color);">Switch</th>
+                <th style="padding: 10px 14px; border-bottom: 1px solid var(--border-color);">Otoritas</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Row 1 -->
+              <tr style="border-bottom: 1px solid var(--border-subtle); font-size: 12.5px;">
+                <td style="padding: 12px 14px;"><strong style="color: var(--teal-dark);">Ahmad Fauzan</strong><div style="font-size: 10px; color: var(--text-muted);">0812-8921-9921</div></td>
+                <td style="padding: 12px 14px;"><span class="jenjang-pill-tag">SMP Kelas 8</span></td>
+                <td style="padding: 12px 14px;"><span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; background: #E1F5F2; color: #006D63; border-radius: var(--radius-full); font-size: 11px; font-weight: 700;"><i class="ph ph-check-circle"></i> Infaq Terverifikasi</span></td>
+                <td style="padding: 12px 14px;"><strong>62%</strong> (420 XP)</td>
+                <td style="padding: 12px 14px;">
+                  <input type="checkbox" checked style="accent-color: var(--teal-primary); width: 16px; height: 16px; cursor: pointer;" onchange="PrototypeApp.showToast('Hak akses santri Ahmad Fauzan diperbarui')">
+                </td>
+                <td style="padding: 12px 14px;"><button class="btn-share-text" style="font-size: 11px; padding: 3px 8px;" onclick="PrototypeApp.showToast('Detail santri Ahmad Fauzan dibuka')">Detail</button></td>
+              </tr>
+
+              <!-- Row 2: Interactive Pending -->
+              <tr style="border-bottom: 1px solid var(--border-subtle); font-size: 12.5px;">
+                <td style="padding: 12px 14px;"><strong style="color: var(--teal-dark);">Siti Nurhaliza</strong><div style="font-size: 10px; color: var(--text-muted);">0857-1122-3344</div></td>
+                <td style="padding: 12px 14px;"><span class="jenjang-pill-tag">SMP Kelas 8</span></td>
+                <td style="padding: 12px 14px;"><span id="adminBadge-2" style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; background: #FEF3C7; color: #92400E; border-radius: var(--radius-full); font-size: 11px; font-weight: 700;"><i class="ph ph-clock"></i> Menunggu Infaq</span></td>
+                <td style="padding: 12px 14px;"><span style="color: var(--text-muted);">Belum Dibuka</span></td>
+                <td style="padding: 12px 14px;">
+                  <input type="checkbox" id="adminSwitch-2" style="accent-color: var(--teal-primary); width: 16px; height: 16px; cursor: pointer;" onchange="PrototypeApp.showToast('Hak akses diperbarui')">
+                </td>
+                <td style="padding: 12px 14px;">
+                  <button id="adminBtn-2" class="btn-enroll-primary" style="padding: 5px 12px; font-size: 11px;" onclick="PrototypeApp.verifySantri(2)">
+                    <i class="ph ph-check"></i> Beri Izin
+                  </button>
+                </td>
+              </tr>
+
+              <!-- Row 3: Interactive Beasiswa -->
+              <tr style="border-bottom: 1px solid var(--border-subtle); font-size: 12.5px;">
+                <td style="padding: 12px 14px;"><strong style="color: var(--teal-dark);">Fajar Alamsyah (Dhuafa)</strong><div style="font-size: 10px; color: var(--text-muted);">0821-4455-6677</div></td>
+                <td style="padding: 12px 14px;"><span class="jenjang-pill-tag">SD Kelas 5</span></td>
+                <td style="padding: 12px 14px;"><span id="adminBadge-3" style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; background: #FEF3C7; color: #92400E; border-radius: var(--radius-full); font-size: 11px; font-weight: 700;"><i class="ph ph-hand-heart"></i> Pengajuan Beasiswa</span></td>
+                <td style="padding: 12px 14px;"><span style="color: var(--text-muted);">Menunggu Restu</span></td>
+                <td style="padding: 12px 14px;">
+                  <input type="checkbox" id="adminSwitch-3" style="accent-color: var(--teal-primary); width: 16px; height: 16px; cursor: pointer;" onchange="PrototypeApp.showToast('Hak akses diperbarui')">
+                </td>
+                <td style="padding: 12px 14px;">
+                  <button id="adminBtn-3" class="btn-enroll-primary" style="background: #D97706; padding: 5px 12px; font-size: 11px;" onclick="PrototypeApp.verifyBeasiswa(3)">
+                    <i class="ph ph-hand-heart"></i> Setujui Beasiswa
+                  </button>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
 
   <!-- Game Modal & Certificate Modal -->
   <div class="modal-overlay" id="gameModal">
