@@ -48,12 +48,12 @@ const PrototypeApp = (() => {
       jenjangPill: 'Jenjang SMA Kelas 11',
       metaStats: '14 Modul Pembelajaran • Durasi: 3 Jam 15 Menit • Kurikulum Lanjutan',
       arabicTitle: 'تَصْرِيْفُ الأَفْعَالِ الثُّلَاثِيَّةِ',
-      subtitle: 'Modul 01: Perubahan Bentuk Kata Kerja (Madhi, Mudhari', Amr)',
+      subtitle: "Modul 01: Perubahan Bentuk Kata Kerja (Madhi, Mudhari', Amr)",
       watermark: 'M. Rizky Pratama • 0813-7788-9900 • Hak Cipta PERISA Azhariyah',
-      aboutDesc: 'Modul lanjutan ilmu Shorof dan kaidah I'rob kitab turats serta latihan pidato dakwah resmi asuhan Umi Elly.',
+      aboutDesc: "Modul lanjutan ilmu Shorof dan kaidah I'rob kitab turats serta latihan pidato dakwah resmi asuhan Umi Elly.",
       lessons: [
         { name: 'Pola Perubahan Kata Kerja (Tashrif)', time: '35 Menit', active: true },
-        { name: 'Tanda I'rob Asli (Rofa', Nashob, Jer)', time: '40 Menit', active: false },
+        { name: "Tanda I'rob Asli (Rofa', Nashob, Jer)", time: '40 Menit', active: false },
         { name: 'Muhadatsah Dakwah & Pidato Khitobah', time: '30 Menit', active: false },
         { name: 'Lembar Evaluasi Terapan', time: '15 Menit', active: false }
       ]
