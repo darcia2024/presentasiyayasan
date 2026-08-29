@@ -152,6 +152,24 @@ const PrototypeApp = (() => {
   // Switch Active Role (Santri SD / SMP / SMA / Admin)
   function setRole(roleName) {
     state.currentRole = roleName;
+    document.querySelectorAll('.role-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.role === roleName);
+    });
+
+    if (roleName.startsWith('santri')) {
+      const jenjang = roleName.replace('santri-', '');
+      setJenjang(jenjang);
+      switchDashboardView('ruang-belajar');
+      showToast(`Mode Berganti: Portal Santri Tingkat ${jenjang.toUpperCase()}`);
+    } else {
+      switchDashboardView('admin');
+      showToast('Mode Berganti: Panel Otoritas Yayasan & Umi Elly');
+    }
+    playTone(600, 'triangle', 0.1, 0.08);
+  }
+
+  function _old_setRole(roleName) {
+    state.currentRole = roleName;
 
     // Update Topbar Buttons
     document.querySelectorAll('.role-btn').forEach(btn => {
@@ -539,6 +557,27 @@ const PrototypeApp = (() => {
 
     showToast(`Filter Katalog: ${jenjang.toUpperCase()}`);
     playTone(520, 'triangle', 0.08, 0.05);
+  }
+
+
+  // Dashboard Sidebar View Switcher (Ruang Belajar, Katalog, Profil, Admin)
+  function switchDashboardView(viewName) {
+    document.querySelectorAll('.sidebar-nav-item').forEach(item => {
+      item.classList.toggle('active', item.dataset.view === viewName);
+    });
+
+    const vRuang = document.getElementById('viewRuangBelajar');
+    const vKatalog = document.getElementById('viewKatalog');
+    const vProfil = document.getElementById('viewProfil');
+    const vAdmin = document.getElementById('viewAdmin');
+
+    if (vRuang) vRuang.classList.toggle('active', viewName === 'ruang-belajar');
+    if (vKatalog) vKatalog.classList.toggle('active', viewName === 'katalog');
+    if (vProfil) vProfil.classList.toggle('active', viewName === 'profil');
+    if (vAdmin) vAdmin.classList.toggle('active', viewName === 'admin');
+
+    showToast(`Membuka: ${viewName === 'ruang-belajar' ? 'Ruang Belajar' : viewName === 'katalog' ? 'Katalog Kursus' : viewName === 'profil' ? 'Profil Santri' : 'Panel Otoritas Yayasan'}`);
+    playTone(560, 'sine', 0.08, 0.06);
   }
 
   return {
