@@ -264,32 +264,45 @@
           <!-- LEFT COLUMN: PLAYER & TABS -->
           <div class="left-player-column">
             
+            <!-- REDESIGNED LUXURY COURSE HEADER -->
             <div class="course-title-header">
-              <div>
-                <div class="title-back-row">
-                  <div class="btn-back-square" onclick="PrototypeApp.showToast('Kembali ke katalog silabus')">
-                    <i class="ph ph-caret-left"></i>
-                  </div>
-                  <h1 class="course-main-h1">
-                    <span id="courseMainTitle">Bahasa Arab SMP: Kaidah Jumlah Ismiyyah</span>
-                    <span class="jenjang-pill-tag" id="courseJenjangPill">Jenjang SMP Kelas 8</span>
-                  </h1>
+              <div class="header-left-content">
+                
+                <!-- Eyebrow Tag Bar -->
+                <div class="header-eyebrow-row">
+                  <span class="eyebrow-badge primary" id="courseJenjangPill">
+                    <i class="ph ph-graduation-cap"></i> Jenjang SMP Kelas 8
+                  </span>
+                  <span class="eyebrow-badge">
+                    <i class="ph ph-seal-check"></i> Standar Sanad Azhariyah
+                  </span>
+                  <span class="eyebrow-badge">
+                    <i class="ph ph-user-circle"></i> Asuhan Umi Elly
+                  </span>
                 </div>
 
-                <div class="course-meta-stats-row">
-                  <span>12 Modul Pembelajaran</span>
-                  <span>•</span>
-                  <span>Durasi: 2 Jam 30 Menit</span>
-                  <span>•</span>
-                  <span>Kurikulum Standar Sanad Azhariyah</span>
+                <!-- Main H1 Title -->
+                <h1 class="course-main-h1">
+                  <span id="courseMainTitle">Bahasa Arab SMP: Kaidah Jumlah Ismiyyah</span>
+                  <span class="course-arabic-sub-tag" id="courseArabicTitle">الجُمْلَةُ الإِسْمِيَّةُ</span>
+                </h1>
+
+                <!-- Meta Info Strip -->
+                <div class="course-meta-pills-row">
+                  <div class="meta-pill-item"><i class="ph ph-folders"></i> 12 Modul Pembelajaran</div>
+                  <div class="meta-pill-item"><i class="ph ph-clock"></i> Durasi: 2 Jam 30 Menit</div>
+                  <div class="meta-pill-item"><i class="ph ph-shield-check"></i> Piagam Kelulusan Resmi</div>
                 </div>
+
               </div>
 
-              <div class="header-cta-buttons">
-                <button class="btn-share-text" onclick="PrototypeApp.showToast('Tautan materi disalin')">Bagikan Materi</button>
-                <button class="btn-enroll-primary" onclick="PrototypeApp.switchSubTab('kuis')">
-                  <i class="ph ph-check-circle"></i>
-                  <span>Latihan Evaluasi</span>
+              <!-- Right Action CTA Cluster -->
+              <div class="header-cta-cluster">
+                <button class="btn-header-secondary" onclick="PrototypeApp.showToast('Tautan materi pembelajaran disalin ke clipboard')">
+                  <i class="ph ph-share-network"></i> Bagikan
+                </button>
+                <button class="btn-header-primary" onclick="PrototypeApp.switchSubTab('kuis')">
+                  <i class="ph ph-check-circle"></i> Latihan Evaluasi
                 </button>
               </div>
             </div>
