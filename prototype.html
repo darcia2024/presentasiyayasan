@@ -75,17 +75,87 @@
     </div>
   </div>
 
-  <!-- MOBILE SLIDING DRAWER MENU -->
+    <!-- MOBILE SLIDING DRAWER MENU -->
   <div class="mobile-drawer-overlay" id="mobileDrawerOverlay" onclick="if(event.target===this) PrototypeApp.toggleMobileDrawer()">
     <div class="mobile-drawer-menu">
+      
       <div class="drawer-header-row">
         <div style="display: flex; align-items: center; gap: 10px;">
           <div class="mobile-brand-icon"><i class="ph ph-buildings"></i></div>
           <div>
             <strong style="font-size: 14px; color: var(--teal-dark);">PERISA Azhariyah</strong>
-            <div style="font-size: 10px; color: var(--text-muted);">Menu Navigasi Santri</div>
+            <div style="font-size: 10px; color: var(--text-muted);">Yayasan Peradaban Islam</div>
           </div>
         </div>
+        <i class="ph ph-x" style="cursor: pointer; font-size: 20px; color: var(--text-muted);" onclick="PrototypeApp.toggleMobileDrawer()"></i>
+      </div>
+
+      <!-- Perspective Role Selector in Drawer -->
+      <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 10.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Ganti Perspektif Pengguna:</span>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+          <button class="role-btn" style="padding: 6px 8px; font-size: 11px; justify-content: center;" onclick="PrototypeApp.setRole('santri-sd'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-student"></i> Santri SD
+          </button>
+          <button class="role-btn active" style="padding: 6px 8px; font-size: 11px; justify-content: center;" onclick="PrototypeApp.setRole('santri-smp'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-student"></i> Santri SMP
+          </button>
+          <button class="role-btn" style="padding: 6px 8px; font-size: 11px; justify-content: center;" onclick="PrototypeApp.setRole('santri-sma'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-student"></i> Santri SMA
+          </button>
+          <button class="role-btn admin-btn" style="padding: 6px 8px; font-size: 11px; justify-content: center;" onclick="PrototypeApp.setRole('admin'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-shield-check"></i> Pengurus
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Links in Drawer -->
+      <ul class="ref-nav-list" style="margin-top: 4px;">
+        <li>
+          <a class="ref-nav-item" onclick="PrototypeApp.switchMainView('beranda'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-squares-four"></i>
+            <span>Beranda Utama</span>
+          </a>
+        </li>
+        <li>
+          <a class="ref-nav-item" onclick="PrototypeApp.switchMainView('modul-pdf'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-book-open-text"></i>
+            <span>Modul & Silabus PDF</span>
+          </a>
+        </li>
+        <li>
+          <a class="ref-nav-item" onclick="PrototypeApp.switchMainView('kurikulum'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-graduation-cap"></i>
+            <span>Kurikulum Bahasa Arab</span>
+          </a>
+        </li>
+        <li>
+          <a class="ref-nav-item" onclick="PrototypeApp.switchMainView('ai-assistant'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-sparkle"></i>
+            <span>Asisten Bahasa Arab</span>
+          </a>
+        </li>
+        <li>
+          <a href="game2d.html" class="ref-nav-item">
+            <i class="ph ph-microphone"></i>
+            <span>Simulasi Percakapan Suara</span>
+          </a>
+        </li>
+        <li>
+          <a class="ref-nav-item" onclick="PrototypeApp.switchMainView('admin'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-shield-check"></i>
+            <span>Panel Otoritas Yayasan</span>
+          </a>
+        </li>
+      </ul>
+
+      <div style="margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 8px;">
+        <a href="index.html" class="btn-enroll-primary" style="width: 100%; justify-content: center; font-size: 12px; padding: 10px; background: var(--teal-dark); text-decoration: none;">
+          <i class="ph ph-arrow-left"></i> Kembali ke Paparan
+        </a>
+      </div>
+    </div>
+  </div>
         <i class="ph ph-x" style="cursor: pointer; font-size: 20px; color: var(--text-muted);" onclick="PrototypeApp.toggleMobileDrawer()"></i>
       </div>
 

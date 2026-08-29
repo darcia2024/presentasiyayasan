@@ -1591,408 +1591,273 @@ html, body {
 }
 
 
+
 /* ==========================================================================
-   ELITE MOBILE-FIRST RESPONSIVE ARCHITECTURE (PHONE & TABLET)
-   Optimized specifically for Umi Elly on Mobile Devices (iPhone & Android)
+   PIXEL-PERFECT MOBILE ARCHITECTURE (ZERO HORIZONTAL OVERFLOW)
+   Specifically crafted for Umi Elly's mobile browsing experience
    ========================================================================== */
 
-/* Mobile Top Navbar (Hidden on Desktop, Visible on Mobile) */
-.mobile-top-nav {
-  display: none;
-  background: var(--teal-dark);
-  color: #FFFFFF;
-  padding: 12px 18px;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+/* Universal Mobile Safety Guard */
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+  width: 100% !important;
 }
 
-.mobile-brand-wrap {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.mobile-brand-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-sm);
-  background: var(--teal-primary);
-  color: #FFFFFF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-}
-
-.mobile-brand-text {
-  font-size: 14.5px;
-  font-weight: 800;
-  color: #FFFFFF;
-}
-
-.mobile-hamburger-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #FFFFFF;
-  width: 38px;
-  height: 38px;
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-/* Mobile Drawer Overlay */
-.mobile-drawer-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(7, 40, 38, 0.7);
-  backdrop-filter: blur(6px);
-  z-index: 2000;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.mobile-drawer-overlay.open {
-  opacity: 1;
-  visibility: visible;
-}
-
-.mobile-drawer-menu {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 82%;
-  max-width: 320px;
-  background: #FFFFFF;
-  z-index: 2100;
-  padding: 24px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.3);
-  transform: translateX(-100%);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow-y: auto;
-}
-
-.mobile-drawer-overlay.open .mobile-drawer-menu {
-  transform: translateX(0);
-}
-
-.drawer-header-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--border-subtle);
-  padding-bottom: 14px;
-}
-
-/* RESPONSIVE BREAKPOINT: TABLETS & MOBILE (< 1024px & < 768px) */
-@media (max-width: 1024px) {
-  .course-main-grid {
-    grid-template-columns: 1fr !important;
-    gap: 24px !important;
-    padding: 20px !important;
-  }
-  
-  .seto-dashboard-layout {
-    grid-template-columns: 1fr !important;
-  }
-  
-  .seto-history-column {
-    border-left: none !important;
-    border-top: 1px solid var(--border-color) !important;
-  }
-  
-  .beranda-two-col {
-    grid-template-columns: 1fr !important;
-  }
-  
-  .beranda-metrics-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-  
-  .pdf-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
+.app-window-frame {
+  max-width: 100vw !important;
+  width: 100% !important;
+  overflow-x: hidden !important;
 }
 
 @media (max-width: 768px) {
-  /* Hide Desktop Elements */
+  /* 1. HIDE REDUNDANT DESKTOP TOP BARS ON MOBILE */
+  .demo-control-bar {
+    display: none !important; /* Move role switcher exclusively into mobile drawer */
+  }
+
   .ref-sidebar {
     display: none !important;
   }
-  
-  .demo-control-bar {
-    padding: 10px 14px !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 8px !important;
+
+  .ref-top-header {
+    display: none !important; /* Hide cluttered breadcrumb bar on mobile */
   }
-  
-  .demo-role-switcher {
-    width: 100% !important;
-    overflow-x: auto !important;
-    white-space: nowrap !important;
-    padding-bottom: 4px !important;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  /* Show Mobile Nav */
+
+  /* 2. SLIM 50PX MOBILE TOPBAR */
   .mobile-top-nav {
     display: flex !important;
+    padding: 10px 16px !important;
+    height: 52px !important;
+    box-sizing: border-box !important;
+    background: var(--teal-dark) !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
   }
-  
-  /* Workspace Fluidity */
-  .app-window-frame {
-    flex-direction: column !important;
+
+  .mobile-brand-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
-  
+
+  .mobile-brand-icon {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 16px !important;
+  }
+
+  .mobile-brand-text {
+    font-size: 13.5px !important;
+  }
+
+  /* 3. FLUID FULL-BLEED WORKSPACE */
   .ref-main-workspace {
-    min-height: auto !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
   }
-  
-  .ref-top-header {
-    padding: 12px 16px !important;
-  }
-  
-  .breadcrumb-trail {
-    font-size: 11px !important;
-    white-space: nowrap;
-    overflow-x: auto;
-  }
-  
+
   .course-main-grid {
+    grid-template-columns: 100% !important;
+    width: 100% !important;
+    max-width: 100vw !important;
     padding: 16px 14px !important;
+    margin: 0 !important;
+    gap: 20px !important;
+    box-sizing: border-box !important;
   }
-  
-  /* Course Title Header on Mobile */
+
+  .left-player-column {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    gap: 14px !important;
+  }
+
+  /* 4. COMPACT TITLE & CTA BUTTONS */
   .course-title-header {
     flex-direction: column !important;
     align-items: flex-start !important;
     gap: 12px !important;
-  }
-  
-  .course-main-h1 {
-    font-size: 18px !important;
-    line-height: 1.35 !important;
-  }
-  
-  .course-arabic-sub-tag {
-    font-size: 19px !important;
-  }
-  
-  .course-meta-stats-row {
-    font-size: 11.5px !important;
-    gap: 6px !important;
-  }
-  
-  .header-cta-buttons {
     width: 100% !important;
-    justify-content: space-between !important;
+    box-sizing: border-box !important;
+    padding: 0 !important;
+    margin: 0 0 10px 0 !important;
   }
-  
-  .btn-enroll-primary, .btn-share-text {
+
+  .course-main-h1 {
+    font-size: 17.5px !important;
+    line-height: 1.35 !important;
+    margin: 0 0 4px 0 !important;
+    display: block !important;
+    word-break: break-word !important;
+  }
+
+  .course-arabic-sub-tag {
+    font-size: 18px !important;
+    display: inline-block !important;
+    margin-left: 6px !important;
+  }
+
+  .course-meta-stats-row {
+    font-size: 11px !important;
+    gap: 6px !important;
+    flex-wrap: wrap !important;
+    line-height: 1.4 !important;
+  }
+
+  .header-cta-buttons {
+    display: flex !important;
+    width: 100% !important;
+    gap: 8px !important;
+    margin-top: 4px !important;
+  }
+
+  .btn-share-text {
     flex: 1 !important;
+    border: 1px solid var(--border-color) !important;
+    background: var(--bg-subtle) !important;
+    color: var(--teal-dark) !important;
+    padding: 8px 12px !important;
+    font-size: 12px !important;
     justify-content: center !important;
     text-align: center !important;
+    border-radius: var(--radius-full) !important;
   }
-  
-  /* Video Player Aspect Ratio on Mobile */
+
+  .btn-enroll-primary {
+    flex: 1.4 !important;
+    padding: 8px 14px !important;
+    font-size: 12px !important;
+    justify-content: center !important;
+    text-align: center !important;
+    border-radius: var(--radius-full) !important;
+  }
+
+  /* 5. PERFECT 16:9 RESPONSIVE VIDEO PLAYER (NO HORIZONTAL CUTOFF) */
   .ref-video-player-box {
+    width: 100% !important;
+    max-width: 100% !important;
     height: auto !important;
     aspect-ratio: 16 / 9 !important;
-    max-height: 240px !important;
+    max-height: 220px !important;
     border-radius: var(--radius-md) !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    margin: 0 !important;
   }
-  
+
   .video-screen-content {
-    padding: 16px !important;
-  }
-  
-  #currentVideoArabic {
-    font-size: 20px !important;
-    margin-bottom: 2px !important;
-  }
-  
-  #currentVideoSubtitle {
-    font-size: 11px !important;
-    margin-bottom: 12px !important;
-  }
-  
-  .center-glass-play {
-    width: 52px !important;
-    height: 52px !important;
-    font-size: 22px !important;
-  }
-  
-  .ref-video-watermark {
-    font-size: 9px !important;
-    padding: 3px 8px !important;
-  }
-  
-  /* Horizontal Sub-Tabs Scrollable */
-  .ref-sub-tabs-bar {
-    overflow-x: auto !important;
-    white-space: nowrap !important;
-    gap: 16px !important;
-    padding-bottom: 8px !important;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  
-  .ref-sub-tabs-bar::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .sub-tab-btn {
-    font-size: 12px !important;
-    padding-bottom: 6px !important;
-  }
-  
-  /* Word Audio Cards on Mobile */
-  #subtab-audio > div > div:last-child {
-    grid-template-columns: 1fr !important;
-  }
-  
-  .arabic-word-card {
-    padding: 12px 14px !important;
-  }
-  
-  .arabic-text-large {
-    font-size: 20px !important;
-  }
-  
-  /* Beranda Dashboard on Mobile */
-  .beranda-view-layout {
-    padding: 18px 14px !important;
-    gap: 18px !important;
-  }
-  
-  .beranda-welcome-banner {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 14px !important;
-    padding: 20px 18px !important;
-  }
-  
-  .beranda-banner-title {
-    font-size: 18px !important;
-  }
-  
-  .beranda-banner-sub {
-    font-size: 12px !important;
-  }
-  
-  .beranda-metrics-grid {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 10px !important;
-  }
-  
-  .beranda-metric-card {
-    padding: 12px 14px !important;
-  }
-  
-  .beranda-continue-preview {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 12px !important;
-  }
-  
-  .beranda-continue-preview button {
     width: 100% !important;
+    height: 100% !important;
+    padding: 12px !important;
+    box-sizing: border-box !important;
     justify-content: center !important;
   }
-  
-  /* SETO AI Studio on Mobile */
-  .seto-main-hub {
-    padding: 24px 16px !important;
+
+  .ref-video-watermark {
+    font-size: 8px !important;
+    padding: 2px 6px !important;
+    top: 6px !important;
+    left: 6px !important;
+    max-width: 90% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
   }
-  
-  .seto-h1-welcome {
-    font-size: 22px !important;
+
+  #currentVideoArabic {
+    font-size: 18px !important;
+    margin-bottom: 2px !important;
+    line-height: 1.2 !important;
   }
-  
-  .seto-p-sub {
-    font-size: 12.5px !important;
-    margin-bottom: 24px !important;
+
+  #currentVideoSubtitle {
+    font-size: 10.5px !important;
+    margin-bottom: 8px !important;
   }
-  
-  .seto-cards-grid {
-    grid-template-columns: 1fr !important;
-    gap: 12px !important;
-    margin-bottom: 24px !important;
+
+  .center-glass-play {
+    width: 48px !important;
+    height: 48px !important;
+    font-size: 20px !important;
   }
-  
-  .seto-history-column {
-    padding: 20px 16px !important;
-  }
-  
-  .seto-prompt-dock {
-    padding: 12px 14px !important;
-  }
-  
-  .seto-pill-actions {
+
+  /* 6. HORIZONTAL SCROLLING SUB-TABS */
+  .ref-sub-tabs-bar {
+    display: flex !important;
     overflow-x: auto !important;
     white-space: nowrap !important;
-    max-width: 220px !important;
-  }
-  
-  /* PDF Library on Mobile */
-  .pdf-library-layout {
-    padding: 18px 14px !important;
-  }
-  
-  .pdf-grid {
-    grid-template-columns: 1fr !important;
     gap: 14px !important;
+    padding: 2px 2px 8px 2px !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    margin-top: 4px !important;
   }
-  
-  .pdf-filter-bar {
-    overflow-x: auto !important;
-    white-space: nowrap !important;
-    width: 100% !important;
-    padding-bottom: 4px !important;
+
+  .ref-sub-tabs-bar::-webkit-scrollbar {
+    display: none !important;
   }
-  
-  /* Modals Fullscreen on Mobile */
-  .modal-box, .pdf-reader-modal-box {
-    width: 96% !important;
-    max-height: 94vh !important;
+
+  .sub-tab-btn {
+    font-size: 12px !important;
+    padding: 4px 2px !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* 7. OTHER VIEWS RESPONSIVENESS */
+  .beranda-view-layout {
+    padding: 14px !important;
+    gap: 16px !important;
+  }
+
+  .beranda-welcome-banner {
     padding: 16px !important;
   }
-  
-  .pdf-reader-viewport {
-    padding: 12px !important;
-  }
-  
-  .pdf-sheet-paper {
-    padding: 24px 18px !important;
-    min-height: auto !important;
-  }
-  
-  /* Admin Panel on Mobile */
-  #viewAdminPanel {
-    padding: 18px 14px !important;
-  }
-  
-  #viewAdminPanel > div:nth-child(2) {
+
+  .beranda-metrics-grid {
     grid-template-columns: 1fr 1fr !important;
-    gap: 10px !important;
+    gap: 8px !important;
   }
-  
-  #viewAdminPanel table {
-    display: block !important;
-    overflow-x: auto !important;
-    white-space: nowrap !important;
+
+  .beranda-metric-card {
+    padding: 10px 12px !important;
+  }
+
+  .pdf-library-layout {
+    padding: 14px !important;
+  }
+
+  .pdf-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .seto-main-hub {
+    padding: 20px 14px !important;
+  }
+
+  .seto-cards-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .seto-history-column {
+    padding: 16px 14px !important;
+  }
+
+  .seto-prompt-dock {
+    padding: 10px 12px !important;
+  }
+
+  .right-sidebar-column {
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 }
