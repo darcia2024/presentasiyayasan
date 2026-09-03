@@ -32,14 +32,115 @@ Website pitch deck presentasi interaktif dan proposal resmi penawaran **Platform
 
 ---
 
+## 📱 Aplikasi Mobile (PWA Native) — `prototype.html`
+
+Tampilan mobile `prototype.html` dibangun sebagai **Progressive Web App** yang bisa
+dipasang ke layar utama dan dibuka dalam mode luring.
+
+### Berkas PWA
+
+| Berkas | Fungsi |
+| --- | --- |
+| `manifest.webmanifest` | Identitas aplikasi: nama, ikon, warna tema, mode `standalone`, orientasi potret, dan 4 pintasan (Belajar, Suara, Asisten, Silabus). |
+| `sw.js` | Service worker. App shell di-*precache*; CSS/JS memakai *stale-while-revalidate*, gambar & font CDN *cache-first*, `/api/*` *network-first*. |
+| `offline.html` | Halaman cadangan saat perangkat benar-benar terputus. |
+| `prototype-mobile.css` | Seluruh tampilan native mobile. Aktif hanya pada `max-width: 768px`. |
+| `prototype-mobile.js` | Perilaku native: boot splash, pull-to-refresh, gestur drawer, bottom sheet, haptik, prompt pemasangan. |
+| `icons/` | 13 ikon aplikasi (termasuk *maskable*) + 13 layar peluncuran iOS. |
+
+---
+
+## 🧩 Struktur Kode Aplikasi Santri
+
+Logika aplikasi dipecah menjadi modul ES. Tidak ada langkah *build* — browser
+memuat modulnya langsung.
+
+| Berkas | Isi |
+| --- | --- |
+| `js/app.js` | Titik masuk. Merakit modul dan memasang `window.PrototypeApp`. |
+| `js/data/roles.js` | Data peran **dan silabus lengkap per jenjang** (SD, SMP, SMA, Pengurus). |
+| `js/data/documents.js` | Isi dokumen perpustakaan digital. |
+| `js/core/feedback.js` | Nada sintetis Web Audio dan notifikasi toast. |
+| `js/core/speech.js` | Mesin pelafalan Arab (Web Speech API `ar-SA`). |
+| `js/ui/syllabus.js` | Render akordeon silabus dari data. |
+| `js/ui/role.js` | Pergantian peran akun. |
+| `js/ui/router.js` | Router lima tampilan utama + tab bar bawah. |
+| `js/ui/course.js` | Pemutar materi dan sub-tab modul. |
+| `js/ui/library.js` | Filter perpustakaan dan pembaca dokumen. |
+| `js/ui/assistant.js` | Studio Asisten Bahasa Arab. |
+| `js/ui/shell.js` | Drawer, dropdown profil, modal piagam. |
+| `tools/stamp-version.js` | Pencap versi otomatis untuk `?v=` dan `SW_VERSION`. |
+
+**Dua aturan yang tidak boleh dilanggar:**
+
+1. **Struktur silabus hanya ditulis di `js/data/roles.js`**, tidak pernah
+   langsung di `prototype.html`. Sebelumnya akordeon ditulis keras di HTML
+   sebagai materi SMP, sehingga santri SD ikut melihat kaidah Shorof SMA di
+   silabusnya sendiri.
+2. **Urutan dua tag skrip di `prototype.html` jangan ditukar.**
+   `prototype-mobile.js` membungkus ulang lima metode `PrototypeApp` saat boot,
+   dan itu hanya bekerja bila modul ES sudah selesai dieksekusi lebih dulu.
+
+### Fitur Native
+
+- **Dapat dipasang** — banner "Pasang Aplikasi PERISA" (Android/Chrome), dengan panduan manual untuk Safari iOS.
+- **Luring penuh** — materi yang pernah dibuka tetap bisa diakses tanpa jaringan.
+- **App bar kolaps** — judul besar menyusut ke bilah atas saat digulir.
+- **Tab bar bawah** dengan tombol tengah terangkat dan area aman (*safe area*) perangkat berponi.
+- **Bottom sheet** untuk piagam dan pembaca dokumen, lengkap dengan gestur seret-untuk-menutup.
+- **Gestur drawer** — geser dari tepi kiri untuk membuka, geser balik untuk menutup.
+- **Pull-to-refresh** yang menarik data XP dan peringkat santri langsung dari `GET /api/game/leaderboard`.
+- **Tombol kembali perangkat** menutup lapisan teratas (drawer / sheet) sebelum meninggalkan halaman.
+- **Haptik** pada aksi penting, serta dukungan `prefers-reduced-motion`.
+
+### Menerbitkan Perubahan
+
+Cukup satu perintah:
+
+```bash
+npm run release:patch
+```
+
+Perintah itu menaikkan `version` di `package.json`, lalu mengecap ulang seluruh
+parameter `?v=`, `SW_VERSION`, dan daftar app shell di `sw.js` secara otomatis.
+Pengguna menerima pemberitahuan "Pembaruan aplikasi tersedia" dan aplikasi
+memuat ulang dengan versi terbaru.
+
+> **Jangan menyunting `?v=` atau `SW_VERSION` dengan tangan.** Satu-satunya
+> sumber kebenaran adalah `version` di `package.json`. Sebelumnya setiap rilis
+> menuntut lima suntingan manual, dan satu saja yang terlewat membuat service
+> worker menyajikan campuran berkas lama dan baru — kondisi yang tersimpan di
+> cache perangkat dan sulit dilepas pengguna sendiri.
+
+Perintah lain:
+
+| Perintah | Fungsi |
+| --- | --- |
+| `npm start` | Mengecap versi lalu menyalakan server. |
+| `npm run stamp` | Mengecap ulang versi tanpa menaikkannya. |
+| `npm test` | Memeriksa sintaks dan memastikan semua berkas app shell benar-benar ada. |
+| `npm run release:minor` | Menaikkan versi minor lalu mengecap ulang. |
+
+> **Catatan:** service worker hanya berjalan di `http://localhost` atau HTTPS.
+> Membuka berkas lewat `file://` akan melewati seluruh fitur PWA.
+
+---
+
 ## 🚀 Cara Menjalankan Secara Lokal
 
 ```bash
-# Menjalankan HTTP server
-python -m http.server 3000
-
-# Buka http://localhost:3000 di browser
+npm start
 ```
+
+Lalu buka:
+
+- `http://localhost:3020/prototype.html` — aplikasi santri (PWA mobile + dashboard desktop)
+- `http://localhost:3020/index.html` — pitch deck paparan
+- `http://localhost:3020/game2d.html` — simulasi percakapan suara
+
+> Gunakan `server.js`, bukan `python -m http.server`. Server Node menyajikan
+> `manifest.webmanifest` dengan tipe MIME yang benar dan mengirim header
+> `Service-Worker-Allowed` yang dibutuhkan agar PWA dapat dipasang.
 
 ---
 

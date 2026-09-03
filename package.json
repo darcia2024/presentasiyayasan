@@ -2,9 +2,14 @@
   "name": "presentasi-yayasan-umi-ely",
   "version": "1.0.0",
   "description": "Website pitch deck presentasi interaktif dan proposal resmi penawaran **Platform Pembelajaran Bahasa Arab Interaktif Berbasis Game (Tingkat SD, SMP, & SMA)** asuhan **Umi Elly & Yayasan Peradaban Islam Azhariyah**.",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "stamp": "node tools/stamp-version.js",
+    "start": "npm run stamp && node server.js",
+    "build": "npm run stamp",
+    "release:patch": "npm version patch --no-git-tag-version && npm run stamp",
+    "release:minor": "npm version minor --no-git-tag-version && npm run stamp",
+    "test": "node --check prototype-mobile.js && node tools/stamp-version.js"
   },
   "repository": {
     "type": "git",

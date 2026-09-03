@@ -2,8 +2,51 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <title>PERISA — Yayasan Peradaban Islam Azhariyah</title>
+
+  <meta name="description" content="Aplikasi pembelajaran Bahasa Arab interaktif berbasis game untuk santri jenjang SD, SMP, dan SMA. Asuhan Umi Elly — Yayasan Peradaban Islam Azhariyah.">
+
+  <!-- ============================================================
+       PROGRESSIVE WEB APP (INSTALLABLE NATIVE MOBILE APP)
+       ============================================================ -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#072826">
+  <meta name="color-scheme" content="light">
+  <meta name="application-name" content="PERISA">
+
+  <!-- Android / Chrome -->
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- iOS Safari standalone -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="PERISA">
+  <meta name="format-detection" content="telephone=no">
+
+  <!-- Windows tile -->
+  <meta name="msapplication-TileColor" content="#072826">
+  <meta name="msapplication-TileImage" content="icons/icon-192.png">
+
+  <!-- Ikon aplikasi -->
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+  <link rel="mask-icon" href="icons/icon-192.png" color="#072826">
+
+  <!-- Layar peluncuran iOS (portrait) -->
+  <link rel="apple-touch-startup-image" href="icons/splash-1290x2796.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="icons/splash-1179x2556.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="icons/splash-1284x2778.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="icons/splash-1170x2532.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="icons/splash-1242x2688.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="icons/splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="icons/splash-828x1792.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="icons/splash-1242x2208.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="icons/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="icons/splash-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="icons/splash-1668x2388.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="icons/splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
 
   <!-- Google Fonts: Plus Jakarta Sans & Amiri -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,9 +59,44 @@
   <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
 
   <!-- Core App Stylesheet -->
-  <link rel="stylesheet" href="prototype.css?v=4.5.0">
+  <link rel="stylesheet" href="prototype.css?v=1.0.0">
+  <!-- Native Mobile / PWA Layer -->
+  <link rel="stylesheet" href="prototype-mobile.css?v=1.0.0">
 </head>
 <body>
+
+  <!-- ============================================================
+       PWA NATIVE SHELL — BOOT SPLASH, STATUS JARINGAN,
+       PULL-TO-REFRESH, DAN PROMPT PEMASANGAN APLIKASI
+       (seluruh blok ini hanya tampil pada perangkat mobile)
+       ============================================================ -->
+  <div class="m-splash" id="mAppSplash" aria-hidden="true">
+    <img class="m-splash-mark" src="icons/icon-192.png" alt="PERISA Azhariyah">
+    <div class="m-splash-name">PERISA Azhariyah</div>
+    <div class="m-splash-sub">PLATFORM BAHASA ARAB SANTRI</div>
+    <div class="m-splash-loader"></div>
+    <div class="m-splash-foot">Yayasan Peradaban Islam Azhariyah &mdash; Asuhan Umi Elly</div>
+  </div>
+
+  <div class="m-net-banner" id="mNetBanner" role="status" aria-live="polite"></div>
+
+  <div class="m-ptr" id="mPullRefresh" aria-hidden="true">
+    <i class="ph ph-arrow-clockwise"></i>
+  </div>
+
+  <div class="m-install-card" id="mInstallCard" role="dialog" aria-label="Pasang aplikasi PERISA">
+    <img src="icons/icon-192.png" alt="">
+    <div class="m-install-copy">
+      <div class="m-install-title">Pasang Aplikasi PERISA</div>
+      <div class="m-install-sub">Buka dari layar utama, bisa diakses luring.</div>
+    </div>
+    <div class="m-install-actions">
+      <button class="m-install-yes" onclick="PerisaMobile.install()">Pasang</button>
+      <button class="m-install-no" onclick="PerisaMobile.dismissInstall()" aria-label="Tutup">
+        <i class="ph ph-x"></i>
+      </button>
+    </div>
+  </div>
 
   <!-- ============================================================
        1. TOP PRESENTER DOCK (DESKTOP DEMO CONTROLLER)
@@ -61,6 +139,9 @@
        2. NATIVE MOBILE APP TOP BAR (LEFT HAMBURGER + PROMINENT BRAND)
        ============================================================ -->
   <header class="mobile-top-nav">
+    <!-- Judul kompak yang menggantikan brand saat halaman digulir -->
+    <div class="m-appbar-title" id="mAppbarTitle">Kurikulum</div>
+
     <div class="mobile-top-left">
       <!-- Animated Hamburger Button on the Left -->
       <button class="mobile-hamburger-btn" onclick="PrototypeApp.toggleMobileDrawer()" title="Buka Menu">
@@ -69,7 +150,7 @@
 
       <!-- Prominent Brand Title -->
       <div class="mobile-brand-wrap" onclick="PrototypeApp.switchMainView('beranda')" style="cursor: pointer;">
-        <img src="logo-perisa-emblem.png?v=4.0" alt="PERISA">
+        <img src="logo-perisa-emblem.png?v=1.0.0" alt="PERISA">
         <div>
           <div class="mobile-brand-text">PERISA Azhariyah</div>
           <div class="mobile-brand-sub">Yayasan Peradaban Islam</div>
@@ -97,25 +178,34 @@
       <!-- Drawer Header -->
       <div class="drawer-header-row">
         <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
-          <img src="logo-perisa-horizontal.png?v=4.0" alt="PERISA Azhariyah" style="width: 100%; max-width: 195px; height: auto; object-fit: contain;">
+          <img src="logo-perisa-horizontal.png?v=1.0.0" alt="PERISA Azhariyah" style="width: 100%; max-width: 195px; height: auto; object-fit: contain;">
         </div>
         <i class="ph ph-x" style="cursor: pointer; font-size: 22px; color: var(--text-muted); padding: 4px;" onclick="PrototypeApp.toggleMobileDrawer()"></i>
+      </div>
+
+      <!-- Identitas Santri Aktif -->
+      <div class="m-drawer-user">
+        <div class="m-drawer-avatar" id="mDrawerAvatar">AF</div>
+        <div style="position: relative; min-width: 0;">
+          <div class="m-drawer-uname" id="mDrawerUserName">Ahmad Fauzan</div>
+          <div class="m-drawer-usub" id="mDrawerUserSub">Santri Jenjang SMP Kelas 8</div>
+        </div>
       </div>
 
       <!-- Perspective Role Selector in Drawer -->
       <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px; display: flex; flex-direction: column; gap: 8px;">
         <span style="font-size: 10.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Ganti Perspektif Pengguna:</span>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-          <button class="role-btn" style="padding: 7px 8px; font-size: 11px; justify-content: center;" onclick="PrototypeApp.setRole('santri-sd'); PrototypeApp.toggleMobileDrawer();">
+          <button class="role-btn" style="padding: 7px 8px; font-size: 11px; justify-content: center;" data-role="santri-sd" onclick="PrototypeApp.setRole('santri-sd'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-student"></i> Santri SD
           </button>
-          <button class="role-btn active" style="padding: 7px 8px; font-size: 11px; justify-content: center;" onclick="PrototypeApp.setRole('santri-smp'); PrototypeApp.toggleMobileDrawer();">
+          <button class="role-btn active" style="padding: 7px 8px; font-size: 11px; justify-content: center;" data-role="santri-smp" onclick="PrototypeApp.setRole('santri-smp'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-student"></i> Santri SMP
           </button>
-          <button class="role-btn" style="padding: 7px 8px; font-size: 11px; justify-content: center;" onclick="PrototypeApp.setRole('santri-sma'); PrototypeApp.toggleMobileDrawer();">
+          <button class="role-btn" style="padding: 7px 8px; font-size: 11px; justify-content: center;" data-role="santri-sma" onclick="PrototypeApp.setRole('santri-sma'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-student"></i> Santri SMA
           </button>
-          <button class="role-btn admin-btn" style="padding: 7px 8px; font-size: 11px; justify-content: center;" onclick="PrototypeApp.setRole('admin'); PrototypeApp.toggleMobileDrawer();">
+          <button class="role-btn admin-btn" style="padding: 7px 8px; font-size: 11px; justify-content: center;" data-role="admin" onclick="PrototypeApp.setRole('admin'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-shield-check"></i> Pengurus
           </button>
         </div>
@@ -124,25 +214,25 @@
       <!-- Navigation Links in Drawer -->
       <ul class="ref-nav-list" style="margin-top: 4px;">
         <li>
-          <a class="ref-nav-item" onclick="PrototypeApp.switchMainView('beranda'); PrototypeApp.toggleMobileDrawer();">
+          <a class="ref-nav-item" data-view="beranda" onclick="PrototypeApp.switchMainView('beranda'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-squares-four"></i>
             <span>Beranda Utama</span>
           </a>
         </li>
         <li>
-          <a class="ref-nav-item" onclick="PrototypeApp.switchMainView('modul-pdf'); PrototypeApp.toggleMobileDrawer();">
+          <a class="ref-nav-item" data-view="modul-pdf" onclick="PrototypeApp.switchMainView('modul-pdf'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-book-open-text"></i>
             <span>Modul & Silabus PDF</span>
           </a>
         </li>
         <li>
-          <a class="ref-nav-item" onclick="PrototypeApp.switchMainView('kurikulum'); PrototypeApp.toggleMobileDrawer();">
+          <a class="ref-nav-item" data-view="kurikulum" onclick="PrototypeApp.switchMainView('kurikulum'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-graduation-cap"></i>
             <span>Kurikulum Bahasa Arab</span>
           </a>
         </li>
         <li>
-          <a class="ref-nav-item" onclick="PrototypeApp.switchMainView('ai-assistant'); PrototypeApp.toggleMobileDrawer();">
+          <a class="ref-nav-item" data-view="ai-assistant" onclick="PrototypeApp.switchMainView('ai-assistant'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-sparkle"></i>
             <span>Asisten Bahasa Arab</span>
           </a>
@@ -154,7 +244,7 @@
           </a>
         </li>
         <li>
-          <a class="ref-nav-item" onclick="PrototypeApp.switchMainView('admin'); PrototypeApp.toggleMobileDrawer();">
+          <a class="ref-nav-item" data-view="admin" onclick="PrototypeApp.switchMainView('admin'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-shield-check"></i>
             <span>Panel Otoritas Yayasan</span>
           </a>
@@ -172,6 +262,30 @@
   <!-- ============================================================
        4. MAIN APP CONTAINER (FULL-BLEED DESKTOP / FLUID MOBILE)
        ============================================================ -->
+  <!-- ============================================================
+       LARGE TITLE MOBILE (kolaps ke app bar saat digulir)
+       ============================================================ -->
+  <section class="m-largetitle" id="mLargeTitle">
+    <div class="m-lt-eyebrow" id="mLtEyebrow"><i class="ph ph-circle-wavy-check"></i> Kurikulum Bahasa Arab</div>
+    <h1 class="m-lt-title" id="mLtTitle">Kaidah Jumlah Ismiyyah</h1>
+    <div class="m-lt-sub" id="mLtSub">Jenjang SMP Kelas 8 &bull; 12 Modul &bull; Asuhan Umi Elly</div>
+
+    <div class="m-chip-row" id="mChipRow">
+      <span class="m-chip" onclick="PrototypeApp.switchMainView('kurikulum')">
+        <i class="ph ph-play-circle"></i> Lanjut Belajar
+      </span>
+      <a href="game2d.html" class="m-chip">
+        <i class="ph ph-microphone"></i> Latihan Suara
+      </a>
+      <span class="m-chip" onclick="PrototypeApp.switchMainView('ai-assistant')">
+        <i class="ph ph-sparkle"></i> Tanya Asisten
+      </span>
+      <span class="m-chip is-gold" onclick="PrototypeApp.openCertificate()">
+        <i class="ph ph-certificate"></i> Piagam Sanad
+      </span>
+    </div>
+  </section>
+
   <div class="app-window-frame">
 
     <!-- LEFT SIDEBAR NAVIGATION (DESKTOP) -->
@@ -179,7 +293,7 @@
       
       <!-- Brand Header -->
       <div class="ref-brand-logo" style="margin-bottom: 20px; padding: 2px 4px 6px 2px;">
-        <img src="logo-perisa-horizontal.png?v=4.0" alt="Yayasan Peradaban Islam Azhariyah" style="width: 100%; max-width: 210px; height: auto; display: block; object-fit: contain;">
+        <img src="logo-perisa-horizontal.png?v=1.0.0" alt="Yayasan Peradaban Islam Azhariyah" style="width: 100%; max-width: 210px; height: auto; display: block; object-fit: contain;">
       </div>
 
       <!-- User Profile Card (Interactive Profile Switcher Dropdown) -->
@@ -351,7 +465,32 @@
            ====================================================== -->
       <div id="viewBerandaUtama" style="display: none; width: 100%;">
         <div class="beranda-view-layout">
-          
+
+          <!-- Kartu Progres Modul Aktif (mobile native) -->
+          <div class="m-progress-card m-only">
+            <div class="m-ring">
+              <svg width="62" height="62" viewBox="0 0 62 62" aria-hidden="true">
+                <defs>
+                  <linearGradient id="mRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#00C3B1"></stop>
+                    <stop offset="100%" stop-color="#00776C"></stop>
+                  </linearGradient>
+                </defs>
+                <circle class="m-ring-bg" cx="31" cy="31" r="26"></circle>
+                <circle class="m-ring-fg" cx="31" cy="31" r="26"></circle>
+              </svg>
+              <div class="m-ring-value">65%</div>
+            </div>
+            <div class="m-progress-body">
+              <div class="m-progress-label">Modul Aktif</div>
+              <div class="m-progress-title">Jumlah Ismiyyah</div>
+              <div class="m-progress-meta">Modul 02 &bull; Perpustakaan (&#1575;&#1604;&#1605;&#1614;&#1603;&#1618;&#1578;&#1614;&#1576;&#1614;&#1577;&#1615;)</div>
+            </div>
+            <button class="m-progress-go" onclick="PrototypeApp.switchMainView('kurikulum')" aria-label="Lanjutkan belajar">
+              <i class="ph ph-play"></i>
+            </button>
+          </div>
+
           <!-- Compact Welcome Banner -->
           <div class="beranda-welcome-banner">
             <div>
@@ -369,7 +508,7 @@
           <div class="beranda-metrics-grid">
             <div class="beranda-metric-card">
               <div style="width: 40px; height: 40px; border-radius: var(--radius-sm); background: var(--teal-light); color: var(--teal-primary); display: flex; align-items: center; justify-content: center; font-size: 20px;"><i class="ph ph-trophy"></i></div>
-              <div><div style="font-size: 16px; font-weight: 800; color: var(--teal-dark);">2.850 XP</div><div style="font-size: 10.5px; color: var(--text-muted);">Peringkat Santri Teladan</div></div>
+              <div><div id="mXpMetric" style="font-size: 16px; font-weight: 800; color: var(--teal-dark);">2.850 XP</div><div id="mRankMetric" style="font-size: 10.5px; color: var(--text-muted);">Peringkat Santri Teladan</div></div>
             </div>
             <div class="beranda-metric-card">
               <div style="width: 40px; height: 40px; border-radius: var(--radius-sm); background: var(--gold-light); color: var(--gold-dark); display: flex; align-items: center; justify-content: center; font-size: 20px;"><i class="ph ph-clock"></i></div>
@@ -405,18 +544,21 @@
               </div>
 
               <h4 style="font-size: 13px; font-weight: 700; color: var(--teal-dark); margin-top: 10px;">Pilihan Jenjang Lainnya</h4>
-              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
-                <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 10px; cursor: pointer; text-align: center;" onclick="PrototypeApp.setRole('santri-sd'); PrototypeApp.switchMainView('kurikulum');">
-                  <div style="font-size: 12px; font-weight: 700; color: var(--teal-dark);">Jenjang SD</div>
-                  <div style="font-size: 10px; color: var(--text-muted);">Mufrodat Cilik</div>
+              <div class="m-level-scroller" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                <div class="m-level-card" style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 10px; cursor: pointer; text-align: center;" onclick="PrototypeApp.setRole('santri-sd'); PrototypeApp.switchMainView('kurikulum');">
+                  <div class="m-level-arabic">&#1575;&#1604;&#1571;&#1614;&#1583;&#1614;&#1608;&#1614;&#1575;&#1578;&#1615;</div>
+                  <div class="m-level-name" style="font-size: 12px; font-weight: 700; color: var(--teal-dark);">Jenjang SD</div>
+                  <div class="m-level-desc" style="font-size: 10px; color: var(--text-muted);">Mufrodat Cilik</div>
                 </div>
-                <div style="background: var(--teal-light); border: 1.5px solid var(--teal-primary); border-radius: var(--radius-md); padding: 10px; cursor: pointer; text-align: center;" onclick="PrototypeApp.setRole('santri-smp'); PrototypeApp.switchMainView('kurikulum');">
-                  <div style="font-size: 12px; font-weight: 700; color: var(--teal-primary);">Jenjang SMP (Aktif)</div>
-                  <div style="font-size: 10px; color: #006D63;">Jumlah Ismiyyah</div>
+                <div class="m-level-card is-active" style="background: var(--teal-light); border: 1.5px solid var(--teal-primary); border-radius: var(--radius-md); padding: 10px; cursor: pointer; text-align: center;" onclick="PrototypeApp.setRole('santri-smp'); PrototypeApp.switchMainView('kurikulum');">
+                  <div class="m-level-arabic">&#1575;&#1604;&#1580;&#1615;&#1605;&#1618;&#1604;&#1614;&#1577;&#1615;</div>
+                  <div class="m-level-name" style="font-size: 12px; font-weight: 700; color: var(--teal-primary);">Jenjang SMP (Aktif)</div>
+                  <div class="m-level-desc" style="font-size: 10px; color: #006D63;">Jumlah Ismiyyah</div>
                 </div>
-                <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 10px; cursor: pointer; text-align: center;" onclick="PrototypeApp.setRole('santri-sma'); PrototypeApp.switchMainView('kurikulum');">
-                  <div style="font-size: 12px; font-weight: 700; color: var(--teal-dark);">Jenjang SMA</div>
-                  <div style="font-size: 10px; color: var(--text-muted);">Nahwu-Shorof</div>
+                <div class="m-level-card" style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 10px; cursor: pointer; text-align: center;" onclick="PrototypeApp.setRole('santri-sma'); PrototypeApp.switchMainView('kurikulum');">
+                  <div class="m-level-arabic">&#1578;&#1614;&#1589;&#1618;&#1585;&#1616;&#1610;&#1618;&#1601;&#1615;</div>
+                  <div class="m-level-name" style="font-size: 12px; font-weight: 700; color: var(--teal-dark);">Jenjang SMA</div>
+                  <div class="m-level-desc" style="font-size: 10px; color: var(--text-muted);">Nahwu-Shorof</div>
                 </div>
               </div>
             </div>
@@ -499,6 +641,16 @@
                 </button>
 
               </div>
+            </div>
+
+            <!-- Aksi Modul (mobile native) -->
+            <div class="m-course-actions m-only">
+              <button class="btn-share-text" onclick="PrototypeApp.showToast('Tautan materi disalin ke clipboard')">
+                <i class="ph ph-share-network"></i> Bagikan
+              </button>
+              <button class="btn-enroll-primary" onclick="PrototypeApp.switchSubTab('kuis')">
+                <i class="ph ph-check-circle"></i> Latihan Evaluasi
+              </button>
             </div>
 
             <!-- Horizontal Sub-Tabs -->
@@ -681,90 +833,9 @@
                 Struktur Silabus Pembelajaran
               </div>
 
-              <!-- Modul 1 -->
-              <div class="accordion-section">
-                <div class="section-head" onclick="PrototypeApp.toggleAccordion(this)">
-                  <div class="section-head-left">
-                    <span class="section-badge-num">01: Kosakata dan Fasilitas Sekolah</span>
-                  </div>
-                  <div class="section-head-right">
-                    <span class="section-dur-text">22 Menit</span>
-                    <i class="ph ph-caret-up toggle-caret"></i>
-                  </div>
-                </div>
-                <div class="lesson-sub-list">
-                  <div class="lesson-sub-row" onclick="PrototypeApp.showToast('Memutar: Pengenalan Ruang Kelas')">
-                    <div class="lesson-left-title"><i class="ph ph-play-circle"></i><span>Pengenalan Ruang Kelas</span></div>
-                    <span class="lesson-time">2 Menit</span>
-                  </div>
-                  <div class="lesson-sub-row active" onclick="PrototypeApp.showToast('Memutar: Fasilitas Perpustakaan')">
-                    <div class="lesson-left-title"><i class="ph ph-play-circle"></i><span>Perpustakaan (المَكْتَبَةُ)</span></div>
-                    <span class="lesson-time">5 Menit</span>
-                  </div>
-                  <div class="lesson-sub-row" onclick="PrototypeApp.showToast('Memutar: Kaidah Jumlah Ismiyyah Dasar')">
-                    <div class="lesson-left-title"><i class="ph ph-play-circle"></i><span>Kaidah Jumlah Ismiyyah Dasar</span></div>
-                    <span class="lesson-time">12 Menit</span>
-                  </div>
-                  <div class="lesson-sub-row" onclick="PrototypeApp.showToast('Membuka: Lembar Evaluasi Mandiri')">
-                    <div class="lesson-left-title"><i class="ph ph-check-circle"></i><span>Lembar Evaluasi Mandiri</span></div>
-                    <span class="lesson-time">3 Menit</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Modul 2 -->
-              <div class="accordion-section">
-                <div class="section-head" onclick="PrototypeApp.toggleAccordion(this)">
-                  <div class="section-head-left">
-                    <span class="section-badge-num">02: Kaidah Kata Ganti (Dhomir)</span>
-                  </div>
-                  <div class="section-head-right">
-                    <span class="section-dur-text">1 Jam 20 Menit</span>
-                    <i class="ph ph-caret-down toggle-caret"></i>
-                  </div>
-                </div>
-                <div class="lesson-sub-list" style="display: none;">
-                  <div class="lesson-sub-row"><div class="lesson-left-title"><i class="ph ph-lock"></i><span>Dhomir Munfashil (هُوَ ، هِيَ)</span></div><span class="lesson-time">25 Menit</span></div>
-                  <div class="lesson-sub-row"><div class="lesson-left-title"><i class="ph ph-lock"></i><span>Dhomir Muttashil (ـهُ ، ـهَا)</span></div><span class="lesson-time">35 Menit</span></div>
-                  <div class="lesson-sub-row"><div class="lesson-left-title"><i class="ph ph-lock"></i><span>Latihan Kalimat Mandiri</span></div><span class="lesson-time">20 Menit</span></div>
-                </div>
-              </div>
-
-              <!-- Modul 3 -->
-              <div class="accordion-section">
-                <div class="section-head" onclick="PrototypeApp.toggleAccordion(this)">
-                  <div class="section-head-left">
-                    <span class="section-badge-num">03: Kaidah Perubahan Kata (Tashrif)</span>
-                  </div>
-                  <div class="section-head-right">
-                    <span class="section-dur-text">36 Menit</span>
-                    <i class="ph ph-caret-down toggle-caret"></i>
-                  </div>
-                </div>
-                <div class="lesson-sub-list" style="display: none;">
-                  <div class="lesson-sub-row"><div class="lesson-left-title"><i class="ph ph-lock"></i><span>Pola Fi'il Madhi & Mudhari'</span></div><span class="lesson-time">36 Menit</span></div>
-                </div>
-              </div>
-
-              <!-- Modul 4 -->
-              <div class="accordion-section">
-                <div class="section-head" onclick="PrototypeApp.toggleAccordion(this)">
-                  <div class="section-head-left">
-                    <span class="section-badge-num">04: Sertifikat Kelulusan Resmi</span>
-                  </div>
-                  <div class="section-head-right">
-                    <span class="section-dur-text" style="color: var(--gold-dark); font-weight: 700;">Verifikasi Sanad</span>
-                    <i class="ph ph-caret-down toggle-caret"></i>
-                  </div>
-                </div>
-                <div class="lesson-sub-list" style="display: none;">
-                  <div class="lesson-sub-row" onclick="PrototypeApp.openCertificate()">
-                    <div class="lesson-left-title"><i class="ph ph-certificate" style="color: var(--gold-dark);"></i><span>Piagam Kelulusan Sanad</span></div>
-                    <span class="lesson-time" style="color: var(--teal-primary); font-weight: 700;">Buka Dokumen</span>
-                  </div>
-                </div>
-              </div>
-
+              <!-- Bagian akordeon dirender dari js/data/roles.js oleh
+                   js/ui/syllabus.js. Jangan tulis modul di sini: isinya
+                   harus mengikuti jenjang santri yang sedang aktif. -->
             </div>
 
             <!-- Author Box Umi Elly -->
@@ -799,7 +870,7 @@
           
           <div class="seto-main-hub">
             <div class="seto-emblem-star">
-              <img src="logo-perisa-emblem.png?v=4.0" alt="PERISA" style="width: 58px; height: 58px; object-fit: contain;">
+              <img src="logo-perisa-emblem.png?v=1.0.0" alt="PERISA" style="width: 58px; height: 58px; object-fit: contain;">
             </div>
             <h1 class="seto-h1-welcome">Asisten Kaidah Bahasa Arab PERISA</h1>
             <p class="seto-p-sub">
@@ -993,7 +1064,7 @@
       <i class="ph ph-book-open-text"></i>
       <span>Silabus</span>
     </a>
-    <a class="bottom-nav-item active" id="bnav-kurikulum" onclick="PrototypeApp.switchMainView('kurikulum'); PrototypeApp.updateBottomNav('kurikulum');">
+    <a class="bottom-nav-item m-tab-center active" id="bnav-kurikulum" onclick="PrototypeApp.switchMainView('kurikulum'); PrototypeApp.updateBottomNav('kurikulum');">
       <i class="ph ph-graduation-cap"></i>
       <span>Belajar</span>
     </a>
@@ -1013,12 +1084,15 @@
   <!-- Document PDF Reader Modal -->
   <div class="pdf-reader-overlay" id="docReaderModal" style="display: none;">
     <div class="pdf-reader-modal-box">
+      <!-- Pegangan seret (drag handle) khas bottom sheet native -->
+      <div class="m-sheet-grip m-only" aria-hidden="true"></div>
+
       <div class="pdf-reader-topbar">
         <div class="pdf-topbar-left">
           <i class="ph ph-file-pdf" style="font-size: 22px; color: var(--teal-primary);"></i>
           <div>
-            <strong style="font-size: 13.5px; color: var(--teal-dark);" id="modalDocTitle">Dokumen Silabus & Ringkasan Resmi</strong>
-            <div style="font-size: 10.5px; color: var(--text-muted);" id="modalDocSub">Format: PDF • Yayasan Peradaban Islam Azhariyah</div>
+            <strong style="font-size: 13.5px; color: var(--teal-dark);" id="readerHeaderDocTitle">Dokumen Silabus & Ringkasan Resmi</strong>
+            <div style="font-size: 10.5px; color: var(--text-muted);" id="readerHeaderDocSub">Format: PDF • Yayasan Peradaban Islam Azhariyah</div>
           </div>
         </div>
         <div class="pdf-topbar-actions">
@@ -1031,17 +1105,17 @@
       <div class="pdf-reader-viewport">
         <div class="pdf-sheet-paper" id="modalDocSheet">
           <div class="pdf-sheet-header">
-            <img src="logo-perisa-horizontal.png?v=4.0" alt="PERISA" style="height: 38px; object-fit: contain;">
+            <img src="logo-perisa-horizontal.png?v=1.0.0" alt="PERISA" style="height: 38px; object-fit: contain;">
             <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">DOKUMEN RESMI KURIKULUM BAHASA ARAB</div>
           </div>
           <hr style="border: none; border-top: 1.5px solid var(--border-color); margin: 14px 0;">
-          <h2 style="font-size: 18px; font-weight: 800; color: var(--teal-dark); text-align: center; margin-bottom: 6px;" id="modalSheetH2">
+          <h2 style="font-size: 18px; font-weight: 800; color: var(--teal-dark); text-align: center; margin-bottom: 6px;" id="readerSheetTitle">
             MODUL 02: KAIDAH JUMLAH ISMIYYAH
           </h2>
-          <div style="text-align: center; font-size: 24px; font-family: 'Amiri', Arial; color: var(--teal-primary); font-weight: 700; margin-bottom: 18px;" id="modalSheetArabic">
-            الجُمْلَةُ الإِسْمِيَّةُ (المُبْتَدَأُ وَ الخَبَرُ)
+          <div style="text-align: center; font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 18px;" id="readerSheetSub">
+            Kaidah Jumlah Ismiyyah &amp; Mufrodat Fasilitas Sekolah • Penyusun: Umi Elly
           </div>
-          <div style="font-size: 13px; line-height: 1.7; color: var(--text-body);" id="modalSheetContent">
+          <div style="font-size: 13px; line-height: 1.7; color: var(--text-body);" id="readerSheetBody">
             <p><strong>1. Pengertian Jumlah Ismiyyah:</strong><br>
             Jumlah Ismiyyah adalah kalimat sempurna (kalam mufid) dalam tata bahasa Arab yang diawali dengan kata benda (Isim). Struktur utamanya terdiri dari dua rukun penting, yaitu <em>Mubtada</em> (subjek pembuka) dan <em>Khobar</em> (predikat penyempurna berita).</p>
           </div>
@@ -1053,8 +1127,12 @@
   <!-- Certificate Modal -->
   <div class="modal-overlay" id="certModal" style="display: none;">
     <div class="modal-box" style="text-align: center;">
+      <!-- Pegangan seret (drag handle) khas bottom sheet native -->
+      <div class="m-sheet-grip m-only" aria-hidden="true"></div>
+
+      <div class="m-sheet-scroll">
       <div style="margin-bottom: 12px;">
-        <img src="logo-perisa-horizontal.png?v=4.0" alt="PERISA" style="height: 42px; object-fit: contain;">
+        <img src="logo-perisa-horizontal.png?v=1.0.0" alt="PERISA" style="height: 42px; object-fit: contain;">
       </div>
       <h3 style="font-size: 18px; font-weight: 800; color: var(--teal-dark); margin-bottom: 4px;">PIAGAM KELULUSAN SANAD</h3>
       <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Yayasan Peradaban Islam Azhariyah — Asuhan Umi Elly</p>
@@ -1078,11 +1156,16 @@
         </div>
       </div>
       <button class="btn-enroll-primary" style="margin-top: 16px; width: 100%; justify-content: center;" onclick="PrototypeApp.closeCertModal()">Tutup Pratinjau</button>
+      </div>
     </div>
   </div>
 
   <div class="toast-bar" id="prototypeToast">Pemberitahuan</div>
 
-  <script src="prototype.js?v=4.2.0"></script>
+  <!-- Modul ES otomatis ditunda (defer), jadi selesai dieksekusi sebelum
+       DOMContentLoaded — tepat saat prototype-mobile.js membungkus ulang
+       metode PrototypeApp. Urutan kedua baris ini jangan ditukar. -->
+  <script type="module" src="js/app.js?v=1.0.0"></script>
+  <script defer src="prototype-mobile.js?v=1.0.0"></script>
 </body>
 </html>
