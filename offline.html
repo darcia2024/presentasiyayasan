@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#072826">
+  <title>Mode Luring — PERISA Azhariyah</title>
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: 32px 26px calc(32px + env(safe-area-inset-bottom));
+      text-align: center;
+      background:
+        radial-gradient(120% 80% at 50% 8%, rgba(0,135,122,0.30) 0%, rgba(7,40,38,0) 62%),
+        linear-gradient(175deg, #0A3835 0%, #072826 100%);
+      color: #FFFFFF;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { width: 108px; height: 108px; object-fit: contain; }
+    h1 { font-size: 21px; font-weight: 800; letter-spacing: -0.01em; }
+    p { font-size: 13.5px; line-height: 1.65; color: #A7F3EC; max-width: 330px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(0, 210, 190, 0.14);
+      border: 1px solid rgba(0, 210, 190, 0.34);
+      color: #A7F3EC;
+      padding: 5px 14px; border-radius: 999px;
+      font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: #F0C86C; animation: pulse 1.6s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.35; transform: scale(0.72); } }
+    button {
+      margin-top: 6px;
+      background: #FFFFFF; color: #072826;
+      border: none; border-radius: 999px;
+      padding: 14px 30px;
+      font-family: inherit; font-size: 14px; font-weight: 800;
+      cursor: pointer;
+      min-height: 48px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.32);
+      -webkit-tap-highlight-color: transparent;
+    }
+    button:active { transform: scale(0.96); }
+    small { font-size: 11px; color: rgba(255,255,255,0.42); }
+  </style>
+</head>
+<body>
+  <img src="icons/icon-192.png" alt="PERISA Azhariyah">
+  <span class="chip"><span class="dot"></span> Mode Luring</span>
+  <h1>Sambungan Terputus</h1>
+  <p>
+    Perangkat sedang tidak tersambung ke internet. Materi yang sudah pernah dibuka
+    tetap tersimpan di aplikasi dan bisa diakses kembali setelah jaringan pulih.
+  </p>
+  <button onclick="location.replace('prototype.html')">Coba Sambungkan Ulang</button>
+  <small>Yayasan Peradaban Islam Azhariyah — Asuhan Umi Elly</small>
+
+  <script>
+    // Pulih otomatis begitu jaringan kembali tersambung.
+    window.addEventListener('online', function () {
+      location.replace('prototype.html');
+    });
+  </script>
+</body>
+</html>

@@ -11,10 +11,14 @@ const MIME_TYPES = {
   '.css': 'text/css; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
+  '.webmanifest': 'application/manifest+json; charset=utf-8',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
+  '.webp': 'image/webp',
   '.svg': 'image/svg+xml',
-  '.ico': 'image/x-icon'
+  '.ico': 'image/x-icon',
+  '.woff2': 'font/woff2',
+  '.woff': 'font/woff'
 };
 
 // In-Memory Live Game Leaderboard & Question Bank
@@ -123,7 +127,18 @@ const server = http.createServer((req, res) => {
     const ext = path.extname(filePath).toLowerCase();
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
-    res.writeHead(200, { 'Content-Type': contentType });
+    const headers = { 'Content-Type': contentType };
+
+    if (path.basename(filePath) === 'sw.js') {
+      headers['Service-Worker-Allowed'] = '/';
+      headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
+    } else if (ext === '.png' || ext === '.jpg' || ext === '.webp' || ext === '.svg' || ext === '.ico') {
+      headers['Cache-Control'] = 'public, max-age=604800';
+    } else {
+      headers['Cache-Control'] = 'no-cache';
+    }
+
+    res.writeHead(200, headers);
     const readStream = fs.createReadStream(filePath);
     readStream.pipe(res);
   });
@@ -136,5 +151,7 @@ server.listen(PORT, () => {
   console.log(`Prototype Live Demo:      http://localhost:${PORT}/prototype.html`);
   console.log(`2D Game Canvas Demo:     http://localhost:${PORT}/game2d.html`);
   console.log(`Pitch Deck Presentation:  http://localhost:${PORT}/index.html`);
+  console.log(`PWA Manifest:             http://localhost:${PORT}/manifest.webmanifest`);
+  console.log(`Service Worker:           http://localhost:${PORT}/sw.js`);
   console.log(`=======================================================`);
 });
