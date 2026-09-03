@@ -16,3 +16,6 @@ node_modules/
 
 # Dihasilkan otomatis oleh tools/gen-config.js — nilainya beda per lingkungan
 js/config.js
+
+# Cache lokal CLI Supabase (project ref, versi CLI) — bukan bagian repo.
+supabase/.temp/

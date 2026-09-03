@@ -29,9 +29,9 @@ let cachedKey: CryptoKey | null = null;
 async function getSigningKey(): Promise<CryptoKey> {
   if (cachedKey) return cachedKey;
 
-  const secret = Deno.env.get('SUPABASE_JWT_SECRET');
+  const secret = Deno.env.get('APP_JWT_SECRET');
   if (!secret) {
-    throw new Error('SUPABASE_JWT_SECRET belum diisi di variabel lingkungan Edge Function.');
+    throw new Error('APP_JWT_SECRET belum diisi di variabel lingkungan Edge Function.');
   }
 
   cachedKey = await crypto.subtle.importKey(

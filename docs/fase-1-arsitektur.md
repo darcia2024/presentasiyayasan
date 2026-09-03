@@ -35,7 +35,7 @@ Twilio — bukan WhatsApp. Yayasan sudah menganggarkan gateway WhatsApp
 (Fonnte/Wablas) di rancangan biaya, dan itu jalur pengiriman yang dipilih.
 
 Solusinya: Edge Function `auth-otp-verify` **menandatangani JWT sendiri**
-memakai `SUPABASE_JWT_SECRET` milik proyek — bukan lewat
+memakai `APP_JWT_SECRET` milik proyek — bukan lewat
 `supabase.auth.signIn*`. Selama bentuk JWT-nya sesuai yang diharapkan
 PostgREST, Supabase memperlakukannya persis seperti sesi Auth bawaan: RLS,
 `auth.uid()`, semuanya jalan normal. ([Didokumentasikan resmi sebagai pola
