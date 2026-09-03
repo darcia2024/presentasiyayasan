@@ -49,6 +49,32 @@ function setMemuat(idTombol, memuat, labelNormal) {
 
 let nomorTerkini = '';
 
+/**
+ * Ambil pesan error yang sebenarnya dari respons Edge Function.
+ *
+ * Klien Supabase TIDAK mengisi `data` saat status HTTP bukan 2xx (404, 429,
+ * dst) — hanya mengisi `error` (objek SDK generik), padahal body respons
+ * kita SENDIRI berisi `{ ok:false, error:"pesan yang jelas" }`. Tanpa fungsi
+ * ini, wali cuma melihat "Gagal mengirim kode" untuk SEMUA kegagalan —
+ * termasuk kasus penting seperti "nomor belum terdaftar" atau "terlalu
+ * banyak percobaan" yang seharusnya memandu mereka, bukan membingungkan.
+ *
+ * Ditemukan lewat uji klik sungguhan di browser, bukan panggilan API
+ * langsung — makanya baru ketahuan di titik ini.
+ */
+async function ambilPesanError(data, error, fallback) {
+  if (data?.error) return data.error;
+  if (error?.context && typeof error.context.json === 'function') {
+    try {
+      const body = await error.context.clone().json();
+      if (body?.error) return body.error;
+    } catch (_) {
+      /* body bukan JSON atau sudah terbaca — pakai fallback di bawah */
+    }
+  }
+  return error?.message || fallback;
+}
+
 async function ajukanOtp() {
   const input = $('authNomorInput');
   if (!input) return;
@@ -68,7 +94,7 @@ async function ajukanOtp() {
     });
 
     if (error || !data?.ok) {
-      setError('authNomorError', data?.error || 'Gagal mengirim kode. Coba lagi.');
+      setError('authNomorError', await ambilPesanError(data, error, 'Gagal mengirim kode. Coba lagi.'));
       return;
     }
 
@@ -118,7 +144,7 @@ async function verifikasiOtp() {
     });
 
     if (error || !data?.ok) {
-      setError('authOtpError', data?.error || 'Kode salah atau kedaluwarsa.');
+      setError('authOtpError', await ambilPesanError(data, error, 'Kode salah atau kedaluwarsa.'));
       return;
     }
 
