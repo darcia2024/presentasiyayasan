@@ -1,0 +1,44 @@
+# ==========================================================================
+# PERISA AZHARIYAH — Berkas yang TIDAK ikut diunggah sebagai aset statis.
+#
+# Sintaksnya seperti .gitignore. Berkas ini dibaca Wrangler saat
+# `npx wrangler deploy` mengunggah isi direktori sebagai situs statis.
+#
+# Semua berkas di bawah adalah alat pengembangan/dokumentasi — tidak pernah
+# dirujuk oleh HTML/CSS/JS yang berjalan di browser santri, jadi tidak perlu
+# ikut naik ke Cloudflare.
+# ==========================================================================
+
+# Alat build & server pengembangan lokal
+tools/
+server.js
+package.json
+package-lock.json
+
+# Dokumentasi
+README.md
+DEPLOY.md
+*.md
+
+# Konfigurasi lingkungan & git
+.env
+.env.example
+.gitignore
+.gitattributes
+.git
+.git/**
+
+# Alat & konfigurasi Claude Code — bukan bagian aplikasi
+.claude
+.claude/**
+
+# Sumber CSS ikon yang belum disubset (4.600+ baris, hanya dipakai saat build)
+vendor/phosphor/_upstream.css
+
+# Konfigurasi Wrangler & node_modules (kalau suatu saat ada)
+wrangler.jsonc
+.assetsignore
+.wrangler
+.wrangler/**
+node_modules
+node_modules/**

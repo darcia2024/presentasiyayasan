@@ -1,0 +1,18 @@
+{
+  // ==========================================================================
+  // PERISA AZHARIYAH — Konfigurasi Cloudflare Workers (Static Assets)
+  //
+  // Situs ini murni berkas statis (HTML/CSS/JS) — tidak ada Worker script,
+  // tidak ada logika sisi server yang berjalan di Cloudflare. `server.js`
+  // hanya dipakai untuk pengembangan lokal, tidak ikut dipakai di sini.
+  //
+  // `directory: "./"` berarti Wrangler mengunggah seluruh repo apa adanya
+  // setelah `npm run build` selesai menaikkan versi. File yang tidak perlu
+  // ikut terunggah (tools/, README, dsb.) didaftarkan di .assetsignore.
+  // ==========================================================================
+  "name": "presentasiyayasan",
+  "compatibility_date": "2024-09-23",
+  "assets": {
+    "directory": "./"
+  }
+}
