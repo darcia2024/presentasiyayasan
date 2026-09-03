@@ -1,0 +1,231 @@
+/* ==========================================================================
+   PERISA AZHARIYAH — Fase 1: Gerbang Login
+   Memakai token warna/radius/bayangan yang sama dengan prototype.css supaya
+   layar login tidak terasa seperti aplikasi lain.
+   ========================================================================== */
+
+.auth-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(160deg, var(--teal-dark) 0%, #0a3330 55%, var(--teal-primary) 130%);
+}
+
+body.auth-gate-open {
+  overflow: hidden;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--bg-page);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 28px 26px 26px;
+  box-sizing: border-box;
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.auth-brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  object-fit: contain;
+}
+
+.auth-brand-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.auth-brand-sub {
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+.auth-step-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0 0 8px;
+}
+
+.auth-step-desc {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-body);
+  margin: 0 0 18px;
+}
+
+.auth-label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 6px;
+}
+
+.auth-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-family: var(--font-family);
+  color: var(--text-main);
+  background: var(--bg-subtle);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.auth-input:focus {
+  border-color: var(--teal-primary);
+  box-shadow: 0 0 0 3px var(--teal-border);
+}
+
+.auth-input-otp {
+  letter-spacing: 0.5em;
+  text-align: center;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.auth-error {
+  margin-top: 8px;
+  font-size: 12.5px;
+  color: #B4232A;
+  line-height: 1.5;
+}
+
+.auth-dev-hint {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: var(--gold-light);
+  border: 1px dashed var(--gold-border);
+  border-radius: var(--radius-xs);
+  font-size: 12px;
+  color: var(--gold-dark);
+  font-weight: 600;
+}
+
+.auth-btn-primary {
+  width: 100%;
+  margin-top: 16px;
+  padding: 13px;
+  font-size: 14.5px;
+  font-weight: 700;
+  font-family: var(--font-family);
+  color: #fff;
+  background: var(--teal-primary);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.auth-btn-primary:hover {
+  background: var(--teal-hover);
+}
+
+.auth-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.auth-btn-text {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
+  background: none;
+  border: none;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--teal-primary);
+  cursor: pointer;
+}
+
+.auth-help {
+  margin-top: 16px;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.auth-profil-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.auth-profil-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--bg-subtle);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.auth-profil-btn:hover {
+  border-color: var(--teal-primary);
+  background: var(--teal-light);
+}
+
+.auth-profil-avatar {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-full);
+  background: var(--teal-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-profil-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.auth-profil-nama {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.auth-profil-jenjang {
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 24px 20px 22px;
+  }
+}

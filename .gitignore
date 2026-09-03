@@ -13,3 +13,6 @@ node_modules/
 
 # Hasil build Cloudflare Wrangler
 .wrangler/
+
+# Dihasilkan otomatis oleh tools/gen-config.js — nilainya beda per lingkungan
+js/config.js

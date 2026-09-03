@@ -35,6 +35,7 @@ const VERSIONED_ASSETS = [
   'prototype-mobile.css',
   'prototype-mobile.js',
   'js/app.js',
+  'js/ui/auth.css',
   'logo-perisa-emblem.png',
   'logo-perisa-horizontal.png'
 ];
@@ -59,6 +60,14 @@ const SHELL_ASSETS = [
   '/js/ui/library.js',
   '/js/ui/assistant.js',
   '/js/ui/shell.js',
+  /* Fase 1 — konfigurasi & klien Supabase. config.js dihasilkan build
+     (tools/gen-config.js); kalau belum dikonfigurasi isinya string kosong,
+     bukan berkas hilang, jadi tetap aman ikut precache. */
+  '/js/config.js',
+  '/js/core/supabase-client.js',
+  '/js/ui/auth.js',
+  '/js/ui/auth.css',
+  '/vendor/supabase/supabase-js.2.114.0.min.js',
   /* Font & ikon lokal. Sengaja tidak semua bobot font ikut di-precache —
      hanya yang dibutuhkan tampilan pertama. Sisanya (bobot 500/800, subset
      latin-ext, dan Amiri tebal) menyusul lewat cache-first saat benar-benar

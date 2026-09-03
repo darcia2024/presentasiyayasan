@@ -4,14 +4,15 @@
   "description": "Website pitch deck presentasi interaktif dan proposal resmi penawaran **Platform Pembelajaran Bahasa Arab Interaktif Berbasis Game (Tingkat SD, SMP, & SMA)** asuhan **Umi Elly & Yayasan Peradaban Islam Azhariyah**.",
   "main": "server.js",
   "scripts": {
-    "stamp": "node tools/build-icons.js && node tools/stamp-version.js",
+    "stamp": "node tools/build-icons.js && node tools/gen-config.js && node tools/stamp-version.js",
     "start": "npm run stamp && node server.js",
     "build": "npm run stamp",
     "release:patch": "npm version patch --no-git-tag-version && npm run stamp",
     "release:minor": "npm version minor --no-git-tag-version && npm run stamp",
     "test": "node --check prototype-mobile.js && node --check app.js && node --check game2d.js && npm run stamp",
     "icons": "node tools/build-icons.js",
-    "fonts": "node tools/fetch-fonts.js"
+    "fonts": "node tools/fetch-fonts.js",
+    "gen-config": "node tools/gen-config.js"
   },
   "repository": {
     "type": "git",

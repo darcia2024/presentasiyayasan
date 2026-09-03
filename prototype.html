@@ -57,10 +57,66 @@
 
   <!-- Core App Stylesheet -->
   <link rel="stylesheet" href="prototype.css?v=1.0.0">
+  <!-- Fase 1: Gerbang Login -->
+  <link rel="stylesheet" href="js/ui/auth.css?v=1.0.0">
   <!-- Native Mobile / PWA Layer -->
   <link rel="stylesheet" href="prototype-mobile.css?v=1.0.0">
 </head>
 <body>
+
+  <!-- ============================================================
+       FASE 1 — GERBANG LOGIN (WALI / STAFF)
+       Disembunyikan lewat JS (js/ui/auth.js) kalau Supabase belum
+       dikonfigurasi, atau kalau sesi login masih berlaku.
+       ============================================================ -->
+  <div class="auth-gate" id="authGate" style="display: none;">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <img src="logo-perisa-emblem.png?v=1.0.0" alt="" class="auth-brand-mark">
+        <div>
+          <div class="auth-brand-title">PERISA Azhariyah</div>
+          <div class="auth-brand-sub">Yayasan Peradaban Islam Azhariyah</div>
+        </div>
+      </div>
+
+      <!-- Langkah 1: nomor WhatsApp wali -->
+      <div class="auth-step" id="authStepNomor">
+        <h2 class="auth-step-title">Masuk dengan WhatsApp</h2>
+        <p class="auth-step-desc">
+          Nomor WhatsApp orang tua/wali santri. Kode masuk dikirim ke nomor ini —
+          santri SD memakai akun wali, bukan akun sendiri.
+        </p>
+        <label class="auth-label" for="authNomorInput">Nomor WhatsApp</label>
+        <input type="tel" id="authNomorInput" class="auth-input" placeholder="0812xxxxxxxx" inputmode="numeric" autocomplete="tel">
+        <div class="auth-error" id="authNomorError" style="display:none;"></div>
+        <button type="button" class="auth-btn-primary" id="authNomorSubmit">Kirim Kode</button>
+        <p class="auth-help">
+          Nomor belum terdaftar? Hubungi pengurus yayasan untuk membuka akses.
+        </p>
+      </div>
+
+      <!-- Langkah 2: kode OTP -->
+      <div class="auth-step" id="authStepOtp" style="display:none;">
+        <h2 class="auth-step-title">Masukkan Kode</h2>
+        <p class="auth-step-desc">
+          Kode 6 digit dikirim ke WhatsApp <strong id="authOtpTarget"></strong>. Berlaku 5 menit.
+        </p>
+        <label class="auth-label" for="authOtpInput">Kode OTP</label>
+        <input type="text" id="authOtpInput" class="auth-input auth-input-otp" placeholder="000000" inputmode="numeric" maxlength="6" autocomplete="one-time-code">
+        <div class="auth-error" id="authOtpError" style="display:none;"></div>
+        <div class="auth-dev-hint" id="authDevHint" style="display:none;"></div>
+        <button type="button" class="auth-btn-primary" id="authOtpSubmit">Masuk</button>
+        <button type="button" class="auth-btn-text" id="authGantiNomor">Ganti nomor</button>
+      </div>
+
+      <!-- Langkah 3: pilih profil anak (hanya kalau wali punya >1 santri) -->
+      <div class="auth-step" id="authStepProfil" style="display:none;">
+        <h2 class="auth-step-title">Pilih Profil Santri</h2>
+        <p class="auth-step-desc">Siapa yang mau belajar sekarang?</p>
+        <div class="auth-profil-list" id="authProfilList"></div>
+      </div>
+    </div>
+  </div>
 
   <!-- ============================================================
        PWA NATIVE SHELL — BOOT SPLASH, STATUS JARINGAN,
@@ -1158,6 +1214,11 @@
   </div>
 
   <div class="toast-bar" id="prototypeToast">Pemberitahuan</div>
+
+  <!-- Klien Supabase divendor, bukan CDN (lihat vendor/supabase/README.md
+       — alasan sama dengan font & ikon di Fase 0). Memasang window.supabase,
+       dipakai js/core/supabase-client.js. -->
+  <script src="vendor/supabase/supabase-js.2.114.0.min.js"></script>
 
   <!-- Modul ES otomatis ditunda (defer), jadi selesai dieksekusi sebelum
        DOMContentLoaded — tepat saat prototype-mobile.js membungkus ulang

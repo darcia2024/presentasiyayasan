@@ -34,6 +34,7 @@ import {
   closeCertModal,
   bindOutsideClick
 } from './ui/shell.js';
+import { initAuthGate, logout } from './ui/auth.js';
 
 const PrototypeApp = {
   // Peran & navigasi
@@ -69,6 +70,9 @@ const PrototypeApp = {
   handleAiSend,
   fillAiPrompt,
 
+  // Fase 1 — login
+  logout,
+
   // Utilitas yang dipakai langsung dari markup
   playTone,
   showToast
@@ -84,10 +88,19 @@ function bootSyllabus() {
   renderSyllabus(roleData[DEFAULT_ROLE].syllabus);
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', bootSyllabus);
-} else {
+function boot() {
   bootSyllabus();
+  // Kalau Supabase sudah terkonfigurasi dan belum ada sesi valid, gerbang
+  // ini mengunci layar sampai wali/staff berhasil login. Kalau belum
+  // terkonfigurasi, fungsi ini tidak melakukan apa-apa — mode peraga
+  // tombol ganti akun tetap berjalan seperti sebelum Fase 1 ada.
+  initAuthGate();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', boot);
+} else {
+  boot();
 }
 
 export default PrototypeApp;
