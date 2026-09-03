@@ -3,7 +3,12 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const PORT = process.env.PORT || 3020;
+// Muat .env sebelum apa pun membaca process.env.
+require('./tools/env').load();
+
+const PORT     = process.env.PORT || 3020;
+const NODE_ENV = process.env.NODE_ENV || 'development';
+const BASE_URL = process.env.PUBLIC_BASE_URL || `http://localhost:${PORT}`;
 
 // MIME types
 const MIME_TYPES = {
@@ -147,7 +152,8 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, () => {
   console.log(`=======================================================`);
   console.log(`PERISA Arabic Learning Node.js Server & 2D Game Engine`);
-  console.log(`Server aktif berjalan di: http://localhost:${PORT}`);
+  console.log(`Lingkungan:               ${NODE_ENV}`);
+  console.log(`Server aktif berjalan di: ${BASE_URL}`);
   console.log(`Prototype Live Demo:      http://localhost:${PORT}/prototype.html`);
   console.log(`2D Game Canvas Demo:     http://localhost:${PORT}/game2d.html`);
   console.log(`Pitch Deck Presentation:  http://localhost:${PORT}/index.html`);

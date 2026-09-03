@@ -459,8 +459,8 @@ const DeckEngine = (() => {
     function togglePlayState() {
       isVideoPlaying = !isVideoPlaying;
       if (isVideoPlaying) {
-        if (centerPlayIcon) centerPlayIcon.className = 'ph ph-pause-fill';
-        if (barPlayIcon) barPlayIcon.className = 'ph ph-pause-fill';
+        if (centerPlayIcon) centerPlayIcon.className = 'ph ph-pause';
+        if (barPlayIcon) barPlayIcon.className = 'ph ph-pause';
         showToast('Video diputar: Sesi 2 - Baitul Hikmah Baghdad');
         playTone(550, 'sine', 0.1, 0.08);
 
@@ -477,8 +477,8 @@ const DeckEngine = (() => {
           }
         }, 1000);
       } else {
-        if (centerPlayIcon) centerPlayIcon.className = 'ph ph-play-fill';
-        if (barPlayIcon) barPlayIcon.className = 'ph ph-play-fill';
+        if (centerPlayIcon) centerPlayIcon.className = 'ph ph-play';
+        if (barPlayIcon) barPlayIcon.className = 'ph ph-play';
         clearInterval(videoPlayInterval);
         showToast('Video dijeda');
       }
@@ -502,7 +502,7 @@ const DeckEngine = (() => {
       btnMarkComplete.addEventListener('click', () => {
         const isDone = btnMarkComplete.classList.toggle('completed');
         if (isDone) {
-          if (markDoneIcon) markDoneIcon.className = 'ph ph-check-fat-fill';
+          if (markDoneIcon) markDoneIcon.className = 'ph ph-check-fat';
           if (markDoneText) markDoneText.textContent = 'Tuntas Dipelajari ✔';
           if (totalProgressText) totalProgressText.textContent = '75% Tuntas';
           if (sidebarProgressFill) sidebarProgressFill.style.width = '75%';

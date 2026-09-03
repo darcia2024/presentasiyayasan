@@ -6,16 +6,11 @@
   <title>Platform Materi & Kelas Online — Yayasan Peradaban Islam Azhariyah</title>
   <meta name="description" content="Presentasi Penawaran Platform Kelas Online Yayasan Peradaban Islam Azhariyah: Sistem proteksi materi kajian, kontrol perizinan akses santri oleh Umi Elly & Yayasan, serta Game Edukasi Interaktif.">
 
-  <!-- Google Fonts: Plus Jakarta Sans (Exclusive) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600;1,700;1,800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <!-- Font & ikon dari repo sendiri, bukan CDN. Lihat tools/fetch-fonts.js
+       dan tools/build-icons.js. -->
+  <link rel="stylesheet" href="vendor/fonts/fonts.css">
+  <link rel="stylesheet" href="vendor/phosphor/phosphor.css">
 
-  <!-- Phosphor Icons CSS & WebFont -->
-  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" media="print" onload="this.media='all'">
-  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css" media="print" onload="this.media='all'">
-  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css" media="print" onload="this.media='all'">
-  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1" defer></script>
 
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="style.css">
@@ -625,7 +620,7 @@
                       </div>
 
                       <div class="player-center-play" id="btnPlayerCenterPlay">
-                        <i class="ph ph-play-fill" id="centerPlayIcon"></i>
+                        <i class="ph ph-play" id="centerPlayIcon"></i>
                       </div>
 
                       <div class="player-hud-title" id="playerHudTitle">
@@ -636,7 +631,7 @@
                     <!-- Player Bottom Bar Controls -->
                     <div class="player-controls-bar">
                       <button class="player-ctrl-btn" id="btnPlayerPlayToggle">
-                        <i class="ph ph-play-fill" id="barPlayIcon"></i>
+                        <i class="ph ph-play" id="barPlayIcon"></i>
                       </button>
                       <span class="player-timestamp" id="playerTimer">08:24 / 45:10</span>
                       
@@ -698,7 +693,7 @@
                   <div class="syllabus-list" id="syllabusList">
                     
                     <div class="syllabus-item done" data-module="1" data-title="Sesi 1 (Dasar): Mufrodat Benda Sehari-hari & Game Tebak Gambar" data-time="38 Menit">
-                      <div class="syl-status-icon"><i class="ph ph-check-circle-fill"></i></div>
+                      <div class="syl-status-icon"><i class="ph ph-check-circle"></i></div>
                       <div class="syl-info">
                         <span class="syl-session">Sesi 1 • Tuntas +50 XP</span>
                         <span class="syl-title">Mufrodat Dasar: Rumah, Sekolah & Keluarga</span>
@@ -707,7 +702,7 @@
                     </div>
 
                     <div class="syllabus-item current active-syl" data-module="2" data-title="Sesi 2 (Perkenalan): Mufrodat Ta'aruf & Praktik Menyapa" data-time="45 Menit">
-                      <div class="syl-status-icon"><i class="ph ph-play-circle-fill"></i></div>
+                      <div class="syl-status-icon"><i class="ph ph-play-circle"></i></div>
                       <div class="syl-info">
                         <span class="syl-session">Sesi 2 (Diputar)</span>
                         <span class="syl-title">Mufrodat Perkenalan & Sapaan Harian</span>
@@ -971,7 +966,7 @@
                         </td>
                         <td>
                           <button class="btn-table-verify" id="btnVerify-2" onclick="DeckEngine.verifySantri(2)">
-                            <i class="ph ph-check-bold"></i>
+                            <i class="ph ph-check"></i>
                             <span>Beri Izin Akses</span>
                           </button>
                         </td>
@@ -1096,7 +1091,7 @@
 
               <div class="mvp-feature-list">
                 <div class="mvp-f-item">
-                  <div class="mvp-check"><i class="ph ph-check-bold"></i></div>
+                  <div class="mvp-check"><i class="ph ph-check"></i></div>
                   <div class="mvp-f-text">
                     <strong>Autentikasi Santri Aman</strong>
                     <span>Login & registrasi mudah dengan nomor WhatsApp / Email terdaftar.</span>
@@ -1104,7 +1099,7 @@
                 </div>
 
                 <div class="mvp-f-item">
-                  <div class="mvp-check"><i class="ph ph-check-bold"></i></div>
+                  <div class="mvp-check"><i class="ph ph-check"></i></div>
                   <div class="mvp-f-text">
                     <strong>Player Terproteksi + Watermark Nama</strong>
                     <span>Streaming video ber-watermark nama santri dan anti-download langsung.</span>
@@ -1112,7 +1107,7 @@
                 </div>
 
                 <div class="mvp-f-item">
-                  <div class="mvp-check"><i class="ph ph-check-bold"></i></div>
+                  <div class="mvp-check"><i class="ph ph-check"></i></div>
                   <div class="mvp-f-text">
                     <strong>Game Edukasi Mufrodat & Tata Bahasa Arab</strong>
                     <span>Mini-game tebak arti mufrodat, susun kalimat harian, roleplay percakapan, dan poin XP santri per jenjang SD/SMP/SMA.</span>
@@ -1120,7 +1115,7 @@
                 </div>
 
                 <div class="mvp-f-item">
-                  <div class="mvp-check"><i class="ph ph-check-bold"></i></div>
+                  <div class="mvp-check"><i class="ph ph-check"></i></div>
                   <div class="mvp-f-text">
                     <strong>Progress Bar & Lencana Prestasi</strong>
                     <span>Pelacakan otomatis sesi yang telah ditonton dan lencana pencapaian belajar santri.</span>
@@ -1128,7 +1123,7 @@
                 </div>
 
                 <div class="mvp-f-item">
-                  <div class="mvp-check"><i class="ph ph-check-bold"></i></div>
+                  <div class="mvp-check"><i class="ph ph-check"></i></div>
                   <div class="mvp-f-text">
                     <strong>Unduh Berkas & Ringkasan Resmi</strong>
                     <span>Akses berkas PDF pendukung yang diterbitkan resmi oleh yayasan.</span>
@@ -1151,7 +1146,7 @@
 
               <div class="mvp-feature-list">
                 <div class="mvp-f-item">
-                  <div class="mvp-check"><i class="ph ph-check-bold"></i></div>
+                  <div class="mvp-check"><i class="ph ph-check"></i></div>
                   <div class="mvp-f-text">
                     <strong>Pemberian & Pembatalan Izin Akses</strong>
                     <span>Tombol aktivasi izin santri per batch/kelas secara instan.</span>
@@ -1159,7 +1154,7 @@
                 </div>
 
                 <div class="mvp-f-item">
-                  <div class="mvp-check"><i class="ph ph-check-bold"></i></div>
+                  <div class="mvp-check"><i class="ph ph-check"></i></div>
                   <div class="mvp-f-text">
                     <strong>Manajemen & Upload Video Kajian</strong>
                     <span>Mudah menambahkan materi video baru, judul modul, dan PDF ringkasan.</span>
@@ -1167,7 +1162,7 @@
                 </div>
 
                 <div class="mvp-f-item">
-                  <div class="mvp-check"><i class="ph ph-check-bold"></i></div>
+                  <div class="mvp-check"><i class="ph ph-check"></i></div>
                   <div class="mvp-f-text">
                     <strong>Pengaturan Bank Soal & Game Bahasa Arab</strong>
                     <span>Pengurus dapat membuat soal kuis mufrodat, tebak gambar, dan dialog harian per jenjang.</span>
@@ -1175,7 +1170,7 @@
                 </div>
 
                 <div class="mvp-f-item">
-                  <div class="mvp-check"><i class="ph ph-check-bold"></i></div>
+                  <div class="mvp-check"><i class="ph ph-check"></i></div>
                   <div class="mvp-f-text">
                     <strong>Pemantauan Keaktifan & Skor Santri</strong>
                     <span>Melihat siapa santri yang paling rajin belajar dan berprestasi di kuis game.</span>
@@ -1183,7 +1178,7 @@
                 </div>
 
                 <div class="mvp-f-item">
-                  <div class="mvp-check"><i class="ph ph-check-bold"></i></div>
+                  <div class="mvp-check"><i class="ph ph-check"></i></div>
                   <div class="mvp-f-text">
                     <strong>Ekspor Laporan Data Santri</strong>
                     <span>Download data peserta dan rekap infaq ke format Excel kapan saja.</span>
@@ -1572,7 +1567,7 @@
         <!-- Feedback Box -->
         <div id="gameFeedbackBox" style="display: none; padding: 12px 16px; border-radius: var(--md-shape-corner-medium); background-color: #E6F7F5; border: 1.5px solid #00A396; color: #0F2422; font-size: 12.5px; line-height: 1.5;">
           <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; color: #006D64; margin-bottom: 4px;">
-            <i class="ph ph-check-circle-fill" style="font-size: 18px; color: #008E82;"></i>
+            <i class="ph ph-check-circle" style="font-size: 18px; color: #008E82;"></i>
             <span id="gameFeedbackTitle">Mumtaz! Jawaban Benar (+50 XP Bertambah)</span>
           </div>
           <div id="gameFeedbackDesc">Kata 'المَكْتَبَةُ' (Al-Maktabatu) berarti Perpustakaan. Santri sudah menguasai mufrodat dasar tempat sehari-hari!</div>

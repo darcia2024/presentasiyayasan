@@ -70,6 +70,9 @@ memuat modulnya langsung.
 | `js/ui/assistant.js` | Studio Asisten Bahasa Arab. |
 | `js/ui/shell.js` | Drawer, dropdown profil, modal piagam. |
 | `tools/stamp-version.js` | Pencap versi otomatis untuk `?v=` dan `SW_VERSION`. |
+| `tools/build-icons.js` | Menyusun CSS ikon hanya dari ikon yang benar-benar dipakai. |
+| `tools/fetch-fonts.js` | Mengunduh font ke repo. Butuh jaringan, jarang dijalankan. |
+| `tools/env.js` | Pembaca `.env` tanpa paket pihak ketiga. |
 
 **Dua aturan yang tidak boleh dilanggar:**
 
@@ -80,6 +83,55 @@ memuat modulnya langsung.
 2. **Urutan dua tag skrip di `prototype.html` jangan ditukar.**
    `prototype-mobile.js` membungkus ulang lima metode `PrototypeApp` saat boot,
    dan itu hanya bekerja bila modul ES sudah selesai dieksekusi lebih dulu.
+
+---
+
+## 🔌 Tanpa Ketergantungan Layanan Luar
+
+Seluruh font dan ikon disajikan dari dalam repo (`vendor/`). Aplikasi tidak
+memuat satu pun berkas dari `fonts.googleapis.com` maupun `unpkg.com`.
+
+Sebelumnya tiga stylesheet ikon dimuat dari CDN — dua di antaranya (`fill` dan
+`bold`) tidak pernah dipakai sama sekali. Kalau CDN-nya tidak terjangkau,
+santri mendapat tampilan tanpa satu pun ikon, dan service worker tidak menolong
+karena berkas yang belum pernah berhasil dimuat tidak akan pernah tersimpan.
+Untuk santri SD dengan HP dan kuota seadanya, itu kejadian biasa.
+
+| Berkas | Isi |
+| --- | --- |
+| `vendor/fonts/` | 16 berkas font Amiri & Plus Jakarta Sans + `fonts.css` (dihasilkan). |
+| `vendor/phosphor/Phosphor.woff2` | Font ikon, varian reguler saja. |
+| `vendor/phosphor/phosphor.css` | **Dihasilkan** — hanya ikon yang benar-benar dipakai (88 dari 1.512, 5 KB dari 76 KB). |
+| `vendor/phosphor/_upstream.css` | Salinan sumber, agar build tidak pernah butuh jaringan. |
+
+`npm run stamp` menjalankan penyusun ikon otomatis, jadi **menambah ikon baru di
+markup tidak menuntut langkah manual apa pun**. Kalau nama kelas ikonnya salah
+ketik, build gagal dengan pesan jelas — bukan diam-diam tampil kosong.
+
+Menambah bobot font baru butuh `npm run fonts` (satu-satunya perintah yang
+memerlukan jaringan).
+
+---
+
+## ⚙️ Konfigurasi Lingkungan
+
+```bash
+cp .env.example .env
+```
+
+`.env` tidak pernah masuk repo. Seluruh variabel untuk fase berikutnya sudah
+terdaftar di `.env.example` beserta keterangannya.
+
+> Kunci `SUPABASE_SERVICE_ROLE_KEY` dan `ANTHROPIC_API_KEY` tidak boleh pernah
+> masuk ke berkas mana pun di dalam `js/` — seluruh isi folder itu terkirim apa
+> adanya ke browser santri.
+
+---
+
+## 🌐 Menerbitkan ke HTTPS
+
+Lihat **[DEPLOY.md](DEPLOY.md)** untuk panduan lengkap Cloudflare Pages,
+pemasangan di HP, dan domain yayasan.
 
 ### Fitur Native
 

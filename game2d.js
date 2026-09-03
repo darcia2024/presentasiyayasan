@@ -250,7 +250,7 @@ const HiwarApp = (() => {
       userSpokenText = '';
       btn.classList.add('recording');
       label.textContent = 'Sedang Merekam... Bicaralah Sekarang';
-      icon.className = 'ph-fill ph-waveform';
+      icon.className = 'ph ph-waveform';
       showToast('Mikrofon MENDENGARKAN! Silakan ucapkan kalimat bahasa Arab.');
       playTone(660, 'sine', 0.1, 0.08);
 

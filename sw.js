@@ -2,9 +2,9 @@
    PERISA AZHARIYAH — SERVICE WORKER
    Offline-first app shell untuk PWA Native Mobile.
    Strategi:
-     • App shell (HTML/CSS/JS/ikon)  -> stale-while-revalidate
+     • App shell (HTML/CSS/JS)       -> stale-while-revalidate
      • Navigasi halaman              -> network-first + fallback shell offline
-     • Font & ikon CDN               -> cache-first (immutable, umur panjang)
+     • Font & gambar lokal           -> cache-first (tetap dalam satu versi)
      • Endpoint /api/*               -> network-first + fallback cache terakhir
    ========================================================================== */
 
@@ -35,6 +35,13 @@ const SHELL_ASSETS = [
   '/js/ui/library.js',
   '/js/ui/assistant.js',
   '/js/ui/shell.js',
+  '/vendor/phosphor/phosphor.css',
+  '/vendor/phosphor/Phosphor.woff2',
+  '/vendor/fonts/fonts.css',
+  '/vendor/fonts/amiri-400-arabic.woff2',
+  '/vendor/fonts/plus-jakarta-sans-400-latin.woff2',
+  '/vendor/fonts/plus-jakarta-sans-600-latin.woff2',
+  '/vendor/fonts/plus-jakarta-sans-700-latin.woff2',
   '/manifest.webmanifest',
   '/offline.html',
   '/logo-perisa-emblem.png?v=1.0.0',
@@ -47,12 +54,12 @@ const SHELL_ASSETS = [
   '/icons/favicon-32.png'
 ];
 
-/* Origin CDN pihak ketiga yang boleh di-cache secara agresif */
-const CDN_HOSTS = [
-  'fonts.googleapis.com',
-  'fonts.gstatic.com',
-  'unpkg.com'
-];
+/* Origin CDN pihak ketiga yang boleh di-cache secara agresif.
+   Sengaja dikosongkan: seluruh font dan ikon kini ada di dalam repo, sehingga
+   aplikasi tidak lagi bergantung pada layanan luar mana pun. Jangan menambah
+   host ke sini tanpa alasan kuat — santri dengan jaringan buruk adalah yang
+   pertama menanggung akibatnya. */
+const CDN_HOSTS = [];
 
 /* -------------------------------------------------------------- INSTALL */
 self.addEventListener('install', (event) => {
@@ -97,6 +104,13 @@ function isShellAsset(url) {
 
 function isImage(url) {
   return /\.(png|jpg|jpeg|svg|webp|gif|ico)$/i.test(url.pathname);
+}
+
+/* Font disajikan dari repo sendiri dan isinya tidak pernah berubah dalam satu
+   versi, jadi cache-first — bukan stale-while-revalidate yang memicu
+   permintaan latar sia-sia setiap kali halaman dibuka. */
+function isFont(url) {
+  return /\.(woff2|woff|ttf|otf|eot)$/i.test(url.pathname);
 }
 
 async function staleWhileRevalidate(request, cacheName) {
@@ -181,25 +195,34 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  /* 3. Font & ikon CDN -> cache-first */
+  /* 3. Berkas font lokal -> cache-first (isinya tetap dalam satu versi) */
+  if (url.origin === self.location.origin && isFont(url)) {
+    event.respondWith(cacheFirst(request, ASSET_CACHE));
+    return;
+  }
+
+  /* 4. CDN pihak ketiga -> cache-first.
+        Saat ini tidak terpakai: seluruh font dan ikon sudah disajikan dari
+        repo sendiri. Jalur ini dipertahankan agar tetap aman bila suatu saat
+        ada sumber luar yang benar-benar dibutuhkan. */
   if (isCdn(url)) {
     event.respondWith(cacheFirst(request, CDN_CACHE));
     return;
   }
 
-  /* 4. CSS / JS / manifest -> stale-while-revalidate */
+  /* 5. CSS / JS / manifest -> stale-while-revalidate */
   if (isShellAsset(url)) {
     event.respondWith(staleWhileRevalidate(request, SHELL_CACHE));
     return;
   }
 
-  /* 5. Gambar lokal -> cache-first */
+  /* 6. Gambar lokal -> cache-first */
   if (url.origin === self.location.origin && isImage(url)) {
     event.respondWith(cacheFirst(request, ASSET_CACHE));
     return;
   }
 
-  /* 6. Sisanya -> stale-while-revalidate ke cache aset */
+  /* 7. Sisanya -> stale-while-revalidate ke cache aset */
   if (url.origin === self.location.origin) {
     event.respondWith(staleWhileRevalidate(request, ASSET_CACHE));
   }

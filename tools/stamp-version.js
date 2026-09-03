@@ -59,6 +59,17 @@ const SHELL_ASSETS = [
   '/js/ui/library.js',
   '/js/ui/assistant.js',
   '/js/ui/shell.js',
+  /* Font & ikon lokal. Sengaja tidak semua bobot font ikut di-precache —
+     hanya yang dibutuhkan tampilan pertama. Sisanya (bobot 500/800, subset
+     latin-ext, dan Amiri tebal) menyusul lewat cache-first saat benar-benar
+     dipakai, supaya pemasangan awal tidak menyedot kuota santri. */
+  '/vendor/phosphor/phosphor.css',
+  '/vendor/phosphor/Phosphor.woff2',
+  '/vendor/fonts/fonts.css',
+  '/vendor/fonts/amiri-400-arabic.woff2',
+  '/vendor/fonts/plus-jakarta-sans-400-latin.woff2',
+  '/vendor/fonts/plus-jakarta-sans-600-latin.woff2',
+  '/vendor/fonts/plus-jakarta-sans-700-latin.woff2',
   '/manifest.webmanifest',
   '/offline.html',
   '/logo-perisa-emblem.png',

@@ -4,3 +4,12 @@ node_modules/
 *.log
 .vscode/
 .idea/
+
+# Konfigurasi lingkungan — jangan pernah masuk repo.
+# Salin .env.example menjadi .env untuk pengaturan lokal.
+.env
+.env.local
+.env.*.local
+
+# Hasil build Cloudflare Wrangler
+.wrangler/
