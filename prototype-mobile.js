@@ -361,13 +361,12 @@
       // Kolapskan judul besar ke dalam app bar.
       body.classList.toggle('m-scrolled', y > 52);
 
-      // Sembunyikan tab bar saat menggulir turun cepat, tampilkan saat naik.
-      var delta = y - lastScrollY;
-      if (y > 140 && delta > 8) {
-        body.classList.add('m-tabbar-hidden');
-      } else if (delta < -6 || y < 90) {
-        body.classList.remove('m-tabbar-hidden');
-      }
+      // Tab bar bawah SENGAJA tidak pernah disembunyikan lewat scroll.
+      // Versi sebelumnya menyembunyikannya saat menggulir turun cepat (gaya
+      // "immersive" ala YouTube) — tapi untuk santri SD, navigasi yang
+      // tiba-tiba hilang itu bikin bingung, bukan elegan. `m-tabbar-hidden`
+      // masih dipertahankan di CSS dan direset di tempat lain sebagai jaring
+      // pengaman, tapi tidak ada lagi kode yang menyalakannya.
 
       lastScrollY = y;
       scrollTicking = false;
