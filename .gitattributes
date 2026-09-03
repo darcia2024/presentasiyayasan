@@ -1,0 +1,25 @@
+# ==========================================================================
+# PERISA AZHARIYAH — Normalisasi Akhir Baris
+#
+# Berkas-berkas di bawah ditulis ulang oleh skrip build (tools/*.js) yang
+# selalu memakai akhir baris LF. Tanpa aturan ini, repo menyimpan CRLF
+# sementara build menghasilkan LF, sehingga `git status` selalu menandainya
+# "berubah" setiap habis build padahal isinya identik.
+#
+# `git status` yang selalu kotor membuat orang berhenti mempercayainya —
+# dan itu cara paling mudah kehilangan perubahan sungguhan.
+# ==========================================================================
+
+sw.js                        text eol=lf
+prototype.html               text eol=lf
+package.json                 text eol=lf
+vendor/phosphor/phosphor.css text eol=lf
+vendor/fonts/fonts.css       text eol=lf
+
+# Berkas biner: jangan pernah disentuh normalisasi.
+*.woff2 binary
+*.woff  binary
+*.ttf   binary
+*.png   binary
+*.jpg   binary
+*.ico   binary
