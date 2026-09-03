@@ -55,6 +55,15 @@ body.auth-gate-open {
   color: var(--text-muted);
 }
 
+/* JS mengatur display:'flex' untuk menampilkan langkah (lihat
+   tampilkanLangkah() di auth.js) — flex-direction WAJIB column di sini,
+   kalau tidak seluruh isi form (judul, deskripsi, label, input, tombol)
+   tersusun menyamping alih-alih menumpuk ke bawah. */
+.auth-step {
+  display: flex;
+  flex-direction: column;
+}
+
 .auth-step-title {
   font-size: 20px;
   font-weight: 800;
