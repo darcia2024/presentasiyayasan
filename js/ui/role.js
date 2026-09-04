@@ -12,6 +12,8 @@ import { renderSyllabus } from './syllabus.js';
 import { muatSilabusTerbit, muatMufrodatPelajaran } from '../core/content-loader.js';
 import { renderMufrodatCards } from './mufrodat-cards.js';
 import { tampilkanVideoPelajaran, sembunyikanVideoPelajaran } from './video-player.js';
+import { renderKuis } from './kuis.js';
+import { upgradePapanPeringkat } from './papan-peringkat.js';
 
 /** Tampilan lain yang harus disembunyikan agar tidak bertumpuk saat berganti peran. */
 const OTHER_VIEWS = ['viewBerandaUtama', 'viewModulPdf', 'viewAiAssistant'];
@@ -37,6 +39,7 @@ async function upgradeKeKontenAsli(roleName) {
   if (!jenjang) return;
 
   const giliranSaya = ++giliranSilabusTerakhir;
+  upgradePapanPeringkat(jenjang); // independen dari silabus — tidak perlu ditunggu
   const hasil = await muatSilabusTerbit(jenjang);
   if (giliranSaya !== giliranSilabusTerakhir) return; // sudah keburu ganti peran lagi
   if (!hasil || !hasil.syllabus.length) return;
@@ -49,7 +52,10 @@ async function upgradeKeKontenAsli(roleName) {
       tampilkanVideoPelajaran(hasil.pelajaranAktifId),
     ]);
     if (giliranSaya !== giliranSilabusTerakhir) return;
-    if (mufrodat && mufrodat.length) renderMufrodatCards(mufrodat);
+    if (mufrodat && mufrodat.length) {
+      renderMufrodatCards(mufrodat);
+      renderKuis(mufrodat, hasil.pelajaranAktifId);
+    }
   } else {
     sembunyikanVideoPelajaran();
   }

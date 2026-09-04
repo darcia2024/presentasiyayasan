@@ -80,6 +80,10 @@ const SHELL_ASSETS = [
   '/js/core/video-client.js',
   '/js/ui/video-player.js',
   '/js/ui/dokumen-viewer.js',
+  /* Fase 4 — Gamifikasi. */
+  '/js/core/kuis-client.js',
+  '/js/ui/kuis.js',
+  '/js/ui/papan-peringkat.js',
   /* Font & ikon lokal. Sengaja tidak semua bobot font ikut di-precache —
      hanya yang dibutuhkan tampilan pertama. Sisanya (bobot 500/800, subset
      latin-ext, dan Amiri tebal) menyusul lewat cache-first saat benar-benar
