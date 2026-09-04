@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verifikasi Sertifikat — PERISA Azhariyah</title>
+<meta name="robots" content="noindex">
+<!--
+  PERISA AZHARIYAH — Halaman Verifikasi Publik Sertifikat (Fase 6)
+
+  Berdiri sendiri, TIDAK memuat prototype.css/js/app.js — halaman ini
+  dibuka oleh SIAPA SAJA yang memindai QR di sertifikat cetak, dari HP
+  yang mungkin tidak pernah membuka aplikasi PERISA sama sekali dan tidak
+  login. Harus ringan dan berdiri sendiri, bukan menyeret seluruh SPA.
+
+  Satu-satunya sumber data: RPC verifikasi_sertifikat() (SECURITY DEFINER,
+  lihat supabase/migrations/20260904000006_pengurus_sertifikat.sql) —
+  lookup persis satu baris lewat kode unik, tidak pernah membocorkan
+  daftar sertifikat lain.
+-->
+<style>
+  :root {
+    --teal-primary: #00877A;
+    --teal-dark: #072826;
+    --teal-light: #E6F6F4;
+    --gold-light: #FDF7E7;
+    --gold-dark: #855E03;
+    --bg-subtle: #F8FAFA;
+    --border-color: #E2ECEB;
+    --text-main: #08201E;
+    --text-muted: #658482;
+    --red-light: #FBEAEA;
+    --red-dark: #B4232A;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: linear-gradient(160deg, var(--teal-dark), #0c3d39);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    color: var(--text-main);
+  }
+  .kartu {
+    background: #FFFFFF;
+    border-radius: 20px;
+    max-width: 420px;
+    width: 100%;
+    padding: 28px 26px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    text-align: center;
+  }
+  .logo { height: 40px; object-fit: contain; margin-bottom: 14px; }
+  h1 { font-size: 15px; font-weight: 800; color: var(--teal-dark); margin: 0 0 4px; }
+  .sub { font-size: 11.5px; color: var(--text-muted); margin: 0 0 20px; }
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 999px;
+    font-size: 12px; font-weight: 800; margin-bottom: 18px;
+  }
+  .status-badge.valid { background: var(--teal-light); color: var(--teal-primary); }
+  .status-badge.invalid { background: var(--red-light); color: var(--red-dark); }
+  .status-badge.loading { background: var(--bg-subtle); color: var(--text-muted); }
+  .detail {
+    background: var(--bg-subtle);
+    border: 1.5px dashed var(--teal-primary);
+    border-radius: 14px;
+    padding: 18px;
+    text-align: left;
+  }
+  .baris { margin-bottom: 10px; }
+  .baris:last-child { margin-bottom: 0; }
+  .label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: .02em; }
+  .nilai { font-size: 14.5px; font-weight: 700; color: var(--teal-dark); margin-top: 2px; }
+  .pesan-kosong { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+  .footer { margin-top: 20px; font-size: 10.5px; color: var(--text-muted); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+  <div class="kartu">
+    <img class="logo" src="logo-perisa-horizontal.png" alt="PERISA Azhariyah">
+    <h1>Verifikasi Keaslian Sertifikat</h1>
+    <p class="sub">Yayasan Peradaban Islam Azhariyah — Asuhan Umi Elly</p>
+
+    <div id="status" class="status-badge loading">Memeriksa…</div>
+
+    <div id="hasilValid" class="detail" hidden>
+      <div class="baris"><div class="label">Diberikan kepada</div><div class="nilai" id="fNama">—</div></div>
+      <div class="baris"><div class="label">Jenjang</div><div class="nilai" id="fJenjang">—</div></div>
+      <div class="baris"><div class="label">Sertifikat</div><div class="nilai" id="fJudul">—</div></div>
+      <div class="baris"><div class="label">Nomor Seri</div><div class="nilai" id="fNomorSeri">—</div></div>
+      <div class="baris"><div class="label">Diterbitkan</div><div class="nilai" id="fTanggal">—</div></div>
+    </div>
+
+    <div id="hasilKosong" class="pesan-kosong" hidden>
+      Kode verifikasi tidak ditemukan, atau sertifikatnya belum/tidak pernah diterbitkan oleh yayasan. Kalau menurut Anda ini keliru, hubungi pengurus Yayasan Peradaban Islam Azhariyah.
+    </div>
+
+    <p class="footer">Halaman ini murni pembaca publik — tidak memerlukan dan tidak meminta Anda masuk (login).</p>
+  </div>
+
+  <script src="vendor/supabase/supabase-js.2.114.0.min.js"></script>
+  <script type="module">
+    import { SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_TERKONFIGURASI } from './js/config.js';
+
+    const elStatus = document.getElementById('status');
+    const elValid = document.getElementById('hasilValid');
+    const elKosong = document.getElementById('hasilKosong');
+
+    function tampilkanTidakValid() {
+      elStatus.className = 'status-badge invalid';
+      elStatus.textContent = '✕ Tidak Ditemukan';
+      elKosong.hidden = false;
+    }
+
+    async function verifikasi() {
+      const kode = new URLSearchParams(window.location.search).get('kode');
+      if (!kode || !SUPABASE_TERKONFIGURASI) {
+        tampilkanTidakValid();
+        return;
+      }
+
+      try {
+        const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const { data, error } = await client.rpc('verifikasi_sertifikat', { p_kode: kode });
+        const baris = Array.isArray(data) ? data[0] : data;
+
+        if (error || !baris) {
+          tampilkanTidakValid();
+          return;
+        }
+
+        const NAMA_JENJANG = { sd: 'Sekolah Dasar', smp: 'Sekolah Menengah Pertama', sma: 'Sekolah Menengah Atas' };
+        document.getElementById('fNama').textContent = baris.nama;
+        document.getElementById('fJenjang').textContent = NAMA_JENJANG[baris.jenjang] || baris.jenjang;
+        document.getElementById('fJudul').textContent = baris.judul;
+        document.getElementById('fNomorSeri').textContent = baris.nomor_seri;
+        document.getElementById('fTanggal').textContent = new Date(baris.diterbitkan_at).toLocaleDateString('id-ID', {
+          day: 'numeric', month: 'long', year: 'numeric',
+        });
+
+        elStatus.className = 'status-badge valid';
+        elStatus.textContent = '✓ Sertifikat Asli — Terverifikasi';
+        elValid.hidden = false;
+      } catch (e) {
+        console.error('[verifikasi] gagal:', e);
+        tampilkanTidakValid();
+      }
+    }
+
+    verifikasi();
+  </script>
+</body>
+</html>

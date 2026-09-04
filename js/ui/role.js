@@ -13,7 +13,9 @@ import { muatSilabusTerbit, muatMufrodatPelajaran } from '../core/content-loader
 import { renderMufrodatCards } from './mufrodat-cards.js';
 import { tampilkanVideoPelajaran, sembunyikanVideoPelajaran } from './video-player.js';
 import { renderKuis } from './kuis.js';
+import { santriAktifId } from '../core/kuis-client.js';
 import { upgradePapanPeringkat } from './papan-peringkat.js';
+import { upgradeCertModalKeSertifikatAsli } from './sertifikat-santri.js';
 
 /** Tampilan lain yang harus disembunyikan agar tidak bertumpuk saat berganti peran. */
 const OTHER_VIEWS = ['viewBerandaUtama', 'viewModulPdf', 'viewAiAssistant'];
@@ -40,6 +42,7 @@ async function upgradeKeKontenAsli(roleName) {
 
   const giliranSaya = ++giliranSilabusTerakhir;
   upgradePapanPeringkat(jenjang); // independen dari silabus — tidak perlu ditunggu
+  upgradeCertModalKeSertifikatAsli(santriAktifId()); // idem — modal piagam baru dibuka kalau diklik
   const hasil = await muatSilabusTerbit(jenjang);
   if (giliranSaya !== giliranSilabusTerakhir) return; // sudah keburu ganti peran lagi
   if (!hasil || !hasil.syllabus.length) return;

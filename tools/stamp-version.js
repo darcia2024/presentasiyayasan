@@ -87,6 +87,15 @@ const SHELL_ASSETS = [
   /* Fase 6 — Dashboard Wali. */
   '/js/core/wali-client.js',
   '/js/ui/wali-dashboard.js',
+  /* Fase 6 — Pengurus & Sertifikat. vendor/jspdf/ dan vendor/qrcode/
+     SENGAJA TIDAK di sini — dimuat dinamis hanya untuk staff pengurus,
+     lihat vendor/jspdf/README.md. */
+  '/js/core/script-loader.js',
+  '/js/core/phone.js',
+  '/js/core/pengurus-client.js',
+  '/js/ui/pengurus-panel.js',
+  '/js/ui/sertifikat-admin.js',
+  '/js/ui/sertifikat-santri.js',
   /* Font & ikon lokal. Sengaja tidak semua bobot font ikut di-precache —
      hanya yang dibutuhkan tampilan pertama. Sisanya (bobot 500/800, subset
      latin-ext, dan Amiri tebal) menyusul lewat cache-first saat benar-benar

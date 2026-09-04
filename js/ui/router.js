@@ -10,6 +10,7 @@ import { playTone, showToast } from '../core/feedback.js';
 import { bukaStudio } from './studio.js';
 import { muatDanRenderDokumen } from './dokumen-viewer.js';
 import { renderWaliDashboard } from './wali-dashboard.js';
+import { bukaPengurusPanel } from './pengurus-panel.js';
 
 const ALL_VIEWS = [
   'viewWaliDashboard',
@@ -107,6 +108,10 @@ export function switchMainView(viewName) {
   showToast(route.toast);
   playTone(route.tone, 'sine', 0.1, 0.06);
 
+  if (viewName === 'admin') {
+    // Sama seperti wali-dashboard/studio-kurikulum: async, tidak ditunggu.
+    bukaPengurusPanel();
+  }
   if (viewName === 'wali-dashboard') {
     // Sama seperti studio-kurikulum/modul-pdf: async, tidak ditunggu di
     // sini — renderWaliDashboard menggambar skeleton dulu lalu mengisi

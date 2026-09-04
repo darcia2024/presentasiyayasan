@@ -1116,66 +1116,10 @@
       <!-- ======================================================
            VIEW 5: PANEL KENDALI OTORITAS YAYASAN (ADMIN)
            ====================================================== -->
-      <div id="viewAdminPanel" style="display: none; width: 100%; padding: 24px 32px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
-          <div>
-            <h2 style="font-size: 20px; font-weight: 800; color: var(--teal-dark);">Panel Kendali Otoritas Yayasan PERISA</h2>
-            <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Tata kelola santri, verifikasi infaq, dan otentikasi sertifikat sanad.</p>
-          </div>
-          <button class="btn-enroll-primary" onclick="PrototypeApp.showToast('Sinkronisasi data santri berhasil!')">
-            <i class="ph ph-arrows-clockwise"></i> Sinkronkan Data
-          </button>
-        </div>
-
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px;">
-          <div class="beranda-metric-card"><div><div style="font-size: 18px; font-weight: 800; color: var(--teal-dark);">450 Santri</div><div style="font-size: 11px; color: var(--text-muted);">Total Terdaftar Aktif</div></div></div>
-          <div class="beranda-metric-card"><div><div style="font-size: 18px; font-weight: 800; color: var(--teal-dark);">98%</div><div style="font-size: 11px; color: var(--text-muted);">Tingkat Kelulusan Evaluasi</div></div></div>
-          <div class="beranda-metric-card"><div><div style="font-size: 18px; font-weight: 800; color: var(--teal-dark);">100% Terverifikasi</div><div style="font-size: 11px; color: var(--text-muted);">Kepatuhan Infaq Syariah</div></div></div>
-          <div class="beranda-metric-card"><div><div style="font-size: 18px; font-weight: 800; color: var(--teal-dark);">128 Piagam</div><div style="font-size: 11px; color: var(--text-muted);">Sertifikat QR Diterbitkan</div></div></div>
-        </div>
-
-        <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; padding: 20px;">
-          <h3 style="font-size: 15px; font-weight: 800; color: var(--teal-dark); margin-bottom: 14px;">Daftar Santri & Status Progres Belajar</h3>
-          <table style="width: 100%; border-collapse: collapse; font-size: 12.5px; text-align: left;">
-            <thead>
-              <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-muted);">
-                <th style="padding: 10px;">Nama Santri</th>
-                <th style="padding: 10px;">Jenjang</th>
-                <th style="padding: 10px;">Modul Aktif</th>
-                <th style="padding: 10px;">Indeks Nilai</th>
-                <th style="padding: 10px;">Status Infaq</th>
-                <th style="padding: 10px; text-align: right;">Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style="border-bottom: 1px solid var(--border-subtle);">
-                <td style="padding: 12px 10px; font-weight: 700; color: var(--teal-dark);">Ahmad Fauzan</td>
-                <td style="padding: 12px 10px;">SMP Kelas 8</td>
-                <td style="padding: 12px 10px;">Modul 02: Jumlah Ismiyyah</td>
-                <td style="padding: 12px 10px; font-weight: 700; color: var(--teal-primary);">94 (Mumtaz)</td>
-                <td style="padding: 12px 10px;"><span style="background: var(--teal-light); color: var(--teal-primary); padding: 3px 8px; border-radius: 4px; font-size: 10.5px; font-weight: 700;">Terverifikasi</span></td>
-                <td style="padding: 12px 10px; text-align: right;"><button class="btn-enroll-primary" style="padding: 4px 10px; font-size: 11px;" onclick="PrototypeApp.openCertificate()">Lihat Piagam</button></td>
-              </tr>
-              <tr style="border-bottom: 1px solid var(--border-subtle);">
-                <td style="padding: 12px 10px; font-weight: 700; color: var(--teal-dark);">Aisyah Zahra</td>
-                <td style="padding: 12px 10px;">SD Kelas 5</td>
-                <td style="padding: 12px 10px;">Modul 01: Mufrodat Cilik</td>
-                <td style="padding: 12px 10px; font-weight: 700; color: var(--teal-primary);">96 (Mumtaz)</td>
-                <td style="padding: 12px 10px;"><span style="background: var(--teal-light); color: var(--teal-primary); padding: 3px 8px; border-radius: 4px; font-size: 10.5px; font-weight: 700;">Terverifikasi</span></td>
-                <td style="padding: 12px 10px; text-align: right;"><button class="btn-enroll-primary" style="padding: 4px 10px; font-size: 11px;" onclick="PrototypeApp.openCertificate()">Lihat Piagam</button></td>
-              </tr>
-              <tr>
-                <td style="padding: 12px 10px; font-weight: 700; color: var(--teal-dark);">M. Rizky Pratama</td>
-                <td style="padding: 12px 10px;">SMA Kelas 11</td>
-                <td style="padding: 12px 10px;">Modul 03: Tashrif Shorof</td>
-                <td style="padding: 12px 10px; font-weight: 700; color: var(--teal-primary);">92 (Jayyid Jiddan)</td>
-                <td style="padding: 12px 10px;"><span style="background: var(--teal-light); color: var(--teal-primary); padding: 3px 8px; border-radius: 4px; font-size: 10.5px; font-weight: 700;">Terverifikasi</span></td>
-                <td style="padding: 12px 10px; text-align: right;"><button class="btn-enroll-primary" style="padding: 4px 10px; font-size: 11px;" onclick="PrototypeApp.openCertificate()">Lihat Piagam</button></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <!-- Fase 6: dirender sepenuhnya oleh js/ui/pengurus-panel.js begitu
+           dibuka (bukaPengurusPanel(), dipanggil dari router.js) — lihat
+           berkas itu untuk struktur data, bukan di sini. -->
+      <div id="viewAdminPanel" style="display: none; width: 100%;"></div>
 
       <!-- Fase 2: dirender sepenuhnya oleh js/ui/studio.js — lihat berkas
            itu untuk struktur data, bukan di sini. -->
@@ -1273,27 +1217,30 @@
       <div style="margin-bottom: 12px;">
         <img src="logo-perisa-horizontal.png?v=1.0.0" alt="PERISA" style="height: 42px; object-fit: contain;">
       </div>
-      <h3 style="font-size: 18px; font-weight: 800; color: var(--teal-dark); margin-bottom: 4px;">PIAGAM KELULUSAN SANAD</h3>
+      <h3 style="font-size: 18px; font-weight: 800; color: var(--teal-dark); margin-bottom: 4px;" id="certTitle">PIAGAM KELULUSAN SANAD</h3>
       <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Yayasan Peradaban Islam Azhariyah — Asuhan Umi Elly</p>
-      
+
       <div style="background: var(--bg-subtle); border: 1.5px dashed var(--teal-primary); border-radius: var(--radius-md); padding: 18px; margin-bottom: 18px;">
         <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Diberikan kepada santri:</div>
         <div style="font-size: 20px; font-weight: 800; color: var(--teal-primary); margin: 6px 0;" id="certStudentName">Ahmad Fauzan</div>
         <div style="font-size: 12px; color: var(--text-body);">Telah menyelesaikan seluruh rangkaian evaluasi kaidah Bahasa Arab dengan predikat:</div>
-        <div style="font-size: 15px; font-weight: 800; color: var(--gold-dark); margin-top: 6px;">MUMTAZ (94 / 100) ★★★★★</div>
+        <div style="font-size: 15px; font-weight: 800; color: var(--gold-dark); margin-top: 6px;" id="certPredikat">MUMTAZ (94 / 100) ★★★★★</div>
       </div>
 
       <div style="display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border-color); padding-top: 14px;">
-        <div style="font-size: 10px; color: var(--text-muted); text-align: left;">
+        <div style="font-size: 10px; color: var(--text-muted); text-align: left;" id="certMeta">
           Nomor: AZH-2026-SMP-0129<br>
           Verifikasi: perisa-azhariyah.org/sanad
         </div>
-        <i class="ph ph-qr-code" style="font-size: 38px; color: var(--teal-dark);"></i>
+        <a href="#" id="certQrLink" target="_blank" rel="noopener" style="color: var(--teal-dark); text-decoration: none;" title="Buka halaman verifikasi">
+          <i class="ph ph-qr-code" style="font-size: 38px;"></i>
+        </a>
         <div style="font-size: 10px; text-align: right; color: var(--teal-dark);">
           <strong>Umi Elly</strong><br>
           <span style="font-size: 9px; color: var(--text-muted);">Pengasuh Yayasan</span>
         </div>
       </div>
+      <p id="certPeragaNote" style="font-size: 10px; color: var(--text-muted); margin-top: 10px; font-style: italic;">Contoh tampilan — sertifikat sungguhan akan menggantikan ini begitu diterbitkan pengurus.</p>
       <button class="btn-enroll-primary" style="margin-top: 16px; width: 100%; justify-content: center;" onclick="PrototypeApp.closeCertModal()">Tutup Pratinjau</button>
       </div>
     </div>

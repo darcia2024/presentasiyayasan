@@ -92,6 +92,30 @@ export function uraikanCsvMufrodat(teks) {
   return { baris, kesalahan };
 }
 
+/**
+ * PERISA AZHARIYAH — Penulis CSV (Fase 6: ekspor laporan progres per kelas)
+ *
+ * Sama alasannya dengan pengurai di atas: bukan format umum yang butuh
+ * pustaka pihak ketiga, cuma perlu membungkus nilai yang mengandung koma/
+ * kutip/baris baru dengan tanda kutip ganda (aturan CSV RFC 4180 standar
+ * yang dipahami Excel maupun Google Sheets).
+ *
+ * @param {string[]} header
+ * @param {Array<Array<string|number>>} barisData
+ * @returns {string}
+ */
+export function buatCsv(header, barisData) {
+  const tulisBaris = (nilai) =>
+    nilai
+      .map((v) => {
+        const s = String(v ?? '');
+        return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+      })
+      .join(',');
+
+  return [tulisBaris(header), ...barisData.map(tulisBaris)].join('\r\n');
+}
+
 /** Bikin templat CSV kosong untuk diunduh, supaya format kolomnya tidak perlu ditebak. */
 export function templatCsvMufrodat() {
   return (
