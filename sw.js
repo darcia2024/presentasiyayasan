@@ -56,6 +56,7 @@ const SHELL_ASSETS = [
   '/js/ui/wali-dashboard.js',
   '/js/core/script-loader.js',
   '/js/core/phone.js',
+  '/js/core/asisten-client.js',
   '/js/core/pengurus-client.js',
   '/js/ui/pengurus-panel.js',
   '/js/ui/sertifikat-admin.js',

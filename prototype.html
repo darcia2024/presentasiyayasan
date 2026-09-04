@@ -1031,8 +1031,16 @@
               </div>
               <div class="seto-input-wrap">
                 <input type="text" id="aiInputPrompt" class="seto-text-input" placeholder="Ketik pertanyaan kaidah bahasa Arab di sini..." onkeypress="if(event.key==='Enter') PrototypeApp.handleAiSend()">
-                <button class="seto-send-btn" onclick="PrototypeApp.handleAiSend()"><i class="ph ph-paper-plane-right"></i> Kirim</button>
+                <button class="seto-send-btn" id="aiSendBtn" onclick="PrototypeApp.handleAiSend()"><i class="ph ph-paper-plane-right"></i> Kirim</button>
               </div>
+              <div id="aiKuotaInfo" style="font-size: 10.5px; color: var(--text-muted); margin-top: 6px; text-align: right;"></div>
+            </div>
+
+            <!-- Fase 5: diisi js/ui/assistant.js — jawaban SUNGGUHAN dari
+                 model, digrounding ke silabus terbit. Kosong/tersembunyi
+                 sampai pertanyaan pertama dikirim. -->
+            <div id="aiResponseBox" style="display: none; margin-top: 16px; background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
+              <div id="aiResponseContent" style="font-size: 13px; line-height: 1.7; color: var(--text-body);"></div>
             </div>
           </div>
 

@@ -92,6 +92,8 @@ const SHELL_ASSETS = [
      lihat vendor/jspdf/README.md. */
   '/js/core/script-loader.js',
   '/js/core/phone.js',
+  /* Fase 5 — Asisten Bahasa Arab. */
+  '/js/core/asisten-client.js',
   '/js/core/pengurus-client.js',
   '/js/ui/pengurus-panel.js',
   '/js/ui/sertifikat-admin.js',

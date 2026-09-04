@@ -1301,6 +1301,12 @@ html, body {
   gap: 3px;
 }
 
+/* ASISTEN AI (Fase 5) — indikator "sedang menyusun jawaban" */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 /* DASHBOARD WALI (Fase 6) */
 .wali-dashboard-layout {
   padding: 32px 40px;

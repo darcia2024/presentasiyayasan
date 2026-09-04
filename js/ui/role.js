@@ -16,6 +16,7 @@ import { renderKuis } from './kuis.js';
 import { santriAktifId } from '../core/kuis-client.js';
 import { upgradePapanPeringkat } from './papan-peringkat.js';
 import { upgradeCertModalKeSertifikatAsli } from './sertifikat-santri.js';
+import { upgradeRiwayatAsisten } from './assistant.js';
 
 /** Tampilan lain yang harus disembunyikan agar tidak bertumpuk saat berganti peran. */
 const OTHER_VIEWS = ['viewBerandaUtama', 'viewModulPdf', 'viewAiAssistant'];
@@ -43,6 +44,7 @@ async function upgradeKeKontenAsli(roleName) {
   const giliranSaya = ++giliranSilabusTerakhir;
   upgradePapanPeringkat(jenjang); // independen dari silabus — tidak perlu ditunggu
   upgradeCertModalKeSertifikatAsli(santriAktifId()); // idem — modal piagam baru dibuka kalau diklik
+  upgradeRiwayatAsisten(santriAktifId()); // idem — riwayat + kuota asisten AI
   const hasil = await muatSilabusTerbit(jenjang);
   if (giliranSaya !== giliranSilabusTerakhir) return; // sudah keburu ganti peran lagi
   if (!hasil || !hasil.syllabus.length) return;
