@@ -9,9 +9,39 @@
 import { roleData, DEFAULT_ROLE } from '../data/roles.js';
 import { playTone, showToast } from '../core/feedback.js';
 import { renderSyllabus } from './syllabus.js';
+import { muatSilabusTerbit } from '../core/content-loader.js';
 
 /** Tampilan lain yang harus disembunyikan agar tidak bertumpuk saat berganti peran. */
 const OTHER_VIEWS = ['viewBerandaUtama', 'viewModulPdf', 'viewAiAssistant'];
+
+const PERAN_KE_JENJANG = { 'santri-sd': 'sd', 'santri-smp': 'smp', 'santri-sma': 'sma' };
+
+/**
+ * Cegah render silabus peraga (dipanggil sinkron duluan) menimpa balik
+ * silabus asli yang baru saja selesai dimuat dari giliran setRole()
+ * SEBELUMNYA — bisa terjadi kalau santri mengganti peran dua kali cepat
+ * sebelum permintaan pertama selesai.
+ */
+let giliranSilabusTerakhir = 0;
+
+/**
+ * Setelah silabus peraga tampil (instan, tanpa jeda), coba muat konten yang
+ * sungguhan diterbitkan Umi Elly untuk jenjang ini. Kalau ada, gantikan
+ * silabus peraga. Kalau belum ada, biarkan peraga tetap tampil — aplikasi
+ * tidak pernah menampilkan silabus kosong.
+ */
+async function upgradeKeKontenAsli(roleName) {
+  const jenjang = PERAN_KE_JENJANG[roleName];
+  if (!jenjang) return;
+
+  const giliranSaya = ++giliranSilabusTerakhir;
+  const silabusAsli = await muatSilabusTerbit(jenjang);
+  if (giliranSaya !== giliranSilabusTerakhir) return; // sudah keburu ganti peran lagi
+
+  if (silabusAsli && silabusAsli.length) {
+    renderSyllabus(silabusAsli);
+  }
+}
 
 const setText = (id, value) => {
   const el = document.getElementById(id);
@@ -99,6 +129,7 @@ export function setRole(roleName) {
   if (watermark) watermark.innerHTML = `<i class="ph ph-shield-check"></i> ${data.watermark}`;
 
   renderSyllabus(data.syllabus);
+  upgradeKeKontenAsli(roleName);
 
   showToast(`Beralih ke Akun Santri: ${data.user.name} (${data.jenjangPill})`);
   playTone(520, 'sine', 0.1, 0.06);

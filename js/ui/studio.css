@@ -1,0 +1,509 @@
+/* ==========================================================================
+   PERISA AZHARIYAH — Fase 2: Studio Kurikulum
+   Memakai token warna/radius yang sama dengan prototype.css dan auth.css.
+   ========================================================================== */
+
+#viewStudioKurikulum {
+  padding: 24px 28px 60px;
+  max-width: 980px;
+}
+
+.studio-header-row {
+  margin-bottom: 18px;
+}
+
+.studio-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0 0 4px;
+}
+
+.studio-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ------------------------------------------------------------ Breadcrumb */
+
+.studio-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.studio-breadcrumb-item {
+  background: none;
+  border: none;
+  padding: 4px 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--teal-primary);
+  cursor: pointer;
+}
+
+.studio-breadcrumb-item:last-child {
+  color: var(--text-main);
+  cursor: default;
+}
+
+.studio-breadcrumb-sep {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+/* ----------------------------------------------------------------- Tabs */
+
+.studio-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+  border-bottom: 1.5px solid var(--border-color);
+}
+
+.studio-tab {
+  padding: 9px 18px;
+  background: none;
+  border: none;
+  border-bottom: 2.5px solid transparent;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  margin-bottom: -1.5px;
+}
+
+.studio-tab--active {
+  color: var(--teal-primary);
+  border-bottom-color: var(--teal-primary);
+}
+
+/* -------------------------------------------------------------- Headers */
+
+.studio-row-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.studio-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.studio-h3 {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.studio-h4 {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 22px 0 8px;
+}
+
+.studio-h4:first-of-type {
+  margin-top: 0;
+}
+
+.studio-empty,
+.studio-step-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  padding: 20px 0;
+}
+
+.studio-note {
+  font-size: 12px;
+  color: var(--gold-dark);
+  background: var(--gold-light);
+  border: 1px solid var(--gold-border);
+  border-radius: var(--radius-xs);
+  padding: 8px 12px;
+  margin-bottom: 14px;
+}
+
+/* ----------------------------------------------------------------- List */
+
+.studio-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.studio-list-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--bg-page);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.studio-list-item:hover {
+  border-color: var(--teal-primary);
+  background: var(--teal-light);
+}
+
+.studio-list-item-main {
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+.studio-list-item-kode {
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.studio-list-item-judul {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.studio-list-item-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ---------------------------------------------------------------- Chips */
+
+.studio-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.studio-chip--draft {
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+}
+
+.studio-chip--ditinjau {
+  background: var(--gold-light);
+  color: var(--gold-dark);
+}
+
+.studio-chip--terbit {
+  background: var(--teal-light);
+  color: var(--teal-primary);
+}
+
+/* ------------------------------------------------------- Status dropdown */
+
+.studio-status-wrap {
+  display: inline-block;
+}
+
+.studio-status-select {
+  padding: 6px 10px;
+  border-radius: var(--radius-xs);
+  font-size: 12px;
+  font-weight: 700;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+}
+
+.studio-status-select--draft {
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+  border-color: var(--border-color);
+}
+
+.studio-status-select--ditinjau {
+  background: var(--gold-light);
+  color: var(--gold-dark);
+  border-color: var(--gold-border);
+}
+
+.studio-status-select--terbit {
+  background: var(--teal-light);
+  color: var(--teal-primary);
+  border-color: var(--teal-border);
+}
+
+/* ---------------------------------------------------------------- Icons */
+
+.studio-btn-icon {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-xs);
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.studio-btn-icon:hover {
+  border-color: var(--teal-primary);
+  color: var(--teal-primary);
+}
+
+/* --------------------------------------------------------------- Forms */
+
+.studio-form {
+  max-width: 460px;
+}
+
+.studio-field {
+  margin-bottom: 14px;
+}
+
+.studio-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin-bottom: 5px;
+}
+
+.studio-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: var(--font-family);
+  color: var(--text-main);
+  background: var(--bg-subtle);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  outline: none;
+}
+
+.studio-input:focus {
+  border-color: var(--teal-primary);
+  box-shadow: 0 0 0 3px var(--teal-border);
+}
+
+.studio-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.studio-btn-primary {
+  padding: 10px 20px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--teal-primary);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.studio-btn-primary:hover {
+  background: var(--teal-hover);
+}
+
+.studio-btn-secondary {
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--teal-primary);
+  background: var(--teal-light);
+  border: 1.5px solid var(--teal-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.studio-btn-text {
+  padding: 9px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.studio-btn-danger {
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #B4232A;
+  background: #FBEAEA;
+  border: 1.5px solid #F0C6C6;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  margin-left: auto;
+}
+
+/* ---------------------------------------------------------- Media field */
+
+.studio-media-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--bg-subtle);
+  border: 1.5px dashed var(--border-color);
+  border-radius: var(--radius-sm);
+}
+
+.studio-media-preview {
+  flex: 1;
+}
+
+.studio-media-status {
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+.studio-media-input {
+  font-size: 12px;
+  max-width: 180px;
+}
+
+/* -------------------------------------------------------- Mufrodat grid */
+
+.studio-mufrodat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.studio-mufrodat-card {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  background: var(--bg-page);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-sm);
+}
+
+.studio-mufrodat-gambar {
+  width: 100%;
+  height: 90px;
+  object-fit: cover;
+  border-radius: var(--radius-xs);
+  margin-bottom: 8px;
+  background: var(--bg-subtle);
+}
+
+.studio-mufrodat-gambar--kosong {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: var(--border-color);
+}
+
+.studio-mufrodat-arab {
+  font-family: 'Amiri', serif;
+  font-size: 20px;
+  color: var(--teal-primary);
+  text-align: right;
+  direction: rtl;
+  margin-bottom: 4px;
+}
+
+.studio-mufrodat-latin {
+  font-size: 11.5px;
+  color: var(--text-body);
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.studio-mufrodat-tanda {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.studio-tanda {
+  font-size: 13px;
+  opacity: 0.3;
+}
+
+.studio-tanda--ada {
+  opacity: 1;
+}
+
+.studio-mufrodat-edit {
+  margin-top: auto;
+  width: 100%;
+  text-align: center;
+}
+
+/* -------------------------------------------------------------- Import */
+
+.studio-import-hasil {
+  margin-top: 16px;
+}
+
+.studio-import-ringkasan {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--teal-primary);
+  margin-bottom: 8px;
+}
+
+.studio-import-error-list {
+  margin: 0 0 14px;
+  padding-left: 18px;
+  font-size: 12px;
+  color: #B4232A;
+  line-height: 1.7;
+}
+
+.studio-import-preview {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 8px;
+  font-size: 12.5px;
+}
+
+.studio-import-preview td {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.studio-import-more {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+@media (max-width: 600px) {
+  #viewStudioKurikulum {
+    padding: 16px 16px 48px;
+  }
+
+  .studio-mufrodat-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
+}

@@ -213,10 +213,18 @@ function terapkanProfil(santri) {
   }
 }
 
+/** Tampilkan menu "Studio Kurikulum" di sidebar hanya untuk sesi staff. */
+function terapkanVisibilitasStaff() {
+  const sesi = bacaSesi();
+  const item = $('navStudioKurikulumItem');
+  if (item) item.style.display = sesi?.akun?.akun_jenis === 'staff' ? '' : 'none';
+}
+
 function selesai() {
   const gate = $('authGate');
   if (gate) gate.style.display = 'none';
   document.body.classList.remove('auth-gate-open');
+  terapkanVisibilitasStaff();
   showToast('Berhasil masuk. Ahlan wa sahlan!');
 }
 
@@ -252,6 +260,7 @@ export function initAuthGate() {
       if (aktif) terapkanProfil(aktif);
     }
     gate.style.display = 'none';
+    terapkanVisibilitasStaff();
     return;
   }
 

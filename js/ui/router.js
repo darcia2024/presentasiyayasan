@@ -7,13 +7,15 @@
  */
 
 import { playTone, showToast } from '../core/feedback.js';
+import { bukaStudio } from './studio.js';
 
 const ALL_VIEWS = [
   'viewBerandaUtama',
   'viewCoursePlayer',
   'viewModulPdf',
   'viewAiAssistant',
-  'viewAdminPanel'
+  'viewAdminPanel',
+  'viewStudioKurikulum'
 ];
 
 /** Peta rute: id tampilan, id menu sidebar, remah roti, pesan, dan nada. */
@@ -52,6 +54,13 @@ const ROUTES = {
     crumb: ['Kurikulum', 'Bahasa Arab Jenjang SMP', 'Jumlah Ismiyyah dan Fasilitas Sekolah'],
     toast: 'Membuka Kurikulum Pembelajaran Bahasa Arab',
     tone: 520
+  },
+  'studio-kurikulum': {
+    view: 'viewStudioKurikulum',
+    nav: 'nav-studio-kurikulum',
+    crumb: ['Yayasan PERISA', 'Studio Kurikulum', 'Susun Modul & Mufrodat'],
+    toast: 'Membuka Studio Kurikulum',
+    tone: 560
   }
 };
 
@@ -87,6 +96,12 @@ export function switchMainView(viewName) {
 
   showToast(route.toast);
   playTone(route.tone, 'sine', 0.1, 0.06);
+
+  if (viewName === 'studio-kurikulum') {
+    // Async, sengaja tidak ditunggu (await) — switchMainView tetap sinkron
+    // seperti kontrak aslinya, bukaStudio menangani render sendiri.
+    bukaStudio();
+  }
 }
 
 /** Sorot tab yang aktif pada bilah navigasi bawah versi mobile. */

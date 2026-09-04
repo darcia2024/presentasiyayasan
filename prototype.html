@@ -59,6 +59,8 @@
   <link rel="stylesheet" href="prototype.css?v=1.0.0">
   <!-- Fase 1: Gerbang Login -->
   <link rel="stylesheet" href="js/ui/auth.css?v=1.0.0">
+  <!-- Fase 2: Studio Kurikulum -->
+  <link rel="stylesheet" href="js/ui/studio.css?v=1.0.0">
   <!-- Native Mobile / PWA Layer -->
   <link rel="stylesheet" href="prototype-mobile.css?v=1.0.0">
 </head>
@@ -472,6 +474,13 @@
           <a class="ref-nav-item" id="nav-admin-panel" onclick="PrototypeApp.switchMainView('admin')">
             <i class="ph ph-shield-check"></i>
             <span>Panel Otoritas Yayasan</span>
+          </a>
+        </li>
+        <!-- Fase 2: hanya terlihat saat sesi login staff aktif — lihat js/ui/studio.js -->
+        <li id="navStudioKurikulumItem" style="display: none;">
+          <a class="ref-nav-item" id="nav-studio-kurikulum" onclick="PrototypeApp.switchMainView('studio-kurikulum')">
+            <i class="ph ph-book-open-text"></i>
+            <span>Studio Kurikulum</span>
           </a>
         </li>
       </ul>
@@ -1100,6 +1109,17 @@
             </tbody>
           </table>
         </div>
+      </div>
+
+      <!-- Fase 2: dirender sepenuhnya oleh js/ui/studio.js — lihat berkas
+           itu untuk struktur data, bukan di sini. -->
+      <div id="viewStudioKurikulum" style="display: none; width: 100%;">
+        <div class="studio-header-row">
+          <h2 class="studio-title">Studio Kurikulum</h2>
+          <p class="studio-subtitle">Susun modul, pelajaran, dan mufrodat — tanpa menyentuh kode.</p>
+        </div>
+        <div class="studio-breadcrumb" id="studioBreadcrumb"></div>
+        <div id="studioBody"></div>
       </div>
 
     </main>

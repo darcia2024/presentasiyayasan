@@ -36,6 +36,7 @@ const VERSIONED_ASSETS = [
   'prototype-mobile.js',
   'js/app.js',
   'js/ui/auth.css',
+  'js/ui/studio.css',
   'logo-perisa-emblem.png',
   'logo-perisa-horizontal.png'
 ];
@@ -68,6 +69,12 @@ const SHELL_ASSETS = [
   '/js/ui/auth.js',
   '/js/ui/auth.css',
   '/vendor/supabase/supabase-js.2.114.0.min.js',
+  /* Fase 2 — Studio Kurikulum. */
+  '/js/core/curriculum-client.js',
+  '/js/core/csv.js',
+  '/js/core/content-loader.js',
+  '/js/ui/studio.js',
+  '/js/ui/studio.css',
   /* Font & ikon lokal. Sengaja tidak semua bobot font ikut di-precache —
      hanya yang dibutuhkan tampilan pertama. Sisanya (bobot 500/800, subset
      latin-ext, dan Amiri tebal) menyusul lewat cache-first saat benar-benar
