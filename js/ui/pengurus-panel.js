@@ -22,6 +22,7 @@ import {
   daftarSantriAdmin,
   perbaruiSantri,
   daftarkanWaliSantri,
+  hapusSantri,
   cariWaliIdLewatNomor,
   cariSantriIdLewatNamaDanWali,
   daftarKelas,
@@ -222,7 +223,7 @@ function tabelSantri(daftar, kelasList) {
     <th style="padding:10px;">Nama Santri</th><th style="padding:10px;">Jenjang</th>
     <th style="padding:10px;">Wali</th><th style="padding:10px;">Kelas</th>
     <th style="padding:10px;">Status</th><th style="padding:10px;">Beasiswa</th>
-    <th style="padding:10px;">Infaq</th></tr>`;
+    <th style="padding:10px;">Infaq</th><th style="padding:10px; text-align:right;">Aksi</th></tr>`;
   table.appendChild(thead);
 
   const tbody = document.createElement('tbody');
@@ -293,6 +294,29 @@ function tabelSantri(daftar, kelasList) {
     tdInfaq.appendChild(chipInfaq);
     tr.appendChild(tdInfaq);
 
+    const tdAksi = document.createElement('td');
+    tdAksi.style.cssText = 'padding:8px 10px; text-align:right;';
+    const btnHapus = buatEl('button', 'studio-btn-danger', 'Hapus');
+    btnHapus.type = 'button';
+    btnHapus.style.cssText = 'padding:5px 12px; font-size:11px; margin-left:0;';
+    btnHapus.title = 'Hak penghapusan (UU PDP) — hapus seluruh data belajar santri ini secara permanen.';
+    btnHapus.addEventListener('click', () =>
+      jalankan(async () => {
+        if (
+          !confirm(
+            `Hapus PERMANEN seluruh data "${s.nama}" (XP, progres, lencana, riwayat asisten AI)? Tindakan ini tidak bisa dibatalkan. Pastikan ini memang permintaan wali (hak penghapusan data — UU PDP).`,
+          )
+        ) {
+          return;
+        }
+        await hapusSantri(s.id);
+        showToast(`Data ${s.nama} berhasil dihapus permanen.`);
+        render();
+      }, 'Gagal menghapus data santri.'),
+    );
+    tdAksi.appendChild(btnHapus);
+    tr.appendChild(tdAksi);
+
     tbody.appendChild(tr);
   });
   table.appendChild(tbody);
@@ -345,6 +369,23 @@ function renderFormSantri(body) {
   const fNisn = fieldTeks('NISN (opsional)', 'text', 'Kosongkan bila belum ada');
   form.append(fNamaSantri.wrap, fJenjang.wrap, fNisn.wrap);
 
+  // Fase 7 (UU PDP No. 27/2022): persetujuan eksplisit wajib SAAT WALI
+  // BARU dibuat — Edge Function yang menegakkannya (lihat komentar di
+  // sana), checkbox ini cuma pintu depan supaya staff tidak lupa
+  // menanyakan ke wali dulu sebelum mencentangnya atas nama mereka.
+  const fPersetujuan = buatEl('div', 'studio-field');
+  const labelPersetujuan = document.createElement('label');
+  labelPersetujuan.style.cssText = 'display:flex; align-items:flex-start; gap:8px; font-size:12.5px; color:var(--text-body); cursor:pointer;';
+  const cbPersetujuan = document.createElement('input');
+  cbPersetujuan.type = 'checkbox';
+  cbPersetujuan.style.marginTop = '2px';
+  const teksPersetujuan = document.createElement('span');
+  teksPersetujuan.innerHTML =
+    'Wali sudah diberi tahu dan menyetujui <a href="kebijakan-privasi.html" target="_blank" rel="noopener" style="color:var(--teal-primary); font-weight:700;">Kebijakan Privasi PERISA</a> mengenai pengolahan data anaknya. <em>(Wajib untuk wali baru; tidak ditanya ulang untuk anak kedua/ketiga.)</em>';
+  labelPersetujuan.append(cbPersetujuan, teksPersetujuan);
+  fPersetujuan.appendChild(labelPersetujuan);
+  form.appendChild(fPersetujuan);
+
   const actions = buatEl('div', 'studio-form-actions');
   const btnSimpan = buatEl('button', 'studio-btn-primary', 'Daftarkan');
   btnSimpan.type = 'button';
@@ -364,9 +405,14 @@ function renderFormSantri(body) {
         showToast('Nomor WA wali, nama wali, dan nama santri wajib diisi.');
         return;
       }
+      if (!cbPersetujuan.checked) {
+        showToast('Konfirmasi dulu bahwa wali sudah menyetujui Kebijakan Privasi.');
+        return;
+      }
       const hasil = await daftarkanWaliSantri({
         nomorWaWali: fWaWali.input.value,
         namaWali: fNamaWali.input.value,
+        persetujuanData: true,
         santri: [{ nama: fNamaSantri.input.value, jenjang: fJenjang.select.value, nisn: fNisn.input.value || undefined }],
       });
       playTone(620, 'sine', 0.12, 0.08);

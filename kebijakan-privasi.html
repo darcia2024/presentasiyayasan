@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kebijakan Privasi — PERISA Azhariyah</title>
+<!--
+  PERISA AZHARIYAH — Kebijakan Privasi (Fase 7)
+
+  CATATAN UNTUK PENGURUS YAYASAN: dokumen ini disusun mengikuti struktur
+  umum UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi (identitas
+  pengendali, jenis & tujuan pengolahan, dasar hukum, pihak ketiga, masa
+  simpan, hak subjek data, keamanan). ISINYA BELUM DITINJAU PENGACARA —
+  layak dibaca ulang oleh yang paham hukum sebelum benar-benar dijadikan
+  pegangan resmi, terutama karena menyangkut data anak.
+
+  Berdiri sendiri (tidak memuat prototype.css/app.js), sama seperti
+  verifikasi.html — halaman ini harus bisa dibuka siapa saja tanpa login
+  dan tanpa menyeret seluruh SPA.
+-->
+<style>
+  :root {
+    --teal-primary: #00877A;
+    --teal-dark: #072826;
+    --teal-light: #E6F6F4;
+    --gold-light: #FDF7E7;
+    --gold-dark: #855E03;
+    --bg-subtle: #F8FAFA;
+    --border-color: #E2ECEB;
+    --text-main: #08201E;
+    --text-muted: #658482;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg-subtle);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    color: var(--text-main);
+    line-height: 1.7;
+  }
+  header {
+    background: linear-gradient(160deg, var(--teal-dark), #0c3d39);
+    color: #FFFFFF;
+    padding: 32px 20px;
+    text-align: center;
+  }
+  header img { height: 40px; object-fit: contain; margin-bottom: 12px; }
+  header h1 { font-size: 20px; margin: 0 0 4px; }
+  header p { font-size: 12.5px; opacity: 0.85; margin: 0; }
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 28px 20px 60px;
+  }
+  .kartu {
+    background: #FFFFFF;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px 26px;
+    margin-bottom: 18px;
+  }
+  .kartu h2 {
+    font-size: 15px;
+    color: var(--teal-dark);
+    margin: 0 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .kartu h2 .no { color: var(--teal-primary); }
+  .kartu p, .kartu li { font-size: 13px; color: var(--text-main); }
+  .kartu ul { margin: 8px 0; padding-left: 20px; }
+  .catatan {
+    background: var(--gold-light);
+    border: 1px solid #F0E0B0;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 12px;
+    color: var(--gold-dark);
+    margin-bottom: 18px;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 8px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border-color); vertical-align: top; }
+  th { color: var(--text-muted); font-weight: 700; }
+  .tanggal { font-size: 11.5px; color: var(--text-muted); text-align: center; margin-top: 24px; }
+  a { color: var(--teal-primary); }
+</style>
+</head>
+<body>
+<header>
+  <img src="logo-perisa-horizontal.png" alt="PERISA Azhariyah">
+  <h1>Kebijakan Privasi PERISA Azhariyah</h1>
+  <p>Yayasan Peradaban Islam Azhariyah — Asuhan Umi Elly</p>
+</header>
+
+<main>
+  <div class="catatan">
+    <strong>Ringkas:</strong> platform PERISA milik akun WALI, bukan akun santri sendiri — nomor WhatsApp wali yang dipakai masuk, dan kami mengolah data anak dengan persetujuan wali. Halaman ini menjelaskan data apa yang kami simpan, untuk apa, berapa lama, dan bagaimana Anda bisa memintanya diubah atau dihapus.
+  </div>
+
+  <div class="kartu">
+    <h2><span class="no">1.</span> Siapa yang Bertanggung Jawab atas Data Ini</h2>
+    <p>Yayasan Peradaban Islam Azhariyah, penyelenggara program pembelajaran Bahasa Arab PERISA asuhan Umi Elly, adalah pengendali data pribadi yang dikumpulkan lewat platform ini. Pertanyaan atau permintaan terkait privasi bisa disampaikan lewat nomor WhatsApp pengurus yayasan yang sudah Anda gunakan untuk berkomunikasi dengan kami, atau lewat pengajar/pengurus yang mendaftarkan akun Anda.</p>
+  </div>
+
+  <div class="kartu">
+    <h2><span class="no">2.</span> Data Apa Saja yang Kami Kumpulkan</h2>
+    <table>
+      <tr><th>Kategori</th><th>Contoh</th></tr>
+      <tr><td>Identitas wali</td><td>Nama, nomor WhatsApp</td></tr>
+      <tr><td>Identitas santri</td><td>Nama, tanggal lahir (opsional), NISN (opsional), jenjang, kelas</td></tr>
+      <tr><td>Data pembelajaran</td><td>Progres modul, XP, jawaban kuis, lencana, sertifikat yang diterbitkan</td></tr>
+      <tr><td>Data konsultasi</td><td>Pertanyaan yang diajukan ke Asisten Bahasa Arab (kalau fitur ini aktif) dan jawabannya</td></tr>
+      <tr><td>Data infaq</td><td>Jumlah dan status verifikasi infaq — <strong>kami TIDAK pernah menyimpan nomor kartu, rekening, atau kredensial pembayaran apa pun</strong></td></tr>
+      <tr><td>Data teknis</td><td>Waktu masuk (login), catatan keamanan untuk mencegah penyalahgunaan kode OTP</td></tr>
+    </table>
+  </div>
+
+  <div class="kartu">
+    <h2><span class="no">3.</span> Untuk Apa Data Ini Dipakai</h2>
+    <ul>
+      <li>Memverifikasi identitas Anda saat masuk (login) lewat kode OTP WhatsApp.</li>
+      <li>Menampilkan materi pembelajaran sesuai jenjang santri, dan mencatat progresnya.</li>
+      <li>Menyusun ringkasan mingguan yang dikirim ke WhatsApp wali.</li>
+      <li>Menerbitkan sertifikat resmi berkode verifikasi.</li>
+      <li>Menjawab pertanyaan lewat Asisten Bahasa Arab (kalau diaktifkan), digrounding ke materi yang diterbitkan Umi Elly.</li>
+      <li>Pencatatan infaq dan verifikasinya oleh pengurus.</li>
+      <li>Menjaga keamanan akun — mencegah percobaan masuk yang tidak sah.</li>
+    </ul>
+    <p>Kami <strong>tidak</strong> menjual, menyewakan, atau membagikan data Anda ke pihak luar untuk kepentingan pemasaran.</p>
+  </div>
+
+  <div class="kartu">
+    <h2><span class="no">4.</span> Dasar Hukum Pengolahan</h2>
+    <p>Kami mengolah data santri berdasarkan <strong>persetujuan eksplisit wali</strong>, yang diminta pengurus yayasan sebelum akun didaftarkan (sesuai UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi). Persetujuan ini tercatat dengan stempel waktu di sistem kami. Wali berhak menarik persetujuan kapan pun — lihat bagian Hak Anda di bawah.</p>
+  </div>
+
+  <div class="kartu">
+    <h2><span class="no">5.</span> Pihak Ketiga yang Membantu Kami</h2>
+    <p>Untuk menjalankan platform ini, sebagian data diproses oleh penyedia layanan berikut, sebatas yang diperlukan untuk fungsinya masing-masing:</p>
+    <ul>
+      <li><strong>Supabase</strong> — basis data dan autentikasi, server berlokasi di kawasan Asia Pasifik (Sydney, Australia).</li>
+      <li><strong>Penyedia gateway WhatsApp</strong> — mengirim kode OTP dan ringkasan mingguan ke nomor WhatsApp wali.</li>
+      <li><strong>Anthropic (Claude)</strong> — kalau Asisten Bahasa Arab aktif, teks pertanyaan santri dikirim ke penyedia ini untuk dijawab. Tidak ada data identitas (nama, nomor WA) yang disertakan dalam permintaan tersebut.</li>
+      <li><strong>Cloudflare</strong> — menyajikan halaman web ini ke peramban Anda.</li>
+    </ul>
+    <p>Setiap pihak di atas terikat memproses data hanya untuk kepentingan menjalankan layanan PERISA, bukan untuk kepentingan mereka sendiri.</p>
+  </div>
+
+  <div class="kartu">
+    <h2><span class="no">6.</span> Berapa Lama Data Disimpan</h2>
+    <p>Data santri disimpan selama akun tersebut aktif digunakan. Kalau santri berhenti dari program dan wali tidak meminta penghapusan, data progres belajar tetap kami simpan sebagai riwayat pembelajaran resmi (mis. dasar penerbitan sertifikat) — bukan untuk tujuan lain. Wali bisa meminta penghapusan kapan pun (lihat bagian 7).</p>
+  </div>
+
+  <div class="kartu">
+    <h2><span class="no">7.</span> Hak Anda Sebagai Wali</h2>
+    <ul>
+      <li><strong>Hak akses</strong> — meminta salinan data yang kami simpan tentang anak Anda.</li>
+      <li><strong>Hak koreksi</strong> — meminta perbaikan data yang keliru (nama, tanggal lahir, dst).</li>
+      <li><strong>Hak penghapusan</strong> — meminta seluruh data belajar anak Anda dihapus permanen dari sistem kami. Pengecualian: sertifikat yang sudah diterbitkan adalah dokumen resmi yang mungkin sudah beredar/dicetak — penghapusannya dibahas terpisah dengan pengurus.</li>
+      <li><strong>Hak menarik persetujuan</strong> — menghentikan pengolahan data anak Anda kapan pun, dengan konsekuensi akun tidak bisa dipakai lagi.</li>
+    </ul>
+    <p>Semua permintaan di atas disampaikan ke pengurus yayasan lewat jalur komunikasi yang sudah Anda pakai untuk mendaftar.</p>
+  </div>
+
+  <div class="kartu">
+    <h2><span class="no">8.</span> Bagaimana Kami Menjaga Keamanan Data</h2>
+    <ul>
+      <li>Kode OTP tidak pernah disimpan sebagai teks biasa — hanya bentuk terenkripsi satu-arahnya.</li>
+      <li>Setiap wali/santri hanya bisa melihat datanya sendiri — ditegakkan di lapisan basis data, bukan cuma di tampilan.</li>
+      <li>Seluruh lalu lintas data terenkripsi (HTTPS).</li>
+      <li>Perhitungan XP, penerbitan sertifikat, dan pendaftaran akun berjalan di server, bukan bisa diubah lewat peramban.</li>
+      <li>Aktivitas sensitif (pendaftaran akun baru, penerbitan sertifikat) tercatat dalam log audit internal.</li>
+    </ul>
+  </div>
+
+  <div class="kartu">
+    <h2><span class="no">9.</span> Data Anak dan Peran Wali</h2>
+    <p>Program ini melibatkan santri yang sebagian besar masih di bawah umur. Karena itu akun dipegang WALI, bukan anak — wali-lah yang memberi persetujuan, memantau progres, dan berhak atas seluruh permintaan di bagian 7 atas nama anaknya. Kami tidak pernah meminta data pribadi langsung dari santri di luar yang diberikan wali saat pendaftaran.</p>
+  </div>
+
+  <div class="kartu">
+    <h2><span class="no">10.</span> Perubahan Kebijakan Ini</h2>
+    <p>Kebijakan ini bisa diperbarui seiring berkembangnya platform. Perubahan berarti akan diberi tahu lewat pengumuman di aplikasi atau ringkasan WhatsApp mingguan.</p>
+  </div>
+
+  <p class="tanggal">Berlaku sejak 5 September 2026 · Yayasan Peradaban Islam Azhariyah</p>
+</main>
+</body>
+</html>

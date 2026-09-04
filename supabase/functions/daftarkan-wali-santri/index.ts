@@ -1,10 +1,16 @@
 // PERISA AZHARIYAH — Edge Function: daftarkan wali + santri (Fase 6, pengurus).
 //
-// POST { nomor_wa_wali, nama_wali, santri: [{ nama, jenjang, tanggal_lahir?,
-//         nisn?, kelas_id?, beasiswa? }, ...] }
+// POST { nomor_wa_wali, nama_wali, persetujuan_data, santri: [{ nama,
+//         jenjang, tanggal_lahir?, nisn?, kelas_id?, beasiswa? }, ...] }
 //   (header Authorization: Bearer <sesi JWT staff admin>)
 // -> { ok: true, waliId, waliBaru, santri: [{id, nama, jenjang, inisial}] }
 // -> { ok: false, error: string }
+//
+// FASE 7: persetujuan_data harus true SAAT WALI BARU dibuat — UU PDP No.
+// 27/2022 mensyaratkan persetujuan eksplisit sebelum data anak diolah.
+// Tidak diminta ulang saat menambah anak kedua/ketiga ke wali yang SUDAH
+// ADA (persetujuannya berlaku untuk akun wali itu, dicatat sekali di
+// wali.persetujuan_data_at).
 //
 // Kenapa Edge Function, bukan RLS insert biasa: pendaftaran akun menyentuh
 // IDENTITAS (lihat komentar pembuka 20260903000002_rls.sql) — kebijakan RLS
@@ -64,6 +70,7 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => null);
     const nomorMentah = body?.nomor_wa_wali;
     const namaWali = typeof body?.nama_wali === 'string' ? body.nama_wali.trim() : '';
+    const persetujuanData = body?.persetujuan_data === true;
     const daftarSantriInput: SantriInput[] = Array.isArray(body?.santri) ? body.santri : [];
 
     if (typeof nomorMentah !== 'string' || !nomorMentah.trim()) {
@@ -107,9 +114,15 @@ Deno.serve(async (req) => {
     if (waliAda) {
       waliId = waliAda.id;
     } else {
+      if (!persetujuanData) {
+        return jsonResponse(
+          { ok: false, error: 'Persetujuan wali atas Kebijakan Privasi wajib dicentang untuk mendaftarkan wali baru.' },
+          400,
+        );
+      }
       const { data: waliBaruRow, error: errBuatWali } = await supabase
         .from('wali')
-        .insert({ nomor_wa: nomorWa, nama: namaWali })
+        .insert({ nomor_wa: nomorWa, nama: namaWali, persetujuan_data_at: new Date().toISOString() })
         .select('id')
         .single();
       if (errBuatWali || !waliBaruRow) {
@@ -118,6 +131,15 @@ Deno.serve(async (req) => {
       }
       waliId = waliBaruRow.id;
       waliBaru = true;
+
+      await supabase.from('audit_log').insert({
+        actor_type: 'staff',
+        actor_id: sesi.akunId,
+        aksi: 'daftarkan_wali_baru',
+        target_type: 'wali',
+        target_id: waliId,
+        detail: { nomor_wa: nomorWa, nama: namaWali },
+      });
     }
 
     const santriDitulis: { id: string; nama: string; jenjang: string; inisial: string }[] = [];
@@ -150,6 +172,15 @@ Deno.serve(async (req) => {
         }, 500);
       }
       santriDitulis.push(santriBaru);
+
+      await supabase.from('audit_log').insert({
+        actor_type: 'staff',
+        actor_id: sesi.akunId,
+        aksi: 'daftarkan_santri_baru',
+        target_type: 'santri',
+        target_id: santriBaru.id,
+        detail: { nama: santriBaru.nama, jenjang: santriBaru.jenjang, wali_id: waliId },
+      });
     }
 
     return jsonResponse({ ok: true, waliId, waliBaru, santri: santriDitulis });

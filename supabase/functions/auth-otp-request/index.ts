@@ -80,6 +80,20 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Fase 7: bersihkan baris kedaluwarsa secara oportunistik — setiap
+    // permintaan OTP baru ikut menyapu sampah lama, tanpa perlu fungsi
+    // terjadwal/cron terpisah (lihat catatan "Fase 7" di
+    // docs/fase-1-arsitektur.md dan komentar tabel otp_codes). Kegagalan
+    // di sini dicatat tapi TIDAK menggagalkan alur OTP yang sedang
+    // berjalan — pembersihan boleh tertunda ke permintaan berikutnya.
+    const { error: errBersih } = await supabase
+      .from('otp_codes')
+      .delete()
+      .lt('expires_at', new Date().toISOString());
+    if (errBersih) {
+      console.error('[auth-otp-request] gagal membersihkan otp_codes kedaluwarsa:', errBersih.message);
+    }
+
     const kode = generateOtpCode();
     const kodeHash = await hashOtpCode(kode, nomorWa);
     const expiresAt = new Date(Date.now() + OTP_TTL_MS).toISOString();

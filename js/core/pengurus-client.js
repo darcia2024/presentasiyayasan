@@ -72,12 +72,15 @@ export async function perbaruiSantri(santriId, patch) {
 }
 
 /**
- * @param {{nomorWaWali:string, namaWali:string, santri: Array<{nama:string, jenjang:string, tanggalLahir?:string, nisn?:string, kelasId?:string, beasiswa?:boolean}>}} payload
+ * @param {{nomorWaWali:string, namaWali:string, persetujuanData:boolean, santri: Array<{nama:string, jenjang:string, tanggalLahir?:string, nisn?:string, kelasId?:string, beasiswa?:boolean}>}} payload
+ *   persetujuanData WAJIB true kalau ini wali BARU (UU PDP) — Edge Function
+ *   yang menegakkan aturannya, di sini cuma diteruskan apa adanya.
  */
 export async function daftarkanWaliSantri(payload) {
   return panggilFungsi('daftarkan-wali-santri', {
     nomor_wa_wali: payload.nomorWaWali,
     nama_wali: payload.namaWali,
+    persetujuan_data: !!payload.persetujuanData,
     santri: payload.santri.map((s) => ({
       nama: s.nama,
       jenjang: s.jenjang,
@@ -115,6 +118,24 @@ export async function cariSantriIdLewatNamaDanWali(nomorMentahWali, namaSantri) 
   const target = namaSantri.trim().toLowerCase();
   const cocok = (data || []).find((s) => s.nama.trim().toLowerCase() === target);
   return cocok?.id || null;
+}
+
+/**
+ * Hak penghapusan (UU PDP) — hapus SATU santri beserta seluruh riwayat
+ * belajarnya (xp_log/progres_santri/santri_lencana/dst. ikut terhapus
+ * lewat ON DELETE CASCADE). Santri yang punya sertifikat TERTAHAN
+ * (sertifikat.santri_id ON DELETE RESTRICT) — lempar pesan yang jelas,
+ * bukan error mentah dari basis data.
+ */
+export async function hapusSantri(santriId) {
+  const client = getSupabaseClient();
+  const { error } = await client.from('santri').delete().eq('id', santriId);
+  if (error) {
+    if (error.code === '23503') {
+      throw new Error('Santri ini punya sertifikat yang sudah diterbitkan — tidak bisa dihapus langsung. Hubungi pengurus senior.');
+    }
+    throw new Error(error.message || 'Gagal menghapus data santri.');
+  }
 }
 
 /* ------------------------------------------------------------------- KELAS */

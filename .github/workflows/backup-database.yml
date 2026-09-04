@@ -1,0 +1,93 @@
+name: Cadangan Basis Data PERISA
+
+# PERISA AZHARIYAH — Fase 7: cadangan otomatis harian
+#
+# Supabase tier gratis TIDAK menyediakan cadangan harian otomatis (itu
+# fitur tier Pro ke atas) — jadi kita jalankan sendiri lewat GitHub
+# Actions, gratis, tanpa infrastruktur tambahan. Hasilnya pg_dump format
+# custom (bisa dipulihkan dengan pg_restore), diunggah ke bucket privat
+# backups-db (RLS aktif, NOL kebijakan — cuma bisa disentuh lewat
+# SUPABASE_SERVICE_ROLE_KEY, lihat migrasi 20260905000001).
+#
+# AGAR JALAN — repo ini perlu tiga secret (Settings > Secrets and
+# variables > Actions), diisi SEKALI oleh pemilik repo:
+#   SUPABASE_DB_URL           connection string transaction pooler
+#   SUPABASE_URL              https://<ref>.supabase.co
+#   SUPABASE_SERVICE_ROLE_KEY kunci service_role (BUKAN anon)
+#
+# PEMULIHAN — lihat docs/pemulihan-bencana.md untuk langkah lengkap dan
+# hasil uji pemulihan yang sudah pernah dijalankan.
+
+on:
+  schedule:
+    # 18:00 UTC = 01:00 WIB — jam sepi, jauh dari jam belajar santri.
+    - cron: '0 18 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pasang klien PostgreSQL
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client
+
+      - name: Buat cadangan (pg_dump, format custom)
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -e
+          TIMESTAMP=$(date -u +%Y%m%d-%H%M%S)
+          FILENAME="perisa-backup-${TIMESTAMP}.dump"
+          pg_dump "$SUPABASE_DB_URL" --format=custom --no-owner --no-privileges --file="$FILENAME"
+          echo "FILENAME=$FILENAME" >> "$GITHUB_ENV"
+          echo "Ukuran cadangan: $(du -h "$FILENAME" | cut -f1)"
+
+      - name: Unggah ke Supabase Storage (bucket privat backups-db)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -e
+          HTTP_STATUS=$(curl -s -o /tmp/upload-response.json -w "%{http_code}" \
+            -X POST "$SUPABASE_URL/storage/v1/object/backups-db/$FILENAME" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "Content-Type: application/octet-stream" \
+            --data-binary "@$FILENAME")
+          cat /tmp/upload-response.json
+          if [ "$HTTP_STATUS" -ge 300 ]; then
+            echo "Unggah cadangan gagal (HTTP $HTTP_STATUS)"
+            exit 1
+          fi
+          echo "Cadangan tersimpan: backups-db/$FILENAME"
+
+      - name: Hapus cadangan lebih dari 14 hari (jaga ukuran bucket)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          node --input-type=module -e '
+            const url = process.env.SUPABASE_URL;
+            const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+            const headers = { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" };
+
+            const res = await fetch(`${url}/storage/v1/object/list/backups-db`, {
+              method: "POST",
+              headers,
+              body: JSON.stringify({ prefix: "", limit: 1000, sortBy: { column: "name", order: "asc" } }),
+            });
+            const objek = await res.json();
+            if (!Array.isArray(objek)) { console.error("Gagal daftar objek:", objek); process.exit(1); }
+
+            const batasWaktu = Date.now() - 14 * 24 * 60 * 60 * 1000;
+            const kadaluwarsa = objek.filter((o) => new Date(o.created_at).getTime() < batasWaktu).map((o) => o.name);
+
+            if (!kadaluwarsa.length) { console.log("Tidak ada cadangan kedaluwarsa."); process.exit(0); }
+
+            const hapus = await fetch(`${url}/storage/v1/object/backups-db`, {
+              method: "DELETE",
+              headers,
+              body: JSON.stringify({ prefixes: kadaluwarsa }),
+            });
+            console.log(`Dihapus ${kadaluwarsa.length} cadangan lama:`, kadaluwarsa, "->", hapus.status);
+          '

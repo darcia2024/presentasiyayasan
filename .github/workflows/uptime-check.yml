@@ -1,0 +1,61 @@
+name: Pemantauan Ketersediaan PERISA
+
+# PERISA AZHARIYAH — Fase 7: pemantauan error & ketersediaan (MVP)
+#
+# Bukan Sentry (butuh akun berbayar/pendaftaran eksternal, sengaja
+# ditunda — lihat SENTRY_DSN kosong di .env.example) — ini pemantauan
+# UPTIME sederhana yang tidak butuh secret/akun apa pun: cukup periksa
+# alamat publik situs & Edge Function masih menjawab. Kalau gagal,
+# GitHub otomatis mengirim email ke pemilik repo (perilaku baku Actions
+# untuk workflow terjadwal yang gagal) — jadi ada yang tahu kalau situs
+# jatuh, bukan menunggu wali melapor duluan.
+#
+# AGAR JALAN — isi SATU repository VARIABLE (bukan secret, ini alamat
+# publik): Settings > Secrets and variables > Actions > Variables >
+# New repository variable, nama SITE_URL, nilai alamat situs produksi
+# (mis. https://perisa-azhariyah.pages.dev atau domain sendiri).
+# Sebelum diisi, langkah ini dilewati dengan peringatan — bukan gagal.
+
+on:
+  schedule:
+    - cron: '*/30 * * * *' # tiap 30 menit
+  workflow_dispatch: {}
+
+jobs:
+  periksa:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Periksa situs utama
+        if: vars.SITE_URL != ''
+        run: |
+          set -e
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 "${{ vars.SITE_URL }}/prototype.html")
+          echo "Status situs utama: HTTP $HTTP_STATUS"
+          if [ "$HTTP_STATUS" -lt 200 ] || [ "$HTTP_STATUS" -ge 400 ]; then
+            echo "::error::Situs utama tidak sehat (HTTP $HTTP_STATUS)"
+            exit 1
+          fi
+
+      - name: Lewati (SITE_URL belum diisi)
+        if: vars.SITE_URL == ''
+        run: echo "::warning::Repository variable SITE_URL belum diisi — pemantauan situs utama dilewati. Lihat komentar di berkas workflow ini."
+
+      - name: Periksa Supabase Edge Functions masih hidup
+        if: vars.SUPABASE_URL_PUBLIC != ''
+        run: |
+          set -e
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 -X POST \
+            "${{ vars.SUPABASE_URL_PUBLIC }}/functions/v1/auth-otp-request" \
+            -H "Content-Type: application/json" -d '{}')
+          echo "Status Edge Function: HTTP $HTTP_STATUS"
+          # 400 (body kosong ditolak) berarti fungsinya HIDUP dan menjawab
+          # dengan benar — yang dicurigai justru kalau responsnya 000
+          # (tidak terhubung sama sekali) atau 5xx (fungsi crash).
+          if [ "$HTTP_STATUS" -ge 500 ] || [ "$HTTP_STATUS" -eq 000 ]; then
+            echo "::error::Edge Function tidak sehat (HTTP $HTTP_STATUS)"
+            exit 1
+          fi
+
+      - name: Lewati (SUPABASE_URL_PUBLIC belum diisi)
+        if: vars.SUPABASE_URL_PUBLIC == ''
+        run: echo "::warning::Repository variable SUPABASE_URL_PUBLIC belum diisi — pemantauan Edge Function dilewati."

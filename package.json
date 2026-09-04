@@ -10,6 +10,7 @@
     "release:patch": "npm version patch --no-git-tag-version && npm run stamp",
     "release:minor": "npm version minor --no-git-tag-version && npm run stamp",
     "test": "node --check prototype-mobile.js && node --check app.js && node --check game2d.js && npm run stamp",
+    "test:smoke": "node tests/smoke-e2e.js",
     "icons": "node tools/build-icons.js",
     "fonts": "node tools/fetch-fonts.js",
     "gen-config": "node tools/gen-config.js"

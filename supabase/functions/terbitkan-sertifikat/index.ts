@@ -124,6 +124,18 @@ Deno.serve(async (req) => {
       // masih bisa mengunggah ke path yang sudah pasti benar ini.
     }
 
+    // Fase 7: dicatat manual di sini (bukan trigger) karena penulisnya
+    // service_role — auth.uid() akan NULL kalau ditinggalkan ke trigger,
+    // kehilangan identitas staff yang sebenarnya menerbitkan.
+    await supabase.from('audit_log').insert({
+      actor_type: 'staff',
+      actor_id: sesi.akunId,
+      aksi: 'terbitkan_sertifikat',
+      target_type: 'sertifikat',
+      target_id: sertifikatId,
+      detail: { santri_id: santri.id, santri_nama: santri.nama, nomor_seri: nomorSeriTerpakai, judul },
+    });
+
     return jsonResponse({
       ok: true,
       sertifikatId,
