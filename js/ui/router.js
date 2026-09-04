@@ -9,8 +9,10 @@
 import { playTone, showToast } from '../core/feedback.js';
 import { bukaStudio } from './studio.js';
 import { muatDanRenderDokumen } from './dokumen-viewer.js';
+import { renderWaliDashboard } from './wali-dashboard.js';
 
 const ALL_VIEWS = [
+  'viewWaliDashboard',
   'viewBerandaUtama',
   'viewCoursePlayer',
   'viewModulPdf',
@@ -21,6 +23,13 @@ const ALL_VIEWS = [
 
 /** Peta rute: id tampilan, id menu sidebar, remah roti, pesan, dan nada. */
 const ROUTES = {
+  'wali-dashboard': {
+    view: 'viewWaliDashboard',
+    nav: 'nav-wali-dashboard',
+    crumb: ['Portal Wali', 'Ringkasan Keluarga', 'Dashboard Progres Ananda'],
+    toast: 'Membuka Dashboard Wali',
+    tone: 520
+  },
   beranda: {
     view: 'viewBerandaUtama',
     nav: 'nav-beranda',
@@ -98,6 +107,12 @@ export function switchMainView(viewName) {
   showToast(route.toast);
   playTone(route.tone, 'sine', 0.1, 0.06);
 
+  if (viewName === 'wali-dashboard') {
+    // Sama seperti studio-kurikulum/modul-pdf: async, tidak ditunggu di
+    // sini — renderWaliDashboard menggambar skeleton dulu lalu mengisi
+    // angka sungguhan sendiri.
+    renderWaliDashboard();
+  }
   if (viewName === 'studio-kurikulum') {
     // Async, sengaja tidak ditunggu (await) — switchMainView tetap sinkron
     // seperti kontrak aslinya, bukaStudio menangani render sendiri.

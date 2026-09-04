@@ -52,6 +52,8 @@ const SHELL_ASSETS = [
   '/js/core/kuis-client.js',
   '/js/ui/kuis.js',
   '/js/ui/papan-peringkat.js',
+  '/js/core/wali-client.js',
+  '/js/ui/wali-dashboard.js',
   '/vendor/phosphor/phosphor.css',
   '/vendor/phosphor/Phosphor.woff2',
   '/vendor/fonts/fonts.css',

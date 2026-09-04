@@ -268,6 +268,13 @@
 
       <!-- Navigation Links in Drawer -->
       <ul class="ref-nav-list" style="margin-top: 4px;">
+        <!-- Fase 6: hanya terlihat saat sesi login WALI aktif — lihat js/ui/auth.js -->
+        <li id="navWaliDashboardItemMobile" style="display: none;">
+          <a class="ref-nav-item" data-view="wali-dashboard" onclick="PrototypeApp.switchMainView('wali-dashboard'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-users-three"></i>
+            <span>Dashboard Wali</span>
+          </a>
+        </li>
         <li>
           <a class="ref-nav-item" data-view="beranda" onclick="PrototypeApp.switchMainView('beranda'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-squares-four"></i>
@@ -440,6 +447,13 @@
 
       <!-- Navigation Menu -->
       <ul class="ref-nav-list">
+        <!-- Fase 6: hanya terlihat saat sesi login WALI aktif — lihat js/ui/auth.js -->
+        <li id="navWaliDashboardItem" style="display: none;">
+          <a class="ref-nav-item" id="nav-wali-dashboard" onclick="PrototypeApp.switchMainView('wali-dashboard')">
+            <i class="ph ph-users-three"></i>
+            <span>Dashboard Wali</span>
+          </a>
+        </li>
         <li>
           <a class="ref-nav-item" id="nav-beranda" onclick="PrototypeApp.switchMainView('beranda')">
             <i class="ph ph-squares-four"></i>
@@ -521,6 +535,26 @@
           </button>
         </div>
       </header>
+
+      <!-- ======================================================
+           VIEW 0: DASHBOARD WALI (Fase 6)
+           Digambar oleh js/ui/wali-dashboard.js — tidak ada peraga statis
+           di sini karena tampilan ini baru, bukan pengganti sesuatu yang
+           sudah ada. Hanya terlihat lewat nav-wali-dashboard (tersembunyi
+           kecuali sesi login wali aktif).
+           ====================================================== -->
+      <div id="viewWaliDashboard" style="display: none; width: 100%;">
+        <div class="wali-dashboard-layout">
+          <div class="wali-dashboard-header">
+            <div class="wali-dashboard-header-icon"><i class="ph ph-users-three"></i></div>
+            <div>
+              <h1 class="course-main-h1" style="font-size: 19px;">Dashboard Wali</h1>
+              <div id="waliDashboardSalam" style="font-size: 12.5px; color: var(--text-muted); margin-top: 2px;">Memuat progres ananda…</div>
+            </div>
+          </div>
+          <div id="waliDashboardContainer" class="wali-dashboard-grid"></div>
+        </div>
+      </div>
 
       <!-- ======================================================
            VIEW 1: BERANDA UTAMA (HOME DASHBOARD)

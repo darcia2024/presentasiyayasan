@@ -84,6 +84,9 @@ const SHELL_ASSETS = [
   '/js/core/kuis-client.js',
   '/js/ui/kuis.js',
   '/js/ui/papan-peringkat.js',
+  /* Fase 6 — Dashboard Wali. */
+  '/js/core/wali-client.js',
+  '/js/ui/wali-dashboard.js',
   /* Font & ikon lokal. Sengaja tidak semua bobot font ikut di-precache —
      hanya yang dibutuhkan tampilan pertama. Sisanya (bobot 500/800, subset
      latin-ext, dan Amiri tebal) menyusul lewat cache-first saat benar-benar

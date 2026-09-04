@@ -220,11 +220,28 @@ function terapkanVisibilitasStaff() {
   if (item) item.style.display = sesi?.akun?.akun_jenis === 'staff' ? '' : 'none';
 }
 
+/** Tampilkan menu "Dashboard Wali" (sidebar + drawer mobile) hanya untuk sesi wali. */
+function terapkanVisibilitasWali() {
+  const sesi = bacaSesi();
+  const terlihat = sesi?.akun?.akun_jenis === 'wali' ? '' : 'none';
+  const item = $('navWaliDashboardItem');
+  if (item) item.style.display = terlihat;
+  const itemMobile = $('navWaliDashboardItemMobile');
+  if (itemMobile) itemMobile.style.display = terlihat;
+}
+
 function selesai() {
   const gate = $('authGate');
   if (gate) gate.style.display = 'none';
   document.body.classList.remove('auth-gate-open');
   terapkanVisibilitasStaff();
+  terapkanVisibilitasWali();
+  // Fase 6: wali mendarat di dashboard ringkasan anak dulu, bukan langsung
+  // ke konten satu anak — itulah gunanya fase ini. Staff/pengurus tetap
+  // seperti sebelumnya (tidak disentuh).
+  if (bacaSesi()?.akun?.akun_jenis === 'wali' && window.PrototypeApp?.switchMainView) {
+    window.PrototypeApp.switchMainView('wali-dashboard');
+  }
   showToast('Berhasil masuk. Ahlan wa sahlan!');
 }
 
@@ -261,6 +278,13 @@ export function initAuthGate() {
     }
     gate.style.display = 'none';
     terapkanVisibilitasStaff();
+    terapkanVisibilitasWali();
+    // Sesi wali yang bertahan lewat reload halaman tetap mendarat di
+    // dashboard-nya, bukan di kurikulum() bawaan HTML — konsisten dengan
+    // login baru lewat selesai().
+    if (sesi.akun.akun_jenis === 'wali' && window.PrototypeApp?.switchMainView) {
+      window.PrototypeApp.switchMainView('wali-dashboard');
+    }
     return;
   }
 
