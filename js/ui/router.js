@@ -8,6 +8,7 @@
 
 import { playTone, showToast } from '../core/feedback.js';
 import { bukaStudio } from './studio.js';
+import { muatDanRenderDokumen } from './dokumen-viewer.js';
 
 const ALL_VIEWS = [
   'viewBerandaUtama',
@@ -101,6 +102,11 @@ export function switchMainView(viewName) {
     // Async, sengaja tidak ditunggu (await) — switchMainView tetap sinkron
     // seperti kontrak aslinya, bukaStudio menangani render sendiri.
     bukaStudio();
+  }
+  if (viewName === 'modul-pdf') {
+    // Sama: gantikan kartu peraga dengan dokumen asli begitu ada yang
+    // terbit, tidak menunda switchMainView menunggu jaringan.
+    muatDanRenderDokumen();
   }
 }
 

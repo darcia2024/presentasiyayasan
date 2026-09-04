@@ -13,7 +13,9 @@ import { getSupabaseClient } from './supabase-client.js';
 const TABEL_MODUL = 'modul';
 const TABEL_PELAJARAN = 'pelajaran';
 const TABEL_MUFRODAT = 'mufrodat';
+const TABEL_DOKUMEN = 'dokumen';
 const BUCKET_MEDIA = 'kurikulum-media';
+const BUCKET_VIDEO = 'kurikulum-video';
 
 function lemparJikaError(error, konteks) {
   if (error) throw new Error(`${konteks}: ${error.message}`);
@@ -210,6 +212,97 @@ export async function unggahMedia(file, jenis) {
   });
   lemparJikaError(error, 'Gagal mengunggah berkas');
 
+  const { data } = client.storage.from(BUCKET_MEDIA).getPublicUrl(path);
+  return data.publicUrl;
+}
+
+/**
+ * Unggah video ke bucket PRIVAT kurikulum-video, lalu simpan PATH-nya
+ * (bukan URL publik — bucket ini tidak punya URL publik sama sekali) ke
+ * pelajaran.video_path. Santri menonton lewat URL bertanda tangan yang
+ * diminta terpisah dari Edge Function video-signed-url — lihat
+ * js/core/video-client.js.
+ */
+export async function unggahVideoPelajaran(file, pelajaranId) {
+  const client = getSupabaseClient();
+  const ekstensi = file.name.split('.').pop();
+  const path = `${pelajaranId}/${crypto.randomUUID()}.${ekstensi}`;
+
+  const { error: errUpload } = await client.storage.from(BUCKET_VIDEO).upload(path, file, {
+    cacheControl: '3600',
+    upsert: false,
+  });
+  lemparJikaError(errUpload, 'Gagal mengunggah video');
+
+  const { error: errUpdate } = await client
+    .from(TABEL_PELAJARAN)
+    .update({ video_path: path })
+    .eq('id', pelajaranId);
+  lemparJikaError(errUpdate, 'Video terunggah, tapi gagal menyimpan tautannya ke pelajaran');
+
+  return path;
+}
+
+/* --------------------------------------------------------------- DOKUMEN */
+
+export async function daftarDokumen(jenjang) {
+  const client = getSupabaseClient();
+  const { data, error } = await client
+    .from(TABEL_DOKUMEN)
+    .select('id, jenjang, judul, deskripsi, penyusun, file_url, status, urutan')
+    .eq('jenjang', jenjang)
+    .order('urutan', { ascending: true });
+  lemparJikaError(error, 'Gagal memuat daftar dokumen');
+  return data;
+}
+
+export async function simpanDokumen(dokumen) {
+  const client = getSupabaseClient();
+  const baris = {
+    jenjang: dokumen.jenjang,
+    judul: dokumen.judul,
+    deskripsi: dokumen.deskripsi || null,
+    penyusun: dokumen.penyusun || 'Umi Elly',
+    file_url: dokumen.file_url,
+    urutan: dokumen.urutan ?? 0,
+  };
+  if (dokumen.id) {
+    const { data, error } = await client.from(TABEL_DOKUMEN).update(baris).eq('id', dokumen.id).select().single();
+    lemparJikaError(error, 'Gagal menyimpan dokumen');
+    return data;
+  }
+  const { data, error } = await client.from(TABEL_DOKUMEN).insert(baris).select().single();
+  lemparJikaError(error, 'Gagal membuat dokumen');
+  return data;
+}
+
+export async function hapusDokumen(dokumenId) {
+  const client = getSupabaseClient();
+  const { error } = await client.from(TABEL_DOKUMEN).delete().eq('id', dokumenId);
+  lemparJikaError(error, 'Gagal menghapus dokumen');
+}
+
+export async function ubahStatusDokumen(dokumenId, status) {
+  const client = getSupabaseClient();
+  const { data, error } = await client
+    .from(TABEL_DOKUMEN)
+    .update({ status })
+    .eq('id', dokumenId)
+    .select()
+    .single();
+  lemparJikaError(error, 'Gagal mengubah status dokumen');
+  return data;
+}
+
+/** PDF diunggah ke bucket publik yang sama dengan gambar/audio mufrodat. */
+export async function unggahDokumenPdf(file) {
+  const path = `dokumen/${crypto.randomUUID()}.pdf`;
+  const client = getSupabaseClient();
+  const { error } = await client.storage.from(BUCKET_MEDIA).upload(path, file, {
+    cacheControl: '31536000',
+    upsert: false,
+  });
+  lemparJikaError(error, 'Gagal mengunggah PDF');
   const { data } = client.storage.from(BUCKET_MEDIA).getPublicUrl(path);
   return data.publicUrl;
 }

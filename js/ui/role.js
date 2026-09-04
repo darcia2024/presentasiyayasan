@@ -9,7 +9,9 @@
 import { roleData, DEFAULT_ROLE } from '../data/roles.js';
 import { playTone, showToast } from '../core/feedback.js';
 import { renderSyllabus } from './syllabus.js';
-import { muatSilabusTerbit } from '../core/content-loader.js';
+import { muatSilabusTerbit, muatMufrodatPelajaran } from '../core/content-loader.js';
+import { renderMufrodatCards } from './mufrodat-cards.js';
+import { tampilkanVideoPelajaran, sembunyikanVideoPelajaran } from './video-player.js';
 
 /** Tampilan lain yang harus disembunyikan agar tidak bertumpuk saat berganti peran. */
 const OTHER_VIEWS = ['viewBerandaUtama', 'viewModulPdf', 'viewAiAssistant'];
@@ -35,11 +37,21 @@ async function upgradeKeKontenAsli(roleName) {
   if (!jenjang) return;
 
   const giliranSaya = ++giliranSilabusTerakhir;
-  const silabusAsli = await muatSilabusTerbit(jenjang);
+  const hasil = await muatSilabusTerbit(jenjang);
   if (giliranSaya !== giliranSilabusTerakhir) return; // sudah keburu ganti peran lagi
+  if (!hasil || !hasil.syllabus.length) return;
 
-  if (silabusAsli && silabusAsli.length) {
-    renderSyllabus(silabusAsli);
+  renderSyllabus(hasil.syllabus);
+
+  if (hasil.pelajaranAktifId) {
+    const [mufrodat] = await Promise.all([
+      muatMufrodatPelajaran(hasil.pelajaranAktifId),
+      tampilkanVideoPelajaran(hasil.pelajaranAktifId),
+    ]);
+    if (giliranSaya !== giliranSilabusTerakhir) return;
+    if (mufrodat && mufrodat.length) renderMufrodatCards(mufrodat);
+  } else {
+    sembunyikanVideoPelajaran();
   }
 }
 
@@ -129,6 +141,10 @@ export function setRole(roleName) {
   if (watermark) watermark.innerHTML = `<i class="ph ph-shield-check"></i> ${data.watermark}`;
 
   renderSyllabus(data.syllabus);
+  // Reset ke peraga dulu, SINKRON, sebelum upgrade async dicoba — tanpa ini,
+  // video sungguhan dari peran SEBELUMNYA bisa nyangkut kalau jenjang yang
+  // baru ternyata belum punya konten terbit sama sekali.
+  sembunyikanVideoPelajaran();
   upgradeKeKontenAsli(roleName);
 
   showToast(`Beralih ke Akun Santri: ${data.user.name} (${data.jenjangPill})`);

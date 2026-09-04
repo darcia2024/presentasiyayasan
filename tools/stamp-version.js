@@ -75,6 +75,11 @@ const SHELL_ASSETS = [
   '/js/core/content-loader.js',
   '/js/ui/studio.js',
   '/js/ui/studio.css',
+  /* Fase 3 — Media. */
+  '/js/ui/mufrodat-cards.js',
+  '/js/core/video-client.js',
+  '/js/ui/video-player.js',
+  '/js/ui/dokumen-viewer.js',
   /* Font & ikon lokal. Sengaja tidak semua bobot font ikut di-precache —
      hanya yang dibutuhkan tampilan pertama. Sisanya (bobot 500/800, subset
      latin-ext, dan Amiri tebal) menyusul lewat cache-first saat benar-benar

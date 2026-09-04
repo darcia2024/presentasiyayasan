@@ -28,8 +28,10 @@ function totalMenit(daftarPelajaran) {
 
 /**
  * @param {'sd'|'smp'|'sma'} jenjang
- * @returns {Promise<Array|null>} silabus siap-pakai untuk renderSyllabus(),
- *   atau null kalau tidak ada konten terbit / Supabase belum dikonfigurasi.
+ * @returns {Promise<{syllabus: Array, pelajaranAktifId: string|null}|null>}
+ *   null kalau tidak ada konten terbit / Supabase belum dikonfigurasi.
+ *   pelajaranAktifId menunjuk pelajaran pertama bertipe materi di modul
+ *   pertama — itu yang kartu mufrodatnya dimuat lewat muatMufrodatPelajaran().
  */
 export async function muatSilabusTerbit(jenjang) {
   if (!SUPABASE_TERKONFIGURASI) return null;
@@ -50,8 +52,13 @@ export async function muatSilabusTerbit(jenjang) {
     }
     if (!data || !data.length) return null;
 
-    return data.map((modul, iModul) => {
+    let pelajaranAktifId = null;
+
+    const syllabus = data.map((modul, iModul) => {
       const daftarPelajaran = urutkan(modul.pelajaran, 'urutan');
+      if (iModul === 0 && daftarPelajaran.length) {
+        pelajaranAktifId = daftarPelajaran[0].id;
+      }
       return {
         code: `${String(modul.tahap).padStart(2, '0')}`,
         title: modul.judul,
@@ -65,8 +72,38 @@ export async function muatSilabusTerbit(jenjang) {
         })),
       };
     });
+
+    return { syllabus, pelajaranAktifId };
   } catch (e) {
     console.error('[content-loader] gagal memuat silabus asli:', e.message);
+    return null;
+  }
+}
+
+/**
+ * Mufrodat milik satu pelajaran, siap dipakai renderMufrodatCards()
+ * (js/ui/mufrodat-cards.js). Terpisah dari muatSilabusTerbit() supaya
+ * silabus (ringan, cuma daftar judul) tetap cepat tampil sementara kartu
+ * mufrodat (lebih berat, ada gambar) menyusul.
+ */
+export async function muatMufrodatPelajaran(pelajaranId) {
+  if (!SUPABASE_TERKONFIGURASI || !pelajaranId) return null;
+
+  try {
+    const client = getSupabaseClient();
+    const { data, error } = await client
+      .from('mufrodat')
+      .select('id, arab, latin, arti, contoh_kalimat, audio_url, gambar_url')
+      .eq('pelajaran_id', pelajaranId)
+      .order('urutan', { ascending: true });
+
+    if (error) {
+      console.error('[content-loader] gagal memuat mufrodat pelajaran:', error.message);
+      return null;
+    }
+    return data;
+  } catch (e) {
+    console.error('[content-loader] gagal memuat mufrodat pelajaran:', e.message);
     return null;
   }
 }

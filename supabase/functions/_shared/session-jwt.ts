@@ -14,7 +14,7 @@
 // mekanisme baku Supabase secara sunyi — seluruh RLS berperilaku aneh
 // tanpa satu pun pesan error yang jelas.
 
-import { create, getNumericDate } from 'https://deno.land/x/djwt@v3.0.2/mod.ts';
+import { create, verify, getNumericDate } from 'https://deno.land/x/djwt@v3.0.2/mod.ts';
 
 const SESSION_TTL_SECONDS = 7 * 24 * 60 * 60; // 7 hari
 
@@ -64,4 +64,22 @@ export async function terbitkanSessionJwt(
 
   const token = await create({ alg: 'HS256', typ: 'JWT' }, payload, key);
   return { token, expiresAt };
+}
+
+/**
+ * Verifikasi token dari header Authorization Edge Function lain (mis.
+ * video-signed-url) yang perlu tahu SIAPA yang memanggil, bukan cuma
+ * "apakah sudah login" (yang sudah ditegakkan Supabase sendiri lewat
+ * verify_jwt bawaan). Melempar kalau tanda tangan tidak cocok atau sudah
+ * kedaluwarsa — pemanggil menangkapnya sebagai permintaan tidak sah.
+ */
+export async function verifikasiSessionJwt(token: string): Promise<SessionClaims & { akunId: string }> {
+  const key = await getSigningKey();
+  const payload = await verify(token, key);
+
+  return {
+    akunId: String(payload.sub),
+    akunJenis: payload.akun_jenis as 'wali' | 'staff',
+    staffPeran: payload.staff_peran as SessionClaims['staffPeran'],
+  };
 }

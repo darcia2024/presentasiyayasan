@@ -26,6 +26,12 @@ import {
   hapusMufrodat,
   importMufrodatMassal,
   unggahMedia,
+  unggahVideoPelajaran,
+  daftarDokumen,
+  simpanDokumen,
+  hapusDokumen,
+  ubahStatusDokumen,
+  unggahDokumenPdf,
   validasiSiapTerbit,
 } from '../core/curriculum-client.js';
 import { uraikanCsvMufrodat, templatCsvMufrodat } from '../core/csv.js';
@@ -167,10 +173,24 @@ function render() {
     case 'impor-csv':
       renderImporCsv(body);
       break;
+    case 'dokumen-list':
+      renderDaftarDokumen(body);
+      break;
+    case 'dokumen-form':
+      renderFormDokumen(body);
+      break;
   }
 }
 
 function renderBreadcrumb(el) {
+  if (STATE.layar === 'dokumen-list' || STATE.layar === 'dokumen-form') {
+    const a = buatEl('button', 'studio-breadcrumb-item', 'Dokumen PDF');
+    a.type = 'button';
+    a.addEventListener('click', () => { STATE.layar = 'dokumen-list'; render(); });
+    el.appendChild(a);
+    return;
+  }
+
   const bagian = [{ teks: `Jenjang ${NAMA_JENJANG[STATE.jenjang]}`, aksi: () => { STATE.layar = 'modul-list'; STATE.modulAktif = null; render(); } }];
   if (STATE.modulAktif) {
     bagian.push({
@@ -205,6 +225,19 @@ function renderDaftarModul(body) {
 
   const headerRow = buatEl('div', 'studio-row-header');
   headerRow.appendChild(buatEl('h3', 'studio-h3', `Modul — Jenjang ${NAMA_JENJANG[STATE.jenjang]}`));
+
+  const kananHeader = buatEl('div', 'studio-header-actions');
+  const btnDokumen = buatEl('button', 'studio-btn-secondary', '📄 Dokumen PDF');
+  btnDokumen.type = 'button';
+  btnDokumen.addEventListener('click', () =>
+    jalankan(async () => {
+      STATE.layar = 'dokumen-list';
+      STATE.dokumenList = await daftarDokumen(STATE.jenjang);
+      render();
+    }, 'Gagal memuat daftar dokumen.'),
+  );
+  kananHeader.appendChild(btnDokumen);
+
   const btnTambah = buatEl('button', 'studio-btn-primary', '+ Modul Baru');
   btnTambah.type = 'button';
   btnTambah.addEventListener('click', () => {
@@ -212,7 +245,8 @@ function renderDaftarModul(body) {
     STATE.formModul = { jenjang: STATE.jenjang, tahap: 1 };
     render();
   });
-  headerRow.appendChild(btnTambah);
+  kananHeader.appendChild(btnTambah);
+  headerRow.appendChild(kananHeader);
   body.appendChild(headerRow);
 
   if (!STATE.modulList.length) {
@@ -447,6 +481,12 @@ function renderFormPelajaran(body) {
   groupTipe.appendChild(selTipe);
   form.appendChild(groupTipe);
 
+  // Video butuh ID pelajaran untuk path storage-nya — cuma tersedia saat
+  // mengubah pelajaran yang sudah tersimpan, bukan saat membuat baru.
+  if (f.id) {
+    form.appendChild(bidangVideo(f));
+  }
+
   const tombolBaris = buatEl('div', 'studio-form-actions');
   const btnSimpan = buatEl('button', 'studio-btn-primary', 'Simpan');
   btnSimpan.type = 'button';
@@ -673,6 +713,54 @@ function bidangMedia(label, id, urlAwal, jenis, accept) {
   return wrap;
 }
 
+/**
+ * Unggah video untuk satu pelajaran. Beda dari bidangMedia(): tersimpan
+ * langsung begitu berkas dipilih (bukan menunggu tombol Simpan pelajaran),
+ * karena video butuh baris pelajaran.id yang SUDAH ADA untuk path
+ * storage-nya — tidak ada "dataset.url" yang ditunda seperti gambar/audio.
+ */
+function bidangVideo(pelajaran) {
+  const wrap = buatEl('div', 'studio-field');
+  wrap.appendChild(buatEl('label', 'studio-label', 'Video Pelajaran'));
+
+  const kotak = buatEl('div', 'studio-media-box');
+  const pratinjau = buatEl('div', 'studio-media-preview');
+  const statusTeks = buatEl(
+    'span',
+    'studio-media-status',
+    pelajaran.video_path ? 'Sudah ada video ✓' : 'Belum ada video',
+  );
+  pratinjau.appendChild(statusTeks);
+  kotak.appendChild(pratinjau);
+
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'video/mp4,video/webm';
+  input.className = 'studio-media-input';
+  input.addEventListener('change', () =>
+    jalankan(async () => {
+      const file = input.files[0];
+      if (!file) return;
+      statusTeks.textContent = 'Mengunggah… (bisa beberapa menit untuk video)';
+      const path = await unggahVideoPelajaran(file, pelajaran.id);
+      pelajaran.video_path = path;
+      statusTeks.textContent = 'Berhasil diunggah ✓';
+      showToast('Video berhasil diunggah.');
+    }, 'Gagal mengunggah video.'),
+  );
+  kotak.appendChild(input);
+
+  wrap.appendChild(kotak);
+  wrap.appendChild(
+    buatEl(
+      'p',
+      'studio-note',
+      'Video disimpan di bucket privat — santri hanya menerima tautan sekali pakai yang berlaku 5 menit, bukan tautan tetap.',
+    ),
+  );
+  return wrap;
+}
+
 /* ------------------------------------------------------------ IMPOR CSV */
 
 function renderImporCsv(body) {
@@ -759,6 +847,169 @@ function renderImporCsv(body) {
   btnBatal.type = 'button';
   btnBatal.addEventListener('click', () => { STATE.layar = 'mufrodat-list'; render(); });
   body.appendChild(btnBatal);
+}
+
+/* ---------------------------------------------------------------- DOKUMEN */
+
+function renderDaftarDokumen(body) {
+  const tabs = buatEl('div', 'studio-tabs');
+  Object.keys(NAMA_JENJANG).forEach((j) => {
+    const btn = buatEl('button', `studio-tab${j === STATE.jenjang ? ' studio-tab--active' : ''}`, NAMA_JENJANG[j]);
+    btn.type = 'button';
+    btn.addEventListener('click', () =>
+      jalankan(async () => {
+        STATE.jenjang = j;
+        STATE.dokumenList = await daftarDokumen(j);
+        render();
+      }, 'Gagal memuat daftar dokumen.'),
+    );
+    tabs.appendChild(btn);
+  });
+  body.appendChild(tabs);
+
+  const headerRow = buatEl('div', 'studio-row-header');
+  headerRow.appendChild(buatEl('h3', 'studio-h3', `Dokumen PDF — Jenjang ${NAMA_JENJANG[STATE.jenjang]}`));
+  const btnTambah = buatEl('button', 'studio-btn-primary', '+ Dokumen Baru');
+  btnTambah.type = 'button';
+  btnTambah.addEventListener('click', () => {
+    STATE.layar = 'dokumen-form';
+    STATE.formDokumen = { jenjang: STATE.jenjang };
+    render();
+  });
+  headerRow.appendChild(btnTambah);
+  body.appendChild(headerRow);
+
+  if (!STATE.dokumenList || !STATE.dokumenList.length) {
+    body.appendChild(buatEl('p', 'studio-empty', 'Belum ada dokumen PDF untuk jenjang ini.'));
+    return;
+  }
+
+  const list = buatEl('div', 'studio-list');
+  STATE.dokumenList.forEach((d) => {
+    const item = buatEl('div', 'studio-list-item');
+    const kiri = buatEl('div', 'studio-list-item-main');
+    kiri.appendChild(buatEl('span', 'studio-list-item-judul', d.judul));
+    kiri.appendChild(buatEl('span', 'studio-list-item-meta', d.penyusun));
+    item.appendChild(kiri);
+    item.appendChild(chipStatus(d.status === 'terbit' ? 'terbit' : 'draft'));
+
+    const btnEdit = buatEl('button', 'studio-btn-icon', '✎');
+    btnEdit.type = 'button';
+    btnEdit.addEventListener('click', (e) => {
+      e.stopPropagation();
+      STATE.layar = 'dokumen-form';
+      STATE.formDokumen = { ...d };
+      render();
+    });
+    item.appendChild(btnEdit);
+    list.appendChild(item);
+  });
+  body.appendChild(list);
+}
+
+function renderFormDokumen(body) {
+  const f = STATE.formDokumen;
+  const form = buatEl('div', 'studio-form');
+  form.appendChild(buatEl('h3', 'studio-h3', f.id ? 'Ubah Dokumen' : 'Dokumen Baru'));
+
+  form.appendChild(labelInput('Judul Dokumen', 'studioDokumenJudul', f.judul, 'contoh: Silabus Bahasa Arab SD'));
+  form.appendChild(labelInput('Penyusun', 'studioDokumenPenyusun', f.penyusun || 'Umi Elly', ''));
+  form.appendChild(labelInput('Deskripsi Singkat (opsional)', 'studioDokumenDeskripsi', f.deskripsi, ''));
+
+  const bidangFile = buatEl('div', 'studio-field');
+  bidangFile.appendChild(buatEl('label', 'studio-label', 'Berkas PDF'));
+  const kotak = buatEl('div', 'studio-media-box');
+  kotak.dataset.url = f.file_url || '';
+  const statusTeks = buatEl('span', 'studio-media-status', f.file_url ? 'Sudah ada berkas ✓' : 'Belum ada berkas');
+  kotak.appendChild(statusTeks);
+  const inputFile = document.createElement('input');
+  inputFile.type = 'file';
+  inputFile.accept = 'application/pdf';
+  inputFile.className = 'studio-media-input';
+  inputFile.addEventListener('change', () =>
+    jalankan(async () => {
+      const file = inputFile.files[0];
+      if (!file) return;
+      statusTeks.textContent = 'Mengunggah…';
+      const url = await unggahDokumenPdf(file);
+      kotak.dataset.url = url;
+      statusTeks.textContent = 'Berhasil diunggah ✓';
+      showToast('PDF berhasil diunggah.');
+    }, 'Gagal mengunggah PDF.'),
+  );
+  kotak.appendChild(inputFile);
+  bidangFile.appendChild(kotak);
+  form.appendChild(bidangFile);
+
+  const tombolBaris = buatEl('div', 'studio-form-actions');
+  const btnSimpan = buatEl('button', 'studio-btn-primary', 'Simpan');
+  btnSimpan.type = 'button';
+  btnSimpan.addEventListener('click', () =>
+    jalankan(async () => {
+      const judul = $('studioDokumenJudul').value.trim();
+      const fileUrl = kotak.dataset.url;
+      if (!judul) { showToast('Judul dokumen wajib diisi.'); return; }
+      if (!fileUrl) { showToast('Unggah berkas PDF-nya dulu.'); return; }
+      await simpanDokumen({
+        id: f.id,
+        jenjang: f.jenjang,
+        judul,
+        penyusun: $('studioDokumenPenyusun').value.trim() || 'Umi Elly',
+        deskripsi: $('studioDokumenDeskripsi').value.trim(),
+        file_url: fileUrl,
+      });
+      showToast('Dokumen disimpan.');
+      playTone(560, 'sine', 0.1, 0.06);
+      STATE.layar = 'dokumen-list';
+      STATE.dokumenList = await daftarDokumen(f.jenjang);
+      render();
+    }, 'Gagal menyimpan dokumen.'),
+  );
+  tombolBaris.appendChild(btnSimpan);
+
+  if (f.id) {
+    const btnTerbit = buatEl(
+      'button',
+      'studio-btn-secondary',
+      f.status === 'terbit' ? 'Jadikan Draf' : 'Terbitkan',
+    );
+    btnTerbit.type = 'button';
+    btnTerbit.addEventListener('click', () =>
+      jalankan(async () => {
+        const statusBaru = f.status === 'terbit' ? 'draft' : 'terbit';
+        await ubahStatusDokumen(f.id, statusBaru);
+        showToast(`Dokumen ${statusBaru === 'terbit' ? 'diterbitkan' : 'dijadikan draf'}.`);
+        STATE.layar = 'dokumen-list';
+        STATE.dokumenList = await daftarDokumen(f.jenjang);
+        render();
+      }, 'Gagal mengubah status dokumen.'),
+    );
+    tombolBaris.appendChild(btnTerbit);
+  }
+
+  const btnBatal = buatEl('button', 'studio-btn-text', 'Batal');
+  btnBatal.type = 'button';
+  btnBatal.addEventListener('click', () => { STATE.layar = 'dokumen-list'; render(); });
+  tombolBaris.appendChild(btnBatal);
+
+  if (f.id) {
+    const btnHapus = buatEl('button', 'studio-btn-danger', 'Hapus');
+    btnHapus.type = 'button';
+    btnHapus.addEventListener('click', () =>
+      jalankan(async () => {
+        if (!confirm(`Hapus dokumen "${f.judul}"?`)) return;
+        await hapusDokumen(f.id);
+        showToast('Dokumen dihapus.');
+        STATE.layar = 'dokumen-list';
+        STATE.dokumenList = await daftarDokumen(f.jenjang);
+        render();
+      }, 'Gagal menghapus dokumen.'),
+    );
+    tombolBaris.appendChild(btnHapus);
+  }
+
+  form.appendChild(tombolBaris);
+  body.appendChild(form);
 }
 
 /* ------------------------------------------------------------- HELPER UI */
