@@ -14,8 +14,10 @@ Status per 5 September 2026. Dikelompokkan: sudah beres, dan yang **perlu tindak
 
 ## ⚠️ Perlu tindakan ANDA sebelum onboarding keluarga sungguhan
 
-1. **`git push origin main`** — commit Fase 7 & 8 masih tertahan di komputer ini (token tidak punya izin `workflow`). Jalankan dari terminal Anda sendiri.
+1. ~~**`git push origin main`**~~ — SELESAI 5 Sep 2026, seluruh commit Fase 7 & 8 sudah di `origin/main`.
 2. **Isi 3 secret GitHub Actions** (repo → Settings → Secrets and variables → Actions): `SUPABASE_DB_URL`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` — lalu jalankan *Cadangan Basis Data PERISA* sekali manual (tab Actions → Run workflow) untuk konfirmasi cadangan harian benar-benar berjalan.
+   Untuk `SUPABASE_DB_URL`, ambil connection string **Session pooler (port 5432)**, bukan Transaction pooler (6543) — `pg_dump` tidak bisa lewat mode transaksi. Kalau terlanjur mengisi 6543, biarkan saja: workflow mengalihkannya sendiri.
+   **Cabut token lama** di https://github.com/settings/tokens sekalian — beberapa PAT sempat dipakai/terekspos saat push di atas.
 3. **Isi repository variable `SITE_URL`** (alamat situs produksi) — supaya pemantauan ketersediaan situs benar-benar memeriksa sesuatu.
 4. **Baca ulang `kebijakan-privasi.html`** — belum ditinjau orang yang paham hukum. Sebelum benar-benar jadi pegangan resmi untuk keluarga sungguhan, ada baiknya diperiksa dulu.
 5. **Coba pemulihan cadangan sekali sebagai latihan** (lihat `docs/pemulihan-bencana.md`) — belum pernah dijalankan sungguhan, cuma terverifikasi sebagian.

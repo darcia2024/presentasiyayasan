@@ -11,9 +11,24 @@ name: Cadangan Basis Data PERISA
 #
 # AGAR JALAN — repo ini perlu tiga secret (Settings > Secrets and
 # variables > Actions), diisi SEKALI oleh pemilik repo:
-#   SUPABASE_DB_URL           connection string transaction pooler
+#   SUPABASE_DB_URL           connection string pooler MODE SESI (port 5432)
 #   SUPABASE_URL              https://<ref>.supabase.co
 #   SUPABASE_SERVICE_ROLE_KEY kunci service_role (BUKAN anon)
+#
+# DUA JEBAKAN yang menggagalkan run pertama (5 Sep 2026, run #1) — keduanya
+# sudah ditangani di bawah, dicatat di sini supaya tidak terulang:
+#
+#   1. VERSI. Server Supabase ini Postgres 17.6, sedangkan runner
+#      ubuntu-latest memasang postgresql-client 16 lewat apt biasa.
+#      pg_dump MENOLAK men-dump server yang lebih baru dari dirinya dan
+#      langsung berhenti. Karena itu klien 17 dipasang dari repo PGDG.
+#
+#   2. MODE POOLER. Port 6543 adalah pooler mode TRANSAKSI: state sesi
+#      tidak dipertahankan antar perintah, sedangkan pg_dump butuh itu
+#      (ia memegang satu transaksi snapshot sepanjang dump). Port 5432 di
+#      host pooler yang sama adalah mode SESI dan menerima kredensial yang
+#      sama persis. Langkah dump menormalkan port ini sendiri, jadi secret
+#      yang terlanjur diisi dengan 6543 tetap jalan.
 #
 # PEMULIHAN — lihat docs/pemulihan-bencana.md untuk langkah lengkap dan
 # hasil uji pemulihan yang sudah pernah dijalankan.
@@ -28,19 +43,62 @@ jobs:
   backup:
     runs-on: ubuntu-latest
     steps:
-      - name: Pasang klien PostgreSQL
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client
+      # apt bawaan Ubuntu hanya sampai klien 16; server kita 17. Repo PGDG
+      # resmi menyediakan klien 17 untuk rilis Ubuntu apa pun yang dipakai
+      # runner, jadi langkah ini tidak ikut rusak saat image runner naik versi.
+      - name: Pasang klien PostgreSQL 17
+        run: |
+          set -euo pipefail
+          sudo install -d /usr/share/postgresql-common/pgdg
+          curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+            | sudo gpg --dearmor -o /usr/share/postgresql-common/pgdg/pgdg.gpg
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/pgdg.gpg] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" \
+            | sudo tee /etc/apt/sources.list.d/pgdg.list > /dev/null
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client-17
+          echo "Klien terpasang: $(pg_dump --version)"
 
       - name: Buat cadangan (pg_dump, format custom)
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
-          set -e
+          set -euo pipefail
+
+          # Lihat jebakan #2 di kepala berkas: pg_dump tidak bisa lewat pooler
+          # mode transaksi. Dialihkan di sini, bukan dengan menyuruh pemilik
+          # repo menempel ulang secret — supaya tidak ada langkah manual yang
+          # bisa terlewat saat kredensial dirotasi nanti.
+          DB_URL="$SUPABASE_DB_URL"
+          case "$DB_URL" in
+            *:6543/*)
+              DB_URL="${DB_URL/:6543\//:5432/}"
+              echo "::add-mask::$DB_URL"
+              echo "Pooler mode transaksi (6543) dialihkan ke mode sesi (5432) untuk pg_dump."
+              ;;
+          esac
+
+          # Gagal karena beda versi berbunyi "server version mismatch" dan
+          # mudah disalahartikan sebagai masalah jaringan. Dicetak lebih dulu
+          # supaya penyebabnya kelihatan langsung di log.
+          echo "Versi klien : $(pg_dump --version | grep -oE '[0-9]+\.[0-9]+' | head -1)"
+          echo "Versi server: $(psql "$DB_URL" -tAc 'show server_version' 2>/dev/null || echo '(tidak terbaca)')"
+
           TIMESTAMP=$(date -u +%Y%m%d-%H%M%S)
           FILENAME="perisa-backup-${TIMESTAMP}.dump"
-          pg_dump "$SUPABASE_DB_URL" --format=custom --no-owner --no-privileges --file="$FILENAME"
+          pg_dump "$DB_URL" --format=custom --no-owner --no-privileges --file="$FILENAME"
+
+          # pg_dump bisa keluar dengan kode 0 tapi menulis berkas nyaris kosong
+          # kalau koneksinya putus di tengah. Cadangan yang diam-diam kosong
+          # lebih berbahaya daripada cadangan yang gagal terang-terangan.
+          UKURAN=$(stat -c %s "$FILENAME")
+          if [ "$UKURAN" -lt 4096 ]; then
+            echo "Cadangan mencurigakan: hanya ${UKURAN} byte — dianggap gagal."
+            exit 1
+          fi
+          pg_restore --list "$FILENAME" > /dev/null
+
           echo "FILENAME=$FILENAME" >> "$GITHUB_ENV"
-          echo "Ukuran cadangan: $(du -h "$FILENAME" | cut -f1)"
+          echo "Ukuran cadangan: $(du -h "$FILENAME" | cut -f1) (${UKURAN} byte), isi terbaca oleh pg_restore."
 
       - name: Unggah ke Supabase Storage (bucket privat backups-db)
         env:

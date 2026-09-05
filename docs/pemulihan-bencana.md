@@ -40,6 +40,42 @@ sudah diuji nyata terhadap project produksi:
   `ubuntu-latest`, unggah lewat REST Storage API) memakai pola HTTP yang
   identik dengan yang baru saja diuji di atas.
 
+### Run #1 gagal — dan itu menemukan dua bug nyata
+
+Workflow dijalankan manual untuk pertama kalinya pada 5 September 2026 dan
+**gagal dalam 11 detik**. Bagian "belum diverifikasi" di bawah ternyata
+memang menyembunyikan dua kesalahan, keduanya di berkas workflow, bukan di
+kredensial:
+
+1. **Beda versi.** Server project ini Postgres **17.6** (dipastikan lewat
+   Management API dan lewat `server_version` yang dilaporkan server saat
+   handshake). `apt-get install postgresql-client` di `ubuntu-latest`
+   memasang klien **16**, dan `pg_dump` menolak men-dump server yang lebih
+   baru dari dirinya — ia berhenti sebelum menulis satu byte pun. Ini yang
+   mematikan run #1. Sekarang klien 17 dipasang dari repo PGDG resmi.
+
+2. **Mode pooler salah.** Komentar workflow menyuruh mengisi
+   `SUPABASE_DB_URL` dengan connection string *transaction pooler*
+   (port 6543). Mode transaksi tidak mempertahankan state sesi, sedangkan
+   `pg_dump` memegang satu transaksi snapshot sepanjang proses — jadi ia
+   tidak akan pernah berhasil lewat port itu, bahkan setelah versi klien
+   dibetulkan. Port **5432** di host pooler yang sama adalah mode sesi dan
+   menerima kredensial yang sama persis (keduanya diuji langsung lewat
+   protokol wire Postgres: sama-sama lolos autentikasi, sama-sama
+   melaporkan 17.6). Workflow kini menormalkan port ini sendiri, jadi
+   secret yang terlanjur diisi 6543 tetap jalan.
+
+Pelajarannya bukan soal Postgres: **cadangan yang belum pernah dijalankan
+sekali pun harus dianggap tidak ada.** Dua bug ini lolos code review dan
+validasi YAML, dan hanya bisa ditemukan dengan benar-benar menekan tombol
+*Run workflow*.
+
+Ditambahkan sekalian, karena cadangan yang diam-diam rusak lebih berbahaya
+daripada cadangan yang gagal terang-terangan: setelah dump, workflow menolak
+berkas di bawah 4 KB dan menjalankan `pg_restore --list` untuk memastikan
+isinya benar-benar terbaca sebagai arsip, bukan file kosong hasil koneksi
+yang putus di tengah.
+
 ## Yang BELUM diverifikasi — perlu dicoba sekali sebelum benar-benar diandalkan
 
 1. **Jalankan workflow-nya sekali secara manual**: tab *Actions* repo
