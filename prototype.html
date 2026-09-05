@@ -160,7 +160,10 @@
   <!-- ============================================================
        1. TOP PRESENTER DOCK (DESKTOP DEMO CONTROLLER)
        ============================================================ -->
-  <aside class="demo-control-bar">
+  <!-- Fase 8: disembunyikan untuk sesi sungguhan lewat js/ui/auth.js —
+       ini panel demo/presentasi, bukan sesuatu yang boleh dilihat wali
+       sungguhan yang baru saja login lewat OTP asli. -->
+  <aside class="demo-control-bar" id="demoControlBar">
     <div class="demo-left-meta">
       <span class="demo-tag-pill">
         <i class="ph ph-sliders"></i> SIMULASI SISTEM
@@ -251,8 +254,9 @@
         </div>
       </div>
 
-      <!-- Perspective Role Selector in Drawer -->
-      <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+      <!-- Perspective Role Selector in Drawer — peraga, disembunyikan
+           untuk sesi sungguhan (Fase 8), lihat js/ui/auth.js -->
+      <div id="mDrawerPerspektif" style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px; display: flex; flex-direction: column; gap: 8px;">
         <span style="font-size: 10.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Ganti Perspektif Pengguna:</span>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
           <button class="role-btn" style="padding: 7px 8px; font-size: 11px; justify-content: center;" data-role="santri-sd" onclick="PrototypeApp.setRole('santri-sd'); PrototypeApp.toggleMobileDrawer();">
@@ -386,11 +390,18 @@
             </div>
           </div>
 
+          <!-- Fase 8: seluruh blok ini (label + daftar) PERAGA — disembunyikan
+               untuk sesi sungguhan lewat js/ui/auth.js, digantikan daftar
+               anak sungguhan HANYA kalau wali punya lebih dari satu santri
+               (lihat gantiProfilSantri di berkas yang sama). Wali dengan
+               satu anak tidak butuh "berganti", jadi blok ini disembunyikan
+               total untuk mereka. -->
+          <div id="dropdownPerspektifWrap">
           <div style="font-size: 10.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em;">
             Pilih Perspektif Santri:
           </div>
 
-          <div class="dropdown-account-list">
+          <div class="dropdown-account-list" id="dropdownAccountList">
             <div class="dropdown-account-item" id="accountItem-sd" onclick="PrototypeApp.setRole('santri-sd'); PrototypeApp.toggleProfileDropdown();">
               <div class="dropdown-account-left">
                 <div class="dropdown-mini-avatar">AZ</div>
@@ -434,6 +445,7 @@
               </div>
               <i class="ph ph-check" style="font-size: 14px; color: var(--gold-dark); display: none;" id="check-admin"></i>
             </div>
+          </div>
           </div>
 
           <div class="dropdown-quick-actions">
@@ -643,6 +655,11 @@
                 </button>
               </div>
 
+              <!-- Fase 8: peraga "coba jenjang lain" — disembunyikan untuk
+                   sesi sungguhan (js/ui/auth.js), wali dengan >1 anak
+                   sudah punya cara berganti yang benar lewat dropdown
+                   profil (memindahkan santriAktifId, bukan cuma tampilan). -->
+              <div id="berandaPilihanJenjang">
               <h4 style="font-size: 13px; font-weight: 700; color: var(--teal-dark); margin-top: 10px;">Pilihan Jenjang Lainnya</h4>
               <div class="m-level-scroller" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
                 <div class="m-level-card" style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 10px; cursor: pointer; text-align: center;" onclick="PrototypeApp.setRole('santri-sd'); PrototypeApp.switchMainView('kurikulum');">
@@ -660,6 +677,7 @@
                   <div class="m-level-name" style="font-size: 12px; font-weight: 700; color: var(--teal-dark);">Jenjang SMA</div>
                   <div class="m-level-desc" style="font-size: 10px; color: var(--text-muted);">Nahwu-Shorof</div>
                 </div>
+              </div>
               </div>
             </div>
 

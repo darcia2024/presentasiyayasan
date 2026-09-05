@@ -17,6 +17,7 @@ import { santriAktifId } from '../core/kuis-client.js';
 import { upgradePapanPeringkat } from './papan-peringkat.js';
 import { upgradeCertModalKeSertifikatAsli } from './sertifikat-santri.js';
 import { upgradeRiwayatAsisten } from './assistant.js';
+import { bacaSesi } from '../core/supabase-client.js';
 
 /** Tampilan lain yang harus disembunyikan agar tidak bertumpuk saat berganti peran. */
 const OTHER_VIEWS = ['viewBerandaUtama', 'viewModulPdf', 'viewAiAssistant'];
@@ -101,6 +102,69 @@ function updateProfileDropdown(user, roleName) {
   });
 }
 
+/**
+ * Fase 8: sebelum ini, sidebar/dropdown SELALU menampilkan nama peraga
+ * ("Ahmad Fauzan" dkk. dari js/data/roles.js) walau yang login wali/staff
+ * SUNGGUHAN — setRole() memang dirancang sekitar persona peraga, tidak
+ * pernah tahu ada sesi asli. Dipanggil SETELAH setRole() (yang tetap
+ * dipakai untuk kontennya) supaya identitas di sidebar/dropdown benar,
+ * bukan demi kontennya lagi.
+ *
+ * @param {{nama:string, subtitel:string, inisial:string}} identitas
+ */
+export function terapkanIdentitasAsli(identitas) {
+  const avatar = document.getElementById('sidebarUserAvatar');
+  if (avatar) {
+    avatar.textContent = identitas.inisial;
+    avatar.style.background = 'var(--teal-primary)';
+  }
+  setText('sidebarUserName', identitas.nama);
+  setText('sidebarUserSub', identitas.subtitel);
+
+  const avatarBesar = document.getElementById('dropdownAvatarLarge');
+  if (avatarBesar) {
+    avatarBesar.textContent = identitas.inisial;
+    avatarBesar.style.background = 'var(--teal-primary)';
+  }
+  setText('dropdownUserName', identitas.nama);
+  setText('dropdownUserStatus', identitas.subtitel);
+  setText('dropdownUserNisn', ''); // NISN peraga tidak relevan untuk sesi asli
+}
+
+const NAMA_JENJANG_LOKAL = { sd: 'SD', smp: 'SMP', sma: 'SMA' };
+const NAMA_PERAN_STAFF_LOKAL = { pengajar: 'Pengajar', pengurus: 'Pengurus Yayasan', superadmin: 'Pengurus Yayasan' };
+
+/**
+ * Fase 8: dipanggil di UJUNG setiap setRole() — SATU tempat yang dilalui
+ * semua tombol ganti-peran (bar demo atas, drawer mobile, dropdown
+ * profil, kartu "Pilihan Jenjang Lainnya" di Beranda, dst). Kalau ada
+ * sesi sungguhan aktif, timpa balik identitas peraga yang baru saja
+ * ditulis updateSidebarCard/updateProfileDropdown dengan identitas
+ * ASLI — jauh lebih tahan lama daripada menambal satu-satu tiap tombol
+ * yang memanggil setRole(), termasuk yang belum ditulis sampai sekarang.
+ */
+function terapkanIdentitasSesiAktif() {
+  const sesi = bacaSesi();
+  if (!sesi) return;
+
+  if (sesi.akun.akun_jenis === 'wali') {
+    const santriAktif = sesi.santri?.find((s) => s.id === sesi.santriAktifId);
+    if (!santriAktif) return;
+    terapkanIdentitasAsli({
+      nama: santriAktif.nama,
+      subtitel: `Santri Jenjang ${NAMA_JENJANG_LOKAL[santriAktif.jenjang] || santriAktif.jenjang.toUpperCase()}`,
+      inisial: santriAktif.inisial,
+    });
+  } else if (sesi.akun.akun_jenis === 'staff') {
+    const inisial = (sesi.akun.nama || '?').trim().split(/\s+/).slice(0, 2).map((b) => b[0]?.toUpperCase()).join('');
+    terapkanIdentitasAsli({
+      nama: sesi.akun.nama,
+      subtitel: NAMA_PERAN_STAFF_LOKAL[sesi.akun.staff_peran] || 'Staff Yayasan',
+      inisial: inisial || '?',
+    });
+  }
+}
+
 function setBreadcrumb(root, category, active) {
   setText('breadcrumbRoot', root);
   setText('breadcrumbCategory', category);
@@ -116,6 +180,7 @@ export function setRole(roleName) {
 
   updateSidebarCard(data.user);
   updateProfileDropdown(data.user, roleName);
+  terapkanIdentitasSesiAktif(); // Fase 8 — lihat komentar di fungsinya
 
   const courseView = document.getElementById('viewCoursePlayer');
   const adminView = document.getElementById('viewAdminPanel');

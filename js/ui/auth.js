@@ -21,8 +21,11 @@ import {
   SUPABASE_TERKONFIGURASI,
 } from '../core/supabase-client.js';
 import { playTone, showToast } from '../core/feedback.js';
+import { terapkanIdentitasAsli } from './role.js';
 
 const JENJANG_KE_PERAN = { sd: 'santri-sd', smp: 'santri-smp', sma: 'santri-sma' };
+const NAMA_JENJANG = { sd: 'SD', smp: 'SMP', sma: 'SMA' };
+const NAMA_PERAN_STAFF = { pengajar: 'Pengajar', pengurus: 'Pengurus Yayasan', superadmin: 'Pengurus Yayasan' };
 
 const $ = (id) => document.getElementById(id);
 
@@ -209,8 +212,97 @@ function renderPemilihProfil(daftarSantri) {
 function terapkanProfil(santri) {
   const peran = JENJANG_KE_PERAN[santri.jenjang] || 'santri-smp';
   if (window.PrototypeApp?.setRole) {
+    // setRole() sendiri sudah menimpa balik nama peraga dengan identitas
+    // sesi asli di ujungnya (lihat terapkanIdentitasSesiAktif() di
+    // role.js) — satu tempat yang berlaku untuk SEMUA jalan yang memanggil
+    // setRole(), bukan cuma lewat sini.
     window.PrototypeApp.setRole(peran);
   }
+}
+
+/** Sama seperti terapkanProfil(), tapi untuk sesi STAFF — tidak ada "jenjang santri" untuk staff. */
+function terapkanIdentitasStaff() {
+  const sesi = bacaSesi();
+  if (!sesi || sesi.akun.akun_jenis !== 'staff') return;
+  const inisial = (sesi.akun.nama || '?')
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((b) => b[0]?.toUpperCase())
+    .join('');
+  terapkanIdentitasAsli({
+    nama: sesi.akun.nama,
+    subtitel: NAMA_PERAN_STAFF[sesi.akun.staff_peran] || 'Staff Yayasan',
+    inisial: inisial || '?',
+  });
+}
+
+/**
+ * Fase 8: sebelum ini, dashboard demo/presentasi ("SIMULASI SISTEM" di
+ * bar atas, "Ganti Perspektif Pengguna" di drawer mobile, dan "Pilih
+ * Perspektif Santri" di dropdown profil yang isinya TIGA NAMA PERAGA
+ * tetap) tetap tampil apa adanya ke wali/staff yang baru saja login
+ * SUNGGUHAN lewat OTP asli — membingungkan sekaligus tidak pantas
+ * (wali melihat nama anak ORANG LAIN di akunnya sendiri). Disembunyikan
+ * total untuk sesi sungguhan; dropdown perspektif digambar ulang dengan
+ * anak-anak SUNGGUHAN wali itu HANYA kalau lebih dari satu (satu anak
+ * tidak butuh "berganti").
+ */
+function terapkanVisibilitasDemo() {
+  const sesi = bacaSesi();
+  if (!sesi) return; // mode peraga (belum ada sesi asli) — biarkan semua tampil
+
+  const demoBar = $('demoControlBar');
+  if (demoBar) demoBar.style.display = 'none';
+  const drawerPerspektif = $('mDrawerPerspektif');
+  if (drawerPerspektif) drawerPerspektif.style.display = 'none';
+  const berandaJenjang = $('berandaPilihanJenjang');
+  if (berandaJenjang) berandaJenjang.style.display = 'none';
+
+  const wrap = $('dropdownPerspektifWrap');
+  if (!wrap) return;
+
+  const daftarSantri = sesi.akun.akun_jenis === 'wali' ? sesi.santri || [] : [];
+  if (daftarSantri.length < 2) {
+    wrap.style.display = 'none';
+    return;
+  }
+
+  wrap.style.display = '';
+  const list = $('dropdownAccountList');
+  if (!list) return;
+  list.innerHTML = '';
+  daftarSantri.forEach((s) => {
+    const item = document.createElement('div');
+    item.className = `dropdown-account-item${s.id === sesi.santriAktifId ? ' current' : ''}`;
+    item.innerHTML = `
+      <div class="dropdown-account-left">
+        <div class="dropdown-mini-avatar">${s.inisial}</div>
+        <div>
+          <div style="font-size: 12px; font-weight: 700;">${s.nama}</div>
+          <div style="font-size: 10px; color: var(--text-muted);">Santri Jenjang ${NAMA_JENJANG[s.jenjang] || s.jenjang.toUpperCase()}</div>
+        </div>
+      </div>
+      <i class="ph ph-check" style="font-size: 14px; color: var(--teal-primary); display: ${s.id === sesi.santriAktifId ? 'block' : 'none'};"></i>
+    `;
+    item.addEventListener('click', () => {
+      gantiProfilSantri(s.id);
+      window.PrototypeApp?.toggleProfileDropdown?.();
+    });
+    list.appendChild(item);
+  });
+}
+
+/** Berganti antar-anak TANPA logout — dipanggil dari dropdown profil (Fase 8). */
+function gantiProfilSantri(santriId) {
+  const sesi = bacaSesi();
+  const santri = sesi?.santri?.find((s) => s.id === santriId);
+  if (!santri) return;
+  pilihProfilSantri(santriId);
+  terapkanProfil(santri);
+  terapkanVisibilitasDemo();
+  playTone(560, 'sine', 0.1, 0.06);
+  showToast(`Beralih ke profil ${santri.nama}.`);
 }
 
 /** Tampilkan menu "Studio Kurikulum" di sidebar hanya untuk sesi staff. */
@@ -236,6 +328,8 @@ function selesai() {
   document.body.classList.remove('auth-gate-open');
   terapkanVisibilitasStaff();
   terapkanVisibilitasWali();
+  terapkanVisibilitasDemo();
+  if (bacaSesi()?.akun?.akun_jenis === 'staff') terapkanIdentitasStaff();
   // Fase 6: wali mendarat di dashboard ringkasan anak dulu, bukan langsung
   // ke konten satu anak — itulah gunanya fase ini. Staff/pengurus tetap
   // seperti sebelumnya (tidak disentuh).
@@ -279,6 +373,8 @@ export function initAuthGate() {
     gate.style.display = 'none';
     terapkanVisibilitasStaff();
     terapkanVisibilitasWali();
+    terapkanVisibilitasDemo();
+    if (sesi.akun.akun_jenis === 'staff') terapkanIdentitasStaff();
     // Sesi wali yang bertahan lewat reload halaman tetap mendarat di
     // dashboard-nya, bukan di kurikulum() bawaan HTML — konsisten dengan
     // login baru lewat selesai().
