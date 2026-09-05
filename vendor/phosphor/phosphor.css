@@ -1,7 +1,7 @@
 /* ==========================================================================
    PERISA AZHARIYAH — Ikon Phosphor (subset)
    DIHASILKAN OTOMATIS oleh tools/build-icons.js. Jangan disunting tangan.
-   Berisi 90 ikon dari 1530 yang tersedia.
+   Berisi 94 ikon dari 1530 yang tersedia.
    Menambah ikon di markup cukup dijalankan ulang lewat `npm run stamp`.
    ========================================================================== */
 
@@ -67,6 +67,7 @@
 .ph.ph-clock:before { content: "\e19a"; }
 .ph.ph-clock-clockwise:before { content: "\e19e"; }
 .ph.ph-compass:before { content: "\e1c8"; }
+.ph.ph-confetti:before { content: "\e81a"; }
 .ph.ph-corners-in:before { content: "\e1ce"; }
 .ph.ph-corners-out:before { content: "\e1d0"; }
 .ph.ph-cursor-click:before { content: "\e7c8"; }
@@ -86,6 +87,7 @@
 .ph.ph-graduation-cap:before { content: "\e62c"; }
 .ph.ph-hand-heart:before { content: "\e810"; }
 .ph.ph-handshake:before { content: "\e582"; }
+.ph.ph-image:before { content: "\e2ca"; }
 .ph.ph-info:before { content: "\e2ce"; }
 .ph.ph-list:before { content: "\e2f0"; }
 .ph.ph-list-checks:before { content: "\eadc"; }
@@ -98,6 +100,7 @@
 .ph.ph-microphone:before { content: "\e326"; }
 .ph.ph-paper-plane-right:before { content: "\e396"; }
 .ph.ph-pause:before { content: "\e39e"; }
+.ph.ph-pencil-simple:before { content: "\e3b4"; }
 .ph.ph-play:before { content: "\e3d0"; }
 .ph.ph-play-circle:before { content: "\e3d2"; }
 .ph.ph-qr-code:before { content: "\e3e6"; }
@@ -119,6 +122,7 @@
 .ph.ph-translate:before { content: "\e4a2"; }
 .ph.ph-tree-structure:before { content: "\e67c"; }
 .ph.ph-trend-down:before { content: "\e4ac"; }
+.ph.ph-trend-up:before { content: "\e4ae"; }
 .ph.ph-trophy:before { content: "\e67e"; }
 .ph.ph-users-three:before { content: "\e68e"; }
 .ph.ph-warning-circle:before { content: "\e4e2"; }

@@ -73,7 +73,24 @@ export async function muatSilabusTerbit(jenjang) {
       };
     });
 
-    return { syllabus, pelajaranAktifId };
+    // AUDIT DESAIN 5 Sep 2026: judul/subjudul di kepala halaman Kurikulum
+    // dulu SELALU tetap memakai teks peraga ("Bahasa Arab SMP: Kaidah
+    // Jumlah Ismiyyah") walau modul sungguhan sudah terbit dengan judul
+    // lain — hanya daftar silabusnya yang ikut berubah. Akibatnya kepala
+    // halaman dan isinya bicara tentang dua modul yang berbeda.
+    const modulPertama = data[0];
+    const pelajaranPertama = urutkan(modulPertama.pelajaran, 'urutan')[0];
+
+    return {
+      syllabus,
+      pelajaranAktifId,
+      modulAktif: {
+        judul: modulPertama.judul,
+        kode: modulPertama.kode,
+        pelajaranJudul: pelajaranPertama?.judul || '',
+        jumlahModul: data.length,
+      },
+    };
   } catch (e) {
     console.error('[content-loader] gagal memuat silabus asli:', e.message);
     return null;

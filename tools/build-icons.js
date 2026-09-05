@@ -31,34 +31,34 @@ const OUTPUT = path.join(ROOT, 'vendor', 'phosphor', 'phosphor.css');
    ikut dipindai — aplikasi santri, pitch deck, dan simulasi suara — supaya
    satu berkas CSS ikon melayani ketiganya dan tidak ada satu pun halaman yang
    masih menggantung ke unpkg.com. */
-const SOURCES = [
-  // Aplikasi santri
-  'prototype.html',
-  'prototype-mobile.js',
-  'prototype.css',
-  'prototype-mobile.css',
-  'offline.html',
-  'js/app.js',
-  'js/data/roles.js',
-  'js/data/documents.js',
-  'js/core/feedback.js',
-  'js/core/speech.js',
-  'js/ui/syllabus.js',
-  'js/ui/role.js',
-  'js/ui/router.js',
-  'js/ui/course.js',
-  'js/ui/library.js',
-  'js/ui/assistant.js',
-  'js/ui/shell.js',
-  // Pitch deck paparan
-  'index.html',
-  'app.js',
-  'style.css',
-  // Simulasi percakapan suara
-  'game2d.html',
-  'game2d.js',
-  'game2d.css'
-];
+/*
+ * AUDIT DESAIN 5 September 2026 — dulu ini DAFTAR TETAP nama berkas, dan
+ * daftar itu tidak pernah diperbarui sejak Fase 0/1. Akibatnya seluruh
+ * berkas yang lahir di Fase 2-8 (studio.js, kuis.js, pengurus-panel.js,
+ * wali-dashboard.js, verifikasi.html, dst) TIDAK ikut dipindai — ikon yang
+ * dipakai di sana tidak pernah masuk subset, dan yang tampil ke pengguna
+ * cuma ruang kosong. Gagalnya sunyi: tidak ada error, ikonnya sekadar
+ * tidak muncul.
+ *
+ * Sekarang dipindai otomatis. Menambah berkas baru tidak perlu lagi ingat
+ * menyunting daftar di sini — kesalahan yang sama tidak bisa terulang.
+ */
+function kumpulkanSumber(dir, hasil = []) {
+  for (const entri of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (entri.name === 'node_modules' || entri.name === 'vendor' || entri.name.startsWith('.')) continue;
+    const penuh = path.join(dir, entri.name);
+    if (entri.isDirectory()) {
+      kumpulkanSumber(penuh, hasil);
+    } else if (/\.(html|js|css)$/i.test(entri.name)) {
+      hasil.push(path.relative(ROOT, penuh).split(path.sep).join('/'));
+    }
+  }
+  return hasil;
+}
+
+const SOURCES = kumpulkanSumber(ROOT).filter(
+  (f) => !f.startsWith('tools/') && !f.startsWith('supabase/') && !f.startsWith('tests/') && f !== 'server.js',
+);
 
 /* Varian selain regular tidak dipakai; ini penjaga agar tidak diam-diam masuk. */
 const VARIANTS = ['fill', 'bold', 'duotone', 'thin', 'light'];

@@ -255,6 +255,11 @@ function terapkanVisibilitasDemo() {
 
   const demoBar = $('demoControlBar');
   if (demoBar) demoBar.style.display = 'none';
+  // Kerangka desktop dihitung calc(100vh - 46px) untuk memberi ruang bar
+  // demo. Begitu barnya disembunyikan, ruang itu harus dikembalikan —
+  // kalau tidak, sidebar berhenti 46px sebelum dasar layar dan garis
+  // pemisahnya terputus (temuan audit desain 5 Sep 2026).
+  document.body.classList.add('tanpa-bar-demo');
   const drawerPerspektif = $('mDrawerPerspektif');
   if (drawerPerspektif) drawerPerspektif.style.display = 'none';
   const berandaJenjang = $('berandaPilihanJenjang');

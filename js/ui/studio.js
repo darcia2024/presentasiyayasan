@@ -65,6 +65,32 @@ function kosongkan(el) {
   while (el.firstChild) el.removeChild(el.firstChild);
 }
 
+/**
+ * AUDIT DESAIN 5 September 2026 — dulu tombol/tanda di Studio memakai
+ * karakter emoji langsung. Emoji dirender oleh font sistem: bentuknya
+ * berbeda di Android, iOS, dan Windows; ukurannya tidak sejajar dengan
+ * teks di sebelahnya; dan warnanya tidak bisa mengikuti palet yayasan.
+ * Aplikasi ini sudah memvendor set ikon Phosphor untuk alasan itu —
+ * dua pembantu ini yang membuatnya konsisten dipakai.
+ */
+function ikonTombol(namaIkon) {
+  const btn = document.createElement('button');
+  btn.className = 'studio-btn-icon';
+  const i = document.createElement('i');
+  i.className = `ph ${namaIkon}`;
+  btn.appendChild(i);
+  return btn;
+}
+
+function ikonKotak(namaIkon, kelas) {
+  const wrap = document.createElement('div');
+  wrap.className = kelas;
+  const i = document.createElement('i');
+  i.className = `ph ${namaIkon}`;
+  wrap.appendChild(i);
+  return wrap;
+}
+
 function buatEl(tag, kelas, teks) {
   const el = document.createElement(tag);
   if (kelas) el.className = kelas;
@@ -227,7 +253,7 @@ function renderDaftarModul(body) {
   headerRow.appendChild(buatEl('h3', 'studio-h3', `Modul — Jenjang ${NAMA_JENJANG[STATE.jenjang]}`));
 
   const kananHeader = buatEl('div', 'studio-header-actions');
-  const btnDokumen = buatEl('button', 'studio-btn-secondary', '📄 Dokumen PDF');
+  const btnDokumen = buatEl('button', 'studio-btn-secondary', 'Dokumen PDF');
   btnDokumen.type = 'button';
   btnDokumen.addEventListener('click', () =>
     jalankan(async () => {
@@ -268,7 +294,7 @@ function renderDaftarModul(body) {
       item.appendChild(kiri);
       item.appendChild(chipStatus(m.status));
 
-      const btnEdit = buatEl('button', 'studio-btn-icon', '✎');
+      const btnEdit = ikonTombol('ph-pencil-simple');
       btnEdit.type = 'button';
       btnEdit.title = 'Ubah';
       btnEdit.addEventListener('click', (e) => {
@@ -398,7 +424,7 @@ function renderDaftarPelajaran(body) {
     kiri.appendChild(buatEl('span', 'studio-list-item-meta', NAMA_TIPE_PELAJARAN[p.tipe] + (p.durasi_menit ? ` · ${p.durasi_menit} menit` : '')));
     item.appendChild(kiri);
 
-    const btnEdit = buatEl('button', 'studio-btn-icon', '✎');
+    const btnEdit = ikonTombol('ph-pencil-simple');
     btnEdit.type = 'button';
     btnEdit.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -582,15 +608,15 @@ function renderDaftarMufrodat(body) {
       img.className = 'studio-mufrodat-gambar';
       kartu.appendChild(img);
     } else {
-      kartu.appendChild(buatEl('div', 'studio-mufrodat-gambar studio-mufrodat-gambar--kosong', '🖼'));
+      kartu.appendChild(ikonKotak('ph-image', 'studio-mufrodat-gambar studio-mufrodat-gambar--kosong'));
     }
 
     kartu.appendChild(buatEl('div', 'studio-mufrodat-arab', m.arab));
     kartu.appendChild(buatEl('div', 'studio-mufrodat-latin', `${m.latin} — ${m.arti}`));
 
     const tandaMedia = buatEl('div', 'studio-mufrodat-tanda');
-    tandaMedia.appendChild(buatEl('span', `studio-tanda ${m.gambar_url ? 'studio-tanda--ada' : 'studio-tanda--tidak'}`, '🖼'));
-    tandaMedia.appendChild(buatEl('span', `studio-tanda ${m.audio_url ? 'studio-tanda--ada' : 'studio-tanda--tidak'}`, '🔊'));
+    tandaMedia.appendChild(ikonKotak('ph-image', `studio-tanda ${m.gambar_url ? 'studio-tanda--ada' : 'studio-tanda--tidak'}`));
+    tandaMedia.appendChild(ikonKotak('ph-speaker-high', `studio-tanda ${m.audio_url ? 'studio-tanda--ada' : 'studio-tanda--tidak'}`));
     kartu.appendChild(tandaMedia);
 
     const btnEdit = buatEl('button', 'studio-btn-secondary studio-mufrodat-edit', 'Ubah');
@@ -700,7 +726,7 @@ function bidangMedia(label, id, urlAwal, jenis, accept) {
     try {
       const url = await unggahMedia(file, jenis);
       kotak.dataset.url = url;
-      statusTeks.textContent = 'Berhasil diunggah ✓';
+      statusTeks.textContent = 'Berhasil diunggah';
       showToast(`${label} berhasil diunggah.`);
     } catch (e) {
       statusTeks.textContent = 'Gagal mengunggah';
@@ -728,7 +754,7 @@ function bidangVideo(pelajaran) {
   const statusTeks = buatEl(
     'span',
     'studio-media-status',
-    pelajaran.video_path ? 'Sudah ada video ✓' : 'Belum ada video',
+    pelajaran.video_path ? 'Sudah ada video' : 'Belum ada video',
   );
   pratinjau.appendChild(statusTeks);
   kotak.appendChild(pratinjau);
@@ -744,7 +770,7 @@ function bidangVideo(pelajaran) {
       statusTeks.textContent = 'Mengunggah… (bisa beberapa menit untuk video)';
       const path = await unggahVideoPelajaran(file, pelajaran.id);
       pelajaran.video_path = path;
-      statusTeks.textContent = 'Berhasil diunggah ✓';
+      statusTeks.textContent = 'Berhasil diunggah';
       showToast('Video berhasil diunggah.');
     }, 'Gagal mengunggah video.'),
   );
@@ -893,7 +919,7 @@ function renderDaftarDokumen(body) {
     item.appendChild(kiri);
     item.appendChild(chipStatus(d.status === 'terbit' ? 'terbit' : 'draft'));
 
-    const btnEdit = buatEl('button', 'studio-btn-icon', '✎');
+    const btnEdit = ikonTombol('ph-pencil-simple');
     btnEdit.type = 'button';
     btnEdit.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -920,7 +946,7 @@ function renderFormDokumen(body) {
   bidangFile.appendChild(buatEl('label', 'studio-label', 'Berkas PDF'));
   const kotak = buatEl('div', 'studio-media-box');
   kotak.dataset.url = f.file_url || '';
-  const statusTeks = buatEl('span', 'studio-media-status', f.file_url ? 'Sudah ada berkas ✓' : 'Belum ada berkas');
+  const statusTeks = buatEl('span', 'studio-media-status', f.file_url ? 'Sudah ada berkas' : 'Belum ada berkas');
   kotak.appendChild(statusTeks);
   const inputFile = document.createElement('input');
   inputFile.type = 'file';
@@ -933,7 +959,7 @@ function renderFormDokumen(body) {
       statusTeks.textContent = 'Mengunggah…';
       const url = await unggahDokumenPdf(file);
       kotak.dataset.url = url;
-      statusTeks.textContent = 'Berhasil diunggah ✓';
+      statusTeks.textContent = 'Berhasil diunggah';
       showToast('PDF berhasil diunggah.');
     }, 'Gagal mengunggah PDF.'),
   );

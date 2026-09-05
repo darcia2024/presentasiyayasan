@@ -59,6 +59,19 @@ async function upgradeKeKontenAsli(roleName) {
 
   renderSyllabus(hasil.syllabus);
 
+  // AUDIT DESAIN 5 Sep 2026: kepala halaman ikut diperbarui, bukan cuma
+  // daftar silabusnya — sebelum ini judulnya tetap peraga sementara isinya
+  // sudah modul sungguhan, jadi keduanya bicara tentang modul berbeda.
+  if (hasil.modulAktif) {
+    const m = hasil.modulAktif;
+    setText('courseMainTitle', m.judul);
+    setText('courseJenjangText', `Jenjang ${(NAMA_JENJANG_LOKAL[jenjang] || jenjang).toUpperCase()}`);
+    if (m.pelajaranJudul) setText('currentVideoSubtitle', m.pelajaranJudul);
+    setText('breadcrumbActiveTitle', m.judul);
+    const jumlahModulEl = document.getElementById('courseJumlahModul');
+    if (jumlahModulEl) jumlahModulEl.textContent = `${m.jumlahModul} Modul Pembelajaran`;
+  }
+
   if (hasil.pelajaranAktifId) {
     const [mufrodat] = await Promise.all([
       muatMufrodatPelajaran(hasil.pelajaranAktifId),
@@ -136,6 +149,30 @@ export function terapkanIdentitasAsli(identitas) {
   setText('dropdownUserName', identitas.nama);
   setText('dropdownUserStatus', identitas.subtitel);
   setText('dropdownUserNisn', ''); // NISN peraga tidak relevan untuk sesi asli
+
+  // AUDIT DESAIN 5 Sep 2026 — perbaikan identitas Fase 8 ternyata hanya
+  // menyentuh sisi DESKTOP. prototype-mobile.js MENYALIN nama dari
+  // sidebarUserName ke drawer/topbar saat setRole() berjalan, dan
+  // penyalinan itu terjadi SEBELUM baris-baris di atas menimpanya —
+  // jadi di ponsel (perangkat utama audiens ini) wali tetap melihat
+  // "Ahmad Fauzan / AF", nama anak orang lain. Disinkronkan ulang di sini,
+  // setelah nilai yang benar ditulis.
+  setText('mDrawerUserName', identitas.nama);
+  setText('mDrawerUserSub', identitas.subtitel);
+  setText('mDrawerAvatar', identitas.inisial);
+  setText('mobileUserAvatarTag', identitas.inisial);
+
+  // Watermark video: sumber peraga memuat nama DAN nomor telepon karangan
+  // ("Ahmad Fauzan • 0812-8921-9921") melintang di atas video. Video-player
+  // sudah punya versi sungguhannya, tapi hanya berjalan kalau ada video
+  // asli — kondisi peraga (yang paling sering) tidak pernah diperbaiki.
+  const watermark = document.querySelector('.ref-video-watermark');
+  if (watermark) {
+    watermark.innerHTML = '';
+    const ikon = document.createElement('i');
+    ikon.className = 'ph ph-shield-check';
+    watermark.append(ikon, document.createTextNode(` ${identitas.nama} • Hak Cipta PERISA Azhariyah`));
+  }
 }
 
 const NAMA_JENJANG_LOKAL = { sd: 'SD', smp: 'SMP', sma: 'SMA' };
@@ -220,8 +257,16 @@ export function setRole(roleName) {
   setText('currentVideoSubtitle', data.subtitle);
   setText('aboutCourseDesc', data.aboutDesc);
 
+  // AUDIT DESAIN 5 Sep 2026: watermark peraga memuat nama DAN nomor telepon
+  // KARANGAN ("Ahmad Fauzan • 0812-8921-9921") melintang di atas video.
+  // Hanya dipasang kalau memang belum ada sesi sungguhan — kalau ada,
+  // terapkanIdentitasSesiAktif() di bawah yang mengisinya dengan nama
+  // santri yang benar. Urutannya penting: baris ini dulu berjalan SESUDAH
+  // perbaikan identitas, jadi selalu menimpanya balik.
   const watermark = document.querySelector('.ref-video-watermark');
-  if (watermark) watermark.innerHTML = `<i class="ph ph-shield-check"></i> ${data.watermark}`;
+  if (watermark && !bacaSesi()) {
+    watermark.innerHTML = `<i class="ph ph-shield-check"></i> ${data.watermark}`;
+  }
 
   renderSyllabus(data.syllabus);
   // Reset ke peraga dulu, SINKRON, sebelum upgrade async dicoba — tanpa ini,
@@ -230,6 +275,14 @@ export function setRole(roleName) {
   sembunyikanVideoPelajaran();
   upgradeKeKontenAsli(roleName);
 
-  showToast(`Beralih ke Akun Santri: ${data.user.name} (${data.jenjangPill})`);
+  // Dipanggil SEKALI LAGI di ujung: beberapa baris di atas (judul, subjudul,
+  // watermark) menulis teks peraga setelah panggilan pertama, jadi tanpa ini
+  // identitas sungguhan kembali tertimpa. Idempoten, jadi aman dipanggil dua kali.
+  terapkanIdentitasSesiAktif();
+
+  const sesiAktif = bacaSesi();
+  if (!sesiAktif) {
+    showToast(`Beralih ke Akun Santri: ${data.user.name} (${data.jenjangPill})`);
+  }
   playTone(520, 'sine', 0.1, 0.06);
 }

@@ -1259,6 +1259,11 @@ html, body {
   display: grid;
   grid-template-columns: 1.6fr 1fr;
   gap: 24px;
+  /* AUDIT DESAIN 5 Sep 2026: tanpa ini kedua kartu diregangkan setinggi
+     yang paling tinggi. Setelah Fase 8 menyembunyikan blok "Pilihan
+     Jenjang Lainnya", kartu Modul Aktif tingginya 489px padahal isinya
+     cuma 192px — 297px kekosongan menganga di tengah halaman. */
+  align-items: start;
 }
 
 .beranda-continue-card {
@@ -2970,4 +2975,202 @@ html, body {
   .bottom-nav-item.active {
     color: var(--teal-primary) !important;
   }
+}
+
+/* ==========================================================================
+   LAPTOP KECIL — 769px sampai 1100px
+   (hasil audit desain 5 September 2026)
+
+   TEMUAN. Aplikasi ini hanya punya SATU titik henti: 768px. Di atas itu
+   semua tata letak langsung memakai grid desktop yang kaku
+   (repeat(4, 1fr), 1.6fr 1fr, 1fr 320px) tanpa lebar minimum. Di layar
+   1024–1280px — laptop 13"/14" dan jendela terbagi dua, ukuran paling
+   umum yang dipakai pengurus — hasilnya:
+     Beranda      meluber  149px, kolom Agenda menyusut jadi 153px
+     Kurikulum    meluber  107px, 64 elemen keluar area
+     Asisten AI   meluber  179px
+   Semuanya rapi lagi di 1440px, jadi cacat ini tidak pernah terlihat
+   selama pengembangan di layar besar.
+
+   Blok ini mengisi celah 769–1100px: grid melipat lebih awal, sebelum
+   ada yang terpotong — bukan menambah scroll horizontal.
+   ========================================================================== */
+
+@media (min-width: 769px) and (max-width: 1100px) {
+  /* Beranda: 4 metrik jadi 2x2, dua kolom jadi satu kolom penuh */
+  .beranda-metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .beranda-two-col {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Kurikulum: pemutar + silabus ditumpuk, bukan diperas berdampingan */
+  .course-main-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    padding: 24px 24px 40px;
+  }
+
+  /* Asisten AI: kolom riwayat turun ke bawah */
+  .seto-dashboard-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .seto-cards-grid {
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  }
+
+  .pdf-library-layout {
+    padding: 24px 24px 40px;
+  }
+}
+
+/* Sabuk pengaman: apa pun lebarnya, area kerja tidak boleh menggeser
+   horizontal. Kalau suatu saat ada elemen baru yang lebih lebar dari
+   induknya, yang mengecil adalah elemen itu — bukan seluruh halaman
+   yang jadi bisa digeser ke samping. */
+@media (min-width: 769px) {
+  .beranda-view-layout,
+  .course-main-grid,
+  .seto-dashboard-layout,
+  .pdf-library-layout {
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  .beranda-metrics-grid > *,
+  .beranda-two-col > *,
+  .course-main-grid > *,
+  .seto-dashboard-layout > * {
+    min-width: 0;
+  }
+}
+
+/* ==========================================================================
+   BAR DEMO DISEMBUNYIKAN — rebut kembali 46px-nya
+   (hasil audit desain 5 September 2026)
+
+   Seluruh kerangka desktop dihitung dengan calc(100vh - 46px), karena
+   dulu SELALU ada bar demo "SIMULASI SISTEM" setinggi 46px di atas.
+   Fase 8 menyembunyikan bar itu untuk sesi sungguhan — tapi ruang 46px-nya
+   tidak ikut dikembalikan, sehingga sidebar berhenti 46px sebelum dasar
+   layar dan garis pemisahnya terputus di tengah, dengan pita putih kosong
+   di bawahnya.
+
+   js/ui/auth.js memasang kelas .tanpa-bar-demo di <body> saat bar itu
+   disembunyikan; blok ini yang mengembalikan tingginya jadi penuh.
+   ========================================================================== */
+
+@media (min-width: 769px) {
+  body.tanpa-bar-demo .app-window-frame {
+    height: 100vh !important;
+    max-height: 100vh !important;
+  }
+
+  body.tanpa-bar-demo .ref-sidebar,
+  body.tanpa-bar-demo .ref-main-workspace {
+    min-height: 100vh;
+  }
+
+  body.tanpa-bar-demo .seto-dashboard-layout {
+    min-height: 100vh;
+  }
+}
+
+/* ==========================================================================
+   DASHBOARD WALI — isi tambahan hasil audit desain 5 September 2026
+
+   Sebelumnya kartu berhenti setelah tiga angka (XP / kosakata / pelajaran),
+   menyisakan 480-580px halaman kosong di bawahnya — padahal ini halaman
+   PENDARATAN wali, tempat mereka mendarat setiap kali masuk. Yang
+   ditambahkan bukan pengisi ruang: "sedang dipelajari" menjawab pertanyaan
+   pertama orang tua, dan "terakhir belajar" adalah sinyal kebiasaan yang
+   justru jadi alasan mereka membuka aplikasi ini.
+   ========================================================================== */
+
+.wali-anak-sedang {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 13px 15px;
+  background: var(--teal-light);
+  border: 1px solid var(--teal-border);
+  border-radius: var(--radius-md);
+}
+
+.wali-anak-sedang > i {
+  font-size: 19px;
+  color: var(--teal-primary);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.wali-anak-sedang-teks {
+  min-width: 0;
+}
+
+.wali-anak-sedang-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--teal-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.wali-anak-sedang-judul {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--teal-dark);
+  margin-top: 2px;
+}
+
+.wali-anak-sedang-modul {
+  font-size: 11.5px;
+  color: #006D63;
+  margin-top: 1px;
+}
+
+.wali-anak-terakhir {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  padding-top: 2px;
+}
+
+/* Sudah tiga hari lebih tidak belajar — ditandai supaya wali menyadarinya
+   tanpa perlu menghitung sendiri. */
+.wali-anak-terakhir--lama {
+  color: var(--gold-dark);
+  font-weight: 600;
+}
+
+/* Dua sisa cacat potong dari audit desain 5 September 2026, di lebar
+   laptop kecil:
+   1. Deretan sub-tab Kurikulum ("Ringkasan Materi ... Catatan & Ulasan")
+      — tab terakhir terpotong tanpa bisa digeser, karena induknya
+      overflow:visible. Dijadikan bisa digeser BESERTA tanda gradasinya,
+      pola yang sama dengan tab panel pengurus.
+   2. Grid dokumen PDF dipaku 3 kolom; di 560px kartu ketiga terpotong.
+      Dibuat mengikuti lebar minimum kartu, bukan jumlah kolom tetap. */
+@media (min-width: 769px) and (max-width: 1100px) {
+  .pdf-grid {
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  }
+}
+
+.ref-sub-tabs-bar {
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 24px), transparent 100%);
+  mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 24px), transparent 100%);
+}
+
+.ref-sub-tabs-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.sub-tab-btn {
+  white-space: nowrap;
+  flex-shrink: 0;
 }

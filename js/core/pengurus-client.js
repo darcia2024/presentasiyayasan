@@ -55,7 +55,7 @@ export async function daftarSantriAdmin() {
   const client = getSupabaseClient();
   const { data, error } = await client
     .from('santri')
-    .select('id, nama, jenjang, nisn, status, beasiswa, infaq_aktif, created_at, kelas_id, wali:wali_id(nama, nomor_wa), kelas:kelas_id(nama)')
+    .select('id, nama, jenjang, nisn, inisial, status, beasiswa, infaq_aktif, created_at, kelas_id, wali:wali_id(nama, nomor_wa), kelas:kelas_id(nama)')
     .order('created_at', { ascending: false });
   if (error) {
     console.error('[pengurus-client] gagal memuat santri:', error.message);

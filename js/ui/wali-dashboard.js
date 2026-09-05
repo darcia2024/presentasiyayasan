@@ -17,6 +17,7 @@
 import { bacaSesi, pilihProfilSantri } from '../core/supabase-client.js';
 import { ambilRingkasanAnak } from '../core/wali-client.js';
 import { playTone } from '../core/feedback.js';
+import { escapeHtml } from '../core/html.js';
 
 const ID_KONTAINER = 'waliDashboardContainer';
 const JENJANG_KE_PERAN = { sd: 'santri-sd', smp: 'santri-smp', sma: 'santri-sma' };
@@ -108,12 +109,34 @@ function isiKartu(kartu, santri, ringkasan) {
 
   kartu.append(head, metrics);
 
-  if (ringkasan.xpPekanIni > 0) {
-    const pekanIni = el('div', 'wali-anak-pekan-ini', [
-      document.createTextNode(
-        `📈 Pekan ini: +${ringkasan.xpPekanIni} XP dari ${ringkasan.mufrodatBaruPekanIni} kosakata baru`,
-      ),
+  // AUDIT DESAIN 5 Sep 2026: pertanyaan pertama orang tua bukan "berapa
+  // XP-nya", tapi "anak saya sedang belajar apa". Baris ini menjawabnya.
+  if (ringkasan.sedangDipelajari?.pelajaran) {
+    const sd = ringkasan.sedangDipelajari;
+    const barisSedang = el('div', 'wali-anak-sedang');
+    const ikon = document.createElement('i');
+    ikon.className = 'ph ph-book-open-text';
+    const teksSedang = el('div', 'wali-anak-sedang-teks', [
+      teks('div', 'wali-anak-sedang-label', 'Sedang dipelajari'),
+      teks('div', 'wali-anak-sedang-judul', sd.pelajaran),
     ]);
+    if (sd.modul) teksSedang.appendChild(teks('div', 'wali-anak-sedang-modul', sd.modul));
+    barisSedang.append(ikon, teksSedang);
+    kartu.appendChild(barisSedang);
+  }
+
+  if (ringkasan.xpPekanIni > 0) {
+    const pekanIni = el('div', 'wali-anak-pekan-ini');
+    const ikonNaik = document.createElement('i');
+    // AUDIT: dulu emoji 📈 — render-nya beda-beda tiap HP dan lepas dari
+    // palet warna. Aplikasi ini sudah punya sistem ikon Phosphor.
+    ikonNaik.className = 'ph ph-trend-up';
+    pekanIni.append(
+      ikonNaik,
+      document.createTextNode(
+        ` Pekan ini: +${ringkasan.xpPekanIni} XP dari ${ringkasan.mufrodatBaruPekanIni} kosakata baru`,
+      ),
+    );
     kartu.appendChild(pekanIni);
   } else {
     kartu.appendChild(el('div', 'wali-anak-pekan-kosong', [document.createTextNode('Belum ada aktivitas belajar minggu ini.')]));
@@ -127,6 +150,14 @@ function isiKartu(kartu, santri, ringkasan) {
       chipWrap.appendChild(chip);
     });
     kartu.appendChild(chipWrap);
+  }
+
+  if (ringkasan.terakhirBelajar) {
+    const selisihHari = Math.floor((Date.now() - new Date(ringkasan.terakhirBelajar).getTime()) / 86400000);
+    const kapan = selisihHari <= 0 ? 'hari ini' : selisihHari === 1 ? 'kemarin' : `${selisihHari} hari lalu`;
+    const jejak = teks('div', 'wali-anak-terakhir', `Terakhir belajar ${kapan}`);
+    if (selisihHari >= 3) jejak.classList.add('wali-anak-terakhir--lama');
+    kartu.appendChild(jejak);
   }
 }
 

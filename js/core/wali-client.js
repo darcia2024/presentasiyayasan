@@ -33,19 +33,31 @@ export async function ambilRingkasanAnak(daftarSantri) {
       lencana: [],
       xpPekanIni: 0,
       mufrodatBaruPekanIni: 0,
+      sedangDipelajari: null,
+      terakhirBelajar: null,
     });
   });
 
   const client = getSupabaseClient();
   const batasPekanIni = new Date(Date.now() - TUJUH_HARI_MS).toISOString();
 
-  const [xpRes, progresRes, lencanaRes] = await Promise.all([
+  const [xpRes, progresRes, lencanaRes, sedangRes] = await Promise.all([
     client.from('xp_log').select('santri_id, jumlah, mufrodat_id, created_at').in('santri_id', idSantri),
     client.from('progres_santri').select('santri_id, status').in('santri_id', idSantri).eq('status', 'selesai'),
     client
       .from('santri_lencana')
       .select('santri_id, diberikan_at, lencana:lencana_id(nama, ikon)')
       .in('santri_id', idSantri),
+    // AUDIT DESAIN 5 Sep 2026: dashboard wali cuma menampilkan tiga angka
+    // dan berhenti — 480px halaman kosong di bawahnya. Angka saja tidak
+    // menjawab pertanyaan pertama orang tua: "anak saya sedang belajar
+    // APA?". Ini mengambil pelajaran yang sedang dikerjakan.
+    client
+      .from('progres_santri')
+      .select('santri_id, updated_at, pelajaran:pelajaran_id(judul, modul:modul_id(judul))')
+      .in('santri_id', idSantri)
+      .eq('status', 'sedang')
+      .order('updated_at', { ascending: false }),
   ]);
 
   if (xpRes.error) console.error('[wali-client] gagal memuat xp_log:', xpRes.error.message);
@@ -78,6 +90,22 @@ export async function ambilRingkasanAnak(daftarSantri) {
   (progresRes.data || []).forEach((baris) => {
     const r = ringkasan.get(baris.santri_id);
     if (r) r.pelajaranSelesai += 1;
+  });
+
+  // Pelajaran yang sedang dikerjakan + kapan terakhir belajar.
+  (sedangRes.data || []).forEach((baris) => {
+    const r = ringkasan.get(baris.santri_id);
+    if (!r || r.sedangDipelajari) return; // sudah diurutkan terbaru dulu
+    r.sedangDipelajari = {
+      pelajaran: baris.pelajaran?.judul || '',
+      modul: baris.pelajaran?.modul?.judul || '',
+    };
+  });
+
+  (xpRes.data || []).forEach((baris) => {
+    const r = ringkasan.get(baris.santri_id);
+    if (!r) return;
+    if (!r.terakhirBelajar || baris.created_at > r.terakhirBelajar) r.terakhirBelajar = baris.created_at;
   });
 
   (lencanaRes.data || []).forEach((baris) => {

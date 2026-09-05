@@ -18,6 +18,12 @@
   verifikasi.html — halaman ini harus bisa dibuka siapa saja tanpa login
   dan tanpa menyeret seluruh SPA.
 -->
+<!-- AUDIT DESAIN 5 September 2026: dua halaman publik ini semula memakai
+     font sistem, sementara seluruh aplikasi memakai Plus Jakarta Sans yang
+     sudah divendor. Padahal justru halaman inilah yang paling sering dilihat
+     ORANG LUAR (yang memindai QR sertifikat) — kesan pertama tentang yayasan
+     ini dibentuk di sini, dan dulu terasa seperti produk yang berbeda. -->
+<link rel="stylesheet" href="vendor/fonts/fonts.css">
 <style>
   :root {
     --teal-primary: #00877A;
@@ -34,7 +40,7 @@
   body {
     margin: 0;
     background: var(--bg-subtle);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
     color: var(--text-main);
     line-height: 1.7;
   }

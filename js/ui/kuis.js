@@ -127,7 +127,7 @@ async function jawabSoal(kontainer, target, opsiDipilih, daftarTombol) {
       const pesanXp = hasil.sudahPernah ? 'Benar! (sudah pernah dijawab, tidak ada XP tambahan)' : `Benar! +${hasil.xpDidapat} XP`;
       showToast(pesanXp);
       if (hasil.lencanaBaru?.length) {
-        setTimeout(() => showToast(`🏅 Lencana baru diraih!`), 900);
+        setTimeout(() => showToast('Lencana baru diraih!'), 900);
       }
       if (hasil.pelajaranSelesai) {
         setTimeout(() => showToast('Pelajaran ini selesai — semua mufrodat sudah dikuasai!'), 1800);
@@ -152,7 +152,7 @@ function kartuSelesai() {
   const wrap = document.createElement('div');
   wrap.style.cssText = 'text-align:center; padding:20px 8px;';
   wrap.innerHTML = `
-    <div style="font-size:32px; margin-bottom:8px;">🎉</div>
+    <div style="font-size:30px; margin-bottom:8px; color:var(--gold-dark);"><i class="ph ph-confetti"></i></div>
     <div style="font-size:14px; font-weight:700; color:var(--teal-dark); margin-bottom:4px;">Semua soal selesai dikerjakan</div>
     <div style="font-size:12px; color:var(--text-muted);">Buka pelajaran lain untuk terus menambah XP.</div>
   `;

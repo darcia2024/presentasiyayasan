@@ -152,8 +152,7 @@ async function renderRingkasan(body) {
   const r = await ambilRingkasanPengurus();
   kosongkan(body);
 
-  const grid = buatEl('div');
-  grid.style.cssText = 'display:grid; grid-template-columns:repeat(4,1fr); gap:14px;';
+  const grid = buatEl('div', 'pengurus-ringkasan');
   grid.append(
     kartuMetrik(String(r.santriAktif), 'Santri Aktif'),
     kartuMetrik(String(r.waliTerdaftar), 'Wali Terdaftar'),
@@ -211,39 +210,54 @@ async function renderSantri(body) {
   body.appendChild(tabelSantri(daftar, kelasList));
 }
 
-/** @param {Array} daftar @param {Array} kelasList dipakai isi dropdown kelas per baris. */
+/**
+ * AUDIT DESAIN 5 September 2026 — dulu ini <table> tujuh kolom.
+ *
+ * Di lebar kerja ~560px (laptop 13", atau jendela terbagi dua) tabel itu
+ * meluber 178px ke luar kartunya dan kolom "Infaq" serta "Aksi" ikut
+ * terpotong — artinya tombol Hapus (hak penghapusan UU PDP) TIDAK BISA
+ * DIKLIK sama sekali, tanpa isyarat apa pun bahwa ada yang tersembunyi.
+ * Kolom tabel tidak bisa melipat; kartu bisa. Lihat blok "PANEL PENGURUS"
+ * di js/ui/studio.css untuk aturan lipatnya.
+ *
+ * @param {Array} daftar @param {Array} kelasList dipakai isi dropdown kelas per kartu.
+ */
 function tabelSantri(daftar, kelasList) {
-  const wrap = document.createElement('div');
-  wrap.style.cssText = 'background:#FFFFFF; border:1px solid var(--border-color); border-radius:var(--radius-lg); overflow-x:auto; padding:6px;';
-  const table = document.createElement('table');
-  table.style.cssText = 'width:100%; border-collapse:collapse; font-size:12.5px; text-align:left;';
+  const wrap = buatEl('div', 'pengurus-daftar');
 
-  const thead = document.createElement('thead');
-  thead.innerHTML = `<tr style="border-bottom:1px solid var(--border-color); color:var(--text-muted);">
-    <th style="padding:10px;">Nama Santri</th><th style="padding:10px;">Jenjang</th>
-    <th style="padding:10px;">Wali</th><th style="padding:10px;">Kelas</th>
-    <th style="padding:10px;">Status</th><th style="padding:10px;">Beasiswa</th>
-    <th style="padding:10px;">Infaq</th><th style="padding:10px; text-align:right;">Aksi</th></tr>`;
-  table.appendChild(thead);
-
-  const tbody = document.createElement('tbody');
   daftar.forEach((s) => {
-    const tr = document.createElement('tr');
-    tr.style.borderBottom = '1px solid var(--border-subtle)';
+    const kartu = buatEl('div', 'pengurus-kartu');
 
-    const tdNama = document.createElement('td');
-    tdNama.style.cssText = 'padding:12px 10px; font-weight:700; color:var(--teal-dark);';
-    tdNama.textContent = s.nama;
-    tr.appendChild(tdNama);
+    /* --- Identitas --- */
+    const identitas = buatEl('div', 'pengurus-identitas');
+    identitas.appendChild(buatEl('div', 'pengurus-avatar', s.inisial || inisialDari(s.nama)));
+    const teksId = document.createElement('div');
+    teksId.style.minWidth = '0';
+    const nama = buatEl('div', 'pengurus-nama', s.nama);
+    nama.title = s.nama;
+    const meta = buatEl('div', 'pengurus-meta', `Jenjang ${NAMA_JENJANG[s.jenjang] || s.jenjang}${s.nisn ? ` • NISN ${s.nisn}` : ''}`);
+    teksId.append(nama, meta);
+    identitas.appendChild(teksId);
+    kartu.appendChild(identitas);
 
-    tr.appendChild(sel(NAMA_JENJANG[s.jenjang] || s.jenjang));
-    tr.appendChild(sel(s.wali ? `${s.wali.nama} (${s.wali.nomor_wa})` : '—'));
+    /* --- Wali --- */
+    const sekunder = buatEl('div', 'pengurus-sekunder');
+    sekunder.appendChild(buatEl('div', 'pengurus-label-kecil', 'Wali'));
+    const namaWali = buatEl('div', 'pengurus-nama', s.wali?.nama || '—');
+    namaWali.style.fontSize = '12.5px';
+    const teleponWali = buatEl('div', 'pengurus-meta', s.wali ? formatNomorWa(s.wali.nomor_wa) : '');
+    if (s.wali) {
+      namaWali.title = `${s.wali.nama} — ${formatNomorWa(s.wali.nomor_wa)}`;
+    }
+    sekunder.append(namaWali, teleponWali);
+    kartu.appendChild(sekunder);
 
-    const tdKelas = document.createElement('td');
-    tdKelas.style.padding = '8px 10px';
+    /* --- Kontrol: kelas, status, beasiswa, infaq, hapus --- */
+    const kontrol = buatEl('div', 'pengurus-kontrol');
+
     const selectKelas = document.createElement('select');
-    selectKelas.className = 'studio-input';
-    selectKelas.style.cssText = 'padding:5px 8px; font-size:11.5px;';
+    selectKelas.className = 'pengurus-select';
+    selectKelas.title = 'Kelas santri';
     const optKosong = document.createElement('option');
     optKosong.value = '';
     optKosong.textContent = '— Belum ada kelas —';
@@ -263,42 +277,34 @@ function tabelSantri(daftar, kelasList) {
         showToast(`Kelas ${s.nama} diperbarui.`);
       }, 'Gagal memperbarui kelas.'),
     );
-    tdKelas.appendChild(selectKelas);
-    tr.appendChild(tdKelas);
+    kontrol.appendChild(selectKelas);
 
-    const tdStatus = document.createElement('td');
-    tdStatus.style.padding = '8px 10px';
-    tdStatus.appendChild(
+    kontrol.appendChild(
       toggleChip(s.status === 'aktif', 'Aktif', 'Nonaktif', async (jadiAktif) => {
         await perbaruiSantri(s.id, { status: jadiAktif ? 'aktif' : 'nonaktif' });
         showToast(`Status ${s.nama} diperbarui.`);
         render();
-      }),
+      }, 'Status santri — klik untuk mengubah'),
     );
-    tr.appendChild(tdStatus);
 
-    const tdBeasiswa = document.createElement('td');
-    tdBeasiswa.style.padding = '8px 10px';
-    tdBeasiswa.appendChild(
-      toggleChip(s.beasiswa, 'Ya', 'Tidak', async (jadiYa) => {
+    kontrol.appendChild(
+      toggleChip(s.beasiswa, 'Beasiswa', 'Tanpa Beasiswa', async (jadiYa) => {
         await perbaruiSantri(s.id, { beasiswa: jadiYa });
         showToast(`Status beasiswa ${s.nama} diperbarui.`);
         render();
-      }),
+      }, 'Jalur beasiswa dhuafa — klik untuk mengubah'),
     );
-    tr.appendChild(tdBeasiswa);
 
-    const tdInfaq = document.createElement('td');
-    tdInfaq.style.padding = '8px 10px';
-    const chipInfaq = buatEl('span', `studio-chip studio-chip--${s.infaq_aktif ? 'terbit' : 'draft'}`, s.infaq_aktif ? 'Aktif' : 'Belum Aktif');
-    tdInfaq.appendChild(chipInfaq);
-    tr.appendChild(tdInfaq);
+    const chipInfaq = buatEl(
+      'span',
+      `studio-chip studio-chip--${s.infaq_aktif ? 'terbit' : 'draft'}`,
+      s.infaq_aktif ? 'Infaq Aktif' : 'Infaq Belum Aktif',
+    );
+    kontrol.appendChild(chipInfaq);
 
-    const tdAksi = document.createElement('td');
-    tdAksi.style.cssText = 'padding:8px 10px; text-align:right;';
     const btnHapus = buatEl('button', 'studio-btn-danger', 'Hapus');
     btnHapus.type = 'button';
-    btnHapus.style.cssText = 'padding:5px 12px; font-size:11px; margin-left:0;';
+    btnHapus.style.cssText = 'padding:6px 13px; font-size:11.5px; margin-left:0;';
     btnHapus.title = 'Hak penghapusan (UU PDP) — hapus seluruh data belajar santri ini secara permanen.';
     btnHapus.addEventListener('click', () =>
       jalankan(async () => {
@@ -314,16 +320,21 @@ function tabelSantri(daftar, kelasList) {
         render();
       }, 'Gagal menghapus data santri.'),
     );
-    tdAksi.appendChild(btnHapus);
-    tr.appendChild(tdAksi);
+    kontrol.appendChild(btnHapus);
 
-    tbody.appendChild(tr);
+    kartu.appendChild(kontrol);
+    wrap.appendChild(kartu);
   });
-  table.appendChild(tbody);
-  wrap.appendChild(table);
+
   return wrap;
 }
 
+/**
+ * Sel tabel biasa. Masih dipakai tab LAPORAN — di sana <table> memang alat
+ * yang tepat (empat kolom angka yang perlu disejajarkan untuk dibandingkan
+ * antar-santri, dan terukur tidak meluber). Daftar santri/infaq TIDAK lagi
+ * memakai ini; keduanya kartu sejak audit desain.
+ */
 function sel(teks) {
   const td = document.createElement('td');
   td.style.padding = '12px 10px';
@@ -331,12 +342,28 @@ function sel(teks) {
   return td;
 }
 
+/** "628123456789" -> "0812-3456-789" — audit: nomor mentah sulit dibaca & dicocokkan. */
+function formatNomorWa(nomor) {
+  if (!nomor) return '';
+  const lokal = String(nomor).replace(/^62/, '0');
+  return lokal.replace(/(\d{4})(\d{4})(\d+)/, '$1-$2-$3');
+}
+
+function inisialDari(nama) {
+  const bagian = String(nama || '').trim().split(/\s+/).filter(Boolean);
+  if (!bagian.length) return '?';
+  return bagian.slice(0, 2).map((b) => b[0].toUpperCase()).join('');
+}
+
 /** Chip yang bisa diklik untuk membalik nilai boolean — dipakai status & beasiswa. */
-function toggleChip(nilaiSekarang, labelYa, labelTidak, onUbah) {
-  const chip = buatEl('button', `studio-chip studio-chip--${nilaiSekarang ? 'terbit' : 'draft'}`, nilaiSekarang ? labelYa : labelTidak);
+function toggleChip(nilaiSekarang, labelYa, labelTidak, onUbah, judul) {
+  const chip = buatEl(
+    'button',
+    `studio-chip studio-chip--${nilaiSekarang ? 'terbit' : 'draft'} pengurus-chip-tombol`,
+    nilaiSekarang ? labelYa : labelTidak,
+  );
   chip.type = 'button';
-  chip.style.cursor = 'pointer';
-  chip.style.border = 'none';
+  if (judul) chip.title = judul;
   chip.addEventListener('click', () => jalankan(() => onUbah(!nilaiSekarang), 'Gagal memperbarui.'));
   return chip;
 }
@@ -555,35 +582,50 @@ async function renderInfaq(body) {
     return;
   }
 
-  const wrap = document.createElement('div');
-  wrap.style.cssText = 'background:#FFFFFF; border:1px solid var(--border-color); border-radius:var(--radius-lg); overflow-x:auto; padding:6px;';
-  const table = document.createElement('table');
-  table.style.cssText = 'width:100%; border-collapse:collapse; font-size:12.5px; text-align:left;';
-  table.innerHTML = `<thead><tr style="border-bottom:1px solid var(--border-color); color:var(--text-muted);">
-    <th style="padding:10px;">Wali</th><th style="padding:10px;">Jumlah</th>
-    <th style="padding:10px;">Keterangan</th><th style="padding:10px;">Status</th>
-    <th style="padding:10px; text-align:right;">Aksi</th></tr></thead>`;
-  const tbody = document.createElement('tbody');
+  // AUDIT DESAIN 5 Sep 2026: dulu <table> lima kolom, dan kolom "Aksi"
+  // terpotong di laptop sempit — tombol Verifikasi (fungsi INTI tab ini)
+  // tidak bisa diklik sama sekali. Sekarang kartu, sama seperti daftar santri.
+  const wrap = buatEl('div', 'pengurus-daftar');
+
   daftar.forEach((i) => {
-    const tr = document.createElement('tr');
-    tr.style.borderBottom = '1px solid var(--border-subtle)';
-    tr.appendChild(sel(i.wali ? `${i.wali.nama} (${i.wali.nomor_wa})` : '—'));
-    tr.appendChild(sel(`Rp ${Number(i.jumlah).toLocaleString('id-ID')}`));
-    tr.appendChild(sel(i.keterangan || '—'));
+    const kartu = buatEl('div', 'pengurus-kartu');
 
-    const tdStatus = document.createElement('td');
-    tdStatus.style.padding = '8px 10px';
-    const chip = buatEl('span', `studio-chip studio-chip--${i.status === 'terverifikasi' ? 'terbit' : 'ditinjau'}`, i.status === 'terverifikasi' ? 'Terverifikasi' : 'Menunggu');
-    tdStatus.appendChild(chip);
-    tr.appendChild(tdStatus);
+    const identitas = buatEl('div', 'pengurus-identitas');
+    identitas.appendChild(buatEl('div', 'pengurus-avatar', inisialDari(i.wali?.nama || '?')));
+    const teksId = document.createElement('div');
+    teksId.style.minWidth = '0';
+    const namaWali = buatEl('div', 'pengurus-nama', i.wali?.nama || '—');
+    namaWali.title = i.wali?.nama || '';
+    teksId.append(namaWali, buatEl('div', 'pengurus-meta', i.wali ? formatNomorWa(i.wali.nomor_wa) : ''));
+    identitas.appendChild(teksId);
+    kartu.appendChild(identitas);
 
-    const tdAksi = document.createElement('td');
-    tdAksi.style.cssText = 'padding:8px 10px; text-align:right;';
+    const sekunder = buatEl('div', 'pengurus-sekunder');
+    const jumlah = buatEl('div', 'pengurus-nama', `Rp ${Number(i.jumlah).toLocaleString('id-ID')}`);
+    jumlah.style.fontSize = '14px';
+    const ket = buatEl(
+      'div',
+      'pengurus-meta',
+      `${i.keterangan || 'Tanpa keterangan'} • ${new Date(i.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}`,
+    );
+    ket.title = i.keterangan || '';
+    sekunder.append(jumlah, ket);
+    kartu.appendChild(sekunder);
+
+    const kontrol = buatEl('div', 'pengurus-kontrol');
+    kontrol.appendChild(
+      buatEl(
+        'span',
+        `studio-chip studio-chip--${i.status === 'terverifikasi' ? 'terbit' : 'ditinjau'}`,
+        i.status === 'terverifikasi' ? 'Terverifikasi' : 'Menunggu Verifikasi',
+      ),
+    );
+
     if (i.status === 'pending') {
       const btn = buatEl('button', 'studio-btn-secondary', 'Verifikasi');
       btn.type = 'button';
-      btn.style.padding = '5px 12px';
-      btn.style.fontSize = '11px';
+      btn.style.cssText = 'padding:6px 14px; font-size:11.5px;';
+      btn.title = 'Tandai infaq ini sudah benar-benar diterima yayasan';
       btn.addEventListener('click', () =>
         jalankan(async () => {
           await verifikasiInfaq(i.id);
@@ -591,14 +633,13 @@ async function renderInfaq(body) {
           render();
         }, 'Gagal memverifikasi infaq.'),
       );
-      tdAksi.appendChild(btn);
+      kontrol.appendChild(btn);
     }
-    tr.appendChild(tdAksi);
 
-    tbody.appendChild(tr);
+    kartu.appendChild(kontrol);
+    wrap.appendChild(kartu);
   });
-  table.appendChild(tbody);
-  wrap.appendChild(table);
+
   body.appendChild(wrap);
 }
 
