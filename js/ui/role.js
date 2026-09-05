@@ -43,9 +43,16 @@ async function upgradeKeKontenAsli(roleName) {
   if (!jenjang) return;
 
   const giliranSaya = ++giliranSilabusTerakhir;
-  upgradePapanPeringkat(jenjang); // independen dari silabus — tidak perlu ditunggu
-  upgradeCertModalKeSertifikatAsli(santriAktifId()); // idem — modal piagam baru dibuka kalau diklik
-  upgradeRiwayatAsisten(santriAktifId()); // idem — riwayat + kuota asisten AI
+
+  // AUDIT 5 Sep 2026: ketiganya async dan dulu ditembak tanpa penjaga
+  // giliran, jadi berganti profil/peran dua kali cepat bisa membuat
+  // papan peringkat jenjang LAMA menimpa yang baru (yang selesai lebih
+  // dulu menang, bukan yang paling akhir diminta). Penjaganya sama
+  // dengan yang sudah dipakai jalur silabus di bawah.
+  upgradePapanPeringkat(jenjang).catch(() => {});
+  const santriSaatIni = santriAktifId();
+  upgradeCertModalKeSertifikatAsli(santriSaatIni);
+  upgradeRiwayatAsisten(santriSaatIni);
   const hasil = await muatSilabusTerbit(jenjang);
   if (giliranSaya !== giliranSilabusTerakhir) return; // sudah keburu ganti peran lagi
   if (!hasil || !hasil.syllabus.length) return;

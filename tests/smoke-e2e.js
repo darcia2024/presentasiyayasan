@@ -91,6 +91,20 @@ async function admin(method, table, { query = '', body } = {}) {
   return data;
 }
 
+/** REST SEBAGAI pengguna (token sesi biasa) — untuk menguji RLS sungguhan, bukan melewatinya. */
+async function restSebagai(method, tabel, token, query = '') {
+  const res = await fetch(`${env.SUPABASE_URL}/rest/v1/${tabel}${query}`, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      apikey: env.SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${token}`,
+      Prefer: 'return=representation',
+    },
+  });
+  return { status: res.status, data: await res.json().catch(() => null) };
+}
+
 async function panggilFungsi(nama, token, body) {
   const res = await fetch(`${env.SUPABASE_URL}/functions/v1/${nama}`, {
     method: 'POST',
@@ -182,9 +196,58 @@ function cek(nama, kondisi, detail) {
     const totalXp = xpRows.reduce((t, row) => t + row.jumlah, 0);
     cek('basis data: total XP santri = 10 (bukan 20)', totalXp === 10, { totalXp });
 
+    // ================================================================
+    // AUDIT 5 September 2026 — bagian ini ditambahkan SETELAH audit
+    // menemukan bahwa uji asap lama sama sekali tidak menyentuh alur
+    // staff, sehingga tiga lubang berikut lolos sampai berbulan kemudian:
+    // hapus modul yang gagal senyap, staff nonaktif yang tetap punya
+    // akses, dan santri nonaktif yang masih bisa mengumpulkan XP.
+    // Ketiganya sekarang punya penjaga permanen di sini.
+    // ================================================================
+    console.log('\n=== Uji alur: staff & pencabutan akses ===');
+
+    const NOMOR_STAFF = '628000009998';
+    await admin('DELETE', 'staff', { query: `?nomor_wa=eq.${NOMOR_STAFF}` });
+    const [staff] = await admin('POST', 'staff', {
+      body: { nomor_wa: NOMOR_STAFF, nama: 'Staff Uji Asap', peran: 'pengurus', aktif: true },
+    });
+    ids.staff = staff.id;
+    const tokenStaff = buatSessionJwt({ akunId: ids.staff, akunJenis: 'staff', staffPeran: 'pengurus' });
+
+    // -- hapus modul benar-benar menghapus (dulu gagal senyap: HTTP 200, nol baris)
+    const [modulUji] = await admin('POST', 'modul', {
+      body: { jenjang: 'smp', tahap: 1, kode: 'UJI-ASAP-HAPUS', judul: 'Modul Uji Hapus', status: 'draft' },
+    });
+    const hapus = await restSebagai('DELETE', 'modul', tokenStaff, `?id=eq.${modulUji.id}&select=id`);
+    const sisaModul = await admin('GET', 'modul', { query: `?id=eq.${modulUji.id}&select=id` });
+    cek('staff bisa menghapus modul (bukan gagal senyap)', sisaModul.length === 0, { hapus: hapus.status, sisa: sisaModul.length });
+    if (sisaModul.length) await admin('DELETE', 'modul', { query: `?id=eq.${modulUji.id}` });
+
+    // -- staff dinonaktifkan -> aksesnya langsung dicabut, tidak menunggu JWT kedaluwarsa
+    await admin('PATCH', 'staff', { query: `?id=eq.${ids.staff}`, body: { aktif: false } });
+    const bacaSetelahNonaktif = await restSebagai('GET', 'santri', tokenStaff, '?select=id&limit=1');
+    cek('staff NONAKTIF langsung kehilangan akses baca santri',
+      Array.isArray(bacaSetelahNonaktif.data) && bacaSetelahNonaktif.data.length === 0, bacaSetelahNonaktif.data);
+
+    const terbitSetelahNonaktif = await panggilFungsi('terbitkan-sertifikat', tokenStaff, {
+      santri_id: ids.santri, judul: 'Harus Ditolak',
+    });
+    cek('staff NONAKTIF ditolak menerbitkan sertifikat (403)', terbitSetelahNonaktif.status === 403, terbitSetelahNonaktif);
+    await admin('PATCH', 'staff', { query: `?id=eq.${ids.staff}`, body: { aktif: true } });
+
+    // -- santri dinonaktifkan -> tidak bisa lagi mengumpulkan XP
+    await admin('PATCH', 'santri', { query: `?id=eq.${ids.santri}`, body: { status: 'nonaktif' } });
+    const jawabNonaktif = await panggilFungsi('submit-jawaban', tokenWali, {
+      santri_id: ids.santri, pelajaran_id: ids.pelajaran, mufrodat_id: ids.m2, jawaban_mufrodat_id: ids.m2,
+    });
+    cek('santri NONAKTIF ditolak mengumpulkan XP (403)', jawabNonaktif.status === 403, jawabNonaktif);
+    await admin('PATCH', 'santri', { query: `?id=eq.${ids.santri}`, body: { status: 'aktif' } });
+
     console.log(`\n=== HASIL: ${lulus} lulus, ${gagal} gagal ===\n`);
   } finally {
     console.log('=== Membersihkan data uji ===');
+    if (ids.staff) await admin('DELETE', 'staff', { query: `?id=eq.${ids.staff}` }).catch(() => {});
+    await admin('DELETE', 'modul', { query: `?kode=eq.UJI-ASAP-HAPUS` }).catch(() => {});
     if (ids.modul) await admin('DELETE', 'modul', { query: `?id=eq.${ids.modul}` }).catch(() => {});
     if (ids.santri) await admin('DELETE', 'santri', { query: `?id=eq.${ids.santri}` }).catch(() => {});
     if (ids.wali) await admin('DELETE', 'wali', { query: `?id=eq.${ids.wali}` }).catch(() => {});

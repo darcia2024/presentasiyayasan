@@ -19,6 +19,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { corsHeaders, handlePreflight, jsonResponse } from '../_shared/cors.ts';
 import { verifikasiSessionJwt } from '../_shared/session-jwt.ts';
+import { periksaSantriBolehBelajar, periksaStaffAktif } from '../_shared/akun-aktif.ts';
 
 const supabase = createClient(
   Deno.env.get('SUPABASE_URL')!,
@@ -69,17 +70,22 @@ Deno.serve(async (req) => {
 
     const { data: santri, error: errSantri } = await supabase
       .from('santri')
-      .select('id, nama, jenjang, wali_id')
+      .select('id, nama, jenjang, wali_id, status')
       .eq('id', santriId)
       .maybeSingle();
     if (errSantri || !santri) {
       return jsonResponse({ ok: false, error: 'Santri tidak ditemukan.' }, 404);
     }
 
-    const berhakBertanya =
-      (sesi.akunJenis === 'wali' && santri.wali_id === sesi.akunId) || sesi.akunJenis === 'staff';
-    if (!berhakBertanya) {
-      return jsonResponse({ ok: false, error: 'Tidak berhak bertanya atas nama santri ini.' }, 403);
+    // AUDIT 5 Sep 2026: status santri ikut diperiksa — santri nonaktif
+    // dulu masih bisa memakai (dan menghabiskan biaya) asisten AI.
+    const izin = periksaSantriBolehBelajar(santri, sesi);
+    if (!izin.boleh) {
+      return jsonResponse({ ok: false, error: izin.alasan! }, 403);
+    }
+    if (sesi.akunJenis === 'staff') {
+      const staffOk = await periksaStaffAktif(supabase, sesi);
+      if (!staffOk.boleh) return jsonResponse({ ok: false, error: staffOk.alasan! }, 403);
     }
 
     // Staff (pengurus/pengajar menjajal fitur) tidak dibatasi kuota harian

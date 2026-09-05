@@ -22,6 +22,7 @@ import {
 } from '../core/supabase-client.js';
 import { playTone, showToast } from '../core/feedback.js';
 import { terapkanIdentitasAsli } from './role.js';
+import { escapeHtml } from '../core/html.js';
 
 const JENJANG_KE_PERAN = { sd: 'santri-sd', smp: 'santri-smp', sma: 'santri-sma' };
 const NAMA_JENJANG = { sd: 'SD', smp: 'SMP', sma: 'SMA' };
@@ -192,10 +193,10 @@ function renderPemilihProfil(daftarSantri) {
     btn.type = 'button';
     btn.className = 'auth-profil-btn';
     btn.innerHTML = `
-      <span class="auth-profil-avatar">${s.inisial}</span>
+      <span class="auth-profil-avatar">${escapeHtml(s.inisial)}</span>
       <span class="auth-profil-info">
-        <span class="auth-profil-nama">${s.nama}</span>
-        <span class="auth-profil-jenjang">Jenjang ${s.jenjang.toUpperCase()}</span>
+        <span class="auth-profil-nama">${escapeHtml(s.nama)}</span>
+        <span class="auth-profil-jenjang">Jenjang ${escapeHtml(String(s.jenjang).toUpperCase())}</span>
       </span>
     `;
     btn.addEventListener('click', () => {
@@ -277,10 +278,10 @@ function terapkanVisibilitasDemo() {
     item.className = `dropdown-account-item${s.id === sesi.santriAktifId ? ' current' : ''}`;
     item.innerHTML = `
       <div class="dropdown-account-left">
-        <div class="dropdown-mini-avatar">${s.inisial}</div>
+        <div class="dropdown-mini-avatar">${escapeHtml(s.inisial)}</div>
         <div>
-          <div style="font-size: 12px; font-weight: 700;">${s.nama}</div>
-          <div style="font-size: 10px; color: var(--text-muted);">Santri Jenjang ${NAMA_JENJANG[s.jenjang] || s.jenjang.toUpperCase()}</div>
+          <div style="font-size: 12px; font-weight: 700;">${escapeHtml(s.nama)}</div>
+          <div style="font-size: 10px; color: var(--text-muted);">Santri Jenjang ${escapeHtml(NAMA_JENJANG[s.jenjang] || String(s.jenjang).toUpperCase())}</div>
         </div>
       </div>
       <i class="ph ph-check" style="font-size: 14px; color: var(--teal-primary); display: ${s.id === sesi.santriAktifId ? 'block' : 'none'};"></i>

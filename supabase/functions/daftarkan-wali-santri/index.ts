@@ -27,6 +27,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { corsHeaders, handlePreflight, jsonResponse } from '../_shared/cors.ts';
 import { verifikasiSessionJwt } from '../_shared/session-jwt.ts';
 import { normalizeNomorWa } from '../_shared/phone.ts';
+import { periksaStaffAktif } from '../_shared/akun-aktif.ts';
 
 const supabase = createClient(
   Deno.env.get('SUPABASE_URL')!,
@@ -62,9 +63,13 @@ Deno.serve(async (req) => {
       return jsonResponse({ ok: false, error: 'Sesi tidak valid atau sudah kedaluwarsa.' }, 401);
     }
 
-    const berhak = sesi.akunJenis === 'staff' && (sesi.staffPeran === 'pengurus' || sesi.staffPeran === 'superadmin');
-    if (!berhak) {
-      return jsonResponse({ ok: false, error: 'Hanya pengurus yayasan yang boleh mendaftarkan santri baru.' }, 403);
+    // AUDIT 5 Sep 2026: dulu hanya klaim JWT yang dipercaya di sini, jadi
+    // pengurus yang sudah dinonaktifkan/dihapus/diturunkan jadi pengajar
+    // tetap bisa mendaftarkan santri baru sampai JWT-nya kedaluwarsa
+    // (7 hari). Sekarang peran dibaca ulang dari basis data.
+    const berhak = await periksaStaffAktif(supabase, sesi, true);
+    if (!berhak.boleh) {
+      return jsonResponse({ ok: false, error: berhak.alasan! }, 403);
     }
 
     const body = await req.json().catch(() => null);

@@ -22,6 +22,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { corsHeaders, handlePreflight, jsonResponse } from '../_shared/cors.ts';
 import { verifikasiSessionJwt } from '../_shared/session-jwt.ts';
+import { periksaStaffAktif } from '../_shared/akun-aktif.ts';
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const supabase = createClient(SUPABASE_URL, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
@@ -46,12 +47,36 @@ Deno.serve(async (req) => {
       return jsonResponse({ ok: false, error: 'Sesi tidak valid atau sudah kedaluwarsa.' }, 401);
     }
 
-    const berhak = sesi.akunJenis === 'staff' && (sesi.staffPeran === 'pengurus' || sesi.staffPeran === 'superadmin');
-    if (!berhak) {
-      return jsonResponse({ ok: false, error: 'Hanya pengurus yayasan yang boleh menerbitkan sertifikat.' }, 403);
+    // AUDIT 5 Sep 2026: peran dibaca ulang dari basis data, bukan dari
+    // klaim JWT — pengurus yang sudah dinonaktifkan tidak boleh lagi
+    // menerbitkan sertifikat atas nama yayasan.
+    const berhak = await periksaStaffAktif(supabase, sesi, true);
+    if (!berhak.boleh) {
+      return jsonResponse({ ok: false, error: berhak.alasan! }, 403);
     }
 
     const body = await req.json().catch(() => null);
+
+    // AUDIT 5 Sep 2026 — mode kedua: klien memanggil ini SETELAH berkas PDF
+    // benar-benar terunggah, baru pdf_url dicatat. Sebelumnya pdf_url diisi
+    // saat baris dibuat, jadi kalau unggahan gagal, basis data menyimpan
+    // tautan PDF yang selamanya 404 dan panel pengurus menampilkan ikon PDF
+    // yang tidak bisa dibuka, tanpa cara memperbaikinya dari antarmuka.
+    if (body?.action === 'catat-pdf') {
+      const idSert = body?.sertifikat_id;
+      if (!idSert) return jsonResponse({ ok: false, error: 'sertifikat_id wajib diisi.' }, 400);
+      const pdfUrlFinal = `${SUPABASE_URL}/storage/v1/object/public/sertifikat/${idSert}.pdf`;
+      const { error: errCatat } = await supabase
+        .from('sertifikat')
+        .update({ pdf_url: pdfUrlFinal })
+        .eq('id', idSert);
+      if (errCatat) {
+        console.error('[terbitkan-sertifikat] gagal mencatat pdf_url:', errCatat.message);
+        return jsonResponse({ ok: false, error: 'Gagal mencatat berkas PDF sertifikat.' }, 500);
+      }
+      return jsonResponse({ ok: true, pdfUrl: pdfUrlFinal });
+    }
+
     const santriId = body?.santri_id;
     const judul = typeof body?.judul === 'string' ? body.judul.trim() : '';
     if (!santriId || !judul) {
@@ -109,20 +134,16 @@ Deno.serve(async (req) => {
       return jsonResponse({ ok: false, error: 'Gagal menerbitkan sertifikat setelah beberapa percobaan. Coba lagi.' }, 500);
     }
 
+    // pdf_url SENGAJA dibiarkan NULL di sini — baru diisi lewat mode
+    // 'catat-pdf' setelah klien membuktikan unggahannya berhasil (audit
+    // 5 Sep 2026). Path-nya tetap deterministik supaya klien tahu ke mana
+    // harus mengunggah tanpa perlu ditebak.
     const pdfUrl = `${SUPABASE_URL}/storage/v1/object/public/sertifikat/${sertifikatId}.pdf`;
-    const { data: baruDiperbarui, error: errUpdate } = await supabase
+    const { data: baruDiperbarui } = await supabase
       .from('sertifikat')
-      .update({ pdf_url: pdfUrl })
-      .eq('id', sertifikatId)
       .select('diterbitkan_at')
+      .eq('id', sertifikatId)
       .single();
-
-    if (errUpdate) {
-      console.error('[terbitkan-sertifikat] gagal mencatat pdf_url:', errUpdate.message);
-      // Baris sertifikatnya sendiri sudah tersimpan — jangan gagalkan
-      // seluruh permintaan hanya karena pdf_url belum tercatat, klien
-      // masih bisa mengunggah ke path yang sudah pasti benar ini.
-    }
 
     // Fase 7: dicatat manual di sini (bukan trigger) karena penulisnya
     // service_role — auth.uid() akan NULL kalau ditinggalkan ke trigger,

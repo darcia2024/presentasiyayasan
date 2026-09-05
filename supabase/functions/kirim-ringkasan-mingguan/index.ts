@@ -130,6 +130,7 @@ Deno.serve(async (req) => {
     }
 
     let waliDikirimi = 0;
+    let waliGagal = 0;
     let santriDicakup = 0;
     let modePengembangan = false;
 
@@ -138,7 +139,21 @@ Deno.serve(async (req) => {
       if (!wali) continue;
 
       const pesan = susunPesan(wali.nama, daftarAnak);
-      const hasil = await kirimPesanWhatsApp(wali.nomorWa, pesan);
+
+      // AUDIT 5 Sep 2026: kirimPesanWhatsApp() MELEMPAR kalau gateway
+      // menolak (nomor tidak valid, kuota habis, dst). Sebelum ini
+      // lemparannya tidak ditangkap di sini, sehingga SATU nomor bermasalah
+      // membatalkan seluruh sisa siaran — dan karena baris log ditulis
+      // setelah pengiriman, wali-wali sesudahnya tidak pernah dapat apa pun
+      // selama nomor bermasalah itu masih terdaftar.
+      let hasil;
+      try {
+        hasil = await kirimPesanWhatsApp(wali.nomorWa, pesan);
+      } catch (errKirim) {
+        console.error('[kirim-ringkasan-mingguan] gagal mengirim ke', wali.nomorWa, '-', (errKirim as Error).message);
+        waliGagal += 1;
+        continue; // JANGAN catat log — supaya wali ini dicoba lagi pekan depan
+      }
       if (hasil.modePengembangan) modePengembangan = true;
 
       // Catat SETELAH terkirim (atau tercatat mode pengembangan) —
@@ -161,7 +176,7 @@ Deno.serve(async (req) => {
       santriDicakup += daftarAnak.length;
     }
 
-    return jsonResponse({ ok: true, waliDikirimi, santriDicakup, modePengembangan });
+    return jsonResponse({ ok: true, waliDikirimi, waliGagal, santriDicakup, modePengembangan });
   } catch (err) {
     console.error('[kirim-ringkasan-mingguan] gagal:', err);
     return jsonResponse({ ok: false, error: 'Terjadi kesalahan di server. Coba lagi.' }, 500);

@@ -22,6 +22,10 @@ const supabase = createClient(
 // Cegah spam: satu nomor cuma boleh minta OTP baru tiap 60 detik.
 const MIN_JEDA_PERMINTAAN_MS = 60 * 1000;
 
+// Batas atas per 24 jam per nomor (audit 5 Sep 2026) — lihat komentar di
+// tempat pemakaiannya untuk alasannya.
+const MAKS_PERMINTAAN_PER_HARI = 10;
+
 Deno.serve(async (req) => {
   const preflight = handlePreflight(req);
   if (preflight) return preflight;
@@ -80,6 +84,27 @@ Deno.serve(async (req) => {
       );
     }
 
+    // AUDIT 5 Sep 2026: jeda 60 detik saja tidak menghentikan penyalahgunaan
+    // berkelanjutan — siapa pun yang tahu nomor WA seorang wali bisa memicu
+    // 1.440 pesan/hari ke nomor itu (dan menghabiskan kuota gateway yayasan)
+    // hanya dengan menunggu satu menit tiap kali. Batas harian menutup itu
+    // tanpa mengganggu pemakaian wajar (10 kali sehari sudah sangat longgar
+    // untuk orang yang benar-benar kesulitan masuk).
+    const sehariLalu = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const { count: permintaanHariIni } = await supabase
+      .from('otp_codes')
+      .select('id', { count: 'exact', head: true })
+      .eq('nomor_wa', nomorWa)
+      .gte('created_at', sehariLalu);
+
+    if ((permintaanHariIni || 0) >= MAKS_PERMINTAAN_PER_HARI) {
+      console.warn(`[auth-otp-request] batas harian tercapai untuk ${nomorWa} (${permintaanHariIni})`);
+      return jsonResponse(
+        { ok: false, error: 'Terlalu banyak permintaan kode hari ini. Coba lagi besok atau hubungi pengurus yayasan.' },
+        429,
+      );
+    }
+
     // Fase 7: bersihkan baris kedaluwarsa secara oportunistik — setiap
     // permintaan OTP baru ikut menyapu sampah lama, tanpa perlu fungsi
     // terjadwal/cron terpisah (lihat catatan "Fase 7" di
@@ -98,15 +123,33 @@ Deno.serve(async (req) => {
     const kodeHash = await hashOtpCode(kode, nomorWa);
     const expiresAt = new Date(Date.now() + OTP_TTL_MS).toISOString();
 
-    const { error: insertError } = await supabase.from('otp_codes').insert({
-      nomor_wa: nomorWa,
-      kode_hash: kodeHash,
-      jenis_akun: jenisAkun,
-      expires_at: expiresAt,
-    });
+    const { data: barisOtp, error: insertError } = await supabase
+      .from('otp_codes')
+      .insert({
+        nomor_wa: nomorWa,
+        kode_hash: kodeHash,
+        jenis_akun: jenisAkun,
+        expires_at: expiresAt,
+      })
+      .select('id')
+      .single();
     if (insertError) throw insertError;
 
-    const hasil = await kirimOtpWhatsApp(nomorWa, kode);
+    // AUDIT 5 Sep 2026: kalau gateway WA menolak, barisnya HARUS dibuang.
+    // Sebelum ini baris tetap tersimpan, sehingga pengguna yang tidak
+    // menerima kode apa pun malah terkunci jeda 60 detik oleh kegagalan
+    // yang bukan salahnya — dan pesan errornya generik "kesalahan server".
+    let hasil;
+    try {
+      hasil = await kirimOtpWhatsApp(nomorWa, kode);
+    } catch (errKirim) {
+      await supabase.from('otp_codes').delete().eq('id', barisOtp.id);
+      console.error('[auth-otp-request] gateway WA menolak:', (errKirim as Error).message);
+      return jsonResponse(
+        { ok: false, error: 'Gagal mengirim kode ke WhatsApp Anda. Coba lagi sebentar lagi atau hubungi pengurus yayasan.' },
+        502,
+      );
+    }
 
     return jsonResponse({
       ok: true,

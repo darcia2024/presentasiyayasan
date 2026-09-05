@@ -54,6 +54,7 @@ const SHELL_ASSETS = [
   '/js/ui/papan-peringkat.js',
   '/js/core/wali-client.js',
   '/js/ui/wali-dashboard.js',
+  '/js/core/html.js',
   '/js/core/script-loader.js',
   '/js/core/phone.js',
   '/js/core/asisten-client.js',

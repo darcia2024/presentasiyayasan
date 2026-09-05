@@ -90,6 +90,7 @@ const SHELL_ASSETS = [
   /* Fase 6 — Pengurus & Sertifikat. vendor/jspdf/ dan vendor/qrcode/
      SENGAJA TIDAK di sini — dimuat dinamis hanya untuk staff pengurus,
      lihat vendor/jspdf/README.md. */
+  '/js/core/html.js',
   '/js/core/script-loader.js',
   '/js/core/phone.js',
   /* Fase 5 — Asisten Bahasa Arab. */

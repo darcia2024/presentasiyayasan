@@ -14,6 +14,7 @@
  */
 
 import { getSupabaseClient } from '../core/supabase-client.js';
+import { escapeHtml } from '../core/html.js';
 
 const PERAGA = {
   title: 'PIAGAM KELULUSAN SANAD',
@@ -78,7 +79,7 @@ export async function upgradeCertModalKeSertifikatAsli(santriId) {
     if (els.nama) els.nama.textContent = data.santri?.nama || PERAGA.nama;
     if (els.predikat) els.predikat.textContent = data.judul;
     if (els.meta) {
-      els.meta.innerHTML = `Nomor Seri: ${data.nomor_seri}<br>Diterbitkan: ${tanggal}`;
+      els.meta.innerHTML = `Nomor Seri: ${escapeHtml(data.nomor_seri)}<br>Diterbitkan: ${escapeHtml(tanggal)}`;
     }
     if (els.qrLink) els.qrLink.href = urlVerifikasi;
     if (els.catatan) els.catatan.style.display = 'none';

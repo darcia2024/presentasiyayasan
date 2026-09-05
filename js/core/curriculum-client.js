@@ -21,6 +21,24 @@ function lemparJikaError(error, konteks) {
   if (error) throw new Error(`${konteks}: ${error.message}`);
 }
 
+/**
+ * AUDIT 5 September 2026 — kelas bug "gagal senyap".
+ *
+ * Kalau RLS menolak sebuah DELETE/UPDATE, PostgREST TIDAK mengembalikan
+ * error: statusnya 200 dengan NOL baris terpengaruh. Akibatnya
+ * lemparJikaError() di atas lolos, dan antarmuka menampilkan "berhasil"
+ * padahal tidak terjadi apa-apa. Persis itu yang terjadi pada "Hapus
+ * Modul" sampai audit ini (tabel modul memang tidak punya kebijakan
+ * DELETE). Perbaikan kebijakannya ada di migrasi 20260905000002, tapi
+ * pemeriksaan ini yang membuat kegagalan serupa BERSUARA kalau terulang
+ * di kemudian hari — bukan diam lagi.
+ */
+function lemparJikaTakAdaBaris(data, konteks) {
+  if (!Array.isArray(data) || data.length === 0) {
+    throw new Error(`${konteks}: tidak ada baris yang berubah (kemungkinan izin ditolak).`);
+  }
+}
+
 /* ------------------------------------------------------------------ MODUL */
 
 export async function daftarModul(jenjang) {
@@ -63,8 +81,9 @@ export async function simpanModul(modul) {
 
 export async function hapusModul(modulId) {
   const client = getSupabaseClient();
-  const { error } = await client.from(TABEL_MODUL).delete().eq('id', modulId);
+  const { data, error } = await client.from(TABEL_MODUL).delete().eq('id', modulId).select('id');
   lemparJikaError(error, 'Gagal menghapus modul');
+  lemparJikaTakAdaBaris(data, 'Gagal menghapus modul');
 }
 
 /**
@@ -123,8 +142,9 @@ export async function simpanPelajaran(pelajaran) {
 
 export async function hapusPelajaran(pelajaranId) {
   const client = getSupabaseClient();
-  const { error } = await client.from(TABEL_PELAJARAN).delete().eq('id', pelajaranId);
+  const { data, error } = await client.from(TABEL_PELAJARAN).delete().eq('id', pelajaranId).select('id');
   lemparJikaError(error, 'Gagal menghapus pelajaran');
+  lemparJikaTakAdaBaris(data, 'Gagal menghapus pelajaran');
 }
 
 /* --------------------------------------------------------------- MUFRODAT */
@@ -169,8 +189,9 @@ export async function simpanMufrodat(mufrodat) {
 
 export async function hapusMufrodat(mufrodatId) {
   const client = getSupabaseClient();
-  const { error } = await client.from(TABEL_MUFRODAT).delete().eq('id', mufrodatId);
+  const { data, error } = await client.from(TABEL_MUFRODAT).delete().eq('id', mufrodatId).select('id');
   lemparJikaError(error, 'Gagal menghapus mufrodat');
+  lemparJikaTakAdaBaris(data, 'Gagal menghapus mufrodat');
 }
 
 /**
@@ -278,8 +299,9 @@ export async function simpanDokumen(dokumen) {
 
 export async function hapusDokumen(dokumenId) {
   const client = getSupabaseClient();
-  const { error } = await client.from(TABEL_DOKUMEN).delete().eq('id', dokumenId);
+  const { data, error } = await client.from(TABEL_DOKUMEN).delete().eq('id', dokumenId).select('id');
   lemparJikaError(error, 'Gagal menghapus dokumen');
+  lemparJikaTakAdaBaris(data, 'Gagal menghapus dokumen');
 }
 
 export async function ubahStatusDokumen(dokumenId, status) {

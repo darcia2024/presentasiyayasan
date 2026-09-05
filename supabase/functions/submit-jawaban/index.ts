@@ -16,6 +16,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { corsHeaders, handlePreflight, jsonResponse } from '../_shared/cors.ts';
 import { verifikasiSessionJwt } from '../_shared/session-jwt.ts';
+import { periksaSantriBolehBelajar, periksaStaffAktif } from '../_shared/akun-aktif.ts';
 
 const supabase = createClient(
   Deno.env.get('SUPABASE_URL')!,
@@ -53,17 +54,25 @@ Deno.serve(async (req) => {
     // pengecekan kepemilikan ini WAJIB dilakukan manual.
     const { data: santri, error: errSantri } = await supabase
       .from('santri')
-      .select('id, wali_id')
+      .select('id, wali_id, status')
       .eq('id', santri_id)
       .maybeSingle();
 
     if (errSantri || !santri) {
       return jsonResponse({ ok: false, error: 'Santri tidak ditemukan.' }, 404);
     }
-    const berhakMengirim =
-      (sesi.akunJenis === 'wali' && santri.wali_id === sesi.akunId) || sesi.akunJenis === 'staff';
-    if (!berhakMengirim) {
-      return jsonResponse({ ok: false, error: 'Tidak berhak mengirim jawaban untuk santri ini.' }, 403);
+
+    // AUDIT 5 Sep 2026: dulu di sini hanya dicek kepemilikan wali, sehingga
+    // santri yang sudah DINONAKTIFKAN pengurus masih bisa mengumpulkan XP.
+    const izin = periksaSantriBolehBelajar(santri, sesi);
+    if (!izin.boleh) {
+      return jsonResponse({ ok: false, error: izin.alasan! }, 403);
+    }
+    // Staff juga harus masih hidup — service_role melewati RLS, jadi
+    // perbaikan pencabutan sesi di RLS tidak berlaku di jalur ini.
+    if (sesi.akunJenis === 'staff') {
+      const staffOk = await periksaStaffAktif(supabase, sesi);
+      if (!staffOk.boleh) return jsonResponse({ ok: false, error: staffOk.alasan! }, 403);
     }
 
     // Pelajaran + modulnya harus terbit — mencegah XP didapat dari konten

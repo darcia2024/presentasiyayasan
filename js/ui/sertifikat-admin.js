@@ -150,6 +150,18 @@ export async function terbitkanDanUnggahSertifikat({ santriId, judul }) {
     throw new Error(`Sertifikat tercatat di basis data, tapi berkas PDF gagal diunggah: ${errUpload.message}`);
   }
 
+  // AUDIT 5 Sep 2026: pdf_url baru dicatat SETELAH unggahan terbukti
+  // berhasil. Sebelumnya Edge Function mengisinya di awal, sehingga
+  // unggahan yang gagal meninggalkan tautan PDF yang selamanya 404 di
+  // panel pengurus. Kegagalan mencatat di sini tidak membatalkan
+  // sertifikatnya (berkasnya sudah ada dan halaman verifikasi tetap
+  // jalan) — cukup dicatat ke konsol.
+  try {
+    await terbitkanSertifikat({ action: 'catat-pdf', sertifikat_id: hasil.sertifikatId });
+  } catch (e) {
+    console.error('[sertifikat-admin] berkas terunggah tapi pdf_url gagal dicatat:', e.message);
+  }
+
   return {
     blob,
     namaBerkas: `Sertifikat-${hasil.santriNama.replace(/\s+/g, '-')}-${hasil.nomorSeri}.pdf`,

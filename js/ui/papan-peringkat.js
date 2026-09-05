@@ -17,6 +17,9 @@ import { ambilPapanPeringkat } from '../core/kuis-client.js';
 
 const ID_KONTAINER = 'papanPeringkatContainer';
 
+/** Penjaga giliran — lihat komentar di upgradePapanPeringkat(). */
+let giliranTerakhir = 0;
+
 const WARNA_AVATAR = ['var(--teal-primary)', '#8B7FD1', '#D18B7F', '#7FA8D1', '#B58BD1'];
 
 function inisialDari(nama) {
@@ -66,7 +69,15 @@ export async function upgradePapanPeringkat(jenjang) {
   const kontainer = document.getElementById(ID_KONTAINER);
   if (!kontainer || !jenjang) return false;
 
+  // AUDIT 5 Sep 2026: tanpa penjaga giliran, berganti profil anak (SD lalu
+  // SMP) dua kali cepat bisa membuat papan peringkat jenjang LAMA menang
+  // hanya karena permintaannya kebetulan selesai belakangan — wali melihat
+  // peringkat jenjang yang bukan anaknya. Pola penjaganya sama dengan
+  // giliranSilabusTerakhir di js/ui/role.js.
+  const giliranSaya = ++giliranTerakhir;
+
   const daftar = await ambilPapanPeringkat(jenjang);
+  if (giliranSaya !== giliranTerakhir) return false; // sudah keburu ganti jenjang
   if (!daftar || !daftar.length) return false; // belum ada XP tercatat — biarkan peraga tampil
 
   kontainer.innerHTML = '';

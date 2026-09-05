@@ -17,6 +17,7 @@
 
 import { kirimJawaban, santriAktifId } from '../core/kuis-client.js';
 import { playTone, showToast } from '../core/feedback.js';
+import { escapeHtml } from '../core/html.js';
 
 const ID_KONTAINER = 'kuisContainer';
 const JUMLAH_PILIHAN = 4;
@@ -83,7 +84,8 @@ function tampilkanSoal(kontainer) {
 
   const pertanyaan = document.createElement('div');
   pertanyaan.style.cssText = 'font-size:13.5px; font-weight:700; color:var(--teal-dark); line-height:1.5; margin-bottom:12px;';
-  pertanyaan.innerHTML = `Apa arti kosakata: <strong style="color:var(--teal-primary); font-size:19px; font-family:'Amiri',Arial;">"${target.arab}"</strong> (${target.latin})?`;
+  // Diescape sejak audit 5 Sep 2026 — arab/latin diketik staff lewat Studio.
+  pertanyaan.innerHTML = `Apa arti kosakata: <strong style="color:var(--teal-primary); font-size:19px; font-family:'Amiri',Arial;">"${escapeHtml(target.arab)}"</strong> (${escapeHtml(target.latin)})?`;
   kontainer.appendChild(pertanyaan);
 
   const daftarTombol = document.createElement('div');

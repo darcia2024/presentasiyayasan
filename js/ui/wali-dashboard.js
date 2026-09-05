@@ -123,7 +123,7 @@ function isiKartu(kartu, santri, ringkasan) {
     const chipWrap = el('div', 'wali-anak-lencana');
     ringkasan.lencana.forEach((l) => {
       const chip = el('span', 'wali-lencana-chip');
-      chip.innerHTML = `<i class="ph ${l.ikon}"></i> ${l.nama}`;
+      chip.innerHTML = `<i class="ph ${escapeHtml(l.ikon)}"></i> ${escapeHtml(l.nama)}`;
       chipWrap.appendChild(chip);
     });
     kartu.appendChild(chipWrap);
