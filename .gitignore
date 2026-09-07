@@ -19,3 +19,6 @@ js/config.js
 
 # Cache lokal CLI Supabase (project ref, versi CLI) — bukan bagian repo.
 supabase/.temp/
+
+# Hasil build untuk penerbitan (dibuat ulang tiap deploy)
+dist/

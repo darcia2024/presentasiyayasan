@@ -1,0 +1,78 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+
+  "_catatan": [
+    "Konfigurasi penerbitan Vercel untuk PERISA AZHARIYAH.",
+    "",
+    "Sengaja ditaruh di repo, bukan diatur lewat dashboard: pengaturan di",
+    "dashboard tidak terlihat siapa pun saat membaca kode, tidak ikut dalam",
+    "riwayat perubahan, dan hilang diam-diam kalau proyeknya dibuat ulang.",
+    "Tiga deployment pertama (5 Sep 2026) gagal justru karena ini kosong —",
+    "Vercel mencari folder bernama 'public' yang memang tidak pernah ada.",
+    "",
+    "outputDirectory menunjuk ke dist/, yang disusun tools/build-dist.js.",
+    "Hanya isi folder itu yang tersaji ke publik: .env, supabase/ (migrasi",
+    "SQL memuat seluruh aturan keamanan), tools/, tests/, docs/, dan",
+    "server.js tidak pernah ikut.",
+    "",
+    "SUPABASE_URL dan SUPABASE_ANON_KEY harus diisi di Environment Variables",
+    "proyek Vercel — dibaca tools/gen-config.js saat build. Kalau kosong,",
+    "build TETAP berhasil tapi aplikasinya turun ke mode peraga tanpa login",
+    "sungguhan, jadi periksa keduanya kalau login tiba-tiba tidak jalan.",
+    "",
+    "Daftar header di bawah harus tetap sama isinya dengan berkas _headers",
+    "milik Cloudflare. Kalau salah satu diubah, ubah keduanya."
+  ],
+
+  "buildCommand": "npm run build:dist",
+  "outputDirectory": "dist",
+  "framework": null,
+
+  "headers": [
+    {
+      "source": "/sw.js",
+      "headers": [
+        { "key": "Service-Worker-Allowed", "value": "/" },
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/manifest.webmanifest",
+      "headers": [
+        { "key": "Content-Type", "value": "application/manifest+json; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
+      ]
+    },
+    {
+      "source": "/vendor/fonts/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
+      "source": "/vendor/phosphor/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
+      "source": "/icons/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000" }]
+    },
+    {
+      "source": "/(.*).html",
+      "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "geolocation=(), camera=(), payment=()" }
+      ]
+    }
+  ]
+}

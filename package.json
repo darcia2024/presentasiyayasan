@@ -13,7 +13,8 @@
     "test:smoke": "node tests/smoke-e2e.js",
     "icons": "node tools/build-icons.js",
     "fonts": "node tools/fetch-fonts.js",
-    "gen-config": "node tools/gen-config.js"
+    "gen-config": "node tools/gen-config.js",
+    "build:dist": "npm run build && node tools/build-dist.js"
   },
   "repository": {
     "type": "git",
