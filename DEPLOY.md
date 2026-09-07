@@ -108,3 +108,69 @@ papan peringkat akan memakai data cadangan.
 
 Itu wajar untuk sekarang. Mulai Fase 1, endpoint-endpoint itu digantikan
 Supabase sepenuhnya, dan `server.js` tetap tinggal sebagai alat pengembangan.
+
+---
+
+## Penerbitan lewat Vercel
+
+Repo ini tersambung ke proyek Vercel `presentasiyayasan` (cabang produksi
+`main`). Setiap push ke `main` memicu penerbitan otomatis.
+
+### Yang diatur di `vercel.json`, bukan di dashboard
+
+`buildCommand` dan `outputDirectory` sengaja ditulis di `vercel.json` yang
+ikut masuk git. Pengaturan lewat dashboard tidak terlihat saat orang membaca
+kode, tidak masuk riwayat perubahan, dan hilang diam-diam kalau proyeknya
+dibuat ulang.
+
+Kondisi itu bukan hipotesis: **lima deployment pertama (4–5 September 2026)
+semuanya gagal** justru karena pengaturan ini kosong. Vercel menjalankan
+`npm run build`, lalu mencari folder bernama `public` yang memang tidak
+pernah dibuat, dan berhenti dengan `No Output Directory named "public"
+found`.
+
+> **`vercel.json` tidak boleh memuat properti di luar skema resmi.**
+> Percobaan menaruh blok penjelasan bernama `_catatan` di dalamnya membuat
+> deployment ditolak sebelum build sempat berjalan sama sekali:
+> *"schema validation failed: should NOT have additional property"*.
+> JSON tidak punya komentar — penjelasan apa pun ditulis di berkas ini,
+> bukan di sana.
+
+### Environment Variables yang wajib diisi
+
+Di **Settings → Environment Variables** proyek Vercel, untuk ketiga
+lingkungan (Production, Preview, Development):
+
+| Nama | Isi |
+|---|---|
+| `SUPABASE_URL` | `https://<ref>.supabase.co` |
+| `SUPABASE_ANON_KEY` | kunci `anon` (BUKAN `service_role`) |
+
+Keduanya dibaca `tools/gen-config.js` saat build dan ditulis ke
+`js/config.js`. Kunci `anon` memang dirancang aman dibaca browser — ia
+dibatasi Row Level Security, bukan kerahasiaan.
+
+**Kalau keduanya kosong, build tetap BERHASIL** tapi aplikasinya diam-diam
+turun ke mode peraga tanpa login sungguhan. Ini pernah terjadi dan tidak
+menimbulkan pesan gagal apa pun — jadi kalau login tiba-tiba tidak jalan di
+produksi, dua nilai ini yang pertama diperiksa.
+
+### Apa yang benar-benar terbit
+
+`npm run build:dist` menyusun folder `dist/` lewat `tools/build-dist.js`, dan
+hanya isi folder itu yang tersaji ke publik. Pendekatannya sengaja dibalik
+dari `.assetsignore` milik Cloudflare: di sana setiap berkas baru otomatis
+ikut terbit kecuali ada yang ingat mengecualikannya, di sini hanya yang
+disebut yang ikut. Lupa mendaftarkan berkas baru berakibat berkas itu tidak
+muncul di situs — kegagalan yang langsung kelihatan, bukan kebocoran senyap.
+
+Yang tidak pernah ikut terbit: `.env`, seluruh `supabase/` (migrasi SQL
+memuat 52 kebijakan keamanan), `tools/`, `tests/`, `docs/`, dan `server.js`.
+
+### Header HTTP ada di dua tempat
+
+Daftar header di `vercel.json` harus tetap sama isinya dengan berkas
+`_headers` (dipakai Cloudflare Pages). Kalau salah satu diubah, ubah
+keduanya. Yang paling mudah terlewat: `Service-Worker-Allowed: /` — tanpa
+itu service worker tidak boleh mengendalikan seluruh situs, dan PWA-nya
+berhenti bekerja di luar halaman utama.
