@@ -1,38 +1,75 @@
 /**
- * PERISA AZHARIYAH — Klien Kuis & Papan Peringkat (Fase 4)
+ * PERISA AZHARIYAH — Klien Kuis & Papan Peringkat (Fase 4, dirombak audit K2)
  *
- * kirimJawaban() memanggil Edge Function submit-jawaban — SATU-SATUNYA
- * jalan XP tercatat. Tidak ada jalur lain di kode ini yang menulis XP
- * langsung ke Supabase; kalau ada yang menambah cara baru "memberi XP",
- * itu harus lewat Edge Function ini juga, bukan client.from('xp_log').insert(...).
+ * ALUR BARU (10 Sep 2026). Dulu modul ini mengirim "soal apa" DAN "jawaban
+ * apa" sekaligus ke submit-jawaban, dan server menilai dengan
+ * membandingkan dua nilai yang sama-sama datang dari sini. Artinya klien
+ * memegang jawabannya sendiri — XP bisa dipanen dari konsol peramban.
+ *
+ * Sekarang dua langkah, dan klien tidak pernah memegang kunci jawaban:
+ *   1. ambilSoal()    -> server memilih mufrodat, menyusun pengecoh,
+ *                        menyimpan jawaban benar, mengembalikan token buram
+ *                        + daftar arti berkunci "a".."d".
+ *   2. kirimJawaban() -> klien mengirim token + kunci yang dipilih. Server
+ *                        membaca jawaban benar dari barisnya sendiri.
+ *
+ * Tidak ada jalur lain di kode ini yang menulis XP langsung ke Supabase;
+ * kalau ada yang menambah cara baru "memberi XP", itu harus lewat Edge
+ * Function juga, bukan client.from('xp_log').insert(...).
  */
 
 import { getSupabaseClient, bacaSesi } from './supabase-client.js';
 
-export async function kirimJawaban({ santriId, pelajaranId, mufrodatId, jawabanMufrodatId }) {
+/**
+ * Panggil Edge Function dan naikkan pesan error yang bisa dibaca manusia.
+ * Supabase menyembunyikan badan respons non-2xx di error.context, jadi
+ * tanpa pembongkaran ini pengguna selalu melihat "Edge Function returned a
+ * non-2xx status code" alih-alih alasan sebenarnya.
+ */
+async function panggil(nama, body) {
   const client = getSupabaseClient();
-  const { data, error } = await client.functions.invoke('submit-jawaban', {
-    body: {
-      santri_id: santriId,
-      pelajaran_id: pelajaranId,
-      mufrodat_id: mufrodatId,
-      jawaban_mufrodat_id: jawabanMufrodatId,
-    },
-  });
+  const { data, error } = await client.functions.invoke(nama, { body });
 
   if (error || !data?.ok) {
     let pesan = data?.error;
-    if (!pesan && error?.context) {
-      try {
-        const body = await error.context.clone().json();
-        pesan = body?.error;
-      } catch (_) {
-        /* body bukan JSON — pakai fallback di bawah */
+    let status = null;
+    if (error?.context) {
+      status = error.context.status ?? null;
+      if (!pesan) {
+        try {
+          const isi = await error.context.clone().json();
+          pesan = isi?.error;
+        } catch (_) {
+          /* body bukan JSON — pakai fallback di bawah */
+        }
       }
     }
-    throw new Error(pesan || error?.message || 'Gagal mengirim jawaban.');
+    const e = new Error(pesan || error?.message || 'Gagal menghubungi server.');
+    e.status = status;
+    throw e;
   }
   return data;
+}
+
+/**
+ * Minta satu soal baru dari server.
+ * @returns {Promise<{token:string, arab:string, latin:string,
+ *                    opsi:Array<{kunci:string, arti:string}>,
+ *                    kedaluwarsaDetik:number, totalMufrodat:number,
+ *                    sudahDikuasai:number}>}
+ */
+export async function ambilSoal({ santriId, pelajaranId }) {
+  return panggil('kuis-soal', { santri_id: santriId, pelajaran_id: pelajaranId });
+}
+
+/**
+ * Kirim jawaban untuk satu soal yang diterbitkan server.
+ * Perhatikan yang TIDAK ada di sini: santri_id, pelajaran_id, mufrodat_id.
+ * Semuanya dibaca server dari baris soalnya sendiri — permintaan ini tidak
+ * membawa wewenang apa pun.
+ */
+export async function kirimJawaban({ soalToken, pilihan }) {
+  return panggil('submit-jawaban', { soal_token: soalToken, pilihan });
 }
 
 /**

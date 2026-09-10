@@ -23,6 +23,7 @@ import {
 import { playTone, showToast } from '../core/feedback.js';
 import { terapkanIdentitasAsli } from './role.js';
 import { escapeHtml } from '../core/html.js';
+import { BOLEH_MODE_PENGEMBANGAN } from '../config.js';
 
 const JENJANG_KE_PERAN = { sd: 'santri-sd', smp: 'santri-smp', sma: 'santri-sma' };
 const NAMA_JENJANG = { sd: 'SD', smp: 'SMP', sma: 'SMA' };
@@ -106,9 +107,19 @@ async function ajukanOtp() {
     const target = $('authOtpTarget');
     if (target) target.textContent = nomor;
 
+    // AUDIT 10 Sep 2026 — GERBANG KETIGA untuk kode OTP, di sisi klien.
+    //
+    // Server produksi sudah tidak mungkin mengirim kodeDev (lihat
+    // supabase/functions/_shared/env.ts dan wa-gateway.ts). Syarat
+    // BOLEH_MODE_PENGEMBANGAN di sini bukan pengaman utama, melainkan
+    // jaring terakhir: build produksi TIDAK PERNAH menampilkan atau
+    // mengisikan kode dari respons, apa pun yang dikirim server. Kalau
+    // suatu hari ada backend yang keliru/dipalsukan mengembalikan kodeDev,
+    // aplikasi produksi tetap diam.
     const hint = $('authDevHint');
     if (hint) {
-      if (data.modePengembangan) {
+      const tampilkanKode = BOLEH_MODE_PENGEMBANGAN && data.modePengembangan && typeof data.kodeDev === 'string';
+      if (tampilkanKode) {
         hint.style.display = 'block';
         hint.textContent = `Mode pengembangan — kode OTP: ${data.kodeDev}`;
         const otpInput = $('authOtpInput');

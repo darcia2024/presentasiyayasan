@@ -24,10 +24,10 @@
 // anak kedua untuk wali yang sudah ada tidak membuat baris wali duplikat.
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { corsHeaders, handlePreflight, jsonResponse } from '../_shared/cors.ts';
-import { verifikasiSessionJwt } from '../_shared/session-jwt.ts';
+import { gerbangCors, balasJson } from '../_shared/cors.ts';
+import { bacaSesiDariHeader } from '../_shared/sesi.ts';
 import { normalizeNomorWa } from '../_shared/phone.ts';
-import { periksaStaffAktif } from '../_shared/akun-aktif.ts';
+import { periksaStaffAktif, KOLOM_STAFF } from '../_shared/akun-aktif.ts';
 
 const supabase = createClient(
   Deno.env.get('SUPABASE_URL')!,
@@ -46,30 +46,26 @@ interface SantriInput {
 }
 
 Deno.serve(async (req) => {
-  const preflight = handlePreflight(req);
-  if (preflight) return preflight;
+  // AUDIT 10 Sep 2026 (S6): CORS ber-allowlist. gerbangCors() menangani
+  // preflight OPTIONS sekaligus menolak origin yang tidak terdaftar
+  // sebelum satu baris logika pun berjalan.
+  const cors = gerbangCors(req);
+  if (cors.respons) return cors.respons;
+  const hCors = cors.headers;
 
   try {
-    const authHeader = req.headers.get('Authorization') || '';
-    const token = authHeader.replace(/^Bearer\s+/i, '');
-    if (!token) {
-      return jsonResponse({ ok: false, error: 'Sesi tidak ditemukan. Silakan masuk kembali.' }, 401);
-    }
-
-    let sesi;
-    try {
-      sesi = await verifikasiSessionJwt(token);
-    } catch {
-      return jsonResponse({ ok: false, error: 'Sesi tidak valid atau sudah kedaluwarsa.' }, 401);
-    }
+    const hasilSesi = await bacaSesiDariHeader(req, hCors);
+    if (!hasilSesi.ok) return hasilSesi.respons;
+    const { sesi } = hasilSesi;
 
     // AUDIT 5 Sep 2026: dulu hanya klaim JWT yang dipercaya di sini, jadi
     // pengurus yang sudah dinonaktifkan/dihapus/diturunkan jadi pengajar
     // tetap bisa mendaftarkan santri baru sampai JWT-nya kedaluwarsa
     // (7 hari). Sekarang peran dibaca ulang dari basis data.
-    const berhak = await periksaStaffAktif(supabase, sesi, true);
+    const { data: barisStaff } = await supabase.from('staff').select(KOLOM_STAFF).eq('id', sesi.akunId).maybeSingle();
+    const berhak = periksaStaffAktif(barisStaff, sesi, true);
     if (!berhak.boleh) {
-      return jsonResponse({ ok: false, error: berhak.alasan! }, 403);
+      return balasJson(hCors, { ok: false, error: berhak.alasan! }, 403);
     }
 
     const body = await req.json().catch(() => null);
@@ -79,24 +75,24 @@ Deno.serve(async (req) => {
     const daftarSantriInput: SantriInput[] = Array.isArray(body?.santri) ? body.santri : [];
 
     if (typeof nomorMentah !== 'string' || !nomorMentah.trim()) {
-      return jsonResponse({ ok: false, error: 'Nomor WhatsApp wali wajib diisi.' }, 400);
+      return balasJson(hCors, { ok: false, error: 'Nomor WhatsApp wali wajib diisi.' }, 400);
     }
     const nomorWa = normalizeNomorWa(nomorMentah);
     if (!nomorWa) {
-      return jsonResponse({ ok: false, error: 'Format nomor WhatsApp tidak dikenali. Coba tulis seperti 0812xxxxxxx.' }, 400);
+      return balasJson(hCors, { ok: false, error: 'Format nomor WhatsApp tidak dikenali. Coba tulis seperti 0812xxxxxxx.' }, 400);
     }
     if (!namaWali) {
-      return jsonResponse({ ok: false, error: 'Nama wali wajib diisi.' }, 400);
+      return balasJson(hCors, { ok: false, error: 'Nama wali wajib diisi.' }, 400);
     }
     if (!daftarSantriInput.length) {
-      return jsonResponse({ ok: false, error: 'Minimal satu santri harus didaftarkan.' }, 400);
+      return balasJson(hCors, { ok: false, error: 'Minimal satu santri harus didaftarkan.' }, 400);
     }
     for (const s of daftarSantriInput) {
       if (!s?.nama?.trim()) {
-        return jsonResponse({ ok: false, error: 'Nama santri wajib diisi untuk setiap anak.' }, 400);
+        return balasJson(hCors, { ok: false, error: 'Nama santri wajib diisi untuk setiap anak.' }, 400);
       }
       if (!JENJANG_VALID.includes(s.jenjang)) {
-        return jsonResponse({ ok: false, error: `Jenjang santri "${s.nama}" tidak valid.` }, 400);
+        return balasJson(hCors, { ok: false, error: `Jenjang santri "${s.nama}" tidak valid.` }, 400);
       }
     }
 
@@ -110,7 +106,7 @@ Deno.serve(async (req) => {
 
     if (errCariWali) {
       console.error('[daftarkan-wali-santri] gagal mencari wali:', errCariWali.message);
-      return jsonResponse({ ok: false, error: 'Gagal memeriksa data wali. Coba lagi.' }, 500);
+      return balasJson(hCors, { ok: false, error: 'Gagal memeriksa data wali. Coba lagi.' }, 500);
     }
 
     let waliId: string;
@@ -120,7 +116,7 @@ Deno.serve(async (req) => {
       waliId = waliAda.id;
     } else {
       if (!persetujuanData) {
-        return jsonResponse(
+        return balasJson(hCors, 
           { ok: false, error: 'Persetujuan wali atas Kebijakan Privasi wajib dicentang untuk mendaftarkan wali baru.' },
           400,
         );
@@ -132,7 +128,7 @@ Deno.serve(async (req) => {
         .single();
       if (errBuatWali || !waliBaruRow) {
         console.error('[daftarkan-wali-santri] gagal membuat wali:', errBuatWali?.message);
-        return jsonResponse({ ok: false, error: 'Gagal mendaftarkan wali. Coba lagi.' }, 500);
+        return balasJson(hCors, { ok: false, error: 'Gagal mendaftarkan wali. Coba lagi.' }, 500);
       }
       waliId = waliBaruRow.id;
       waliBaru = true;
@@ -168,7 +164,7 @@ Deno.serve(async (req) => {
 
       if (errSantri || !santriBaru) {
         console.error('[daftarkan-wali-santri] gagal mendaftarkan santri:', s.nama, errSantri?.message);
-        return jsonResponse({
+        return balasJson(hCors, {
           ok: false,
           error:
             errSantri?.code === '23505'
@@ -188,10 +184,10 @@ Deno.serve(async (req) => {
       });
     }
 
-    return jsonResponse({ ok: true, waliId, waliBaru, santri: santriDitulis });
+    return balasJson(hCors, { ok: true, waliId, waliBaru, santri: santriDitulis });
   } catch (err) {
     console.error('[daftarkan-wali-santri] gagal:', err);
-    return jsonResponse({ ok: false, error: 'Terjadi kesalahan di server. Coba lagi.' }, 500);
+    return balasJson(hCors, { ok: false, error: 'Terjadi kesalahan di server. Coba lagi.' }, 500);
   }
 });
 

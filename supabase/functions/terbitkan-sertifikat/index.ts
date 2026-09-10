@@ -20,9 +20,9 @@
 // benar sebelum berkasnya sendiri ada.
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { corsHeaders, handlePreflight, jsonResponse } from '../_shared/cors.ts';
-import { verifikasiSessionJwt } from '../_shared/session-jwt.ts';
-import { periksaStaffAktif } from '../_shared/akun-aktif.ts';
+import { gerbangCors, balasJson } from '../_shared/cors.ts';
+import { bacaSesiDariHeader } from '../_shared/sesi.ts';
+import { periksaStaffAktif, KOLOM_STAFF } from '../_shared/akun-aktif.ts';
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const supabase = createClient(SUPABASE_URL, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
@@ -30,29 +30,25 @@ const supabase = createClient(SUPABASE_URL, Deno.env.get('SUPABASE_SERVICE_ROLE_
 const MAKS_PERCOBAAN_NOMOR_SERI = 5;
 
 Deno.serve(async (req) => {
-  const preflight = handlePreflight(req);
-  if (preflight) return preflight;
+  // AUDIT 10 Sep 2026 (S6): CORS ber-allowlist. gerbangCors() menangani
+  // preflight OPTIONS sekaligus menolak origin yang tidak terdaftar
+  // sebelum satu baris logika pun berjalan.
+  const cors = gerbangCors(req);
+  if (cors.respons) return cors.respons;
+  const hCors = cors.headers;
 
   try {
-    const authHeader = req.headers.get('Authorization') || '';
-    const token = authHeader.replace(/^Bearer\s+/i, '');
-    if (!token) {
-      return jsonResponse({ ok: false, error: 'Sesi tidak ditemukan. Silakan masuk kembali.' }, 401);
-    }
-
-    let sesi;
-    try {
-      sesi = await verifikasiSessionJwt(token);
-    } catch {
-      return jsonResponse({ ok: false, error: 'Sesi tidak valid atau sudah kedaluwarsa.' }, 401);
-    }
+    const hasilSesi = await bacaSesiDariHeader(req, hCors);
+    if (!hasilSesi.ok) return hasilSesi.respons;
+    const { sesi } = hasilSesi;
 
     // AUDIT 5 Sep 2026: peran dibaca ulang dari basis data, bukan dari
     // klaim JWT — pengurus yang sudah dinonaktifkan tidak boleh lagi
     // menerbitkan sertifikat atas nama yayasan.
-    const berhak = await periksaStaffAktif(supabase, sesi, true);
+    const { data: barisStaff } = await supabase.from('staff').select(KOLOM_STAFF).eq('id', sesi.akunId).maybeSingle();
+    const berhak = periksaStaffAktif(barisStaff, sesi, true);
     if (!berhak.boleh) {
-      return jsonResponse({ ok: false, error: berhak.alasan! }, 403);
+      return balasJson(hCors, { ok: false, error: berhak.alasan! }, 403);
     }
 
     const body = await req.json().catch(() => null);
@@ -64,7 +60,7 @@ Deno.serve(async (req) => {
     // yang tidak bisa dibuka, tanpa cara memperbaikinya dari antarmuka.
     if (body?.action === 'catat-pdf') {
       const idSert = body?.sertifikat_id;
-      if (!idSert) return jsonResponse({ ok: false, error: 'sertifikat_id wajib diisi.' }, 400);
+      if (!idSert) return balasJson(hCors, { ok: false, error: 'sertifikat_id wajib diisi.' }, 400);
       const pdfUrlFinal = `${SUPABASE_URL}/storage/v1/object/public/sertifikat/${idSert}.pdf`;
       const { error: errCatat } = await supabase
         .from('sertifikat')
@@ -72,15 +68,15 @@ Deno.serve(async (req) => {
         .eq('id', idSert);
       if (errCatat) {
         console.error('[terbitkan-sertifikat] gagal mencatat pdf_url:', errCatat.message);
-        return jsonResponse({ ok: false, error: 'Gagal mencatat berkas PDF sertifikat.' }, 500);
+        return balasJson(hCors, { ok: false, error: 'Gagal mencatat berkas PDF sertifikat.' }, 500);
       }
-      return jsonResponse({ ok: true, pdfUrl: pdfUrlFinal });
+      return balasJson(hCors, { ok: true, pdfUrl: pdfUrlFinal });
     }
 
     const santriId = body?.santri_id;
     const judul = typeof body?.judul === 'string' ? body.judul.trim() : '';
     if (!santriId || !judul) {
-      return jsonResponse({ ok: false, error: 'santri_id dan judul wajib diisi.' }, 400);
+      return balasJson(hCors, { ok: false, error: 'santri_id dan judul wajib diisi.' }, 400);
     }
 
     const { data: santri, error: errSantri } = await supabase
@@ -89,7 +85,7 @@ Deno.serve(async (req) => {
       .eq('id', santriId)
       .maybeSingle();
     if (errSantri || !santri) {
-      return jsonResponse({ ok: false, error: 'Santri tidak ditemukan.' }, 404);
+      return balasJson(hCors, { ok: false, error: 'Santri tidak ditemukan.' }, 404);
     }
 
     let sertifikatId: string | null = null;
@@ -126,12 +122,12 @@ Deno.serve(async (req) => {
         continue;
       }
       console.error('[terbitkan-sertifikat] gagal menulis baris:', error?.message);
-      return jsonResponse({ ok: false, error: 'Gagal menerbitkan sertifikat. Coba lagi.' }, 500);
+      return balasJson(hCors, { ok: false, error: 'Gagal menerbitkan sertifikat. Coba lagi.' }, 500);
     }
 
     if (!sertifikatId) {
       console.error('[terbitkan-sertifikat] gagal setelah beberapa percobaan nomor seri:', errTerakhir);
-      return jsonResponse({ ok: false, error: 'Gagal menerbitkan sertifikat setelah beberapa percobaan. Coba lagi.' }, 500);
+      return balasJson(hCors, { ok: false, error: 'Gagal menerbitkan sertifikat setelah beberapa percobaan. Coba lagi.' }, 500);
     }
 
     // pdf_url SENGAJA dibiarkan NULL di sini — baru diisi lewat mode
@@ -157,7 +153,7 @@ Deno.serve(async (req) => {
       detail: { santri_id: santri.id, santri_nama: santri.nama, nomor_seri: nomorSeriTerpakai, judul },
     });
 
-    return jsonResponse({
+    return balasJson(hCors, {
       ok: true,
       sertifikatId,
       nomorSeri: nomorSeriTerpakai,
@@ -170,7 +166,7 @@ Deno.serve(async (req) => {
     });
   } catch (err) {
     console.error('[terbitkan-sertifikat] gagal:', err);
-    return jsonResponse({ ok: false, error: 'Terjadi kesalahan di server. Coba lagi.' }, 500);
+    return balasJson(hCors, { ok: false, error: 'Terjadi kesalahan di server. Coba lagi.' }, 500);
   }
 });
 

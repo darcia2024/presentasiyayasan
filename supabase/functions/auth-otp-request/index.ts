@@ -1,18 +1,35 @@
 // PERISA AZHARIYAH — Edge Function: minta kode OTP.
 //
 // POST { nomor_wa: string }
-// -> { ok: true, modePengembangan?: true, kodeDev?: string }
+// -> { ok: true }
+// -> { ok: true, modePengembangan: true, kodeDev: string }
+//        HANYA kalau APP_ENV=development/test. Di production/staging cabang
+//        ini mustahil tercapai — lihat AUDIT K1 di bawah.
 // -> { ok: false, error: string } (nomor tidak terdaftar / format salah / dst.)
+// -> HTTP 503 kalau gateway WhatsApp belum dikonfigurasi di lingkungan nyata.
+//
+// AUDIT 10 Sep 2026 (K1) — KEBOCORAN KODE OTP.
+// Dulu, WA_GATEWAY_URL yang kosong berarti "mode pengembangan" di
+// lingkungan MANA PUN, dan mode itu mengembalikan kode OTP asli di badan
+// respons. Artinya siapa pun yang tahu nomor WA seorang wali bisa meminta
+// kode, membacanya dari respons, lalu masuk sebagai wali itu.
+// Sekarang ada tiga gerbang berlapis dan saling bebas:
+//   1. gatewaySiap()          — permintaan ditolak 503 sebelum menyentuh DB.
+//   2. wa-gateway.ts          — melempar GatewayBelumSiapError di produksi.
+//   3. bolehModePengembangan()— syarat kedua sebelum kodeDev ikut respons.
+// Ditambah gerbang keempat di sisi klien (js/ui/auth.js) yang menolak
+// menampilkan/mengisikan kode kalau build-nya build produksi.
 //
 // SENGAJA menolak nomor yang belum terdaftar, bukan mendaftarkan otomatis.
 // "Hak akses dibuka langsung oleh Umi Elly / yayasan" (proposal PERISA) —
 // lihat docs/fase-1-arsitektur.md bagian 2.
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { corsHeaders, handlePreflight, jsonResponse } from '../_shared/cors.ts';
+import { gerbangCors, balasJson } from '../_shared/cors.ts';
 import { normalizeNomorWa } from '../_shared/phone.ts';
 import { generateOtpCode, hashOtpCode, OTP_TTL_MS } from '../_shared/otp.ts';
-import { kirimOtpWhatsApp } from '../_shared/wa-gateway.ts';
+import { kirimOtpWhatsApp, gatewaySiap, GatewayBelumSiapError } from '../_shared/wa-gateway.ts';
+import { bolehModePengembangan, appEnv } from '../_shared/env.ts';
 
 const supabase = createClient(
   Deno.env.get('SUPABASE_URL')!,
@@ -27,19 +44,40 @@ const MIN_JEDA_PERMINTAAN_MS = 60 * 1000;
 const MAKS_PERMINTAAN_PER_HARI = 10;
 
 Deno.serve(async (req) => {
-  const preflight = handlePreflight(req);
-  if (preflight) return preflight;
+  // AUDIT 10 Sep 2026 (S6): CORS ber-allowlist. gerbangCors() menangani
+  // preflight OPTIONS sekaligus menolak origin yang tidak terdaftar
+  // sebelum satu baris logika pun berjalan.
+  const cors = gerbangCors(req);
+  if (cors.respons) return cors.respons;
+  const hCors = cors.headers;
 
   try {
+    // AUDIT 10 Sep 2026 — GERBANG PERTAMA, sebelum menyentuh basis data.
+    // Kalau pesan tidak mungkin terkirim, permintaan ditolak di sini:
+    // tidak ada baris otp_codes sampah, tidak ada jatah laju yang terbakar
+    // oleh kegagalan yang bukan salah pengguna, dan yang terpenting tidak
+    // ada jalan menuju cabang mana pun yang mengembalikan kode.
+    if (!gatewaySiap()) {
+      console.error(`[auth-otp-request] DITOLAK: gateway WA belum dikonfigurasi di APP_ENV=${appEnv()}`);
+      return balasJson(hCors, 
+        {
+          ok: false,
+          error:
+            'Layanan pengiriman kode WhatsApp belum aktif. Hubungi pengurus yayasan — ini masalah konfigurasi di sisi kami, bukan kesalahan Anda.',
+        },
+        503,
+      );
+    }
+
     const body = await req.json().catch(() => null);
     const nomorMentah = body?.nomor_wa;
     if (typeof nomorMentah !== 'string' || !nomorMentah.trim()) {
-      return jsonResponse({ ok: false, error: 'Nomor WhatsApp wajib diisi.' }, 400);
+      return balasJson(hCors, { ok: false, error: 'Nomor WhatsApp wajib diisi.' }, 400);
     }
 
     const nomorWa = normalizeNomorWa(nomorMentah);
     if (!nomorWa) {
-      return jsonResponse(
+      return balasJson(hCors, 
         { ok: false, error: 'Format nomor WhatsApp tidak dikenali. Coba tulis seperti 0812xxxxxxx.' },
         400,
       );
@@ -57,7 +95,7 @@ Deno.serve(async (req) => {
     else if (staffRes.data && staffRes.data.aktif) jenisAkun = 'staff';
 
     if (!jenisAkun) {
-      return jsonResponse(
+      return balasJson(hCors, 
         {
           ok: false,
           error:
@@ -78,7 +116,7 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (kodeBaruBaruIni) {
-      return jsonResponse(
+      return balasJson(hCors, 
         { ok: false, error: 'Kode baru saja dikirim. Tunggu sebentar sebelum meminta lagi.' },
         429,
       );
@@ -99,7 +137,7 @@ Deno.serve(async (req) => {
 
     if ((permintaanHariIni || 0) >= MAKS_PERMINTAAN_PER_HARI) {
       console.warn(`[auth-otp-request] batas harian tercapai untuk ${nomorWa} (${permintaanHariIni})`);
-      return jsonResponse(
+      return balasJson(hCors, 
         { ok: false, error: 'Terlalu banyak permintaan kode hari ini. Coba lagi besok atau hubungi pengurus yayasan.' },
         429,
       );
@@ -144,19 +182,34 @@ Deno.serve(async (req) => {
       hasil = await kirimOtpWhatsApp(nomorWa, kode);
     } catch (errKirim) {
       await supabase.from('otp_codes').delete().eq('id', barisOtp.id);
+      if (errKirim instanceof GatewayBelumSiapError) {
+        // Lomba yang sangat jarang: variabel dicabut di antara gerbang awal
+        // dan pengiriman. Tetap ditangani supaya tidak ada jalan lolos.
+        console.error('[auth-otp-request] DITOLAK di tengah alur:', errKirim.message);
+        return balasJson(hCors, 
+          { ok: false, error: 'Layanan pengiriman kode WhatsApp belum aktif. Hubungi pengurus yayasan.' },
+          503,
+        );
+      }
       console.error('[auth-otp-request] gateway WA menolak:', (errKirim as Error).message);
-      return jsonResponse(
+      return balasJson(hCors, 
         { ok: false, error: 'Gagal mengirim kode ke WhatsApp Anda. Coba lagi sebentar lagi atau hubungi pengurus yayasan.' },
         502,
       );
     }
 
-    return jsonResponse({
+    // GERBANG KEDUA untuk kode OTP. hasil.modePengembangan sendiri sudah
+    // mustahil bernilai true di luar development/test (wa-gateway.ts
+    // melempar lebih dulu), tapi syarat kedua ditulis eksplisit di sini
+    // supaya satu kekeliruan di berkas lain tidak cukup untuk membocorkan
+    // kode. Dua gerbang independen, bukan satu.
+    const bolehBocorkanKode = hasil.modePengembangan && bolehModePengembangan();
+    return balasJson(hCors, {
       ok: true,
-      ...(hasil.modePengembangan ? { modePengembangan: true, kodeDev: kode } : {}),
+      ...(bolehBocorkanKode ? { modePengembangan: true, kodeDev: kode } : {}),
     });
   } catch (err) {
     console.error('[auth-otp-request] gagal:', err);
-    return jsonResponse({ ok: false, error: 'Terjadi kesalahan di server. Coba lagi.' }, 500);
+    return balasJson(hCors, { ok: false, error: 'Terjadi kesalahan di server. Coba lagi.' }, 500);
   }
 });

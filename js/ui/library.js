@@ -49,6 +49,13 @@ export function openDocReader(docId) {
   setText('readerSheetSub', `${data.sub} • Penyusun: ${data.author}`);
 
   const body = document.getElementById('readerSheetBody');
+  // PENGECUALIAN YANG DISENGAJA (ditinjau ulang audit S4, 10 Sep 2026):
+  // data.bodyHtml berasal dari js/data/documents.js — HTML yang DITULIS
+  // PENGEMBANG di dalam repo, bukan data yang bisa disunting staff lewat
+  // Studio/Panel. Memang harus dirender sebagai HTML (isinya dokumen
+  // berformat). Kalau suatu saat isi dokumen dipindah ke basis data,
+  // baris ini WAJIB berubah — itu titik masuk XSS yang paling langsung
+  // di seluruh aplikasi.
   if (body) body.innerHTML = data.bodyHtml;
 
   if (modal) modal.classList.add('open');

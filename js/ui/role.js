@@ -18,6 +18,7 @@ import { upgradePapanPeringkat } from './papan-peringkat.js';
 import { upgradeCertModalKeSertifikatAsli } from './sertifikat-santri.js';
 import { upgradeRiwayatAsisten } from './assistant.js';
 import { bacaSesi } from '../core/supabase-client.js';
+import { ikon, kosongkan } from '../core/html.js';
 
 /** Tampilan lain yang harus disembunyikan agar tidak bertumpuk saat berganti peran. */
 const OTHER_VIEWS = ['viewBerandaUtama', 'viewModulPdf', 'viewAiAssistant'];
@@ -80,7 +81,11 @@ async function upgradeKeKontenAsli(roleName) {
     if (giliranSaya !== giliranSilabusTerakhir) return;
     if (mufrodat && mufrodat.length) {
       renderMufrodatCards(mufrodat);
-      renderKuis(mufrodat, hasil.pelajaranAktifId);
+      // AUDIT K2: soal kuis sekarang diterbitkan server, jadi daftar
+      // mufrodat tidak lagi diteruskan ke sini — kuis.js memintanya
+      // sendiri lewat Edge Function kuis-soal. Daftar di atas tetap
+      // dipakai untuk kartu mufrodat (bahan belajar, bukan soal).
+      renderKuis(hasil.pelajaranAktifId);
     }
   } else {
     sembunyikanVideoPelajaran();
@@ -265,7 +270,13 @@ export function setRole(roleName) {
   // perbaikan identitas, jadi selalu menimpanya balik.
   const watermark = document.querySelector('.ref-video-watermark');
   if (watermark && !bacaSesi()) {
-    watermark.innerHTML = `<i class="ph ph-shield-check"></i> ${data.watermark}`;
+    // Dibangun sebagai simpul DOM, sejalan dengan js/ui/video-player.js —
+    // data.watermark memang dari js/data/roles.js (ditulis pengembang),
+    // tapi polanya tidak dibiarkan berbeda supaya tidak ada yang menyalin
+    // bentuk lama ke tempat yang datanya dari basis data.
+    kosongkan(watermark);
+    watermark.appendChild(ikon('ph-shield-check'));
+    watermark.appendChild(document.createTextNode(` ${data.watermark}`));
   }
 
   renderSyllabus(data.syllabus);

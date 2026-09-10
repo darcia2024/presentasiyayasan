@@ -1,0 +1,13 @@
+{
+  "_catatan": [
+    "Berkas ini ADA HANYA UNTUK NODE, dan hanya saat menjalankan uji unit.",
+    "Seluruh isi js/ adalah modul ES yang dimuat browser lewat <script type=module>;",
+    "browser tidak pernah membaca package.json. Tapi package.json di AKAR repo",
+    "menyatakan \"type\": \"commonjs\" (dibutuhkan tools/ dan server.js), sehingga",
+    "Node memperlakukan setiap .js di sini sebagai CommonJS dan menolak sintaks",
+    "export/import saat uji mengimpornya.",
+    "Penanda ini membetulkan itu untuk Node tanpa mengubah apa pun bagi browser.",
+    "Sengaja TIDAK ikut terbit — lihat KECUALI_ISI di tools/build-dist.js."
+  ],
+  "type": "module"
+}

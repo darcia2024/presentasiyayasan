@@ -11,13 +11,10 @@
 
 import { playTone, showToast } from '../core/feedback.js';
 import { tanyaAsisten, ambilRiwayatPertanyaan, jumlahPertanyaanHariIni, santriAktifId } from '../core/asisten-client.js';
-
-/** Escape teks pengguna/model sebelum ditempel ke innerHTML. */
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
+// AUDIT 10 Sep 2026 (S4/D23): berkas ini dulu punya salinan escapeHtml()
+// sendiri — salinan yang TIDAK meloloskan kutip, sama seperti versi lama
+// di core. Sekarang satu sumber untuk seluruh aplikasi.
+import { escapeHtml } from '../core/html.js';
 
 /** Ubah **tebal** dan baris baru dari jawaban model jadi HTML aman (bukan markdown lengkap — cukup untuk gaya jawaban singkat). */
 function formatJawaban(teks) {

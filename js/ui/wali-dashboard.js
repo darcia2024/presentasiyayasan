@@ -17,7 +17,7 @@
 import { bacaSesi, pilihProfilSantri } from '../core/supabase-client.js';
 import { ambilRingkasanAnak } from '../core/wali-client.js';
 import { playTone } from '../core/feedback.js';
-import { escapeHtml } from '../core/html.js';
+import { ikon } from '../core/html.js';
 
 const ID_KONTAINER = 'waliDashboardContainer';
 const JENJANG_KE_PERAN = { sd: 'santri-sd', smp: 'santri-smp', sma: 'santri-sma' };
@@ -146,7 +146,12 @@ function isiKartu(kartu, santri, ringkasan) {
     const chipWrap = el('div', 'wali-anak-lencana');
     ringkasan.lencana.forEach((l) => {
       const chip = el('span', 'wali-lencana-chip');
-      chip.innerHTML = `<i class="ph ${escapeHtml(l.ikon)}"></i> ${escapeHtml(l.nama)}`;
+      // AUDIT 10 Sep 2026 (S4): dulu `class="ph ${escapeHtml(l.ikon)}"` —
+      // posisi ATRIBUT, sedangkan escapeHtml() versi lama tidak meloloskan
+      // kutip. Sekarang nama ikon divalidasi terhadap pola Phosphor di
+      // ikon(), dan teksnya lewat textContent — tidak ada HTML dirangkai.
+      chip.appendChild(ikon(l.ikon));
+      chip.appendChild(document.createTextNode(` ${l.nama ?? ''}`));
       chipWrap.appendChild(chip);
     });
     kartu.appendChild(chipWrap);
@@ -163,7 +168,11 @@ function isiKartu(kartu, santri, ringkasan) {
 
 function pesanKosong(teksIsi) {
   const wrap = el('div', 'wali-dashboard-kosong');
-  wrap.innerHTML = `<i class="ph ph-info" style="font-size: 22px; color: var(--text-muted);"></i><div>${teksIsi}</div>`;
+  const i = ikon('ph-info');
+  i.style.cssText = 'font-size: 22px; color: var(--text-muted);';
+  const isi = document.createElement('div');
+  isi.textContent = teksIsi ?? '';
+  wrap.append(i, isi);
   return wrap;
 }
 

@@ -5,7 +5,7 @@
 // -> { ok: false, error: string }
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { corsHeaders, handlePreflight, jsonResponse } from '../_shared/cors.ts';
+import { gerbangCors, balasJson } from '../_shared/cors.ts';
 import { normalizeNomorWa } from '../_shared/phone.ts';
 import { hashOtpCode, OTP_MAX_ATTEMPTS } from '../_shared/otp.ts';
 import { terbitkanSessionJwt } from '../_shared/session-jwt.ts';
@@ -16,8 +16,12 @@ const supabase = createClient(
 );
 
 Deno.serve(async (req) => {
-  const preflight = handlePreflight(req);
-  if (preflight) return preflight;
+  // AUDIT 10 Sep 2026 (S6): CORS ber-allowlist. gerbangCors() menangani
+  // preflight OPTIONS sekaligus menolak origin yang tidak terdaftar
+  // sebelum satu baris logika pun berjalan.
+  const cors = gerbangCors(req);
+  if (cors.respons) return cors.respons;
+  const hCors = cors.headers;
 
   try {
     const body = await req.json().catch(() => null);
@@ -25,12 +29,12 @@ Deno.serve(async (req) => {
     const kodeInput = body?.kode;
 
     if (typeof nomorMentah !== 'string' || typeof kodeInput !== 'string' || !kodeInput.trim()) {
-      return jsonResponse({ ok: false, error: 'Nomor dan kode OTP wajib diisi.' }, 400);
+      return balasJson(hCors, { ok: false, error: 'Nomor dan kode OTP wajib diisi.' }, 400);
     }
 
     const nomorWa = normalizeNomorWa(nomorMentah);
     if (!nomorWa) {
-      return jsonResponse({ ok: false, error: 'Format nomor WhatsApp tidak dikenali.' }, 400);
+      return balasJson(hCors, { ok: false, error: 'Format nomor WhatsApp tidak dikenali.' }, 400);
     }
 
     // Ambil kode TERBARU untuk nomor ini yang belum terpakai & belum
@@ -46,20 +50,20 @@ Deno.serve(async (req) => {
     if (fetchError) throw fetchError;
 
     if (!otpRow || otpRow.terpakai) {
-      return jsonResponse(
+      return balasJson(hCors, 
         { ok: false, error: 'Kode tidak ditemukan atau sudah dipakai. Minta kode baru.' },
         400,
       );
     }
 
     if (new Date(otpRow.expires_at).getTime() < Date.now()) {
-      return jsonResponse({ ok: false, error: 'Kode sudah kedaluwarsa. Minta kode baru.' }, 400);
+      return balasJson(hCors, { ok: false, error: 'Kode sudah kedaluwarsa. Minta kode baru.' }, 400);
     }
 
     if (otpRow.percobaan >= OTP_MAX_ATTEMPTS) {
       // Bakar kodenya supaya tidak terus-terusan dicoba sampai kedaluwarsa alami.
       await supabase.from('otp_codes').update({ terpakai: true }).eq('id', otpRow.id);
-      return jsonResponse(
+      return balasJson(hCors, 
         { ok: false, error: 'Terlalu banyak percobaan salah. Minta kode baru.' },
         429,
       );
@@ -72,7 +76,7 @@ Deno.serve(async (req) => {
         .update({ percobaan: otpRow.percobaan + 1 })
         .eq('id', otpRow.id);
       const sisa = OTP_MAX_ATTEMPTS - (otpRow.percobaan + 1);
-      return jsonResponse(
+      return balasJson(hCors, 
         { ok: false, error: `Kode salah. Sisa percobaan: ${Math.max(sisa, 0)}.` },
         400,
       );
@@ -94,7 +98,7 @@ Deno.serve(async (req) => {
         .eq('nomor_wa', nomorWa)
         .single();
       if (error || !wali) {
-        return jsonResponse({ ok: false, error: 'Akun wali tidak ditemukan.' }, 404);
+        return balasJson(hCors, { ok: false, error: 'Akun wali tidak ditemukan.' }, 404);
       }
       akunId = wali.id;
       namaAkun = wali.nama;
@@ -114,7 +118,7 @@ Deno.serve(async (req) => {
         .eq('nomor_wa', nomorWa)
         .single();
       if (error || !staff || !staff.aktif) {
-        return jsonResponse({ ok: false, error: 'Akun staff tidak ditemukan atau nonaktif.' }, 404);
+        return balasJson(hCors, { ok: false, error: 'Akun staff tidak ditemukan atau nonaktif.' }, 404);
       }
       akunId = staff.id;
       namaAkun = staff.nama;
@@ -134,7 +138,7 @@ Deno.serve(async (req) => {
       detail: { nomor_wa: nomorWa },
     });
 
-    return jsonResponse({
+    return balasJson(hCors, {
       ok: true,
       access_token: token,
       expires_at: expiresAt,
@@ -143,6 +147,6 @@ Deno.serve(async (req) => {
     });
   } catch (err) {
     console.error('[auth-otp-verify] gagal:', err);
-    return jsonResponse({ ok: false, error: 'Terjadi kesalahan di server. Coba lagi.' }, 500);
+    return balasJson(hCors, { ok: false, error: 'Terjadi kesalahan di server. Coba lagi.' }, 500);
   }
 });

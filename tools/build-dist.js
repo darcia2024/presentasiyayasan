@@ -42,6 +42,7 @@ const FOLDER = ['js', 'icons', 'vendor'];
 /** Berkas di dalam folder di atas yang tetap tidak boleh terbit. */
 const KECUALI_ISI = new Set([
   path.join('vendor', 'phosphor', '_upstream.css'), // 4.600+ baris, hanya dipakai saat build
+  path.join('js', 'package.json'), // penanda "type": "module" untuk Node saat uji — browser tidak membacanya
 ]);
 
 /**
