@@ -1,0 +1,22 @@
+{
+  "_catatan": [
+    "Konfigurasi untuk Deno yang dijalankan LOKAL & di CI (deno check, deno test,",
+    "deno lint) atas kode Supabase Edge Function. Bukan berkas yang dibaca",
+    "Supabase saat men-deploy — setelan deploy ada di supabase/config.toml."
+  ],
+  "lint": {
+    "include": ["supabase/functions/"],
+    "rules": {
+      "exclude": ["no-import-prefix"]
+    }
+  },
+  "fmt": {
+    "include": ["supabase/functions/"],
+    "lineWidth": 120,
+    "singleQuote": true
+  },
+  "tasks": {
+    "check": "deno check supabase/functions/*/index.ts supabase/functions/_shared/*.ts",
+    "test": "deno test --allow-env supabase/functions/_tests/"
+  }
+}

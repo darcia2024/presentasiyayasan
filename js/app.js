@@ -32,7 +32,9 @@ import {
   openCertModal,
   openCertificate,
   closeCertModal,
-  bindOutsideClick
+  bindOutsideClick,
+  belumTersedia,
+  salinTautanMateri
 } from './ui/shell.js';
 import { initAuthGate, logout } from './ui/auth.js';
 
@@ -72,6 +74,10 @@ const PrototypeApp = {
 
   // Fase 1 — login
   logout,
+
+  // Fitur yang belum ada — dikatakan apa adanya, bukan diakui berhasil (M12)
+  belumTersedia,
+  salinTautanMateri,
 
   // Utilitas yang dipakai langsung dari markup
   playTone,

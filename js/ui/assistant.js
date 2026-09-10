@@ -126,9 +126,24 @@ async function muatRiwayat(santriId) {
   if (!list || !santriId) return;
 
   const riwayat = await ambilRiwayatPertanyaan(santriId, 8);
-  if (!riwayat.length) return; // biarkan peraga tampil apa adanya
 
   list.innerHTML = '';
+
+  // AUDIT 10 Sep 2026 (M12): dulu baris ini berbunyi
+  //   if (!riwayat.length) return; // biarkan peraga tampil apa adanya
+  // Akibatnya wali sungguhan yang BELUM pernah bertanya tetap melihat dua
+  // riwayat karangan ("Tashrif Lughowi", "Jumlah Ismiyyah") seolah anaknya
+  // pernah menanyakannya. Sekarang sesi sungguhan mendapat keadaan kosong
+  // yang jujur; peraga hanya bertahan kalau memang tidak ada sesi
+  // (santriId kosong, sudah ditangani di atas).
+  if (!riwayat.length) {
+    const kosong = document.createElement('div');
+    kosong.style.cssText = 'padding: 10px 12px; font-size: 12px; color: var(--text-muted);';
+    kosong.textContent = 'Belum ada pertanyaan.';
+    list.appendChild(kosong);
+    return;
+  }
+
   riwayat.forEach((r) => {
     const item = document.createElement('div');
     item.style.cssText =

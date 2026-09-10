@@ -91,7 +91,11 @@ export async function kirimPesanWhatsApp(
   return { terkirim: true, modePengembangan: false };
 }
 
-export async function kirimOtpWhatsApp(
+// Sengaja BUKAN async: fungsi ini cuma menyusun pesan lalu meneruskan
+// promise dari kirimPesanWhatsApp. `async` tanpa `await` membuat lapisan
+// promise tambahan tanpa guna — dan deno lint (require-await) benar
+// menandainya.
+export function kirimOtpWhatsApp(
   nomorTujuan: string,
   kode: string,
 ): Promise<KirimPesanResult> {

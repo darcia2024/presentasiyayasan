@@ -443,10 +443,18 @@ function renderFormSantri(body) {
         santri: [{ nama: fNamaSantri.input.value, jenjang: fJenjang.select.value, nisn: fNisn.input.value || undefined }],
       });
       playTone(620, 'sine', 0.12, 0.08);
+      // AUDIT M9: pendaftaran sekarang satu transaksi, dan santri yang
+      // SUDAH terdaftar untuk wali yang sama dilewati alih-alih dibuat
+      // ulang. Perlu dikatakan apa adanya — pengurus yang mengulang
+      // karena jaringan putus harus tahu bahwa anaknya tidak dobel,
+      // bukan mengira pendaftarannya gagal.
+      const anak = hasil.santri[0];
       showToast(
-        hasil.waliBaru
-          ? `${hasil.santri[0].nama} berhasil didaftarkan dengan wali baru.`
-          : `${hasil.santri[0].nama} berhasil ditambahkan ke akun wali yang sudah ada.`,
+        anak?.sudahAda
+          ? `${anak.nama} memang sudah terdaftar sebelumnya — tidak dibuat ulang.`
+          : hasil.waliBaru
+            ? `${anak.nama} berhasil didaftarkan dengan wali baru.`
+            : `${anak.nama} berhasil ditambahkan ke akun wali yang sudah ada.`,
       );
       STATE.subLayar = null;
       render();

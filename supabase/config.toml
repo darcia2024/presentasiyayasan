@@ -1,0 +1,53 @@
+# ============================================================================
+# PERISA AZHARIYAH — Konfigurasi Supabase CLI
+#
+# KENAPA BERKAS INI BARU ADA SEKARANG (audit 10 September 2026).
+# Sampai audit ini, tidak ada config.toml sama sekali. Artinya setelan
+# penting seperti "fungsi mana yang boleh dipanggil TANPA login" hanya
+# hidup sebagai bendera baris perintah yang diketik manual saat men-deploy
+# — tidak tercatat di mana pun, tidak bisa ditinjau, dan hilang begitu
+# orang yang mengetiknya lupa. Uji asap membuktikan auth-otp-request
+# memang bisa dipanggil tanpa Authorization, tapi tidak ada satu berkas
+# pun di repo yang menyatakan itu memang disengaja.
+#
+# Sekarang setelan itu ADA DI REPO: `supabase functions deploy` membacanya
+# sendiri, jadi hasil deploy sama siapa pun yang menjalankannya.
+#
+# project_id SENGAJA TIDAK ditulis di sini. Jalankan `supabase link` sekali
+# di mesin masing-masing (ref proyek tersimpan di supabase/.temp/, yang
+# sudah diabaikan git).
+# ============================================================================
+
+# ---------------------------------------------------------------- FUNGSI
+#
+# verify_jwt = true (BAKU, tidak perlu ditulis) berarti gerbang Supabase
+# menolak permintaan tanpa JWT yang sah SEBELUM kode kita berjalan.
+# Sesi PERISA ditandatangani dengan APP_JWT_SECRET — yaitu JWT Secret
+# proyek Supabase itu sendiri (lihat .env.example), jadi token sesi kita
+# lolos gerbang bawaan itu apa adanya.
+#
+# Tiga fungsi di bawah TIDAK BISA memakai gerbang itu, dan masing-masing
+# punya gerbangnya sendiri:
+
+# Dipanggil SEBELUM ada sesi — memang tidak mungkin membawa JWT.
+# Gerbangnya: nomor harus terdaftar, jeda 60 detik, batas 10/hari per
+# nomor, dan (sejak audit K1) gateway WhatsApp harus benar-benar siap.
+[functions.auth-otp-request]
+verify_jwt = false
+
+# Idem: inilah yang MENERBITKAN sesi, jadi belum ada yang bisa diverifikasi.
+# Gerbangnya: kode harus cocok, belum kedaluwarsa, belum terpakai, dan
+# maksimal 5 percobaan sebelum kodenya dihanguskan.
+[functions.auth-otp-verify]
+verify_jwt = false
+
+# Dipicu penjadwal (GitHub Actions), bukan peramban — tidak ada sesi
+# pengguna yang bisa dibawa. Gerbangnya: header X-Cron-Secret harus
+# cocok dengan env CRON_SECRET. Lihat .github/workflows/ringkasan-mingguan.yml.
+[functions.kirim-ringkasan-mingguan]
+verify_jwt = false
+
+# Sisanya (kuis-soal, submit-jawaban, tanya-asisten-ai, video-signed-url,
+# terbitkan-sertifikat, daftarkan-wali-santri) memakai verify_jwt baku
+# = true, LALU memverifikasi ulang sesinya sendiri lewat
+# _shared/sesi.ts untuk tahu SIAPA pemanggilnya — bukan cuma "sudah login".

@@ -49,5 +49,9 @@ export function switchSubTab(tabName) {
 export function claimGameXp() {
   playTone(523.25, 'sine', 0.12, 0.08);
   setTimeout(() => playTone(783.99, 'sine', 0.18, 0.08), 120);
-  showToast('Jawaban tepat. Pemahaman materi modul telah diverifikasi.');
+  // AUDIT 10 Sep 2026 (M12): dulu berbunyi "Pemahaman materi modul telah
+  // diverifikasi" — kalimat yang mengaku ada pencatatan resmi, padahal
+  // blok ini murni peraga dan tidak menulis apa pun. Kuis SUNGGUHAN ada di
+  // js/ui/kuis.js dan XP-nya dicatat server.
+  showToast('Jawaban tepat!');
 }

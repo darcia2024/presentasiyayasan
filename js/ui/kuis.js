@@ -73,10 +73,20 @@ async function muatSoal(kontainer) {
     soal = await ambilSoal({ santriId, pelajaranId: sesiKuis.pelajaranId });
   } catch (e) {
     sesiKuis.memuat = false;
-    // 409 = pelajaran belum punya cukup mufrodat. Itu bukan kegagalan yang
-    // perlu ditampilkan sebagai error merah ke anak — kuisnya memang belum
-    // bisa dibuat, jadi kembalikan false dan biarkan peraga lama tampil.
-    if (e.status === 409 || e.status === 404) return false;
+    // AUDIT 10 Sep 2026 (M12): dulu di sini `return false` dan peraga lama
+    // dibiarkan tampil. Untuk sesi SUNGGUHAN itu berarti seorang anak
+    // melihat soal karangan ("المَكْتَبَةُ") seolah itu pelajarannya,
+    // lengkap dengan tombol yang mengaku "pemahaman telah diverifikasi".
+    // Sekarang keadaan kosongnya dikatakan apa adanya.
+    //   404 = pelajaran/modulnya belum terbit
+    //   409 = mufrodatnya belum cukup untuk dijadikan soal
+    if (e.status === 409 || e.status === 404) {
+      tampilkanPesan(
+        kontainer,
+        'Kuis untuk pelajaran ini belum tersedia — materinya belum diterbitkan Umi Elly.',
+      );
+      return false;
+    }
     tampilkanPesan(kontainer, e.message || 'Gagal memuat soal. Coba muat ulang halaman.');
     return false;
   }

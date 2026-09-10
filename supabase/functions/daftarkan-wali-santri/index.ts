@@ -96,103 +96,87 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Cari wali yang sudah ada dulu — hindari duplikat kalau ini anak
-    // kedua/ketiga dari keluarga yang sama.
-    const { data: waliAda, error: errCariWali } = await supabase
-      .from('wali')
-      .select('id, nama')
-      .eq('nomor_wa', nomorWa)
-      .maybeSingle();
+    /* ================== SATU TRANSAKSI, BUKAN BEBERAPA (audit M9) ==========
+     * Sebelum ini wali dan tiap santri ditulis lewat permintaan PostgREST
+     * terpisah — masing-masing transaksinya sendiri. Gagal di anak kedua
+     * meninggalkan wali + anak pertama tersimpan, pengurus mengulang, dan
+     * anak pertama jadi punya dua baris.
+     *
+     * RPC di bawah menjalankan seluruhnya dalam satu transaksi basis data:
+     * berhasil semuanya, atau tidak ada yang tersimpan sama sekali. Lihat
+     * migrasi 20260910000004_daftar_atomik.sql.
+     */
+    const { data: hasil, error: errRpc } = await supabase.rpc('daftarkan_wali_dan_santri', {
+      p_nomor_wa: nomorWa,
+      p_nama_wali: namaWali,
+      p_persetujuan: persetujuanData,
+      p_santri: daftarSantriInput.map((s) => ({
+        nama: s.nama,
+        jenjang: s.jenjang,
+        tanggal_lahir: s.tanggal_lahir || null,
+        nisn: s.nisn || null,
+        kelas_id: s.kelas_id || null,
+        beasiswa: !!s.beasiswa,
+      })),
+      p_aktor_staff: sesi.akunId,
+    });
 
-    if (errCariWali) {
-      console.error('[daftarkan-wali-santri] gagal mencari wali:', errCariWali.message);
-      return balasJson(hCors, { ok: false, error: 'Gagal memeriksa data wali. Coba lagi.' }, 500);
+    if (errRpc) {
+      const pesan = terjemahkanGalat(errRpc.message || '');
+      console.error('[daftarkan-wali-santri] RPC gagal:', errRpc.message);
+      return balasJson(hCors, { ok: false, error: pesan.teks }, pesan.status);
     }
 
-    let waliId: string;
-    let waliBaru = false;
+    const keluaran = hasil as {
+      wali_id: string;
+      wali_baru: boolean;
+      santri: { id: string; nama: string; jenjang: string; inisial: string; sudah_ada: boolean }[];
+    };
 
-    if (waliAda) {
-      waliId = waliAda.id;
-    } else {
-      if (!persetujuanData) {
-        return balasJson(hCors, 
-          { ok: false, error: 'Persetujuan wali atas Kebijakan Privasi wajib dicentang untuk mendaftarkan wali baru.' },
-          400,
-        );
-      }
-      const { data: waliBaruRow, error: errBuatWali } = await supabase
-        .from('wali')
-        .insert({ nomor_wa: nomorWa, nama: namaWali, persetujuan_data_at: new Date().toISOString() })
-        .select('id')
-        .single();
-      if (errBuatWali || !waliBaruRow) {
-        console.error('[daftarkan-wali-santri] gagal membuat wali:', errBuatWali?.message);
-        return balasJson(hCors, { ok: false, error: 'Gagal mendaftarkan wali. Coba lagi.' }, 500);
-      }
-      waliId = waliBaruRow.id;
-      waliBaru = true;
-
-      await supabase.from('audit_log').insert({
-        actor_type: 'staff',
-        actor_id: sesi.akunId,
-        aksi: 'daftarkan_wali_baru',
-        target_type: 'wali',
-        target_id: waliId,
-        detail: { nomor_wa: nomorWa, nama: namaWali },
-      });
-    }
-
-    const santriDitulis: { id: string; nama: string; jenjang: string; inisial: string }[] = [];
-
-    for (const s of daftarSantriInput) {
-      const inisial = buatInisial(s.nama);
-      const { data: santriBaru, error: errSantri } = await supabase
-        .from('santri')
-        .insert({
-          wali_id: waliId,
-          nama: s.nama.trim(),
-          jenjang: s.jenjang,
-          inisial,
-          tanggal_lahir: s.tanggal_lahir || null,
-          nisn: s.nisn || null,
-          kelas_id: s.kelas_id || null,
-          beasiswa: !!s.beasiswa,
-        })
-        .select('id, nama, jenjang, inisial')
-        .single();
-
-      if (errSantri || !santriBaru) {
-        console.error('[daftarkan-wali-santri] gagal mendaftarkan santri:', s.nama, errSantri?.message);
-        return balasJson(hCors, {
-          ok: false,
-          error:
-            errSantri?.code === '23505'
-              ? `NISN "${s.nisn}" sudah dipakai santri lain.`
-              : `Gagal mendaftarkan santri "${s.nama}". Coba lagi.`,
-        }, 500);
-      }
-      santriDitulis.push(santriBaru);
-
-      await supabase.from('audit_log').insert({
-        actor_type: 'staff',
-        actor_id: sesi.akunId,
-        aksi: 'daftarkan_santri_baru',
-        target_type: 'santri',
-        target_id: santriBaru.id,
-        detail: { nama: santriBaru.nama, jenjang: santriBaru.jenjang, wali_id: waliId },
-      });
-    }
-
-    return balasJson(hCors, { ok: true, waliId, waliBaru, santri: santriDitulis });
+    return balasJson(hCors, {
+      ok: true,
+      waliId: keluaran.wali_id,
+      waliBaru: keluaran.wali_baru,
+      santri: keluaran.santri.map((s) => ({
+        id: s.id,
+        nama: s.nama,
+        jenjang: s.jenjang,
+        inisial: s.inisial,
+        sudahAda: s.sudah_ada,
+      })),
+    });
   } catch (err) {
     console.error('[daftarkan-wali-santri] gagal:', err);
     return balasJson(hCors, { ok: false, error: 'Terjadi kesalahan di server. Coba lagi.' }, 500);
   }
 });
 
-function buatInisial(nama: string): string {
-  const bagian = nama.trim().split(/\s+/).filter(Boolean);
-  if (!bagian.length) return '?';
-  return bagian.slice(0, 2).map((b) => b[0].toUpperCase()).join('');
+/**
+ * Ubah kode galat yang dilempar fungsi basis data jadi kalimat yang berarti
+ * bagi pengurus. Kodenya ditulis di satu tempat (migrasi) dan diterjemahkan
+ * di satu tempat (sini) — bukan pesan berbahasa Indonesia yang tersebar di
+ * dalam SQL, yang cepat atau lambat akan berbeda-beda antar fungsi.
+ */
+function terjemahkanGalat(pesanMentah: string): { teks: string; status: number } {
+  if (pesanMentah.includes('PERSETUJUAN_WAJIB')) {
+    return {
+      teks: 'Persetujuan wali atas Kebijakan Privasi wajib dicentang untuk mendaftarkan wali baru.',
+      status: 400,
+    };
+  }
+  if (pesanMentah.includes('NISN_DIPAKAI')) {
+    const nisn = pesanMentah.split('NISN_DIPAKAI:')[1]?.split(/[\s"]/)[0] || '';
+    return { teks: `NISN "${nisn}" sudah dipakai santri lain. Tidak ada data yang tersimpan.`, status: 409 };
+  }
+  if (pesanMentah.includes('JENJANG_TIDAK_VALID')) {
+    const nama = pesanMentah.split('JENJANG_TIDAK_VALID:')[1]?.split(/["\n]/)[0] || '';
+    return { teks: `Jenjang santri "${nama.trim()}" tidak valid.`, status: 400 };
+  }
+  if (pesanMentah.includes('NAMA_SANTRI_KOSONG')) {
+    return { teks: 'Nama santri wajib diisi untuk setiap anak.', status: 400 };
+  }
+  if (pesanMentah.includes('NAMA_WALI_KOSONG')) return { teks: 'Nama wali wajib diisi.', status: 400 };
+  if (pesanMentah.includes('NOMOR_KOSONG')) return { teks: 'Nomor WhatsApp wali wajib diisi.', status: 400 };
+  if (pesanMentah.includes('SANTRI_KOSONG')) return { teks: 'Minimal satu santri harus didaftarkan.', status: 400 };
+  return { teks: 'Gagal mendaftarkan. Tidak ada data yang tersimpan — silakan coba lagi.', status: 500 };
 }

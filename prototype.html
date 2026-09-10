@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
   <title>PERISA — Yayasan Peradaban Islam Azhariyah</title>
 
   <meta name="description" content="Aplikasi pembelajaran Bahasa Arab interaktif berbasis game untuk santri jenjang SD, SMP, dan SMA. Asuhan Umi Elly — Yayasan Peradaban Islam Azhariyah.">
@@ -56,13 +56,13 @@
   <link rel="stylesheet" href="vendor/phosphor/phosphor.css">
 
   <!-- Core App Stylesheet -->
-  <link rel="stylesheet" href="prototype.css?v=1.0.0">
+  <link rel="stylesheet" href="prototype.css?v=ef53d6a9">
   <!-- Fase 1: Gerbang Login -->
-  <link rel="stylesheet" href="js/ui/auth.css?v=1.0.0">
+  <link rel="stylesheet" href="js/ui/auth.css?v=c696769b">
   <!-- Fase 2: Studio Kurikulum -->
-  <link rel="stylesheet" href="js/ui/studio.css?v=1.0.0">
+  <link rel="stylesheet" href="js/ui/studio.css?v=ebac38f6">
   <!-- Native Mobile / PWA Layer -->
-  <link rel="stylesheet" href="prototype-mobile.css?v=1.0.0">
+  <link rel="stylesheet" href="prototype-mobile.css?v=12276e33">
 </head>
 <body>
 
@@ -74,7 +74,7 @@
   <div class="auth-gate" id="authGate" style="display: none;">
     <div class="auth-card">
       <div class="auth-brand">
-        <img src="logo-perisa-emblem.png?v=1.0.0" alt="" class="auth-brand-mark">
+        <img src="logo-perisa-emblem.png?v=d184a56f" alt="" class="auth-brand-mark">
         <div>
           <div class="auth-brand-title">PERISA Azhariyah</div>
           <div class="auth-brand-sub">Yayasan Peradaban Islam Azhariyah</div>
@@ -212,7 +212,7 @@
 
       <!-- Prominent Brand Title -->
       <div class="mobile-brand-wrap" onclick="PrototypeApp.switchMainView('beranda')" style="cursor: pointer;">
-        <img src="logo-perisa-emblem.png?v=1.0.0" alt="PERISA">
+        <img src="logo-perisa-emblem.png?v=d184a56f" alt="PERISA">
         <div>
           <div class="mobile-brand-text">PERISA Azhariyah</div>
           <div class="mobile-brand-sub">Yayasan Peradaban Islam</div>
@@ -240,7 +240,7 @@
       <!-- Drawer Header -->
       <div class="drawer-header-row">
         <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
-          <img src="logo-perisa-horizontal.png?v=1.0.0" alt="PERISA Azhariyah" style="width: 100%; max-width: 195px; height: auto; object-fit: contain;">
+          <img src="logo-perisa-horizontal.png?v=03e061d2" alt="PERISA Azhariyah" style="width: 100%; max-width: 195px; height: auto; object-fit: contain;">
         </div>
         <i class="ph ph-x" style="cursor: pointer; font-size: 22px; color: var(--text-muted); padding: 4px;" onclick="PrototypeApp.toggleMobileDrawer()"></i>
       </div>
@@ -363,7 +363,7 @@
       
       <!-- Brand Header -->
       <div class="ref-brand-logo" style="margin-bottom: 20px; padding: 2px 4px 6px 2px;">
-        <img src="logo-perisa-horizontal.png?v=1.0.0" alt="Yayasan Peradaban Islam Azhariyah" style="width: 100%; max-width: 210px; height: auto; display: block; object-fit: contain;">
+        <img src="logo-perisa-horizontal.png?v=03e061d2" alt="Yayasan Peradaban Islam Azhariyah" style="width: 100%; max-width: 210px; height: auto; display: block; object-fit: contain;">
       </div>
 
       <!-- User Profile Card (Interactive Profile Switcher Dropdown) -->
@@ -453,7 +453,7 @@
               <i class="ph ph-certificate" style="color: var(--gold-dark);"></i>
               <span>Lihat Piagam Kelulusan Santri</span>
             </button>
-            <button class="dropdown-action-btn" onclick="PrototypeApp.toggleProfileDropdown(); PrototypeApp.showToast('Data infaq santri telah terverifikasi bendahara yayasan');">
+            <button class="dropdown-action-btn" onclick="PrototypeApp.toggleProfileDropdown(); PrototypeApp.belumTersedia('Status infaq', event);">
               <i class="ph ph-shield-check" style="color: var(--teal-primary);"></i>
               <span>Status Infaq & Verifikasi</span>
             </button>
@@ -517,11 +517,11 @@
 
       <!-- Bottom Sidebar Links -->
       <div class="sidebar-bottom-links">
-        <a class="ref-nav-item" onclick="PrototypeApp.showToast('Pengaturan Akun dan Keamanan')">
+        <a class="ref-nav-item" onclick="PrototypeApp.belumTersedia('Pengaturan akun', event)">
           <i class="ph ph-gear-six"></i>
           <span>Pengaturan Akun</span>
         </a>
-        <a class="ref-nav-item" onclick="PrototypeApp.showToast('Layanan Bantuan dan Komunikasi Yayasan')">
+        <a class="ref-nav-item" onclick="PrototypeApp.belumTersedia('Bantuan & komunikasi', event)">
           <i class="ph ph-info"></i>
           <span>Bantuan & Layanan</span>
         </a>
@@ -543,10 +543,10 @@
         </div>
 
         <div class="top-header-right-actions">
-          <button class="icon-circle-btn" title="Simpan Arsip" onclick="PrototypeApp.showToast('Materi disimpan ke daftar arsip pribadi')">
+          <button class="icon-circle-btn" title="Simpan Arsip" onclick="PrototypeApp.belumTersedia('Simpan ke arsip', event)" aria-label="Simpan ke arsip">
             <i class="ph ph-bookmark-simple"></i>
           </button>
-          <button class="icon-circle-btn" title="Pemberitahuan" onclick="PrototypeApp.showToast('Pemberitahuan: Rilis silabus terbaru asuhan Umi Elly')">
+          <button class="icon-circle-btn" title="Pemberitahuan" onclick="PrototypeApp.belumTersedia('Pemberitahuan', event)" aria-label="Pemberitahuan">
             <i class="ph ph-bell"></i>
           </button>
         </div>
@@ -755,7 +755,7 @@
               </div>
 
               <div class="header-cta-buttons">
-                <button class="btn-share-text" onclick="PrototypeApp.showToast('Tautan materi disalin ke clipboard')">
+                <button class="btn-share-text" onclick="PrototypeApp.salinTautanMateri()">
                   <i class="ph ph-share-network"></i> Bagikan
                 </button>
                 <button class="btn-enroll-primary" onclick="PrototypeApp.switchSubTab('kuis')">
@@ -790,7 +790,7 @@
 
             <!-- Aksi Modul (mobile native) -->
             <div class="m-course-actions m-only">
-              <button class="btn-share-text" onclick="PrototypeApp.showToast('Tautan materi disalin ke clipboard')">
+              <button class="btn-share-text" onclick="PrototypeApp.salinTautanMateri()">
                 <i class="ph ph-share-network"></i> Bagikan
               </button>
               <button class="btn-enroll-primary" onclick="PrototypeApp.switchSubTab('kuis')">
@@ -1020,7 +1020,7 @@
           
           <div class="seto-main-hub">
             <div class="seto-emblem-star">
-              <img src="logo-perisa-emblem.png?v=1.0.0" alt="PERISA" style="width: 58px; height: 58px; object-fit: contain;">
+              <img src="logo-perisa-emblem.png?v=d184a56f" alt="PERISA" style="width: 58px; height: 58px; object-fit: contain;">
             </div>
             <h1 class="seto-h1-welcome">Asisten Kaidah Bahasa Arab PERISA</h1>
             <p class="seto-p-sub">
@@ -1069,11 +1069,11 @@
           <div class="seto-history-column">
             <h3 style="font-size: 14px; font-weight: 800; color: var(--teal-dark); margin-bottom: 12px;">Riwayat Konsultasi</h3>
             <div style="display: flex; flex-direction: column; gap: 8px;" id="aiHistoryList">
-              <div style="padding: 10px 12px; background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 12px; color: var(--teal-dark); cursor: pointer;" onclick="PrototypeApp.showToast('Membuka riwayat: Jumlah Ismiyyah')">
+              <div style="padding: 10px 12px; background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 12px; color: var(--teal-dark); cursor: pointer;" onclick="PrototypeApp.belumTersedia('Riwayat contoh', event)">
                 <div style="font-weight: 700;">Kaidah Jumlah Ismiyyah</div>
                 <div style="font-size: 10px; color: var(--text-muted);">Hari ini • 14.30 WIB</div>
               </div>
-              <div style="padding: 10px 12px; background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 12px; color: var(--teal-dark); cursor: pointer;" onclick="PrototypeApp.showToast('Membuka riwayat: Tashrif Lughowi')">
+              <div style="padding: 10px 12px; background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 12px; color: var(--teal-dark); cursor: pointer;" onclick="PrototypeApp.belumTersedia('Riwayat contoh', event)">
                 <div style="font-weight: 700;">Tashrif Lughowi Fi'il Madhi</div>
                 <div style="font-size: 10px; color: var(--text-muted);">Kemarin • 19.15 WIB</div>
               </div>
@@ -1112,7 +1112,7 @@
               <div class="pdf-card-meta">Format: PDF • 14 Halaman • Asuhan Umi Elly</div>
               <div class="pdf-card-actions">
                 <button class="btn-enroll-primary" style="flex: 1; padding: 7px 12px; font-size: 12px;" onclick="PrototypeApp.openDocReader(1)"><i class="ph ph-book-open"></i> Buka Silabus</button>
-                <button class="btn-share-text" style="padding: 7px 10px;" onclick="PrototypeApp.showToast('Mengunduh berkas PDF...')"><i class="ph ph-download-simple"></i></button>
+                <button class="btn-share-text" style="padding: 7px 10px;" onclick="PrototypeApp.belumTersedia('Unduh PDF', event)" aria-label="Unduh PDF"><i class="ph ph-download-simple"></i></button>
               </div>
             </div>
 
@@ -1123,7 +1123,7 @@
               <div class="pdf-card-meta">Format: PDF • 10 Halaman • Asuhan Umi Elly</div>
               <div class="pdf-card-actions">
                 <button class="btn-enroll-primary" style="flex: 1; padding: 7px 12px; font-size: 12px;" onclick="PrototypeApp.openDocReader(2)"><i class="ph ph-book-open"></i> Buka Silabus</button>
-                <button class="btn-share-text" style="padding: 7px 10px;" onclick="PrototypeApp.showToast('Mengunduh berkas PDF...')"><i class="ph ph-download-simple"></i></button>
+                <button class="btn-share-text" style="padding: 7px 10px;" onclick="PrototypeApp.belumTersedia('Unduh PDF', event)" aria-label="Unduh PDF"><i class="ph ph-download-simple"></i></button>
               </div>
             </div>
 
@@ -1134,7 +1134,7 @@
               <div class="pdf-card-meta">Format: PDF • 22 Halaman • Asuhan Umi Elly</div>
               <div class="pdf-card-actions">
                 <button class="btn-enroll-primary" style="flex: 1; padding: 7px 12px; font-size: 12px;" onclick="PrototypeApp.openDocReader(3)"><i class="ph ph-book-open"></i> Buka Silabus</button>
-                <button class="btn-share-text" style="padding: 7px 10px;" onclick="PrototypeApp.showToast('Mengunduh berkas PDF...')"><i class="ph ph-download-simple"></i></button>
+                <button class="btn-share-text" style="padding: 7px 10px;" onclick="PrototypeApp.belumTersedia('Unduh PDF', event)" aria-label="Unduh PDF"><i class="ph ph-download-simple"></i></button>
               </div>
             </div>
 
@@ -1209,16 +1209,16 @@
           </div>
         </div>
         <div class="pdf-topbar-actions">
-          <button class="icon-circle-btn" onclick="PrototypeApp.showToast('Memperbesar tampilan dokumen')"><i class="ph ph-magnifying-glass-plus"></i></button>
-          <button class="icon-circle-btn" onclick="PrototypeApp.showToast('Dokumen berhasil diunduh')"><i class="ph ph-download-simple"></i></button>
-          <button class="icon-circle-btn close-btn" onclick="PrototypeApp.closeDocReader()"><i class="ph ph-x"></i></button>
+          <button class="icon-circle-btn" onclick="PrototypeApp.belumTersedia('Perbesar dokumen', event)" aria-label="Perbesar tampilan dokumen"><i class="ph ph-magnifying-glass-plus"></i></button>
+          <button class="icon-circle-btn" onclick="PrototypeApp.belumTersedia('Unduh dokumen', event)" aria-label="Unduh dokumen"><i class="ph ph-download-simple"></i></button>
+          <button class="icon-circle-btn close-btn" onclick="PrototypeApp.closeDocReader()" aria-label="Tutup pembaca dokumen"><i class="ph ph-x"></i></button>
         </div>
       </div>
 
       <div class="pdf-reader-viewport">
         <div class="pdf-sheet-paper" id="modalDocSheet">
           <div class="pdf-sheet-header">
-            <img src="logo-perisa-horizontal.png?v=1.0.0" alt="PERISA" style="height: 38px; object-fit: contain;">
+            <img src="logo-perisa-horizontal.png?v=03e061d2" alt="PERISA" style="height: 38px; object-fit: contain;">
             <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">DOKUMEN RESMI KURIKULUM BAHASA ARAB</div>
           </div>
           <hr style="border: none; border-top: 1.5px solid var(--border-color); margin: 14px 0;">
@@ -1245,7 +1245,7 @@
 
       <div class="m-sheet-scroll">
       <div style="margin-bottom: 12px;">
-        <img src="logo-perisa-horizontal.png?v=1.0.0" alt="PERISA" style="height: 42px; object-fit: contain;">
+        <img src="logo-perisa-horizontal.png?v=03e061d2" alt="PERISA" style="height: 42px; object-fit: contain;">
       </div>
       <h3 style="font-size: 18px; font-weight: 800; color: var(--teal-dark); margin-bottom: 4px;" id="certTitle">PIAGAM KELULUSAN SANAD</h3>
       <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Yayasan Peradaban Islam Azhariyah — Asuhan Umi Elly</p>
@@ -1286,7 +1286,7 @@
   <!-- Modul ES otomatis ditunda (defer), jadi selesai dieksekusi sebelum
        DOMContentLoaded — tepat saat prototype-mobile.js membungkus ulang
        metode PrototypeApp. Urutan kedua baris ini jangan ditukar. -->
-  <script type="module" src="js/app.js?v=1.0.0"></script>
-  <script defer src="prototype-mobile.js?v=1.0.0"></script>
+  <script type="module" src="js/app.js?v=f2cecea0"></script>
+  <script defer src="prototype-mobile.js?v=6058199a"></script>
 </body>
 </html>

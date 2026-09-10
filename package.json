@@ -1,6 +1,6 @@
 {
   "name": "presentasi-yayasan-umi-ely",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Website pitch deck presentasi interaktif dan proposal resmi penawaran **Platform Pembelajaran Bahasa Arab Interaktif Berbasis Game (Tingkat SD, SMP, & SMA)** asuhan **Umi Elly & Yayasan Peradaban Islam Azhariyah**.",
   "main": "server.js",
   "scripts": {
@@ -14,12 +14,14 @@
     "release:minor": "npm version minor --no-git-tag-version && npm run stamp",
     "test:unit": "node --test tests/unit/*.test.mjs",
     "test:functions": "deno test --allow-env supabase/functions/_tests/",
-    "test": "npm run lint && npm run check:functions && npm run test:unit && npm run test:functions && npm run build",
+    "test": "npm run check:rahasia && npm run lint && npm run lint:functions && npm run check:functions && npm run test:unit && npm run test:functions && npm run build",
     "test:smoke": "node tests/smoke-e2e.js",
     "icons": "node tools/build-icons.js",
     "fonts": "node tools/fetch-fonts.js",
     "gen-config": "node tools/gen-config.js",
-    "build:dist": "npm run build && node tools/build-dist.js"
+    "build:dist": "npm run build && node tools/build-dist.js",
+    "lint:functions": "deno lint",
+    "check:rahasia": "node tools/periksa-rahasia.js"
   },
   "repository": {
     "type": "git",
@@ -35,5 +37,8 @@
   "homepage": "https://github.com/darcia2024/presentasiyayasan#readme",
   "devDependencies": {
     "deno": "^2.9.6"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }
