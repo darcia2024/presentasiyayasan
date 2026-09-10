@@ -131,11 +131,18 @@ Deno.serve(async (req) => {
       staffPeran,
     });
 
+    // AUDIT 10 Sep 2026 (D22 — minimisasi data): `detail` dulu memuat
+    // nomor_wa. Login terjadi terus-menerus, jadi nomor WhatsApp setiap
+    // wali tertulis berulang kali ke audit_log dan tersimpan selamanya —
+    // padahal actor_id sudah menunjuk akun yang bersangkutan, dan nomornya
+    // bisa dibaca dari tabel wali/staff kapan pun jejaknya ditelusuri.
+    // Data yang tidak pernah ditulis tidak perlu kebijakan retensi.
     await supabase.from('audit_log').insert({
       actor_type: jenisAkun,
       actor_id: akunId,
       aksi: 'login_berhasil',
-      detail: { nomor_wa: nomorWa },
+      target_type: jenisAkun,
+      target_id: akunId,
     });
 
     return balasJson(hCors, {

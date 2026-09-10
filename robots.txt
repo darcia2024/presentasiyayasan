@@ -1,0 +1,42 @@
+# ==========================================================================
+# PERISA AZHARIYAH — robots.txt (audit 10 September 2026, D21)
+#
+# TEMUAN: tidak ada berkas ini sama sekali. Aplikasi santri
+# (/prototype.html), dek penawaran di akar, dan halaman kebijakan privasi
+# semuanya terbuka untuk diindeks mesin pencari; hanya /verifikasi.html
+# yang punya <meta name="robots" content="noindex">.
+#
+# Aplikasi santri tidak punya alasan untuk muncul di hasil pencarian:
+# isinya di balik login, penggunanya didaftarkan pengurus satu per satu,
+# dan tidak ada yang menemukannya lewat Google. Yang ada justru risiko:
+# alamat halaman yang terindeks jadi sasaran percobaan masuk.
+#
+# CATATAN PENTING: robots.txt hanya MENCEGAH PERAYAPAN, bukan penjaminan
+# tidak muncul di hasil pencarian — mesin pencari masih bisa menampilkan
+# URL yang ditautkan dari tempat lain. Karena itu halaman aplikasi juga
+# diberi <meta name="robots" content="noindex"> di HTML-nya masing-masing.
+# Dan yang paling penting: ini BUKAN kontrol keamanan. Perayap jahat
+# mengabaikan berkas ini. Keamanan sungguhannya ada di RLS dan Edge
+# Function, bukan di sini.
+# ==========================================================================
+
+User-agent: *
+
+# Aplikasi santri & wali — di balik login, tidak untuk ditemukan lewat pencarian.
+Disallow: /prototype.html
+
+# Peraga simulasi percakapan — alat demo, bukan bagian layanan.
+Disallow: /game2d.html
+
+# Halaman verifikasi sertifikat: dibuka lewat pemindaian QR di lembar
+# sertifikat, selalu dengan kode di query string. Tidak ada gunanya dirayapi.
+Disallow: /verifikasi.html
+
+# Berkas pendukung aplikasi.
+Disallow: /js/
+Disallow: /vendor/
+Disallow: /offline.html
+
+# Kebijakan Privasi SENGAJA dibiarkan bisa diakses & diindeks — wali berhak
+# menemukan dan membacanya tanpa harus login lebih dulu.
+Allow: /kebijakan-privasi.html

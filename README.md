@@ -130,8 +130,10 @@ terdaftar di `.env.example` beserta keterangannya.
 
 ## 🌐 Menerbitkan ke HTTPS
 
-Lihat **[DEPLOY.md](DEPLOY.md)** untuk panduan lengkap Cloudflare Pages,
-pemasangan di HP, dan domain yayasan.
+Produksi berjalan di **Vercel** (`main` → terbit otomatis), dengan basis
+data & Edge Function di **Supabase**. Lihat **[DEPLOY.md](DEPLOY.md)** untuk
+urutan penerbitan, daftar secret yang wajib diisi, pemasangan di HP, dan
+domain yayasan.
 
 ### Fitur Native
 

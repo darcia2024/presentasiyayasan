@@ -13,7 +13,7 @@
     "release:patch": "npm version patch --no-git-tag-version && npm run stamp",
     "release:minor": "npm version minor --no-git-tag-version && npm run stamp",
     "test:unit": "node --test tests/unit/*.test.mjs",
-    "test:functions": "deno test --allow-env supabase/functions/_tests/",
+    "test:functions": "deno test --allow-env --allow-read supabase/functions/_tests/",
     "test": "npm run check:rahasia && npm run lint && npm run lint:functions && npm run check:functions && npm run test:unit && npm run test:functions && npm run build",
     "test:smoke": "node tests/smoke-e2e.js",
     "icons": "node tools/build-icons.js",

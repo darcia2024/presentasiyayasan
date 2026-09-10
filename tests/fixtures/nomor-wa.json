@@ -1,0 +1,45 @@
+{
+  "_catatan": [
+    "Korpus bersama untuk normalisasi nomor WhatsApp (audit D23).",
+    "",
+    "normalizeNomorWa() SENGAJA diduplikasi di dua tempat karena berkas Deno",
+    "tidak bisa diimpor kode peramban:",
+    "  js/core/phone.js                         (peramban, panel pengurus)",
+    "  supabase/functions/_shared/phone.ts      (Edge Function, login OTP)",
+    "",
+    "Kalau keduanya melenceng, akibatnya sangat sulit dilacak: pengurus",
+    "mendaftarkan '0812-3456-7890', tersimpan sebagai satu bentuk, lalu wali",
+    "mengetik nomor yang SAMA saat login dan dinormalkan jadi bentuk lain —",
+    "sistem menjawab 'nomor belum terdaftar' untuk nomor yang jelas-jelas",
+    "terdaftar, dan tidak ada di log yang menjelaskan kenapa.",
+    "",
+    "Berkas ini adalah satu-satunya sumber kebenaran perilakunya. Kedua",
+    "implementasi diuji terhadap daftar yang sama persis:",
+    "  tests/unit/phone.test.mjs                (versi peramban, Node)",
+    "  supabase/functions/_tests/phone_test.ts  (versi Deno)"
+  ],
+  "kasus": [
+    { "masukan": "081234567890", "harapan": "6281234567890", "kenapa": "bentuk paling umum diketik orang Indonesia" },
+    { "masukan": "6281234567890", "harapan": "6281234567890", "kenapa": "sudah baku, tidak berubah" },
+    { "masukan": "+6281234567890", "harapan": "6281234567890", "kenapa": "tanda plus dibuang" },
+    { "masukan": "81234567890", "harapan": "6281234567890", "kenapa": "tanpa kode negara maupun nol depan" },
+    { "masukan": "+62 812-3456-7890", "harapan": "6281234567890", "kenapa": "spasi & strip diabaikan" },
+    { "masukan": "62812.3456.7890", "harapan": "6281234567890", "kenapa": "titik diabaikan" },
+    { "masukan": "(0812) 3456 7890", "harapan": "6281234567890", "kenapa": "kurung diabaikan" },
+    { "masukan": " 081234567890 ", "harapan": "6281234567890", "kenapa": "spasi di tepi diabaikan" },
+    { "masukan": "0812345678", "harapan": "62812345678", "kenapa": "terpendek yang masih diterima: 628 + 8 digit" },
+    { "masukan": "0812345678901", "harapan": "62812345678901", "kenapa": "terpanjang yang masih diterima: 628 + 11 digit" },
+
+    { "masukan": "", "harapan": null, "kenapa": "kosong" },
+    { "masukan": "   ", "harapan": null, "kenapa": "hanya spasi" },
+    { "masukan": "08123456", "harapan": null, "kenapa": "terlalu pendek" },
+    { "masukan": "081234567890123", "harapan": null, "kenapa": "satu digit di atas batas: 628 + 12 digit" },
+    { "masukan": "081234567", "harapan": null, "kenapa": "satu digit di bawah batas: 628 + 7 digit" },
+    { "masukan": "0212345678", "harapan": null, "kenapa": "nomor tetap (021), bukan seluler" },
+    { "masukan": "6212345678", "harapan": null, "kenapa": "tidak diawali 628" },
+    { "masukan": "12345678901", "harapan": null, "kenapa": "bukan nomor Indonesia" },
+    { "masukan": "+1 555 0100", "harapan": null, "kenapa": "nomor luar negeri" },
+    { "masukan": "abcdefghij", "harapan": null, "kenapa": "bukan angka sama sekali" },
+    { "masukan": "0812-ABCD-7890", "harapan": null, "kenapa": "huruf di tengah membuat digitnya kurang" }
+  ]
+}

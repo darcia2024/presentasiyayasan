@@ -2,9 +2,10 @@
 /**
  * PERISA AZHARIYAH — Penyusun folder `dist/` untuk penerbitan
  *
- * Sampai sekarang penerbitan dilakukan dengan mengunggah SELURUH isi repo
- * lalu menyaringnya lewat .assetsignore (lihat konfigurasi Wrangler). Cara
- * itu bekerja, tapi memakai pola yang salah arah: apa pun berkas BARU yang
+ * Penerbitan sebelumnya dilakukan dengan mengunggah SELURUH isi repo lalu
+ * menyaringnya lewat daftar pengecualian (.assetsignore, sudah dihapus
+ * bersama sisa konfigurasi Cloudflare pada audit D18). Cara itu bekerja,
+ * tapi memakai pola yang salah arah: apa pun berkas BARU yang
  * ditambahkan ke repo otomatis ikut terbit kecuali seseorang ingat
  * mendaftarkannya sebagai pengecualian. Sekali lupa, isinya tersaji ke
  * publik tanpa ada yang memberi tahu.
@@ -35,6 +36,14 @@ const AKHIRAN_AKAR = ['.html', '.css', '.js', '.png', '.svg', '.ico', '.webmanif
 
 /** Berkas di akar yang cocok akhirannya TAPI tetap tidak boleh terbit. */
 const KECUALI_AKAR = new Set(['server.js']);
+
+/**
+ * Berkas akar yang WAJIB ikut terbit walau akhirannya tidak ada di daftar
+ * di atas. Disebutkan satu per satu, bukan dengan melonggarkan daftar
+ * akhiran — melonggarkan '.txt' berarti setiap catatan .txt yang suatu
+ * saat ditaruh di akar repo ikut tersaji ke publik tanpa ada yang tahu.
+ */
+const BERKAS_AKAR_TAMBAHAN = new Set(['robots.txt']);
 
 /** Folder yang ikut terbit seluruhnya. */
 const FOLDER = ['js', 'icons', 'vendor'];
@@ -89,7 +98,7 @@ function main() {
     if (KECUALI_AKAR.has(nama)) continue;
     const penuh = path.join(ROOT, nama);
     if (!fs.statSync(penuh).isFile()) continue;
-    if (!AKHIRAN_AKAR.includes(path.extname(nama).toLowerCase())) continue;
+    if (!AKHIRAN_AKAR.includes(path.extname(nama).toLowerCase()) && !BERKAS_AKAR_TAMBAHAN.has(nama)) continue;
     salinBerkas(penuh, path.join(DIST, nama));
     terkumpul.push(nama);
   }

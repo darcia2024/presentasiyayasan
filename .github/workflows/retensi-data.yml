@@ -1,0 +1,115 @@
+name: Retensi Data PERISA
+
+# PERISA AZHARIYAH — Pembersihan data kedaluwarsa (audit 10 Sep 2026, D22)
+#
+# TEMUAN. Empat kumpulan data tumbuh tanpa batas waktu dan tidak disebut
+# sama sekali di Kebijakan Privasi: pertanyaan bebas yang diketik anak-anak
+# ke Asisten AI beserta jawabannya, jejak audit, kode OTP kedaluwarsa, dan
+# soal kuis. Yang pertama paling sensitif — isinya bisa apa saja yang
+# terlintas di kepala seorang anak, tersimpan selamanya.
+#
+# BERAPA LAMA data disimpan BUKAN keputusan teknis. Workflow ini menyediakan
+# mekanismenya; angkanya diisi pemilik lewat repository VARIABLES:
+#
+#   RETENSI_AI_HARI       masa simpan ai_pertanyaan_log
+#   RETENSI_AUDIT_HARI    masa simpan audit_log
+#   RETENSI_OTP_HARI      masa simpan otp_codes
+#   RETENSI_KUIS_HARI     masa simpan kuis_soal
+#
+# SELAMA KEEMPATNYA BELUM DIISI, WORKFLOW INI TIDAK MENGHAPUS APA PUN.
+# Tidak ada angka bawaan yang diam-diam dipakai: menghapus data anak orang
+# berdasarkan tebakan lebih buruk daripada tidak menghapus sama sekali.
+#
+# UNTUK MEMUTUSKAN ANGKANYA, jalankan workflow ini manual dengan
+# mode "laporan" — ia akan menampilkan berapa banyak baris dan setua apa
+# masing-masing tabel, tanpa menghapus satu baris pun.
+#
+# Butuh dua secret yang sudah ada untuk cadangan:
+#   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
+
+on:
+  schedule:
+    - cron: '30 18 * * 0' # Minggu 18:30 UTC = 01:30 WIB, setelah cadangan harian
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'laporan = hanya menampilkan umur data; bersihkan = benar-benar menghapus'
+        required: true
+        default: laporan
+        type: choice
+        options: [laporan, bersihkan]
+
+concurrency:
+  group: retensi-data
+  cancel-in-progress: false
+
+jobs:
+  retensi:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Laporan umur data
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SUPABASE_URL:-}" ] || [ -z "${SUPABASE_SERVICE_ROLE_KEY:-}" ]; then
+            echo "::error::Secret SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY belum diisi."
+            exit 1
+          fi
+          curl -sS -X POST "$SUPABASE_URL/rest/v1/rpc/ringkasan_umur_data" \
+            -H "Content-Type: application/json" \
+            -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+            -d '{}' > /tmp/umur.json
+          echo "### Umur data PERISA" >> "$GITHUB_STEP_SUMMARY"
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          cat /tmp/umur.json >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          cat /tmp/umur.json
+
+      - name: Bersihkan data kedaluwarsa
+        if: github.event_name == 'schedule' || inputs.mode == 'bersihkan'
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          HARI_AI: ${{ vars.RETENSI_AI_HARI }}
+          HARI_AUDIT: ${{ vars.RETENSI_AUDIT_HARI }}
+          HARI_OTP: ${{ vars.RETENSI_OTP_HARI }}
+          HARI_KUIS: ${{ vars.RETENSI_KUIS_HARI }}
+        run: |
+          set -euo pipefail
+
+          # Nol = tabel itu tidak disentuh (lihat fungsi di migrasi
+          # 20260910000005). Jadi variabel yang belum diisi otomatis berarti
+          # "jangan hapus apa pun dari tabel itu" — bukan angka tebakan.
+          AI=${HARI_AI:-0}; AUDIT=${HARI_AUDIT:-0}; OTP=${HARI_OTP:-0}; KUIS=${HARI_KUIS:-0}
+
+          if [ "$AI" = "0" ] && [ "$AUDIT" = "0" ] && [ "$OTP" = "0" ] && [ "$KUIS" = "0" ]; then
+            echo "::warning::Belum ada masa retensi yang ditetapkan (RETENSI_*_HARI kosong). Tidak ada data yang dihapus. Lihat komentar di berkas workflow ini untuk cara menetapkannya."
+            exit 0
+          fi
+
+          echo "Masa simpan — AI:${AI}h audit:${AUDIT}h OTP:${OTP}h kuis:${KUIS}h"
+
+          HTTP=$(curl -sS -o /tmp/hasil.json -w "%{http_code}" \
+            -X POST "$SUPABASE_URL/rest/v1/rpc/bersihkan_data_kedaluwarsa" \
+            -H "Content-Type: application/json" \
+            -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+            -d "{\"p_hari_ai\":$AI,\"p_hari_audit\":$AUDIT,\"p_hari_otp\":$OTP,\"p_hari_kuis\":$KUIS}")
+
+          cat /tmp/hasil.json
+          if [ "$HTTP" -ge 300 ]; then
+            echo "::error::Pembersihan retensi gagal (HTTP $HTTP)"
+            exit 1
+          fi
+
+          {
+            echo ""
+            echo "### Baris yang dihapus"
+            echo '```json'
+            cat /tmp/hasil.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

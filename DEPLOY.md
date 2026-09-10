@@ -1,120 +1,35 @@
-# Menerbitkan PERISA ke Alamat HTTPS
+# Menerbitkan PERISA
 
-Panduan sekali jalan untuk menaikkan aplikasi ke staging. Setelah ini selesai,
-setiap pembaruan berikutnya cukup `git push`.
-
-> **Kenapa HTTPS wajib, bukan pelengkap.** Service worker hanya berjalan di
-> `localhost` atau HTTPS. Tanpa HTTPS, aplikasi tidak bisa dipasang ke layar
-> utama HP santri dan tidak bisa dibuka luring — dua hal yang justru menjadi
-> alasan aplikasi ini dibangun sebagai PWA.
-
-Biaya seluruh langkah di bawah: **nol rupiah**, kecuali domain (~Rp 55.000/tahun
-untuk `.or.id`, dan itu pun opsional pada tahap staging).
-
----
-
-## Langkah 1 — Naikkan kode ke GitHub
-
-Repo sudah tersambung ke `github.com/darcia2024/presentasiyayasan`.
-
-```bash
-git push -u origin fase-0-fondasi
-```
-
-Setelah ditinjau, gabungkan ke `main`:
-
-```bash
-git checkout main && git merge fase-0-fondasi && git push
-```
+> **Diperbarui 10 September 2026 (audit D18).** Versi sebelumnya menuntun
+> pembaca ke **Cloudflare Pages** sebagai langkah 1–4, sementara Vercel
+> baru muncul di bagian bawah — padahal produksi sudah berjalan di Vercel
+> sejak 7 September. Siapa pun yang mengikuti dokumen itu dari atas akan
+> menyiapkan penerbitan yang salah. Dokumen ini sekarang hanya menjelaskan
+> jalan yang benar-benar dipakai.
+>
+> Tiga berkas sisa Cloudflare — `wrangler.jsonc`, `.assetsignore`, dan
+> `_headers` — sudah **dihapus** dari repo. Ketiganya tidak dibaca apa pun
+> lagi, dan `_headers` bahkan berbahaya: ia memuat salinan kedua daftar
+> header keamanan, jadi seseorang bisa menambahkan aturan di sana dan
+> mengira aturan itu berlaku. Kalau suatu hari perlu kembali ke Cloudflare,
+> ambil dari riwayat git: `git show fe98c6d:_headers`.
 
 ---
 
-## Langkah 2 — Sambungkan ke Cloudflare Pages
+## Ringkasan
 
-1. Buka [dash.cloudflare.com](https://dash.cloudflare.com) lalu buat akun gratis.
-2. Pilih **Workers & Pages → Create → Pages → Connect to Git**.
-3. Pilih repositori `presentasiyayasan`.
-4. Isi pengaturan build **persis seperti ini**:
-
-   | Kolom | Isi |
-   | --- | --- |
-   | Production branch | `main` |
-   | Framework preset | `None` |
-   | Build command | `npm run build` |
-   | Build output directory | `/` |
-   | Root directory | *(biarkan kosong)* |
-
-5. Tekan **Save and Deploy**.
-
-Cloudflare memberi alamat seperti `perisa-azhariyah.pages.dev`. Alamat itu sudah
-HTTPS dan sudah cukup untuk memasang aplikasi ke HP.
-
-> **Kenapa `npm run build` perlu dijalankan di sana?** Perintah itu menyusun
-> ulang CSS ikon dan mengecap versi ke `?v=` serta `SW_VERSION`. Kalau
-> dilewat, perangkat pengguna bisa menyajikan campuran berkas lama dan baru.
+| Bagian | Di mana | Dipicu oleh |
+|---|---|---|
+| Situs & aplikasi | **Vercel**, proyek `presentasiyayasan` | `git push origin main` |
+| Basis data & RLS | **Supabase** (`supabase db push`) | manual |
+| Edge Function | **Supabase** (`supabase functions deploy`) | manual |
+| Cadangan, ringkasan mingguan, retensi, CI | **GitHub Actions** | jadwal & push |
 
 ---
 
-## Langkah 3 — Uji pemasangan di HP sungguhan
+## 1 — Situs (Vercel)
 
-Ini gerbang Fase 0, dan tidak bisa digantikan pengujian di komputer.
-
-1. Buka alamat `.pages.dev` di **Chrome Android**.
-2. Banner "Pasang Aplikasi PERISA" muncul → pasang.
-3. Buka dari layar utama — aplikasi harus tampil penuh layar, tanpa bilah alamat.
-4. **Aktifkan mode pesawat, lalu buka lagi.** Aplikasi harus tetap terbuka
-   lengkap dengan ikon dan tulisan Arabnya.
-
-Langkah 4 itu yang paling penting. Kalau ikon hilang saat mode pesawat, berarti
-ada berkas yang belum masuk daftar app shell — periksa `tools/stamp-version.js`.
-
-Untuk **iPhone**: Safari tidak punya banner otomatis. Buka menu Bagikan →
-"Tambah ke Layar Utama".
-
----
-
-## Langkah 4 — Domain sendiri (boleh ditunda)
-
-Alamat `.pages.dev` sudah berfungsi penuh. Domain sendiri hanya soal wibawa di
-mata wali murid — dan untuk yayasan, itu bukan hal sepele.
-
-Pilihan yang pantas: `perisa.or.id` (badan/organisasi) atau `perisa.sch.id`
-(lembaga pendidikan, syaratnya lebih ketat: butuh surat dari sekolah).
-
-Setelah domain dibeli, di Cloudflare Pages pilih **Custom domains → Set up a
-domain**, lalu ikuti petunjuk DNS-nya. Sertifikat HTTPS terbit otomatis.
-
-Terakhir, perbarui `PUBLIC_BASE_URL` di variabel lingkungan Cloudflare agar
-tautan verifikasi sertifikat nanti (Fase 6) menunjuk ke domain yang benar.
-
----
-
-## Variabel lingkungan di Cloudflare
-
-Belum ada yang wajib diisi untuk Fase 0. Mulai Fase 1, isi lewat
-**Settings → Environment variables**, mengikuti daftar di `.env.example`.
-
-> **Satu aturan yang tidak boleh dilanggar:** kunci `SUPABASE_SERVICE_ROLE_KEY`
-> dan `ANTHROPIC_API_KEY` tidak boleh pernah masuk ke berkas mana pun di dalam
-> `js/` — seluruh isi folder itu terkirim apa adanya ke browser santri.
-
----
-
-## Catatan tentang server Node
-
-`server.js` hanya untuk pengembangan lokal. Cloudflare Pages menyajikan berkas
-statis, jadi tiga endpoint `/api/game/*` tidak ikut berjalan di staging —
-papan peringkat akan memakai data cadangan.
-
-Itu wajar untuk sekarang. Mulai Fase 1, endpoint-endpoint itu digantikan
-Supabase sepenuhnya, dan `server.js` tetap tinggal sebagai alat pengembangan.
-
----
-
-## Penerbitan lewat Vercel
-
-Repo ini tersambung ke proyek Vercel `presentasiyayasan` (cabang produksi
-`main`). Setiap push ke `main` memicu penerbitan otomatis.
+Setiap push ke `main` memicu penerbitan otomatis. Tidak ada langkah manual.
 
 ### Yang diatur di `vercel.json`, bukan di dashboard
 
@@ -133,44 +48,178 @@ found`.
 > Percobaan menaruh blok penjelasan bernama `_catatan` di dalamnya membuat
 > deployment ditolak sebelum build sempat berjalan sama sekali:
 > *"schema validation failed: should NOT have additional property"*.
-> JSON tidak punya komentar — penjelasan apa pun ditulis di berkas ini,
-> bukan di sana.
+> JSON tidak punya komentar — penjelasan apa pun ditulis di berkas ini.
 
-### Environment Variables yang wajib diisi
+### Environment Variables di Vercel
 
-Di **Settings → Environment Variables** proyek Vercel, untuk ketiga
-lingkungan (Production, Preview, Development):
+**Settings → Environment Variables**, untuk ketiga lingkungan (Production,
+Preview, Development):
 
-| Nama | Isi |
-|---|---|
-| `SUPABASE_URL` | `https://<ref>.supabase.co` |
-| `SUPABASE_ANON_KEY` | kunci `anon` (BUKAN `service_role`) |
+| Nama | Isi | Kalau kosong |
+|---|---|---|
+| `SUPABASE_URL` | `https://<ref>.supabase.co` | build tetap sukses, aplikasi diam-diam turun ke mode peraga |
+| `SUPABASE_ANON_KEY` | kunci `anon` (BUKAN `service_role`) | idem |
+| `APP_ENV` | `production` | dianggap `production` (gagal tertutup) — aman, tapi isi eksplisit supaya terbaca |
 
-Keduanya dibaca `tools/gen-config.js` saat build dan ditulis ke
+Ketiganya dibaca `tools/gen-config.js` saat build dan ditulis ke
 `js/config.js`. Kunci `anon` memang dirancang aman dibaca browser — ia
 dibatasi Row Level Security, bukan kerahasiaan.
 
-**Kalau keduanya kosong, build tetap BERHASIL** tapi aplikasinya diam-diam
-turun ke mode peraga tanpa login sungguhan. Ini pernah terjadi dan tidak
-menimbulkan pesan gagal apa pun — jadi kalau login tiba-tiba tidak jalan di
-produksi, dua nilai ini yang pertama diperiksa.
+`APP_ENV` di sini adalah gerbang keamanan sisi klien: pada build produksi,
+aplikasi menolak menampilkan/mengisikan kode OTP apa pun yang dikembalikan
+server. Lihat audit K1.
+
+### Header HTTP & CSP
+
+Seluruh header ada di **satu tempat**: `vercel.json`. (Dulu ada dua; lihat
+catatan di kepala dokumen ini.)
+
+Content-Security-Policy ditambahkan pada audit 10 September 2026. Isinya
+memuat origin Supabase, dan `npm run build` akan **menolak berjalan** kalau
+origin di `vercel.json` tidak lagi cocok dengan `SUPABASE_URL` — lihat
+`tools/periksa-csp.js`. Alasan `'unsafe-inline'` masih ada di sana juga
+dijelaskan di berkas itu.
+
+Yang paling mudah terlewat kalau header diedit: `Service-Worker-Allowed: /`
+— tanpa itu service worker tidak boleh mengendalikan seluruh situs, dan
+PWA-nya berhenti bekerja di luar halaman utama.
 
 ### Apa yang benar-benar terbit
 
-`npm run build:dist` menyusun folder `dist/` lewat `tools/build-dist.js`, dan
-hanya isi folder itu yang tersaji ke publik. Pendekatannya sengaja dibalik
-dari `.assetsignore` milik Cloudflare: di sana setiap berkas baru otomatis
-ikut terbit kecuali ada yang ingat mengecualikannya, di sini hanya yang
-disebut yang ikut. Lupa mendaftarkan berkas baru berakibat berkas itu tidak
-muncul di situs — kegagalan yang langsung kelihatan, bukan kebocoran senyap.
+`npm run build:dist` menyusun folder `dist/` lewat `tools/build-dist.js`,
+dan hanya isi folder itu yang tersaji ke publik. Polanya sengaja terbalik
+dari `.assetsignore` lama: di sana setiap berkas baru otomatis ikut terbit
+kecuali ada yang ingat mengecualikannya, di sini **hanya yang disebut** yang
+ikut. Lupa mendaftarkan berkas baru berakibat berkas itu tidak muncul di
+situs — kegagalan yang langsung kelihatan, bukan kebocoran senyap.
 
 Yang tidak pernah ikut terbit: `.env`, seluruh `supabase/` (migrasi SQL
-memuat 52 kebijakan keamanan), `tools/`, `tests/`, `docs/`, dan `server.js`.
+memuat seluruh aturan keamanan), `tools/`, `tests/`, `docs/`, `server.js`,
+dan `js/package.json`.
 
-### Header HTTP ada di dua tempat
+---
 
-Daftar header di `vercel.json` harus tetap sama isinya dengan berkas
-`_headers` (dipakai Cloudflare Pages). Kalau salah satu diubah, ubah
-keduanya. Yang paling mudah terlewat: `Service-Worker-Allowed: /` — tanpa
-itu service worker tidak boleh mengendalikan seluruh situs, dan PWA-nya
-berhenti bekerja di luar halaman utama.
+## 2 — Basis data (Supabase)
+
+```bash
+npx supabase db push --db-url "$SUPABASE_DB_URL"
+```
+
+Gunakan connection string **Session pooler (port 5432)**, bukan Transaction
+pooler (6543).
+
+> **Catatan 10 September 2026.** Tabel riwayat migrasi di produksi
+> sebelumnya **KOSONG** — sebelas migrasi pertama dijalankan lewat jalur
+> lain dan tidak pernah tercatat. Akibatnya `supabase db push` akan mencoba
+> menjalankan ULANG semuanya. Riwayatnya sudah dibereskan dengan
+> `supabase migration repair --status applied <versi>`, jadi push berikutnya
+> hanya menjalankan migrasi yang benar-benar baru. **Selalu jalankan
+> `--dry-run` lebih dulu** dan pastikan daftarnya masuk akal.
+
+---
+
+## 3 — Edge Function (Supabase)
+
+```bash
+npx supabase functions deploy
+```
+
+Setelan `verify_jwt` per fungsi ada di `supabase/config.toml` dan ikut
+terbaca perintah di atas — tidak perlu bendera manual lagi.
+
+### Secret Edge Function yang WAJIB diisi
+
+**Dashboard Supabase → Edge Functions → Secrets**, atau:
+
+```bash
+npx supabase secrets set APP_ENV=production
+```
+
+| Nama | Wajib? | Akibat kalau kosong |
+|---|---|---|
+| `APP_ENV` | ya | dianggap `production` (aman), tapi isi eksplisit |
+| `APP_JWT_SECRET` | ya | seluruh penerbitan & verifikasi sesi gagal |
+| `ALLOWED_ORIGINS` | ya | **seluruh panggilan dari peramban ditolak 503** |
+| `WA_GATEWAY_URL`, `WA_GATEWAY_TOKEN` | ya | **login mati total (503)** — lihat di bawah |
+| `CRON_SECRET` | ya | ringkasan mingguan menolak dipicu |
+| `ANTHROPIC_API_KEY` | opsional | Asisten AI menjawab 503, sisanya normal |
+| `AI_DAILY_LIMIT_*` | opsional | memakai batas bawaan yang konservatif |
+
+> ### URUTAN PENERBITAN ITU PENTING
+>
+> Sejak audit K1, gateway WhatsApp yang belum dikonfigurasi membuat
+> permintaan OTP **ditolak**, bukan jatuh ke mode yang mengembalikan kode ke
+> peramban. Itu perbaikan yang disengaja — mode lama berarti siapa pun yang
+> tahu nomor WA seorang wali bisa masuk sebagai wali itu.
+>
+> Konsekuensinya: **jangan men-deploy Edge Function sebelum
+> `WA_GATEWAY_URL` terisi**, atau tidak ada seorang pun yang bisa login.
+>
+> Urutan yang benar:
+> 1. Isi seluruh secret di tabel atas (termasuk gateway WhatsApp).
+> 2. `npx supabase db push` — migrasi lebih dulu.
+> 3. `npx supabase functions deploy`.
+> 4. `git push origin main` — frontend menyusul.
+> 5. `npm run test:smoke` — harus 0 gagal, 0 dilewati.
+>
+> Langkah 2 mendahului 3 karena Edge Function baru memerlukan tabel
+> `kuis_soal` dan fungsi `daftarkan_wali_dan_santri`. Langkah 4 menyusul 3
+> karena kontrak kuis berubah: frontend baru bicara dengan Edge Function
+> baru, dan keduanya tidak saling kompatibel dengan versi lama.
+
+---
+
+## 4 — GitHub Actions
+
+Empat workflow. Tiga butuh secret/variable yang diisi sekali di
+**Settings → Secrets and variables → Actions**.
+
+| Workflow | Jadwal | Butuh |
+|---|---|---|
+| `ci.yml` | tiap push & PR | — (opsional: variable `SUPABASE_URL_PUBLIC` agar CSP ikut diperiksa) |
+| `backup-database.yml` | harian 01.00 WIB | secret `SUPABASE_DB_URL`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`; sangat dianjurkan `BACKUP_ENCRYPTION_PASSPHRASE` |
+| `ringkasan-mingguan.yml` | Minggu 19.00 WIB | secret `SUPABASE_URL`, `CRON_SECRET` |
+| `retensi-data.yml` | Minggu 01.30 WIB | secret `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`; variable `RETENSI_*_HARI` |
+| `uptime-check.yml` | tiap 30 menit | variable `SITE_URL`, `SUPABASE_URL_PUBLIC` |
+
+Yang belum diisi **dilewati dengan peringatan**, bukan gagal senyap —
+kecuali `retensi-data.yml`, yang sengaja tidak menghapus apa pun sampai
+masa simpannya ditetapkan.
+
+---
+
+## 5 — Domain sendiri (boleh ditunda)
+
+Alamat `*.vercel.app` sudah HTTPS dan bisa dipasang sebagai aplikasi di HP.
+Domain sendiri (`perisa.or.id`, dsb.) hanya soal kesan resmi.
+
+Setelah domain aktif di **Vercel → Settings → Domains**, ada **tiga tempat**
+yang harus ikut diperbarui — melewatkan salah satunya membuat aplikasi rusak
+dengan cara yang sulit ditebak:
+
+1. `ALLOWED_ORIGINS` di Edge Function secrets → tambahkan origin barunya,
+   kalau tidak seluruh panggilan dari domain baru ditolak CORS.
+2. `PUBLIC_BASE_URL` di Environment Variables Vercel → QR verifikasi
+   sertifikat menunjuk ke alamat lama kalau terlewat.
+3. Variable `SITE_URL` di GitHub Actions → pemantauan ketersediaan tetap
+   memeriksa alamat lama.
+
+---
+
+## 6 — Uji pemasangan di HP sungguhan
+
+1. Buka alamat produksi di **Chrome Android** atau **Safari iOS**.
+2. Menu → **Tambahkan ke Layar Utama**.
+3. Buka dari ikon: harus tampil tanpa bilah alamat peramban.
+4. Aktifkan mode pesawat, buka lagi: halaman luring PERISA harus muncul,
+   bukan dinosaurus Chrome.
+5. Cicit-perbesar (pinch-zoom) harus **bisa** — sejak audit M11 penguncian
+   zoom sudah dilepas. Kalau tidak bisa, ada yang salah.
+
+---
+
+## Catatan tentang server Node
+
+`server.js` hanya untuk pengembangan lokal (`npm start`). Vercel menyajikan
+berkas statis langsung; tidak ada proses Node yang berjalan di produksi.
+Seluruh logika sisi server ada di Edge Function Supabase.
