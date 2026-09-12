@@ -14,6 +14,38 @@
   layak dibaca ulang oleh yang paham hukum sebelum benar-benar dijadikan
   pegangan resmi, terutama karena menyangkut data anak.
 
+  ---------------------------------------------------------------------
+  AUDIT 10 September 2026 — tiga koreksi FAKTUAL (bukan perubahan janji):
+
+  1. Bagian 5 menyebut "Cloudflare" sebagai penyaji halaman. Produksi
+     berjalan di VERCEL (diperiksa langsung: header `Server: Vercel` pada
+     https://presentasiyayasan.vercel.app). Daftar prosesor yang keliru
+     bukan soal kerapian — UU PDP mensyaratkan wali tahu siapa saja yang
+     memproses data anaknya.
+
+  2. Bagian 8 menjanjikan XP "tidak bisa diubah lewat peramban". Saat itu
+     server memang mencatat XP, tapi TIDAK menilai benar/salah sama sekali
+     (klien mengirim soal dan jawabannya sekaligus). Sudah diperbaiki di
+     sisi kode, dan kalimatnya kini menggambarkan yang benar-benar
+     ditegakkan — bukan lebih.
+
+  3. Bagian 6 hanya bicara soal progres belajar, padahal sistem juga
+     menyimpan pertanyaan bebas yang diketik santri ke Asisten AI.
+
+  11 September 2026 — Asisten AI DIHAPUS seluruhnya atas keputusan
+  pemilik (tampilan, Edge Function, dan tabel lognya). Penyebutannya di
+  bagian 2, 3, 5, dan 6 ikut dicabut: dokumen ini hanya boleh menyebut
+  pengolahan yang benar-benar terjadi, dan Anthropic tidak lagi menerima
+  data apa pun dari platform ini.
+
+  MASIH PERLU KEPUTUSAN PEMILIK (OWNER REVIEW):
+     - BERAPA HARI catatan aktivitas disimpan.
+       Mekanismenya sudah ada (lihat .github/workflows/retensi-data.yml);
+       angkanya belum ditetapkan, dan selama belum ditetapkan tidak ada
+       yang dihapus. Begitu angkanya diputuskan, sebutkan di bagian 6.
+     - Peninjauan seluruh dokumen ini oleh yang paham hukum.
+  ---------------------------------------------------------------------
+
   Berdiri sendiri (tidak memuat prototype.css/app.js), sama seperti
   verifikasi.html — halaman ini harus bisa dibuka siapa saja tanpa login
   dan tanpa menyeret seluruh SPA.
@@ -116,7 +148,6 @@
       <tr><td>Identitas wali</td><td>Nama, nomor WhatsApp</td></tr>
       <tr><td>Identitas santri</td><td>Nama, tanggal lahir (opsional), NISN (opsional), jenjang, kelas</td></tr>
       <tr><td>Data pembelajaran</td><td>Progres modul, XP, jawaban kuis, lencana, sertifikat yang diterbitkan</td></tr>
-      <tr><td>Data konsultasi</td><td>Pertanyaan yang diajukan ke Asisten Bahasa Arab (kalau fitur ini aktif) dan jawabannya</td></tr>
       <tr><td>Data infaq</td><td>Jumlah dan status verifikasi infaq — <strong>kami TIDAK pernah menyimpan nomor kartu, rekening, atau kredensial pembayaran apa pun</strong></td></tr>
       <tr><td>Data teknis</td><td>Waktu masuk (login), catatan keamanan untuk mencegah penyalahgunaan kode OTP</td></tr>
     </table>
@@ -129,7 +160,6 @@
       <li>Menampilkan materi pembelajaran sesuai jenjang santri, dan mencatat progresnya.</li>
       <li>Menyusun ringkasan mingguan yang dikirim ke WhatsApp wali.</li>
       <li>Menerbitkan sertifikat resmi berkode verifikasi.</li>
-      <li>Menjawab pertanyaan lewat Asisten Bahasa Arab (kalau diaktifkan), digrounding ke materi yang diterbitkan Umi Elly.</li>
       <li>Pencatatan infaq dan verifikasinya oleh pengurus.</li>
       <li>Menjaga keamanan akun — mencegah percobaan masuk yang tidak sah.</li>
     </ul>
@@ -147,8 +177,7 @@
     <ul>
       <li><strong>Supabase</strong> — basis data dan autentikasi, server berlokasi di kawasan Asia Pasifik (Sydney, Australia).</li>
       <li><strong>Penyedia gateway WhatsApp</strong> — mengirim kode OTP dan ringkasan mingguan ke nomor WhatsApp wali.</li>
-      <li><strong>Anthropic (Claude)</strong> — kalau Asisten Bahasa Arab aktif, teks pertanyaan santri dikirim ke penyedia ini untuk dijawab. Tidak ada data identitas (nama, nomor WA) yang disertakan dalam permintaan tersebut.</li>
-      <li><strong>Cloudflare</strong> — menyajikan halaman web ini ke peramban Anda.</li>
+      <li><strong>Vercel</strong> — menyajikan halaman web ini ke peramban Anda.</li>
     </ul>
     <p>Setiap pihak di atas terikat memproses data hanya untuk kepentingan menjalankan layanan PERISA, bukan untuk kepentingan mereka sendiri.</p>
   </div>
@@ -156,6 +185,8 @@
   <div class="kartu">
     <h2><span class="no">6.</span> Berapa Lama Data Disimpan</h2>
     <p>Data santri disimpan selama akun tersebut aktif digunakan. Kalau santri berhenti dari program dan wali tidak meminta penghapusan, data progres belajar tetap kami simpan sebagai riwayat pembelajaran resmi (mis. dasar penerbitan sertifikat) — bukan untuk tujuan lain. Wali bisa meminta penghapusan kapan pun (lihat bagian 7).</p>
+    <p>Selain progres belajar, sistem juga menyimpan <strong>kode masuk (OTP)</strong> — hanya bentuk terenkripsi satu-arahnya, dan dihapus otomatis setelah kedaluwarsa.</p>
+    <p>Kami juga menyimpan catatan aktivitas internal (siapa mendaftarkan siapa, kapan sertifikat diterbitkan) sebagai jejak pertanggungjawaban pengurus. Catatan itu tidak memuat isi pembelajaran santri.</p>
   </div>
 
   <div class="kartu">
@@ -175,7 +206,7 @@
       <li>Kode OTP tidak pernah disimpan sebagai teks biasa — hanya bentuk terenkripsi satu-arahnya.</li>
       <li>Setiap wali/santri hanya bisa melihat datanya sendiri — ditegakkan di lapisan basis data, bukan cuma di tampilan.</li>
       <li>Seluruh lalu lintas data terenkripsi (HTTPS).</li>
-      <li>Perhitungan XP, penerbitan sertifikat, dan pendaftaran akun berjalan di server, bukan bisa diubah lewat peramban.</li>
+      <li>Soal kuis diterbitkan server beserta kunci jawabannya, berlaku singkat, dan hanya bisa dijawab sekali; XP, penerbitan sertifikat, dan pendaftaran akun dicatat di server, bukan ditulis oleh peramban.</li>
       <li>Aktivitas sensitif (pendaftaran akun baru, penerbitan sertifikat) tercatat dalam log audit internal.</li>
     </ul>
   </div>
@@ -190,7 +221,7 @@
     <p>Kebijakan ini bisa diperbarui seiring berkembangnya platform. Perubahan berarti akan diberi tahu lewat pengumuman di aplikasi atau ringkasan WhatsApp mingguan.</p>
   </div>
 
-  <p class="tanggal">Berlaku sejak 5 September 2026 · Yayasan Peradaban Islam Azhariyah</p>
+  <p class="tanggal">Berlaku sejak 5 September 2026 · Diperbarui 11 September 2026 · Yayasan Peradaban Islam Azhariyah</p>
 </main>
 </body>
 </html>

@@ -12,8 +12,8 @@
 // menyembunyikan keputusan itu di klien yang bisa dibaca siapa pun.
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { corsHeaders, handlePreflight, jsonResponse } from '../_shared/cors.ts';
-import { verifikasiSessionJwt } from '../_shared/session-jwt.ts';
+import { gerbangCors, balasJson } from '../_shared/cors.ts';
+import { bacaSesiDariHeader } from '../_shared/sesi.ts';
 
 const supabase = createClient(
   Deno.env.get('SUPABASE_URL')!,
@@ -25,27 +25,22 @@ const supabase = createClient(
 const MASA_BERLAKU_DETIK = 300;
 
 Deno.serve(async (req) => {
-  const preflight = handlePreflight(req);
-  if (preflight) return preflight;
+  // AUDIT 10 Sep 2026 (S6): CORS ber-allowlist. gerbangCors() menangani
+  // preflight OPTIONS sekaligus menolak origin yang tidak terdaftar
+  // sebelum satu baris logika pun berjalan.
+  const cors = gerbangCors(req);
+  if (cors.respons) return cors.respons;
+  const hCors = cors.headers;
 
   try {
-    const authHeader = req.headers.get('Authorization') || '';
-    const token = authHeader.replace(/^Bearer\s+/i, '');
-    if (!token) {
-      return jsonResponse({ ok: false, error: 'Sesi tidak ditemukan. Silakan masuk kembali.' }, 401);
-    }
-
-    let sesi;
-    try {
-      sesi = await verifikasiSessionJwt(token);
-    } catch {
-      return jsonResponse({ ok: false, error: 'Sesi tidak valid atau sudah kedaluwarsa.' }, 401);
-    }
+    const hasilSesi = await bacaSesiDariHeader(req, hCors);
+    if (!hasilSesi.ok) return hasilSesi.respons;
+    const { sesi } = hasilSesi;
 
     const body = await req.json().catch(() => null);
     const pelajaranId = body?.pelajaran_id;
     if (typeof pelajaranId !== 'string' || !pelajaranId) {
-      return jsonResponse({ ok: false, error: 'pelajaran_id wajib diisi.' }, 400);
+      return balasJson(hCors, { ok: false, error: 'pelajaran_id wajib diisi.' }, 400);
     }
 
     const { data: pelajaran, error: errPelajaran } = await supabase
@@ -55,10 +50,10 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (errPelajaran || !pelajaran) {
-      return jsonResponse({ ok: false, error: 'Pelajaran tidak ditemukan.' }, 404);
+      return balasJson(hCors, { ok: false, error: 'Pelajaran tidak ditemukan.' }, 404);
     }
     if (!pelajaran.video_path) {
-      return jsonResponse({ ok: false, error: 'Pelajaran ini belum punya video.' }, 404);
+      return balasJson(hCors, { ok: false, error: 'Pelajaran ini belum punya video.' }, 404);
     }
 
     // Wali/santri hanya boleh menonton video dari modul yang sudah TERBIT.
@@ -66,7 +61,7 @@ Deno.serve(async (req) => {
     // sebelum menerbitkan).
     const modulTerbit = (pelajaran as unknown as { modul: { status: string } }).modul?.status === 'terbit';
     if (!modulTerbit && sesi.akunJenis !== 'staff') {
-      return jsonResponse({ ok: false, error: 'Video ini belum diterbitkan.' }, 403);
+      return balasJson(hCors, { ok: false, error: 'Video ini belum diterbitkan.' }, 403);
     }
 
     const { data: signed, error: errSigned } = await supabase.storage
@@ -75,12 +70,12 @@ Deno.serve(async (req) => {
 
     if (errSigned || !signed) {
       console.error('[video-signed-url] gagal membuat signed URL:', errSigned?.message);
-      return jsonResponse({ ok: false, error: 'Gagal menyiapkan video. Coba lagi.' }, 500);
+      return balasJson(hCors, { ok: false, error: 'Gagal menyiapkan video. Coba lagi.' }, 500);
     }
 
-    return jsonResponse({ ok: true, url: signed.signedUrl, kedaluwarsa_detik: MASA_BERLAKU_DETIK });
+    return balasJson(hCors, { ok: true, url: signed.signedUrl, kedaluwarsa_detik: MASA_BERLAKU_DETIK });
   } catch (err) {
     console.error('[video-signed-url] gagal:', err);
-    return jsonResponse({ ok: false, error: 'Terjadi kesalahan di server. Coba lagi.' }, 500);
+    return balasJson(hCors, { ok: false, error: 'Terjadi kesalahan di server. Coba lagi.' }, 500);
   }
 });

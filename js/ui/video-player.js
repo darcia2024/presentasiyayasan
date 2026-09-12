@@ -15,6 +15,7 @@
 
 import { mintaUrlVideo } from '../core/video-client.js';
 import { bacaSesi } from '../core/supabase-client.js';
+import { ikon, kosongkan } from '../core/html.js';
 
 const ID_VIDEO = 'realVideoPlayer';
 
@@ -41,7 +42,19 @@ function perbaruiWatermark(watermarkEl) {
     teks = sesi.akun.nama;
   }
 
-  watermarkEl.innerHTML = `<i class="ph ph-shield-check"></i> ${teks} • Hak Cipta PERISA Azhariyah`;
+  // AUDIT 10 Sep 2026 (S4): sebelum ini nama santri + nama wali ditempel
+  // MENTAH ke innerHTML. Keduanya diketik pengurus lewat Panel Pengurus dan
+  // hanya di-.trim() di Edge Function, jadi seorang santri bernama
+  // `<img src=x onerror=...>` akan menjalankan skrip di peramban walinya
+  // setiap kali video dibuka. js/core/html.js dibuat 5 Sep persis untuk
+  // menutup kelas bug ini — satu pemanggil ini terlewat.
+  //
+  // Sekarang dibangun sebagai simpul DOM: tidak ada string HTML yang
+  // dirangkai, jadi tidak ada yang perlu diloloskan dan tidak ada yang
+  // bisa terlewat lagi di sini.
+  kosongkan(watermarkEl);
+  watermarkEl.appendChild(ikon('ph-shield-check'));
+  watermarkEl.appendChild(document.createTextNode(` ${teks} • Hak Cipta PERISA Azhariyah`));
 }
 
 /**

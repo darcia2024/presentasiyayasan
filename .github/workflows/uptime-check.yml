@@ -29,7 +29,10 @@ jobs:
         if: vars.SITE_URL != ''
         run: |
           set -e
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 "${{ vars.SITE_URL }}/prototype.html")
+          # Sejak 12 Sep 2026 aplikasinya ADA DI AKAR. Alamat lama
+          # /prototype.html sudah tidak terbit — memantaunya berarti
+          # memantau halaman 404, yang justru menyembunyikan situs mati.
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 "${{ vars.SITE_URL }}/")
           echo "Status situs utama: HTTP $HTTP_STATUS"
           if [ "$HTTP_STATUS" -lt 200 ] || [ "$HTTP_STATUS" -ge 400 ]; then
             echo "::error::Situs utama tidak sehat (HTTP $HTTP_STATUS)"
@@ -45,7 +48,7 @@ jobs:
         run: |
           set -e
           HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 -X POST \
-            "${{ vars.SUPABASE_URL_PUBLIC }}/functions/v1/auth-otp-request" \
+            "${{ vars.SUPABASE_URL_PUBLIC }}/functions/v1/auth-login-pin" \
             -H "Content-Type: application/json" -d '{}')
           echo "Status Edge Function: HTTP $HTTP_STATUS"
           # 400 (body kosong ditolak) berarti fungsinya HIDUP dan menjawab

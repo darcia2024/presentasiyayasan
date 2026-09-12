@@ -46,8 +46,30 @@ export function switchSubTab(tabName) {
   playTone(520, 'sine', 0.08, 0.05);
 }
 
+/**
+ * Buka satu sub-tab materi LANGSUNG dari sidebar ("Latihan & Evaluasi",
+ * "Mufrodat & Pelafalan").
+ *
+ * Sub-tab hidup di dalam pemutar materi, jadi memanggil switchSubTab saja
+ * tidak cukup: kalau santri sedang berada di Dashboard atau Perpustakaan,
+ * tab-nya memang berganti tapi tidak ada yang terlihat berubah. Fungsi ini
+ * memindahkan tampilan lebih dulu, baru memilih tab-nya.
+ *
+ * switchMainView dipanggil lewat objek global supaya pembungkus versi
+ * mobile (prototype-mobile.js) ikut berjalan — sama alasannya dengan
+ * pemanggilan openCertificate di js/ui/syllabus.js.
+ */
+export function bukaSubTab(tabName) {
+  if (window.PrototypeApp?.switchMainView) window.PrototypeApp.switchMainView('kurikulum');
+  switchSubTab(tabName);
+}
+
 export function claimGameXp() {
   playTone(523.25, 'sine', 0.12, 0.08);
   setTimeout(() => playTone(783.99, 'sine', 0.18, 0.08), 120);
-  showToast('Jawaban tepat. Pemahaman materi modul telah diverifikasi.');
+  // AUDIT 10 Sep 2026 (M12): dulu berbunyi "Pemahaman materi modul telah
+  // diverifikasi" — kalimat yang mengaku ada pencatatan resmi, padahal
+  // blok ini murni peraga dan tidak menulis apa pun. Kuis SUNGGUHAN ada di
+  // js/ui/kuis.js dan XP-nya dicatat server.
+  showToast('Jawaban tepat!');
 }

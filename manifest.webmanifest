@@ -1,11 +1,11 @@
 {
-  "id": "/prototype.html",
+  "id": "/",
   "name": "PERISA Azhariyah — Belajar Bahasa Arab",
   "short_name": "PERISA",
   "description": "Aplikasi pembelajaran Bahasa Arab interaktif berbasis game untuk santri jenjang SD, SMP, dan SMA. Asuhan Umi Elly — Yayasan Peradaban Islam Azhariyah.",
   "lang": "id",
   "dir": "ltr",
-  "start_url": "/prototype.html",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
@@ -30,7 +30,7 @@
       "name": "Lanjutkan Belajar",
       "short_name": "Belajar",
       "description": "Buka modul kurikulum Bahasa Arab yang terakhir dipelajari",
-      "url": "/prototype.html?view=kurikulum",
+      "url": "/?view=kurikulum",
       "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
@@ -41,17 +41,10 @@
       "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
-      "name": "Asisten Bahasa Arab",
-      "short_name": "Asisten",
-      "description": "Konsultasi kaidah Nahwu-Shorof",
-      "url": "/prototype.html?view=ai-assistant",
-      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
-    },
-    {
       "name": "Perpustakaan Silabus",
       "short_name": "Silabus",
       "description": "Arsip modul dan dokumen PDF resmi yayasan",
-      "url": "/prototype.html?view=modul-pdf",
+      "url": "/?view=modul-pdf",
       "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]

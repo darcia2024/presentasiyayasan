@@ -1,121 +1,178 @@
-// PERISA AZHARIYAH — Edge Function: kirim jawaban kuis, hitung XP di server.
+// PERISA AZHARIYAH — Edge Function: jawab soal kuis, hitung XP di server.
 //
-// POST { santri_id, pelajaran_id, mufrodat_id, jawaban_mufrodat_id }
+// POST { soal_token: string, pilihan: string }
 //   (header Authorization: Bearer <sesi JWT>)
-// -> { ok: true, benar: boolean, xpDidapat: number, sudahPernah: boolean,
-//      pelajaranSelesai: boolean, lencanaBaru: string[] }
+// -> { ok: true, benar, xpDidapat, sudahPernah, pelajaranSelesai,
+//      lencanaBaru, kunciBenar, artiBenar }
 // -> { ok: false, error: string }
 //
-// SATU-SATUNYA jalan xp_log/progres_santri/santri_lencana terisi — RLS dari
-// Fase 1 sengaja tidak punya kebijakan insert untuk tabel-tabel itu dari
-// klien mana pun. Bentuk pertanyaan: santri diperlihatkan satu mufrodat
-// (arab+latin) dan beberapa pilihan arti (satu benar, sisanya dari mufrodat
-// lain) — jawaban yang dikirim adalah ID mufrodat mana yang dipilih, bukan
-// teks bebas, supaya perbandingan "benar/salah" tidak ambigu.
+// ============================== AUDIT 10 Sep 2026 (K2) =====================
+// KONTRAK LAMA (rusak):
+//   { santri_id, pelajaran_id, mufrodat_id, jawaban_mufrodat_id }
+//   benar = (jawaban_mufrodat_id === mufrodat_id)
+//
+// Klien mengirim soalnya DAN jawabannya, lalu server memeriksa apakah dua
+// nilai yang sama-sama dikirim klien itu sama. Tidak ada penilaian di sana.
+// Satu perulangan di konsol peramban yang mengirim pasangan identik untuk
+// setiap mufrodat memberi XP penuh dan seluruh lencana tanpa membuka satu
+// pelajaran pun.
+//
+// KONTRAK BARU:
+//   { soal_token, pilihan }
+//
+// Permintaan klien TIDAK LAGI MEMBAWA WEWENANG APA PUN. Tidak ada santri_id
+// (dibaca dari baris soal), tidak ada pelajaran_id (idem), tidak ada
+// mufrodat_id, dan tidak ada satu pun nilai di dalamnya yang menentukan
+// benar/salah. Semua itu dibaca dari baris kuis_soal yang DITULIS SERVER
+// saat soal diterbitkan lewat Edge Function kuis-soal.
+//
+// Empat penjaga:
+//   1. Token harus ada di kuis_soal              -> tidak bisa mengarang soal.
+//   2. Sesi harus berhak atas santri di baris itu -> tidak bisa menjawab soal anak lain.
+//   3. Belum kedaluwarsa                          -> soal tidak bisa ditimbun.
+//   4. UPDATE bersyarat `dijawab_at is null`      -> satu soal satu jawaban (anti-replay).
+//
+// Indeks unik parsial xp_log (santri_id, mufrodat_id) dari Fase 4 tetap
+// jadi lapis terakhir: satu mufrodat hanya pernah memberi XP sekali,
+// berapa kali pun soalnya muncul lagi.
+// ===========================================================================
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { corsHeaders, handlePreflight, jsonResponse } from '../_shared/cors.ts';
-import { verifikasiSessionJwt } from '../_shared/session-jwt.ts';
-import { periksaSantriBolehBelajar, periksaStaffAktif } from '../_shared/akun-aktif.ts';
+import { gerbangCors, balasJson } from '../_shared/cors.ts';
+import { bacaSesiDariHeader } from '../_shared/sesi.ts';
+import { periksaSantriBolehBelajar, periksaStaffAktif, KOLOM_STAFF } from '../_shared/akun-aktif.ts';
+import { bacaOpsiTersimpan, nilaiJawaban } from '../_shared/kuis.ts';
+import { hitungStreakHariWib } from '../_shared/waktu.ts';
 
 const supabase = createClient(
   Deno.env.get('SUPABASE_URL')!,
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
 );
 
-const XP_PER_JAWABAN_BENAR = 10;
+const XP_PER_JAWABAN_BENAR = Number(Deno.env.get('XP_PER_JAWABAN_BENAR') || '10');
 
 Deno.serve(async (req) => {
-  const preflight = handlePreflight(req);
-  if (preflight) return preflight;
+  // AUDIT 10 Sep 2026 (S6): CORS ber-allowlist. gerbangCors() menangani
+  // preflight OPTIONS sekaligus menolak origin yang tidak terdaftar
+  // sebelum satu baris logika pun berjalan.
+  const cors = gerbangCors(req);
+  if (cors.respons) return cors.respons;
+  const hCors = cors.headers;
 
   try {
-    const authHeader = req.headers.get('Authorization') || '';
-    const token = authHeader.replace(/^Bearer\s+/i, '');
-    if (!token) {
-      return jsonResponse({ ok: false, error: 'Sesi tidak ditemukan. Silakan masuk kembali.' }, 401);
-    }
-
-    let sesi;
-    try {
-      sesi = await verifikasiSessionJwt(token);
-    } catch {
-      return jsonResponse({ ok: false, error: 'Sesi tidak valid atau sudah kedaluwarsa.' }, 401);
-    }
+    const hasilSesi = await bacaSesiDariHeader(req, hCors);
+    if (!hasilSesi.ok) return hasilSesi.respons;
+    const { sesi } = hasilSesi;
 
     const body = await req.json().catch(() => null);
-    const { santri_id, pelajaran_id, mufrodat_id, jawaban_mufrodat_id } = body || {};
-    if (!santri_id || !pelajaran_id || !mufrodat_id || !jawaban_mufrodat_id) {
-      return jsonResponse({ ok: false, error: 'santri_id, pelajaran_id, mufrodat_id, dan jawaban_mufrodat_id wajib diisi.' }, 400);
+    const soalToken = body?.soal_token;
+    const pilihan = body?.pilihan;
+    if (typeof soalToken !== 'string' || !soalToken) {
+      return balasJson(hCors, { ok: false, error: 'soal_token wajib diisi.' }, 400);
     }
 
-    // Wali hanya boleh mengirim jawaban ATAS NAMA anaknya sendiri — tidak
-    // cukup mengandalkan RLS (kita pakai service_role di sini), jadi
-    // pengecekan kepemilikan ini WAJIB dilakukan manual.
+    /* ------------------------------------------- 1. token harus soal nyata */
+    const { data: soal, error: errSoal } = await supabase
+      .from('kuis_soal')
+      .select('id, santri_id, pelajaran_id, mufrodat_id, opsi, expires_at, dijawab_at')
+      .eq('id', soalToken)
+      .maybeSingle();
+
+    if (errSoal || !soal) {
+      return balasJson(hCors, { ok: false, error: 'Soal tidak dikenali. Muat ulang kuisnya.' }, 404);
+    }
+
+    /* ------------------ 2. sesi harus berhak atas santri di baris soal ini */
+    // Diperiksa terhadap baris, BUKAN terhadap apa pun yang dikirim klien.
     const { data: santri, error: errSantri } = await supabase
       .from('santri')
       .select('id, wali_id, status')
-      .eq('id', santri_id)
+      .eq('id', soal.santri_id)
       .maybeSingle();
-
     if (errSantri || !santri) {
-      return jsonResponse({ ok: false, error: 'Santri tidak ditemukan.' }, 404);
+      return balasJson(hCors, { ok: false, error: 'Santri tidak ditemukan.' }, 404);
     }
 
-    // AUDIT 5 Sep 2026: dulu di sini hanya dicek kepemilikan wali, sehingga
-    // santri yang sudah DINONAKTIFKAN pengurus masih bisa mengumpulkan XP.
     const izin = periksaSantriBolehBelajar(santri, sesi);
-    if (!izin.boleh) {
-      return jsonResponse({ ok: false, error: izin.alasan! }, 403);
-    }
+    if (!izin.boleh) return balasJson(hCors, { ok: false, error: izin.alasan! }, 403);
+
     // Staff juga harus masih hidup — service_role melewati RLS, jadi
-    // perbaikan pencabutan sesi di RLS tidak berlaku di jalur ini.
+    // pencabutan akses di lapisan RLS tidak berlaku di jalur ini.
     if (sesi.akunJenis === 'staff') {
-      const staffOk = await periksaStaffAktif(supabase, sesi);
-      if (!staffOk.boleh) return jsonResponse({ ok: false, error: staffOk.alasan! }, 403);
+      const { data: barisStaff } = await supabase.from('staff').select(KOLOM_STAFF).eq('id', sesi.akunId).maybeSingle();
+      const staffOk = periksaStaffAktif(barisStaff, sesi);
+      if (!staffOk.boleh) return balasJson(hCors, { ok: false, error: staffOk.alasan! }, 403);
     }
 
-    // Pelajaran + modulnya harus terbit — mencegah XP didapat dari konten
-    // yang masih draf (mis. staff sedang uji coba, atau bug di klien).
-    const { data: pelajaran, error: errPelajaran } = await supabase
-      .from('pelajaran')
-      .select('id, modul:modul_id(id, status)')
-      .eq('id', pelajaran_id)
-      .maybeSingle();
-
-    const modulStatus = (pelajaran as unknown as { modul: { status: string } } | null)?.modul?.status;
-    if (errPelajaran || !pelajaran || modulStatus !== 'terbit') {
-      return jsonResponse({ ok: false, error: 'Pelajaran ini belum tersedia.' }, 404);
+    /* --------------------------------------------------- 3. masa berlaku */
+    if (new Date(soal.expires_at).getTime() < Date.now()) {
+      return balasJson(hCors, { ok: false, error: 'Soal ini sudah kedaluwarsa. Minta soal baru.' }, 410);
+    }
+    if (soal.dijawab_at) {
+      return balasJson(hCors, { ok: false, error: 'Soal ini sudah dijawab. Minta soal baru.' }, 409);
     }
 
-    const { data: mufrodat, error: errMufrodat } = await supabase
-      .from('mufrodat')
-      .select('id, pelajaran_id, arab')
-      .eq('id', mufrodat_id)
-      .eq('pelajaran_id', pelajaran_id)
-      .maybeSingle();
-
-    if (errMufrodat || !mufrodat) {
-      return jsonResponse({ ok: false, error: 'Mufrodat tidak ditemukan di pelajaran ini.' }, 404);
+    /* ------------------------------------------------- penilaian di server */
+    const opsi = bacaOpsiTersimpan(soal.opsi);
+    if (!opsi) {
+      console.error('[submit-jawaban] baris kuis_soal rusak, opsi tidak terbaca:', soal.id);
+      return balasJson(hCors, { ok: false, error: 'Soal ini rusak. Minta soal baru.' }, 500);
     }
 
-    const benar = jawaban_mufrodat_id === mufrodat_id;
-
-    if (!benar) {
-      return jsonResponse({ ok: true, benar: false, xpDidapat: 0, sudahPernah: false, pelajaranSelesai: false, lencanaBaru: [] });
+    const penilaian = nilaiJawaban(opsi, pilihan, soal.mufrodat_id);
+    if (!penilaian.kunciDikenal) {
+      // Pilihan yang tidak ada di soal ini. Sengaja TIDAK menghanguskan
+      // soalnya: ini hampir selalu bug klien atau klik ganda, bukan
+      // kecurangan — dan menghanguskannya akan menghukum anak yang salah.
+      return balasJson(hCors, { ok: false, error: 'Pilihan tidak dikenali untuk soal ini.' }, 400);
     }
 
-    // Coba catat XP. Index unik parsial (santri_id, mufrodat_id) di basis
-    // data yang menegakkan "sekali per mufrodat" — kalau sudah pernah
-    // benar sebelumnya, INSERT ini akan gagal dengan kode 23505, dan itu
-    // BUKAN error, cuma berarti tidak ada XP baru kali ini.
+    /* ------------------------------------ 4. klaim sekali jawab (anti-replay) */
+    // UPDATE bersyarat: kalau ada permintaan lain yang lebih dulu menandai
+    // baris ini, `select` di bawah mengembalikan NOL baris dan kita berhenti.
+    // Ini satu-satunya tempat "sudah dijawab atau belum" diputuskan — bukan
+    // pembacaan di atas, yang bisa kalah balapan.
+    const { data: diklaim, error: errKlaim } = await supabase
+      .from('kuis_soal')
+      .update({ dijawab_at: new Date().toISOString(), benar: penilaian.benar })
+      .eq('id', soal.id)
+      .is('dijawab_at', null)
+      .select('id');
+
+    if (errKlaim) {
+      console.error('[submit-jawaban] gagal mengklaim soal:', errKlaim.message);
+      return balasJson(hCors, { ok: false, error: 'Gagal mencatat jawaban. Coba lagi.' }, 500);
+    }
+    if (!diklaim || !diklaim.length) {
+      return balasJson(hCors, { ok: false, error: 'Soal ini sudah dijawab. Minta soal baru.' }, 409);
+    }
+
+    const artiBenar = await ambilArti(soal.mufrodat_id);
+
+    if (!penilaian.benar) {
+      return balasJson(hCors, {
+        ok: true,
+        benar: false,
+        xpDidapat: 0,
+        sudahPernah: false,
+        pelajaranSelesai: false,
+        lencanaBaru: [],
+        kunciBenar: penilaian.kunciBenar,
+        artiBenar,
+      });
+    }
+
+    /* --------------------------------------------------------------- XP */
+    // Indeks unik parsial (santri_id, mufrodat_id) menegakkan "sekali per
+    // mufrodat". Pelanggarannya (23505) BUKAN error — cuma berarti tidak
+    // ada XP baru kali ini.
     let sudahPernah = false;
     const { error: errXp } = await supabase.from('xp_log').insert({
-      santri_id,
+      santri_id: soal.santri_id,
       jumlah: XP_PER_JAWABAN_BENAR,
-      alasan: `Menjawab benar: ${mufrodat.arab}`,
-      pelajaran_id,
-      mufrodat_id,
+      alasan: `Menjawab benar: ${await ambilArab(soal.mufrodat_id)}`,
+      pelajaran_id: soal.pelajaran_id,
+      mufrodat_id: soal.mufrodat_id,
     });
 
     if (errXp) {
@@ -123,32 +180,45 @@ Deno.serve(async (req) => {
         sudahPernah = true;
       } else {
         console.error('[submit-jawaban] gagal mencatat XP:', errXp.message);
-        return jsonResponse({ ok: false, error: 'Gagal mencatat jawaban. Coba lagi.' }, 500);
+        return balasJson(hCors, { ok: false, error: 'Gagal mencatat jawaban. Coba lagi.' }, 500);
       }
     }
 
-    const pelajaranSelesai = await perbaruiProgres(santri_id, pelajaran_id);
-    const lencanaBaru = sudahPernah ? [] : await periksaLencana(santri_id);
+    const pelajaranSelesai = await perbaruiProgres(soal.santri_id, soal.pelajaran_id);
+    const lencanaBaru = sudahPernah ? [] : await periksaLencana(soal.santri_id);
 
-    return jsonResponse({
+    return balasJson(hCors, {
       ok: true,
       benar: true,
       xpDidapat: sudahPernah ? 0 : XP_PER_JAWABAN_BENAR,
       sudahPernah,
       pelajaranSelesai,
       lencanaBaru,
+      kunciBenar: penilaian.kunciBenar,
+      artiBenar,
     });
   } catch (err) {
     console.error('[submit-jawaban] gagal:', err);
-    return jsonResponse({ ok: false, error: 'Terjadi kesalahan di server. Coba lagi.' }, 500);
+    return balasJson(hCors, { ok: false, error: 'Terjadi kesalahan di server. Coba lagi.' }, 500);
   }
 });
 
+async function ambilArti(mufrodatId: string): Promise<string> {
+  const { data } = await supabase.from('mufrodat').select('arti').eq('id', mufrodatId).maybeSingle();
+  return data?.arti ?? '';
+}
+
+async function ambilArab(mufrodatId: string): Promise<string> {
+  const { data } = await supabase.from('mufrodat').select('arab').eq('id', mufrodatId).maybeSingle();
+  return data?.arab ?? '';
+}
+
 /**
  * Tandai pelajaran selesai kalau SEMUA mufrodat di dalamnya sudah pernah
- * dijawab benar minimal sekali. Dipanggil setiap kali jawaban benar masuk
- * — sederhana (menghitung ulang, bukan menyimpan penghitung terpisah),
- * karena volume mufrodat per pelajaran kecil (puluhan, bukan ribuan).
+ * dijawab benar minimal sekali. Dihitung ulang dari xp_log, bukan disimpan
+ * sebagai penghitung terpisah — volume mufrodat per pelajaran kecil
+ * (puluhan), dan dua sumber angka yang bisa tidak sinkron lebih mahal
+ * daripada satu hitungan ulang.
  */
 async function perbaruiProgres(santriId: string, pelajaranId: string): Promise<boolean> {
   const { count: totalMufrodat } = await supabase
@@ -183,8 +253,11 @@ async function perbaruiProgres(santriId: string, pelajaranId: string): Promise<b
  * Cek tiga lencana Fase 4. Dipanggil setelah XP baru tercatat (bukan
  * setiap jawaban benar berulang) — santri_lencana.PRIMARY KEY(santri_id,
  * lencana_id) sendiri sudah mencegah lencana yang sama diberikan dua kali,
- * insert di sini murni jaring pengaman kedua (pelanggaran PK -> 23505,
- * ditangkap dan diperlakukan sebagai "sudah pernah", bukan error).
+ * insert di sini murni jaring pengaman kedua.
+ *
+ * AUDIT 10 Sep 2026 (M10): streak dihitung menurut kalender WIB lewat
+ * _shared/waktu.ts, bukan UTC. Sebelumnya belajar sebelum pukul 07.00 WIB
+ * tercatat sebagai hari sebelumnya.
  */
 async function periksaLencana(santriId: string): Promise<string[]> {
   const { data: lencanaList } = await supabase.from('lencana').select('id, kode');
@@ -199,7 +272,7 @@ async function periksaLencana(santriId: string): Promise<string[]> {
 
   const baris: { mufrodat_id: string; created_at: string }[] = xpRows || [];
   const mufrodatUnik = new Set(baris.map((r) => r.mufrodat_id)).size;
-  const streak = hitungStreakHari(baris.map((r) => r.created_at));
+  const streak = hitungStreakHariWib(baris.map((r) => r.created_at));
 
   const layak: string[] = [];
   if (mufrodatUnik >= 1) layak.push('mufrodat_pertama');
@@ -212,9 +285,6 @@ async function periksaLencana(santriId: string): Promise<string[]> {
   for (const kode of layak) {
     const lencanaId = idByKode.get(kode);
     if (!lencanaId) continue;
-    // Insert biasa + tangkap pelanggaran primary key (23505) — pola yang
-    // sama persis dengan pengecekan XP di atas. Lebih pasti daripada
-    // mengandalkan semantik `count` pada upsert.
     const { error } = await supabase.from('santri_lencana').insert({ santri_id: santriId, lencana_id: lencanaId });
     if (!error) {
       diterbitkan.push(kode); // baris baru benar-benar tersisip -> lencana baru
@@ -224,18 +294,4 @@ async function periksaLencana(santriId: string): Promise<string[]> {
   }
 
   return diterbitkan;
-}
-
-/** Hitung berapa hari BERTURUT-TURUT (termasuk hari ini) ada XP tercatat. */
-function hitungStreakHari(tanggalIso: string[]): number {
-  const hariUnik = new Set(tanggalIso.map((t) => t.slice(0, 10))); // 'YYYY-MM-DD'
-  let streak = 0;
-  const cursor = new Date();
-  for (;;) {
-    const kunci = cursor.toISOString().slice(0, 10);
-    if (!hariUnik.has(kunci)) break;
-    streak++;
-    cursor.setUTCDate(cursor.getUTCDate() - 1);
-  }
-  return streak;
 }

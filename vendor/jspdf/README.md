@@ -12,7 +12,7 @@ SHA-256: `98ccf17aa10c20bb1301762618fcc9b6ab3a4e7f26b6071d64d0b41154df3875`
 
 Lisensi: MIT.
 
-**PENTING — TIDAK dimuat statis di `prototype.html` dan TIDAK ikut
+**PENTING — TIDAK dimuat statis di `index.html` dan TIDAK ikut
 precache app shell (`tools/stamp-version.js`).** Berkas ini ~360 KB dan
 cuma dipakai staff pengurus saat menerbitkan sertifikat — memaksa setiap
 santri mengunduhnya di jaringan lambat melanggar prinsip Fase 0. Dimuat

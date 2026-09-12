@@ -4,16 +4,42 @@
  *
  * MASALAH YANG DIPECAHKAN
  * Sebelum berkas ini ada, setiap rilis menuntut lima suntingan manual:
- * `SW_VERSION` di sw.js plus empat parameter `?v=` di prototype.html. Kalau
+ * `SW_VERSION` di sw.js plus empat parameter `?v=` di index.html. Kalau
  * satu saja terlewat, service worker menyajikan campuran berkas lama dan baru
  * — dan karena tersimpan di cache perangkat, pengguna sulit keluar dari
  * kondisi itu sendiri.
  *
  * Sekarang satu-satunya sumber kebenaran adalah `version` di package.json.
  *
+ * ========================= AUDIT 10 Sep 2026 (M16) ========================
+ * TEMUAN: seluruh mesin di berkas ini sudah benar — tapi tidak pernah
+ * dipakai. `version` di package.json TETAP 1.0.0 sepanjang tujuh fase
+ * pembangunan, jadi SW_VERSION selamanya 'perisa-v1.0.0' dan setiap
+ * `?v=1.0.0` tidak pernah berubah. Cap versi yang tidak pernah berubah
+ * sama saja dengan tidak ada cap versi: perangkat yang sudah memasang PWA
+ * menyajikan berkas lama karena URL-nya identik.
+ *
+ * Akar masalahnya bukan kelalaian satu orang, melainkan rancangan yang
+ * MENUNTUT DISIPLIN MANUSIA: seseorang harus ingat menjalankan
+ * `npm run release:patch` sebelum setiap penerbitan.
+ *
+ * PERBAIKANNYA: cap sekarang dihitung dari ISI BERKASNYA.
+ *   - `?v=` tiap berkas memakai hash isi berkas itu sendiri, jadi berkas
+ *     yang TIDAK berubah tidak ikut diunduh ulang.
+ *   - SW_VERSION memakai hash gabungan seluruh app shell, jadi cache
+ *     service worker otomatis batal begitu ada satu berkas shell berubah.
+ * Tidak ada lagi yang perlu diingat. Versi di package.json tetap dicap ke
+ * SW_VERSION sebagai label yang terbaca manusia saat membaca log.
+ *
+ * CATATAN DETERMINISME: hash dihitung setelah akhir baris dinormalkan
+ * (CRLF -> LF), supaya hasilnya sama di Windows dan di runner CI. Tanpa
+ * itu, pemeriksaan "hasil build harus sudah mutakhir" di CI akan selalu
+ * gagal di repo yang di-checkout dengan CRLF.
+ * ==========================================================================
+ *
  * PEMAKAIAN
- *   npm run stamp            perbarui cap versi dari package.json
- *   npm run release:patch    naikkan versi tambalan lalu cap ulang
+ *   npm run stamp            perbarui cap dari isi berkas
+ *   npm run release:patch    naikkan nomor versi (label) lalu cap ulang
  *   npm start                otomatis mengecap sebelum server menyala
  */
 
@@ -21,13 +47,40 @@
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const ROOT = path.join(__dirname, '..');
 const read = (f) => fs.readFileSync(path.join(ROOT, f), 'utf8');
 const write = (f, s) => fs.writeFileSync(path.join(ROOT, f), s);
 
 const VERSION = JSON.parse(read('package.json')).version;
-const SW_TAG = `perisa-v${VERSION}`;
+
+/** Akhiran berkas yang isinya teks — akhir barisnya dinormalkan sebelum di-hash. */
+const TEKS = /\.(js|mjs|css|html|json|webmanifest|svg|txt|map)$/i;
+
+/**
+ * Hash isi satu berkas. Untuk berkas teks, CRLF dinormalkan ke LF lebih
+ * dulu supaya hasilnya identik di Windows dan Linux — kalau tidak, cap
+ * versi akan berubah-ubah hanya karena beda sistem operasi.
+ */
+function hashBerkas(relatif) {
+  const penuh = path.join(ROOT, relatif);
+  if (!fs.existsSync(penuh)) return '0'.repeat(8);
+  const mentah = fs.readFileSync(penuh);
+  const isi = TEKS.test(relatif)
+    ? Buffer.from(mentah.toString('utf8').replace(/\r\n/g, '\n'), 'utf8')
+    : mentah;
+  return crypto.createHash('sha256').update(isi).digest('hex').slice(0, 8);
+}
+
+/**
+ * Berkas yang isinya BEDA PER LINGKUNGAN dan karena itu tidak boleh ikut
+ * menentukan cap versi. js/config.js dihasilkan saat build dari .env /
+ * Environment Variables, jadi menyertakannya membuat cap di laptop dan di
+ * CI selalu berbeda — dan pemeriksaan "hasil build sudah mutakhir" jadi
+ * mustahil lulus.
+ */
+const TIDAK_IKUT_HASH = new Set(['/js/config.js']);
 
 /* Berkas yang disajikan ke browser dan wajib ikut di-cap. */
 const VERSIONED_ASSETS = [
@@ -45,21 +98,19 @@ const VERSIONED_ASSETS = [
    berkas yang tidak ter-precache membuat aplikasi gagal dibuka saat luring. */
 const SHELL_ASSETS = [
   '/',
-  '/prototype.html',
+  '/index.html',
   '/prototype.css',
   '/prototype-mobile.css',
   '/prototype-mobile.js',
   '/js/app.js',
-  '/js/data/roles.js',
-  '/js/data/documents.js',
   '/js/core/feedback.js',
   '/js/core/speech.js',
   '/js/ui/syllabus.js',
-  '/js/ui/role.js',
+  '/js/ui/jenjang.js',
+  '/js/ui/beranda.js',
   '/js/ui/router.js',
   '/js/ui/course.js',
   '/js/ui/library.js',
-  '/js/ui/assistant.js',
   '/js/ui/shell.js',
   /* Fase 1 — konfigurasi & klien Supabase. config.js dihasilkan build
      (tools/gen-config.js); kalau belum dikonfigurasi isinya string kosong,
@@ -93,8 +144,6 @@ const SHELL_ASSETS = [
   '/js/core/html.js',
   '/js/core/script-loader.js',
   '/js/core/phone.js',
-  /* Fase 5 — Asisten Bahasa Arab. */
-  '/js/core/asisten-client.js',
   '/js/core/pengurus-client.js',
   '/js/ui/pengurus-panel.js',
   '/js/ui/sertifikat-admin.js',
@@ -124,20 +173,28 @@ const SHELL_ASSETS = [
 
 const changes = [];
 
-/* ---------------------------------------------- 1. prototype.html: ?v= */
-let html = read('prototype.html');
+/* ---------------------------------------------- 1. index.html: ?v= */
+let html = read('index.html');
 const htmlBefore = html;
+
+/**
+ * Cap per berkas = hash isi berkas itu sendiri. Konsekuensinya persis yang
+ * kita mau: berkas yang TIDAK berubah tetap punya URL yang sama, jadi
+ * tidak ikut diunduh ulang saat rilis. Dengan cap berbasis nomor versi,
+ * satu rilis membuang seluruh cache aset walau yang berubah cuma satu CSS.
+ */
+const capAset = new Map(VERSIONED_ASSETS.map((a) => [a, hashBerkas(a)]));
 
 VERSIONED_ASSETS.forEach((asset) => {
   const escaped = asset.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   // Cocokkan href/src berkas ini, dengan atau tanpa ?v= yang sudah ada.
   const re = new RegExp(`((?:href|src)=")${escaped}(?:\\?v=[^"]*)?(")`, 'g');
-  html = html.replace(re, `$1${asset}?v=${VERSION}$2`);
+  html = html.replace(re, `$1${asset}?v=${capAset.get(asset)}$2`);
 });
 
 if (html !== htmlBefore) {
-  write('prototype.html', html);
-  changes.push(`prototype.html  → ?v=${VERSION} pada ${VERSIONED_ASSETS.length} berkas`);
+  write('index.html', html);
+  changes.push(`index.html      → ?v=<hash isi> pada ${VERSIONED_ASSETS.length} berkas`);
 }
 
 /* Peringatkan bila ada berkas lokal ber-?v= yang belum terdaftar. */
@@ -152,6 +209,21 @@ if (untracked.length) {
 let sw = read('sw.js');
 const swBefore = sw;
 
+/*
+ * SW_VERSION = nomor versi (label yang terbaca manusia di log) + hash
+ * gabungan SELURUH app shell. Begitu satu berkas shell berubah isinya,
+ * nama cache ikut berubah, dan service worker membuang cache lama pada
+ * langkah 'activate'. Inilah yang membuat pembaruan sampai ke perangkat
+ * tanpa seorang pun harus ingat menaikkan nomor versi lebih dulu.
+ */
+const hashShell = crypto.createHash('sha256');
+for (const asset of SHELL_ASSETS) {
+  if (asset === '/' || TIDAK_IKUT_HASH.has(asset)) continue;
+  hashShell.update(asset).update(hashBerkas(asset.slice(1)));
+}
+const CAP_SHELL = hashShell.digest('hex').slice(0, 8);
+const SW_TAG = `perisa-v${VERSION}-${CAP_SHELL}`;
+
 sw = sw.replace(/const SW_VERSION\s*=\s*'[^']*';/, `const SW_VERSION   = '${SW_TAG}';`);
 
 /* Service worker mencocokkan cache dengan URL LENGKAP termasuk query string,
@@ -160,7 +232,7 @@ sw = sw.replace(/const SW_VERSION\s*=\s*'[^']*';/, `const SW_VERSION   = '${SW_T
    query-nya sekalian, kalau tidak jaminan luang-luringnya bolong. */
 const shellUrls = SHELL_ASSETS.map((asset) => {
   const bare = asset.replace(/^\//, '');
-  return VERSIONED_ASSETS.includes(bare) ? `${asset}?v=${VERSION}` : asset;
+  return VERSIONED_ASSETS.includes(bare) ? `${asset}?v=${capAset.get(bare)}` : asset;
 });
 
 const shellBlock = `const SHELL_ASSETS = [\n${shellUrls.map((a) => `  '${a}'`).join(',\n')}\n];`;
@@ -172,7 +244,7 @@ if (sw !== swBefore) {
 }
 
 /* --------------------------------------------------------- 3. Laporan */
-console.log(`\n  PERISA — cap versi ${VERSION}`);
+console.log(`\n  PERISA — versi ${VERSION}, cap shell ${CAP_SHELL}`);
 if (changes.length) {
   changes.forEach((c) => console.log(`  ✓ ${c}`));
 } else {

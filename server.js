@@ -26,49 +26,24 @@ const MIME_TYPES = {
   '.woff': 'font/woff'
 };
 
-// In-Memory Live Game Leaderboard & Question Bank
-const gameData = {
-  leaderboard: [
-    { rank: 1, name: 'M. Rizky Pratama', level: 'SMA Kelas 11', xp: 780, streak: 12 },
-    { rank: 2, name: 'Siti Nurhaliza', level: 'SMP Kelas 8', xp: 540, streak: 8 },
-    { rank: 3, name: 'Ahmad Fauzan', level: 'SMP Kelas 8', xp: 470, streak: 5 },
-    { rank: 4, name: 'Fajar Alamsyah', level: 'SD Kelas 5', xp: 390, streak: 6 },
-    { rank: 5, name: 'Aisyah Zahra', level: 'SD Kelas 6', xp: 320, streak: 4 }
-  ],
-  questions: {
-    sd: [
-      { id: 1, targetWord: 'المَكْتَبَةُ', translation: 'Perpustakaan', items: [
-        { word: 'المَكْتَبَةُ', correct: true },
-        { word: 'القَلَمُ', correct: false },
-        { word: 'البَابُ', correct: false }
-      ]},
-      { id: 2, targetWord: 'الكِتَابُ', translation: 'Buku Pelajaran', items: [
-        { word: 'الكِتَابُ', correct: true },
-        { word: 'المِسْطَرَةُ', correct: false },
-        { word: 'الكُرْسِيُّ', correct: false }
-      ]}
-    ],
-    smp: [
-      { id: 1, targetWord: 'هُوَ طَالِبٌ', translation: 'Dia (Laki-laki) Siswa', items: [
-        { word: 'هُوَ', correct: true },
-        { word: 'هِيَ', correct: false },
-        { word: 'هُمْ', correct: false }
-      ]},
-      { id: 2, targetWord: 'هِيَ طَالِبَةٌ', translation: 'Dia (Perempuan) Siswi', items: [
-        { word: 'هِيَ', correct: true },
-        { word: 'هُوَ', correct: false },
-        { word: 'أَنْتَ', correct: false }
-      ]}
-    ],
-    sma: [
-      { id: 1, targetWord: 'القَلَمُ عَلَى المَكْتَبِ', translation: 'Pena di atas meja', items: [
-        { word: 'عَلَى المَكْتَبِ', correct: true },
-        { word: 'فِي القَلَمِ', correct: false },
-        { word: 'مِنَ البَابِ', correct: false }
-      ]}
-    ]
-  }
-};
+/*
+ * PAPAN PERINGKAT & BANK SOAL PERAGA DIHAPUS — 12 September 2026.
+ *
+ * Di sini dulu ada objek `gameData`: lima nama santri karangan lengkap
+ * dengan XP dan streak ("M. Rizky Pratama 780 XP", "Siti Nurhaliza 540 XP",
+ * dst) plus enam soal pilihan ganda, disajikan lewat tiga endpoint
+ * /api/game/*. Bank soal SUNGGUHAN diterbitkan Edge Function `kuis-soal`
+ * dengan kunci jawaban yang tidak pernah dikirim ke browser (audit K2), dan
+ * papan peringkat sungguhan datang dari RPC `papan_peringkat()`.
+ *
+ * Endpoint-endpoint peraga itu tidak dipanggil dari mana pun — game2d.js
+ * tidak pernah menyentuhnya. Yang tersisa hanyalah lima nama karangan yang
+ * bisa dibaca siapa saja yang membuka /api/game/leaderboard di produksi.
+ *
+ * Service worker masih menyimpan aturan cache untuk /api/* (network-first).
+ * Aturan itu sengaja DIBIARKAN: dia tidak mengarang apa pun, dan endpoint
+ * yayasan berikutnya akan langsung memakainya.
+ */
 
 const server = http.createServer((req, res) => {
   const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
@@ -85,42 +60,8 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // API Routes
-  if (pathname === '/api/game/leaderboard' && req.method === 'GET') {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ success: true, data: gameData.leaderboard }));
-    return;
-  }
-
-  if (pathname === '/api/game/questions' && req.method === 'GET') {
-    const jenjang = parsedUrl.searchParams.get('jenjang') || 'smp';
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ success: true, data: gameData.questions[jenjang] || gameData.questions.smp }));
-    return;
-  }
-
-  if (pathname === '/api/game/score' && req.method === 'POST') {
-    let body = '';
-    req.on('data', chunk => { body += chunk; });
-    req.on('end', () => {
-      try {
-        const payload = JSON.parse(body);
-        const santri = gameData.leaderboard.find(s => s.name === payload.name);
-        if (santri) {
-          santri.xp += (payload.addedXp || 50);
-        }
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ success: true, message: '+50 XP berhasil dicatat ke server Node.js', updatedScore: santri ? santri.xp : 470 }));
-      } catch (err) {
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ success: false, error: err.message }));
-      }
-    });
-    return;
-  }
-
   // Static File Serving
-  let filePath = path.join(__dirname, pathname === '/' ? 'prototype.html' : pathname);
+  let filePath = path.join(__dirname, pathname === '/' ? 'index.html' : pathname);
 
   fs.stat(filePath, (err, stats) => {
     if (err || !stats.isFile()) {
@@ -154,9 +95,9 @@ server.listen(PORT, () => {
   console.log(`PERISA Arabic Learning Node.js Server & 2D Game Engine`);
   console.log(`Lingkungan:               ${NODE_ENV}`);
   console.log(`Server aktif berjalan di: ${BASE_URL}`);
-  console.log(`Prototype Live Demo:      http://localhost:${PORT}/prototype.html`);
+  console.log(`Aplikasi LMS (santri):    http://localhost:${PORT}/`);
   console.log(`2D Game Canvas Demo:     http://localhost:${PORT}/game2d.html`);
-  console.log(`Pitch Deck Presentation:  http://localhost:${PORT}/index.html`);
+  console.log(`Dek penawaran (internal): http://localhost:${PORT}/proposal.html`);
   console.log(`PWA Manifest:             http://localhost:${PORT}/manifest.webmanifest`);
   console.log(`Service Worker:           http://localhost:${PORT}/sw.js`);
   console.log(`=======================================================`);

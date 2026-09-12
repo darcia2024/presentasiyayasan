@@ -17,8 +17,10 @@
 // berarti dua sumber yang bisa tidak sinkron.
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { corsHeaders, handlePreflight, jsonResponse } from '../_shared/cors.ts';
-import { kirimPesanWhatsApp } from '../_shared/wa-gateway.ts';
+import { gerbangCors, balasJson } from '../_shared/cors.ts';
+import { kirimPesanWhatsApp, gatewaySiap } from '../_shared/wa-gateway.ts';
+import { appEnv } from '../_shared/env.ts';
+import { awalPekanWib } from '../_shared/waktu.ts';
 
 const supabase = createClient(
   Deno.env.get('SUPABASE_URL')!,
@@ -35,17 +37,34 @@ interface RingkasanSantri {
 }
 
 Deno.serve(async (req) => {
-  const preflight = handlePreflight(req);
-  if (preflight) return preflight;
+  // AUDIT 10 Sep 2026 (S6): CORS ber-allowlist. gerbangCors() menangani
+  // preflight OPTIONS sekaligus menolak origin yang tidak terdaftar
+  // sebelum satu baris logika pun berjalan.
+  const cors = gerbangCors(req);
+  if (cors.respons) return cors.respons;
+  const hCors = cors.headers;
 
   try {
     const cronSecret = Deno.env.get('CRON_SECRET');
     const headerSecret = req.headers.get('X-Cron-Secret') || '';
     if (!cronSecret || headerSecret !== cronSecret) {
-      return jsonResponse({ ok: false, error: 'Tidak berhak memicu pengiriman ini.' }, 401);
+      return balasJson(hCors, { ok: false, error: 'Tidak berhak memicu pengiriman ini.' }, 401);
     }
 
-    const mingguMulai = awalPekanIni();
+    // AUDIT 10 Sep 2026: kalau gateway belum siap di lingkungan nyata,
+    // berhenti SEBELUM memuat ratusan baris dan mencoba mengirim satu per
+    // satu — semuanya pasti gagal. Penjadwal melihat 503 dan mencobanya
+    // lagi sesuai kebijakan retry, bukan 200 yang menyamarkan nol kiriman
+    // sebagai keberhasilan.
+    if (!gatewaySiap()) {
+      console.error(`[kirim-ringkasan-mingguan] DITOLAK: gateway WA belum dikonfigurasi di APP_ENV=${appEnv()}`);
+      return balasJson(hCors, 
+        { ok: false, error: 'Gateway WhatsApp belum dikonfigurasi. Ringkasan mingguan tidak dikirim.' },
+        503,
+      );
+    }
+
+    const mingguMulai = awalPekanWib();
     const tujuhHariLalu = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
     const { data: santriAktif, error: errSantri } = await supabase
@@ -55,10 +74,10 @@ Deno.serve(async (req) => {
 
     if (errSantri) {
       console.error('[kirim-ringkasan-mingguan] gagal memuat santri:', errSantri.message);
-      return jsonResponse({ ok: false, error: 'Gagal memuat data santri.' }, 500);
+      return balasJson(hCors, { ok: false, error: 'Gagal memuat data santri.' }, 500);
     }
     if (!santriAktif || !santriAktif.length) {
-      return jsonResponse({ ok: true, waliDikirimi: 0, santriDicakup: 0, modePengembangan: false });
+      return balasJson(hCors, { ok: true, waliDikirimi: 0, santriDicakup: 0, modePengembangan: false });
     }
 
     const idSantri = santriAktif.map((s: { id: string }) => s.id);
@@ -176,22 +195,14 @@ Deno.serve(async (req) => {
       santriDicakup += daftarAnak.length;
     }
 
-    return jsonResponse({ ok: true, waliDikirimi, waliGagal, santriDicakup, modePengembangan });
+    return balasJson(hCors, { ok: true, waliDikirimi, waliGagal, santriDicakup, modePengembangan });
   } catch (err) {
     console.error('[kirim-ringkasan-mingguan] gagal:', err);
-    return jsonResponse({ ok: false, error: 'Terjadi kesalahan di server. Coba lagi.' }, 500);
+    return balasJson(hCors, { ok: false, error: 'Terjadi kesalahan di server. Coba lagi.' }, 500);
   }
 });
 
 /** Tanggal Senin (00:00 WIB) awal pekan berjalan, format YYYY-MM-DD. */
-function awalPekanIni(): string {
-  const sekarangWib = new Date(Date.now() + 7 * 60 * 60 * 1000); // geser ke UTC+7
-  const hari = sekarangWib.getUTCDay(); // 0=Minggu .. 6=Sabtu (dalam basis UTC yang sudah digeser)
-  const selisihKeSenin = hari === 0 ? 6 : hari - 1;
-  sekarangWib.setUTCDate(sekarangWib.getUTCDate() - selisihKeSenin);
-  return sekarangWib.toISOString().slice(0, 10);
-}
-
 function susunPesan(namaWali: string, daftarAnak: RingkasanSantri[]): string {
   const baris = daftarAnak.map((anak) => {
     const bagian = [`Pekan ini *${anak.nama}* menguasai *${anak.mufrodatBaru} kosakata baru* (+${anak.xpPekan} XP)`];

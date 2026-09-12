@@ -4,34 +4,64 @@ name: Cadangan Basis Data PERISA
 #
 # Supabase tier gratis TIDAK menyediakan cadangan harian otomatis (itu
 # fitur tier Pro ke atas) — jadi kita jalankan sendiri lewat GitHub
-# Actions, gratis, tanpa infrastruktur tambahan. Hasilnya pg_dump format
-# custom (bisa dipulihkan dengan pg_restore), diunggah ke bucket privat
-# backups-db (RLS aktif, NOL kebijakan — cuma bisa disentuh lewat
-# SUPABASE_SERVICE_ROLE_KEY, lihat migrasi 20260905000001).
+# Actions, gratis, tanpa infrastruktur tambahan.
 #
-# AGAR JALAN — repo ini perlu tiga secret (Settings > Secrets and
-# variables > Actions), diisi SEKALI oleh pemilik repo:
-#   SUPABASE_DB_URL           connection string pooler MODE SESI (port 5432)
-#   SUPABASE_URL              https://<ref>.supabase.co
-#   SUPABASE_SERVICE_ROLE_KEY kunci service_role (BUKAN anon)
+# ============================ AUDIT 10 Sep 2026 (M13) ======================
+# TEMUAN: seluruh cadangan disimpan di bucket `backups-db` YANG BERADA DI
+# PROJECT SUPABASE YANG SAMA dengan basis data yang dicadangkan. Kalau
+# project itu terhapus, tersuspensi karena tagihan, atau akunnya diambil
+# alih, cadangannya ikut hilang bersama aslinya. Cadangan yang hanya ada
+# di dalam sistem yang dicadangkan bukan cadangan — itu salinan.
+#
+# PERBAIKANNYA: tujuan cadangan sekarang BISA LEBIH DARI SATU dan
+# dikonfigurasi, bukan ditanam di kode:
+#
+#   1. supabase   — bucket backups-db (seperti sebelumnya). Cepat, tapi
+#                   TIDAK memenuhi syarat "di luar sistem".
+#   2. artifact   — artefak GitHub Actions, TERENKRIPSI. Ini penyimpanan
+#                   di luar Supabase yang TIDAK BUTUH akun/kredensial
+#                   pihak ketiga baru sama sekali, jadi bisa langsung
+#                   dipakai. Retensi diatur GitHub (baku 90 hari).
+#   3. s3         — penyimpanan apa pun yang bicara protokol S3 (Cloudflare
+#                   R2, Backblaze B2, Wasabi, AWS S3). Mekanismenya sudah
+#                   ada di bawah; yang belum: KREDENSIALNYA, karena memilih
+#                   penyedia dan membuat akunnya adalah keputusan pemilik.
+#
+# Tujuan dipilih lewat repository variable BACKUP_DESTINATIONS, mis.
+#   BACKUP_DESTINATIONS = supabase,artifact
+# Baku (kalau variabelnya kosong): supabase,artifact.
+#
+# ENKRIPSI. Cadangan berisi nama, tanggal lahir, dan nomor WhatsApp
+# keluarga sungguhan. Sebelum keluar dari Supabase, berkasnya dienkripsi
+# dengan AES-256 memakai secret BACKUP_ENCRYPTION_PASSPHRASE. Kalau secret
+# itu BELUM diisi, tujuan di luar Supabase DILEWATI dengan peringatan —
+# bukan diunggah apa adanya. Gagal tertutup, sama seperti gerbang lain di
+# proyek ini.
+# ===========================================================================
 #
 # DUA JEBAKAN yang menggagalkan run pertama (5 Sep 2026, run #1) — keduanya
 # sudah ditangani di bawah, dicatat di sini supaya tidak terulang:
 #
 #   1. VERSI. Server Supabase ini Postgres 17.6, sedangkan runner
 #      ubuntu-latest memasang postgresql-client 16 lewat apt biasa.
-#      pg_dump MENOLAK men-dump server yang lebih baru dari dirinya dan
-#      langsung berhenti. Karena itu klien 17 dipasang dari repo PGDG.
+#      pg_dump MENOLAK men-dump server yang lebih baru dari dirinya.
+#      Karena itu klien 17 dipasang dari repo PGDG.
 #
 #   2. MODE POOLER. Port 6543 adalah pooler mode TRANSAKSI: state sesi
-#      tidak dipertahankan antar perintah, sedangkan pg_dump butuh itu
-#      (ia memegang satu transaksi snapshot sepanjang dump). Port 5432 di
-#      host pooler yang sama adalah mode SESI dan menerima kredensial yang
-#      sama persis. Langkah dump menormalkan port ini sendiri, jadi secret
-#      yang terlanjur diisi dengan 6543 tetap jalan.
+#      tidak dipertahankan antar perintah, sedangkan pg_dump butuh itu.
+#      Port 5432 di host yang sama adalah mode SESI. Langkah dump
+#      menormalkan port ini sendiri.
 #
-# PEMULIHAN — lihat docs/pemulihan-bencana.md untuk langkah lengkap dan
-# hasil uji pemulihan yang sudah pernah dijalankan.
+# AGAR JALAN — tiga secret (Settings > Secrets and variables > Actions):
+#   SUPABASE_DB_URL           connection string pooler MODE SESI (port 5432)
+#   SUPABASE_URL              https://<ref>.supabase.co
+#   SUPABASE_SERVICE_ROLE_KEY kunci service_role (BUKAN anon)
+# Ditambah satu yang SANGAT DIANJURKAN:
+#   BACKUP_ENCRYPTION_PASSPHRASE  frasa sandi panjang & acak. SIMPAN JUGA
+#                                 DI LUAR GITHUB — tanpa frasa ini
+#                                 cadangannya tidak bisa dibuka lagi.
+#
+# PEMULIHAN — lihat docs/pemulihan-bencana.md.
 
 on:
   schedule:
@@ -39,9 +69,14 @@ on:
     - cron: '0 18 * * *'
   workflow_dispatch: {}
 
+concurrency:
+  group: cadangan-basis-data
+  cancel-in-progress: false
+
 jobs:
   backup:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       # apt bawaan Ubuntu hanya sampai klien 16; server kita 17. Repo PGDG
       # resmi menyediakan klien 17 untuk rilis Ubuntu apa pun yang dipakai
@@ -77,9 +112,6 @@ jobs:
               ;;
           esac
 
-          # Gagal karena beda versi berbunyi "server version mismatch" dan
-          # mudah disalahartikan sebagai masalah jaringan. Dicetak lebih dulu
-          # supaya penyebabnya kelihatan langsung di log.
           echo "Versi klien : $(pg_dump --version | grep -oE '[0-9]+\.[0-9]+' | head -1)"
           echo "Versi server: $(psql "$DB_URL" -tAc 'show server_version' 2>/dev/null || echo '(tidak terbaca)')"
 
@@ -92,20 +124,55 @@ jobs:
           # lebih berbahaya daripada cadangan yang gagal terang-terangan.
           UKURAN=$(stat -c %s "$FILENAME")
           if [ "$UKURAN" -lt 4096 ]; then
-            echo "Cadangan mencurigakan: hanya ${UKURAN} byte — dianggap gagal."
+            echo "::error::Cadangan mencurigakan: hanya ${UKURAN} byte — dianggap gagal."
             exit 1
           fi
-          pg_restore --list "$FILENAME" > /dev/null
+
+          # Verifikasi isi: pg_restore harus bisa membaca daftar objeknya,
+          # DAN daftar itu harus memuat tabel-tabel inti. Berkas yang
+          # strukturnya utuh tapi isinya bukan basis data kita tetap gagal.
+          pg_restore --list "$FILENAME" > /tmp/daftar-objek.txt
+          for TABEL in wali santri modul xp_log sertifikat; do
+            if ! grep -q "TABLE DATA public $TABEL" /tmp/daftar-objek.txt; then
+              echo "::error::Cadangan tidak memuat tabel '$TABEL' — isinya tidak utuh."
+              exit 1
+            fi
+          done
+          echo "Verifikasi isi: 5 tabel inti ditemukan di dalam cadangan."
 
           echo "FILENAME=$FILENAME" >> "$GITHUB_ENV"
-          echo "Ukuran cadangan: $(du -h "$FILENAME" | cut -f1) (${UKURAN} byte), isi terbaca oleh pg_restore."
+          echo "UKURAN=$UKURAN" >> "$GITHUB_ENV"
+          echo "Ukuran cadangan: $(du -h "$FILENAME" | cut -f1) (${UKURAN} byte)."
 
+      - name: Enkripsi cadangan (untuk tujuan di luar Supabase)
+        id: enkripsi
+        env:
+          FRASA: ${{ secrets.BACKUP_ENCRYPTION_PASSPHRASE }}
+        run: |
+          set -euo pipefail
+          if [ -z "${FRASA:-}" ]; then
+            echo "::warning::BACKUP_ENCRYPTION_PASSPHRASE belum diisi. Cadangan TIDAK akan dikirim ke tujuan di luar Supabase — data keluarga sungguhan tidak diunggah tanpa enkripsi."
+            echo "siap=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # AES-256-CBC + PBKDF2. openssl selalu ada di runner ubuntu-latest,
+          # jadi tidak ada alat tambahan yang perlu dipasang — dan membuka
+          # kembali cadangannya cuma butuh openssl, yang ada di mana-mana:
+          #   openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 \
+          #     -in berkas.dump.enc -out berkas.dump -pass env:FRASA
+          openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt \
+            -in "$FILENAME" -out "${FILENAME}.enc" -pass env:FRASA
+          echo "Terenkripsi: ${FILENAME}.enc ($(du -h "${FILENAME}.enc" | cut -f1))"
+          echo "siap=true" >> "$GITHUB_OUTPUT"
+
+      # ------------------------------------------------- TUJUAN 1: SUPABASE
       - name: Unggah ke Supabase Storage (bucket privat backups-db)
+        if: contains(vars.BACKUP_DESTINATIONS || 'supabase,artifact', 'supabase')
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
-          set -e
+          set -euo pipefail
           HTTP_STATUS=$(curl -s -o /tmp/upload-response.json -w "%{http_code}" \
             -X POST "$SUPABASE_URL/storage/v1/object/backups-db/$FILENAME" \
             -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
@@ -114,19 +181,65 @@ jobs:
             --data-binary "@$FILENAME")
           cat /tmp/upload-response.json
           if [ "$HTTP_STATUS" -ge 300 ]; then
-            echo "Unggah cadangan gagal (HTTP $HTTP_STATUS)"
+            echo "::error::Unggah cadangan ke Supabase gagal (HTTP $HTTP_STATUS)"
             exit 1
           fi
           echo "Cadangan tersimpan: backups-db/$FILENAME"
 
-      - name: Hapus cadangan lebih dari 14 hari (jaga ukuran bucket)
+      # ------------------------------------------------- TUJUAN 2: ARTEFAK
+      # Penyimpanan DI LUAR Supabase yang tidak butuh akun pihak ketiga.
+      - name: Simpan sebagai artefak GitHub (terenkripsi)
+        if: >-
+          steps.enkripsi.outputs.siap == 'true' &&
+          contains(vars.BACKUP_DESTINATIONS || 'supabase,artifact', 'artifact')
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.FILENAME }}.enc
+          path: ${{ env.FILENAME }}.enc
+          retention-days: ${{ vars.BACKUP_ARTIFACT_RETENTION_DAYS || 90 }}
+          if-no-files-found: error
+
+      # ------------------------------------------------- TUJUAN 3: S3 (opsional)
+      # Mekanismenya lengkap; yang belum ada hanyalah kredensialnya, karena
+      # memilih penyedia adalah keputusan pemilik. Selama secret-nya kosong,
+      # langkah ini tidak pernah berjalan dan tidak menggagalkan apa pun.
+      - name: Unggah ke penyimpanan S3-kompatibel (opsional)
+        if: >-
+          steps.enkripsi.outputs.siap == 'true' &&
+          contains(vars.BACKUP_DESTINATIONS || 'supabase,artifact', 's3')
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.BACKUP_S3_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.BACKUP_S3_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ vars.BACKUP_S3_REGION || 'auto' }}
+          S3_BUCKET: ${{ vars.BACKUP_S3_BUCKET }}
+          S3_ENDPOINT: ${{ vars.BACKUP_S3_ENDPOINT }}
+        run: |
+          set -euo pipefail
+          KURANG=""
+          [ -z "${AWS_ACCESS_KEY_ID:-}" ] && KURANG="$KURANG BACKUP_S3_ACCESS_KEY_ID"
+          [ -z "${AWS_SECRET_ACCESS_KEY:-}" ] && KURANG="$KURANG BACKUP_S3_SECRET_ACCESS_KEY"
+          [ -z "${S3_BUCKET:-}" ] && KURANG="$KURANG BACKUP_S3_BUCKET"
+          if [ -n "$KURANG" ]; then
+            echo "::error::Tujuan 's3' diminta tapi konfigurasinya belum lengkap:$KURANG"
+            exit 1
+          fi
+          ARGS=""
+          [ -n "${S3_ENDPOINT:-}" ] && ARGS="--endpoint-url $S3_ENDPOINT"
+          aws s3 cp "${FILENAME}.enc" "s3://${S3_BUCKET}/perisa/${FILENAME}.enc" $ARGS
+          echo "Cadangan tersimpan di s3://${S3_BUCKET}/perisa/${FILENAME}.enc"
+
+      # ------------------------------------------------------------ RETENSI
+      - name: Hapus cadangan Supabase lebih dari 14 hari
+        if: contains(vars.BACKUP_DESTINATIONS || 'supabase,artifact', 'supabase')
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          HARI_SIMPAN: ${{ vars.BACKUP_SUPABASE_RETENTION_DAYS || 14 }}
         run: |
           node --input-type=module -e '
             const url = process.env.SUPABASE_URL;
             const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+            const hari = Number(process.env.HARI_SIMPAN || 14);
             const headers = { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" };
 
             const res = await fetch(`${url}/storage/v1/object/list/backups-db`, {
@@ -137,8 +250,18 @@ jobs:
             const objek = await res.json();
             if (!Array.isArray(objek)) { console.error("Gagal daftar objek:", objek); process.exit(1); }
 
-            const batasWaktu = Date.now() - 14 * 24 * 60 * 60 * 1000;
+            const batasWaktu = Date.now() - hari * 24 * 60 * 60 * 1000;
             const kadaluwarsa = objek.filter((o) => new Date(o.created_at).getTime() < batasWaktu).map((o) => o.name);
+
+            // Jangan pernah menghapus SEMUANYA. Kalau seluruh isi bucket
+            // terhitung kedaluwarsa, itu tanda ada yang salah (jam server,
+            // cadangan berhenti berjalan berminggu-minggu) — dan menghapus
+            // satu-satunya cadangan yang tersisa adalah cara terburuk untuk
+            // mengetahuinya.
+            if (kadaluwarsa.length && kadaluwarsa.length === objek.length) {
+              console.error("::error::SELURUH cadangan terhitung kedaluwarsa. Tidak ada yang dihapus — periksa apakah cadangan harian masih berjalan.");
+              process.exit(1);
+            }
 
             if (!kadaluwarsa.length) { console.log("Tidak ada cadangan kedaluwarsa."); process.exit(0); }
 
@@ -149,3 +272,17 @@ jobs:
             });
             console.log(`Dihapus ${kadaluwarsa.length} cadangan lama:`, kadaluwarsa, "->", hapus.status);
           '
+
+      - name: Ringkasan
+        if: always()
+        run: |
+          {
+            echo "### Cadangan basis data PERISA"
+            echo ""
+            echo "| Hal | Nilai |"
+            echo "|---|---|"
+            echo "| Berkas | \`${FILENAME:-(gagal sebelum dibuat)}\` |"
+            echo "| Ukuran | ${UKURAN:-0} byte |"
+            echo "| Tujuan | ${{ vars.BACKUP_DESTINATIONS || 'supabase,artifact' }} |"
+            echo "| Terenkripsi | ${{ steps.enkripsi.outputs.siap == 'true' && 'ya' || 'TIDAK — passphrase belum diisi' }} |"
+          } >> "$GITHUB_STEP_SUMMARY"

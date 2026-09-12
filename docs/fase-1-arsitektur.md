@@ -9,7 +9,7 @@ Santri SD belum punya WhatsApp sendiri. Login berbasis "nomor WA santri"
 tidak bisa dipakai apa adanya — ini sudah dicatat sejak rancangan awal
 (lihat memori proyek `perisa-konsekuensi-pilot-sd`).
 
-Modelnya: **wali adalah pemilik akun**, satu nomor WA + OTP. Santri adalah
+Modelnya: **wali adalah pemilik akun**, satu nomor WA + PIN. Santri adalah
 **profil** di bawah satu wali — tabel `santri.wali_id`, bukan sesi login
 terpisah. Memilih profil anak murni state di sisi klien setelah wali login,
 bukan otentikasi kedua. Ini menyederhanakan segalanya: satu sesi, satu JWT,
@@ -19,9 +19,11 @@ satu token untuk seluruh anak di keluarga itu.
 
 Proposal asli PERISA menyatakan "hak akses dibuka langsung oleh Umi Elly /
 yayasan". Ini bukan sekadar kalimat pemanis — Fase 1 menegakkannya secara
-teknis: **alur OTP hanya berfungsi untuk nomor yang sudah ada di tabel
-`wali` atau `staff`.** Kalau nomornya belum terdaftar, `auth-otp-request`
-menolak dengan pesan "hubungi pengurus", bukan mendaftarkan otomatis.
+teknis: **login hanya berfungsi untuk nomor yang sudah ada di tabel `wali`
+atau `staff` DAN sudah punya PIN yang ditetapkan pengurus.** Nomor yang
+belum terdaftar ditolak, bukan didaftarkan otomatis — dan ditolak dengan
+kalimat yang sama persis dengan PIN salah, supaya halaman login tidak bisa
+dipakai menguji nomor siapa yang jadi keluarga santri di yayasan ini.
 
 Konsekuensinya: tidak ada kebijakan RLS `insert` untuk tabel `wali`,
 `santri`, atau `staff` dari klien sama sekali. Akun-akun ini hanya dibuat
@@ -30,11 +32,21 @@ sekaligus mencatat ke `audit_log`.
 
 ## 3. Kenapa JWT kustom, bukan Supabase Auth bawaan
 
-Supabase Auth bawaan mengirim OTP lewat **SMS**, lewat penyedia seperti
-Twilio — bukan WhatsApp. Yayasan sudah menganggarkan gateway WhatsApp
-(Fonnte/Wablas) di rancangan biaya, dan itu jalur pengiriman yang dipilih.
+Supabase Auth bawaan tidak mengenal "nomor WhatsApp + PIN yang ditetapkan
+pengurus" sebagai cara masuk. Yang ditawarkannya untuk identitas berbasis
+nomor adalah OTP lewat **SMS** (Twilio dsb.) — bukan WhatsApp, dan bukan
+PIN.
 
-Solusinya: Edge Function `auth-otp-verify` **menandatangani JWT sendiri**
+> **Perubahan 12 September 2026.** Sampai tanggal ini bagian ini
+> menggambarkan alur OTP WhatsApp. Alur itu dihapus seluruhnya: gateway
+> WhatsApp-nya tidak pernah disiapkan, dan "mode pengembangan" yang
+> menutupi ketiadaannya ternyata AKTIF di produksi — kode masuk ikut di
+> badan respons HTTP, jadi siapa pun yang tahu satu nomor terdaftar bisa
+> masuk sebagai pemiliknya. Penggantinya PIN yang ditetapkan pengurus.
+> Alasan lengkap dan pertukarannya ada di
+> `supabase/migrations/20260912000001_login_pin.sql`.
+
+Solusinya: Edge Function `auth-login-pin` **menandatangani JWT sendiri**
 memakai `APP_JWT_SECRET` milik proyek — bukan lewat
 `supabase.auth.signIn*`. Selama bentuk JWT-nya sesuai yang diharapkan
 PostgREST, Supabase memperlakukannya persis seperti sesi Auth bawaan: RLS,
@@ -93,29 +105,38 @@ angka akhir yang mudah dipalsukan.
   `wali`/`santri`/`staff` sengaja belum ada — itu dibangun bersamaan
   panelnya, supaya setiap aksi tercatat lewat Edge Function, bukan
   ditulis lepas dari klien.
-- **Pembersihan `otp_codes` kedaluwarsa** (Fase 7, fungsi terjadwal).
+- Tabel kredensial (`wali_kredensial`, `staff_kredensial`) RLS-nya menyala
+  **tanpa satu pun policy** — hanya `service_role` yang bisa menyentuhnya.
+  Hash PIN tidak boleh terbaca klien mana pun, termasuk pengurus.
 
 ## 6. Alur login, end-to-end
 
 ```
-1. Wali buka aplikasi, masukkan nomor WA.
-2. Klien panggil Edge Function `auth-otp-request`.
-   - Cek nomor ada di tabel wali ATAU staff. Kalau tidak ada -> tolak.
-   - Buat kode 6 digit, simpan HASH-nya (bukan teks polos) ke otp_codes,
-     kedaluwarsa 5 menit.
-   - Kirim lewat gateway WhatsApp. Kalau WA_GATEWAY_URL belum diisi
-     (pengembangan lokal / belum ada akun gateway), kode dicetak ke log
-     server dengan label jelas "MODE PENGEMBANGAN" — tidak pernah
-     terjadi diam-diam di produksi.
-3. Wali masukkan kode dari WhatsApp.
-4. Klien panggil Edge Function `auth-otp-verify`.
-   - Cocokkan hash, cek belum kedaluwarsa, cek belum terpakai, batasi
-     percobaan (maksimal 5x per kode).
-   - Tandai kode terpakai. Perbarui wali.last_login_at.
-   - Terbitkan JWT kustom (bentuk di atas), berlaku 7 hari.
-   - Catat ke audit_log.
-5. Klien simpan JWT, pakai untuk seluruh panggilan Supabase berikutnya.
-6. Kalau akun itu wali dengan >1 santri: klien tampilkan pemilih profil
+1. Wali buka aplikasi, masukkan nomor WA + PIN (satu layar, satu langkah).
+2. Klien panggil Edge Function `auth-login-pin`.
+   - Cari nomor di tabel wali ATAU staff. Tidak ketemu -> tolak, TAPI
+     tetap jalankan satu penurunan PBKDF2 yang dibuang hasilnya, supaya
+     nomor asing tidak dijawab jauh lebih cepat daripada nomor terdaftar
+     (pesannya seragam; waktunya juga harus seragam).
+   - Ambil kredensial dari wali_kredensial / staff_kredensial. Belum punya
+     PIN -> tolak dengan pesan yang sama.
+   - Akun sedang terkunci -> tolak 429, sebutkan sisa menitnya.
+   - Cocokkan PIN: PBKDF2-HMAC-SHA256, 210.000 iterasi, salt per akun.
+     Salah -> percobaan+1; percobaan ke-5 mengunci akun 15 menit.
+   - Benar -> reset penghitung, perbarui wali.last_login_at,
+     terbitkan JWT kustom (bentuk di atas, berlaku 7 hari),
+     catat `login_berhasil` ke audit_log.
+3. Klien simpan JWT, pakai untuk seluruh panggilan Supabase berikutnya.
+4. Kalau akun itu wali dengan >1 santri: klien tampilkan pemilih profil
    (data dari `select * from santri where wali_id = auth.uid()`, yang
    sudah otomatis dibatasi RLS ke anak sendiri).
 ```
+
+**Dari mana PIN-nya datang.** Pengurus menetapkannya saat mendaftarkan
+keluarga lewat Panel Otoritas (`daftarkan-wali-santri`), dan bisa
+mengatur ulang kapan saja lewat tombol "Atur PIN" di kartu santri — itu
+satu-satunya jalan keluar untuk keluarga yang lupa PIN, karena memang tidak
+ada kanal untuk mengirimkannya otomatis. Pemilik akun bisa menggantinya
+sendiri lewat menu **Ganti PIN** (`auth-atur-pin`, mode B), yang menuntut
+PIN lama. Tanpa langkah terakhir itu, tidak akan pernah ada satu momen pun
+di mana PIN sebuah keluarga hanya diketahui keluarga itu sendiri.

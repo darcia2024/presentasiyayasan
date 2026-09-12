@@ -8,19 +8,19 @@
  * progres di sini murni dibaca lewat RLS wali (lihat js/core/wali-client.js)
  * — tidak ada tulisan sama sekali dari halaman ini.
  *
- * Berkas ini TIDAK punya peraga statis di prototype.html seperti
+ * Berkas ini TIDAK punya peraga statis di index.html seperti
  * silabus/mufrodat/kuis di fase-fase sebelumnya — dashboard ini baru,
  * jadi seluruhnya digambar dari sini, dengan skeleton dulu sebelum data
  * asli datang supaya layar tidak pernah kosong mendadak.
  */
 
 import { bacaSesi, pilihProfilSantri } from '../core/supabase-client.js';
+import { terapkanSantriAktif } from './jenjang.js';
 import { ambilRingkasanAnak } from '../core/wali-client.js';
 import { playTone } from '../core/feedback.js';
-import { escapeHtml } from '../core/html.js';
+import { ikon } from '../core/html.js';
 
 const ID_KONTAINER = 'waliDashboardContainer';
-const JENJANG_KE_PERAN = { sd: 'santri-sd', smp: 'santri-smp', sma: 'santri-sma' };
 const NAMA_JENJANG = { sd: 'SD', smp: 'SMP', sma: 'SMA' };
 const WARNA_AVATAR = ['var(--teal-primary)', '#8B7FD1', '#D18B7F', '#7FA8D1', '#B58BD1'];
 
@@ -40,9 +40,12 @@ function teks(tag, className, isi) {
 
 function bukaProfilAnak(santri) {
   pilihProfilSantri(santri.id);
-  const peran = JENJANG_KE_PERAN[santri.jenjang] || 'santri-smp';
   playTone(560, 'sine', 0.1, 0.06);
-  if (window.PrototypeApp?.setRole) window.PrototypeApp.setRole(peran);
+  // Dulu memetakan jenjang anak ke salah satu dari tiga PERSONA PERAGA lewat
+  // PrototypeApp.setRole('santri-smp' dst). Persona itu dan setRole() sendiri
+  // dihapus 12 September 2026; sekarang santri yang dipilih diterapkan apa
+  // adanya dan kurikulumnya dimuat dari basis data.
+  terapkanSantriAktif(santri);
   if (window.PrototypeApp?.switchMainView) window.PrototypeApp.switchMainView('kurikulum');
 }
 
@@ -146,7 +149,12 @@ function isiKartu(kartu, santri, ringkasan) {
     const chipWrap = el('div', 'wali-anak-lencana');
     ringkasan.lencana.forEach((l) => {
       const chip = el('span', 'wali-lencana-chip');
-      chip.innerHTML = `<i class="ph ${escapeHtml(l.ikon)}"></i> ${escapeHtml(l.nama)}`;
+      // AUDIT 10 Sep 2026 (S4): dulu `class="ph ${escapeHtml(l.ikon)}"` —
+      // posisi ATRIBUT, sedangkan escapeHtml() versi lama tidak meloloskan
+      // kutip. Sekarang nama ikon divalidasi terhadap pola Phosphor di
+      // ikon(), dan teksnya lewat textContent — tidak ada HTML dirangkai.
+      chip.appendChild(ikon(l.ikon));
+      chip.appendChild(document.createTextNode(` ${l.nama ?? ''}`));
       chipWrap.appendChild(chip);
     });
     kartu.appendChild(chipWrap);
@@ -163,7 +171,11 @@ function isiKartu(kartu, santri, ringkasan) {
 
 function pesanKosong(teksIsi) {
   const wrap = el('div', 'wali-dashboard-kosong');
-  wrap.innerHTML = `<i class="ph ph-info" style="font-size: 22px; color: var(--text-muted);"></i><div>${teksIsi}</div>`;
+  const i = ikon('ph-info');
+  i.style.cssText = 'font-size: 22px; color: var(--text-muted);';
+  const isi = document.createElement('div');
+  isi.textContent = teksIsi ?? '';
+  wrap.append(i, isi);
   return wrap;
 }
 

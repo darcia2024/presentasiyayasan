@@ -1,160 +1,256 @@
 /**
- * PERISA AZHARIYAH — Kuis Evaluasi Pemahaman (Fase 4)
+ * PERISA AZHARIYAH — Kuis Evaluasi Pemahaman (Fase 4, dirombak audit K2)
  *
- * Pilihan ganda dibangkitkan dari mufrodat pelajaran yang sedang aktif:
- * satu mufrodat jadi target (arab+latin ditampilkan), arti-nya sendiri
- * jadi jawaban benar, arti mufrodat LAIN di pelajaran yang sama jadi
- * pengecoh. Jawaban yang dikirim ke server adalah ID mufrodat yang
- * dipilih — lihat supabase/functions/submit-jawaban/index.ts untuk kenapa
- * bentuknya begitu (ID, bukan teks bebas, supaya "benar/salah" tidak
- * ambigu).
+ * SOAL DATANG DARI SERVER, bukan disusun di sini.
  *
- * SEMUA keputusan "benar atau salah" dan SEMUA penulisan XP terjadi di
- * server. Modul ini murni tampilan — coba mengubah variabel di sini lewat
- * konsol tidak memberi XP sepeser pun, karena server yang menghitung ulang
- * dari basis data, bukan percaya begitu saja apa yang dikirim klien.
+ * Sebelum 10 Sep 2026, modul inilah yang memilih mufrodat mana yang
+ * ditanyakan dan mana pengecohnya, lalu mengirim id soal + id jawaban ke
+ * server. Karena keduanya berasal dari klien, server tidak pernah
+ * benar-benar menilai apa pun — komentar lama di berkas ini bahkan
+ * menjanjikan sebaliknya, dan janji itu tidak ditegakkan satu baris pun.
+ *
+ * Sekarang: kuis-soal menerbitkan soal (token buram + daftar arti berkunci
+ * "a".."d"), submit-jawaban menilai dengan membaca jawaban benar dari
+ * barisnya sendiri. Modul ini betul-betul cuma tampilan — dan kali ini
+ * pernyataan itu bisa dibuktikan: tidak ada satu pun nilai di sini yang
+ * ikut menentukan benar/salah.
+ *
+ * Seluruh teks dari basis data ditulis lewat textContent, bukan innerHTML
+ * (lihat audit S4) — arab/latin/arti diketik manusia lewat Studio.
  */
 
-import { kirimJawaban, santriAktifId } from '../core/kuis-client.js';
+import { ambilSoal, kirimJawaban, santriAktifId } from '../core/kuis-client.js';
 import { playTone, showToast } from '../core/feedback.js';
-import { escapeHtml } from '../core/html.js';
 
 const ID_KONTAINER = 'kuisContainer';
-const JUMLAH_PILIHAN = 4;
 
-let sesiKuis = null; // { pelajaranId, daftar: [...], indeks: 0 }
+/** @type {{pelajaranId:string, token:string|null, memuat:boolean}|null} */
+let sesiKuis = null;
 
-function kocokAcak(arr) {
-  const salinan = [...arr];
-  for (let i = salinan.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [salinan[i], salinan[j]] = [salinan[j], salinan[i]];
-  }
-  return salinan;
+/* --------------------------------------------------------------- utilitas */
+
+function el(tag, gaya, teks) {
+  const n = document.createElement(tag);
+  if (gaya) n.style.cssText = gaya;
+  if (teks !== undefined) n.textContent = teks;
+  return n;
 }
 
-function buatPilihan(target, seluruhMufrodat) {
-  const lainnya = seluruhMufrodat.filter((m) => m.id !== target.id);
-  const pengecoh = kocokAcak(lainnya).slice(0, JUMLAH_PILIHAN - 1);
-  return kocokAcak([target, ...pengecoh]);
+function kosongkan(kontainer) {
+  while (kontainer.firstChild) kontainer.removeChild(kontainer.firstChild);
 }
+
+/* ------------------------------------------------------------------ masuk */
 
 /**
- * @param {Array} daftarMufrodat mufrodat pelajaran yang sedang aktif.
+ * Mulai kuis untuk satu pelajaran.
  * @param {string} pelajaranId
+ * @returns {Promise<boolean>} true kalau kuis sungguhan berhasil ditampilkan.
  */
-export function renderKuis(daftarMufrodat, pelajaranId) {
+export async function renderKuis(pelajaranId) {
   const kontainer = document.getElementById(ID_KONTAINER);
-  if (!kontainer) return false;
+  if (!kontainer || !pelajaranId) return false;
 
-  if (!daftarMufrodat || daftarMufrodat.length < 2) {
-    // Kuis pilihan ganda butuh minimal 2 mufrodat (1 target + 1 pengecoh).
-    // Kalau belum cukup, biarkan peraga tetap tampil.
+  const santriId = santriAktifId();
+  if (!santriId) {
+    // Sesi staff (tidak punya profil anak). Dulu di sini peraga dibiarkan
+    // tampil; sekarang tidak ada peraga untuk dibiarkan.
+    tampilkanKuisKosong('Evaluasi hanya tersedia untuk akun santri.');
     return false;
   }
 
-  sesiKuis = { pelajaranId, daftar: kocokAcak(daftarMufrodat), indeks: 0, seluruh: daftarMufrodat };
-  tampilkanSoal(kontainer);
+  sesiKuis = { pelajaranId, token: null, memuat: false };
+  return muatSoal(kontainer);
+}
+
+/* ------------------------------------------------------------ satu putaran */
+
+async function muatSoal(kontainer) {
+  if (!sesiKuis || sesiKuis.memuat) return false;
+  const santriId = santriAktifId();
+  if (!santriId) return false;
+
+  sesiKuis.memuat = true;
+  tampilkanMemuat(kontainer);
+
+  let soal;
+  try {
+    soal = await ambilSoal({ santriId, pelajaranId: sesiKuis.pelajaranId });
+  } catch (e) {
+    sesiKuis.memuat = false;
+    // AUDIT 10 Sep 2026 (M12): dulu di sini `return false` dan peraga lama
+    // dibiarkan tampil. Untuk sesi SUNGGUHAN itu berarti seorang anak
+    // melihat soal karangan ("المَكْتَبَةُ") seolah itu pelajarannya,
+    // lengkap dengan tombol yang mengaku "pemahaman telah diverifikasi".
+    // Sekarang keadaan kosongnya dikatakan apa adanya.
+    //   404 = pelajaran/modulnya belum terbit
+    //   409 = mufrodatnya belum cukup untuk dijadikan soal
+    if (e.status === 409 || e.status === 404) {
+      tampilkanPesan(
+        kontainer,
+        'Kuis untuk pelajaran ini belum tersedia — materinya belum diterbitkan Umi Elly.',
+      );
+      return false;
+    }
+    tampilkanPesan(kontainer, e.message || 'Gagal memuat soal. Coba muat ulang halaman.');
+    return false;
+  }
+
+  sesiKuis.memuat = false;
+  sesiKuis.token = soal.token;
+  tampilkanSoal(kontainer, soal);
   return true;
 }
 
-function tampilkanSoal(kontainer) {
-  if (!sesiKuis || sesiKuis.indeks >= sesiKuis.daftar.length) {
-    kontainer.innerHTML = '';
-    kontainer.appendChild(kartuSelesai());
-    return;
-  }
+function tampilkanMemuat(kontainer) {
+  kosongkan(kontainer);
+  kontainer.appendChild(
+    el('div', 'text-align:center; padding:18px 8px; font-size:12.5px; color:var(--text-muted);', 'Menyiapkan soal…'),
+  );
+}
 
-  const target = sesiKuis.daftar[sesiKuis.indeks];
-  const pilihan = buatPilihan(target, sesiKuis.seluruh);
-  const hurufPilihan = ['A', 'B', 'C', 'D'];
+function tampilkanPesan(kontainer, pesan) {
+  kosongkan(kontainer);
+  kontainer.appendChild(el('div', 'text-align:center; padding:18px 8px; font-size:12.5px; color:var(--text-muted);', pesan));
+}
 
-  kontainer.innerHTML = '';
+function tampilkanSoal(kontainer, soal) {
+  kosongkan(kontainer);
 
-  const header = document.createElement('div');
-  header.style.cssText = 'display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;';
-  const label = document.createElement('span');
-  label.style.cssText = 'font-size:11px; font-weight:700; color:var(--teal-primary); text-transform:uppercase;';
-  label.textContent = 'Evaluasi Pemahaman Mufrodat';
-  const progres = document.createElement('span');
-  progres.style.cssText = 'font-size:11px; color:var(--text-muted);';
-  progres.textContent = `Soal ${sesiKuis.indeks + 1} dari ${sesiKuis.daftar.length}`;
-  header.append(label, progres);
+  /* --- kepala: label + progres penguasaan --- */
+  const header = el('div', 'display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; gap:8px;');
+  header.appendChild(
+    el('span', 'font-size:11px; font-weight:700; color:var(--teal-primary); text-transform:uppercase;', 'Evaluasi Pemahaman Mufrodat'),
+  );
+  header.appendChild(
+    el(
+      'span',
+      'font-size:11px; color:var(--text-muted); white-space:nowrap;',
+      `Dikuasai ${soal.sudahDikuasai} dari ${soal.totalMufrodat}`,
+    ),
+  );
   kontainer.appendChild(header);
 
-  const pertanyaan = document.createElement('div');
-  pertanyaan.style.cssText = 'font-size:13.5px; font-weight:700; color:var(--teal-dark); line-height:1.5; margin-bottom:12px;';
-  // Diescape sejak audit 5 Sep 2026 — arab/latin diketik staff lewat Studio.
-  pertanyaan.innerHTML = `Apa arti kosakata: <strong style="color:var(--teal-primary); font-size:19px; font-family:'Amiri',Arial;">"${escapeHtml(target.arab)}"</strong> (${escapeHtml(target.latin)})?`;
+  /* --- pertanyaan --- */
+  const pertanyaan = el('div', 'font-size:13.5px; font-weight:700; color:var(--teal-dark); line-height:1.5; margin-bottom:12px;');
+  pertanyaan.appendChild(document.createTextNode('Apa arti kosakata: '));
+  const arab = el(
+    'strong',
+    "color:var(--teal-primary); font-size:19px; font-family:'Amiri',Arial;",
+    `"${soal.arab}"`,
+  );
+  pertanyaan.appendChild(arab);
+  pertanyaan.appendChild(document.createTextNode(` (${soal.latin})?`));
   kontainer.appendChild(pertanyaan);
 
-  const daftarTombol = document.createElement('div');
-  daftarTombol.style.cssText = 'display:flex; flex-direction:column; gap:8px; margin-bottom:4px;';
+  /* --- pilihan --- */
+  const hurufTampil = ['A', 'B', 'C', 'D', 'E', 'F'];
+  const daftarTombol = el('div', 'display:flex; flex-direction:column; gap:8px; margin-bottom:4px;');
 
-  pilihan.forEach((opsi, i) => {
+  soal.opsi.forEach((opsi, i) => {
     const btn = document.createElement('button');
+    btn.type = 'button';
     btn.className = 'btn-enroll-primary';
+    btn.dataset.kunci = opsi.kunci;
     btn.style.cssText =
       'background:#FFFFFF; border:1px solid var(--border-color); color:var(--text-main); text-align:left; justify-content:flex-start; padding:10px 14px;';
-    btn.textContent = `${hurufPilihan[i]}. ${opsi.arti}`;
-    btn.type = 'button';
-    btn.addEventListener('click', () => jawabSoal(kontainer, target, opsi, daftarTombol));
+    btn.textContent = `${hurufTampil[i]}. ${opsi.arti}`;
+    btn.addEventListener('click', () => jawabSoal(kontainer, opsi.kunci, daftarTombol));
     daftarTombol.appendChild(btn);
   });
 
   kontainer.appendChild(daftarTombol);
 }
 
-async function jawabSoal(kontainer, target, opsiDipilih, daftarTombol) {
-  const santriId = santriAktifId();
-  if (!santriId) {
-    showToast('Masuk sebagai santri untuk mengerjakan evaluasi.');
-    return;
-  }
+/* ---------------------------------------------------------------- menjawab */
 
-  [...daftarTombol.children].forEach((b) => (b.disabled = true));
+async function jawabSoal(kontainer, kunci, daftarTombol) {
+  if (!sesiKuis?.token) return;
 
+  const tombol = [...daftarTombol.children];
+  tombol.forEach((b) => (b.disabled = true));
+  const tokenDipakai = sesiKuis.token;
+  sesiKuis.token = null; // cegah klik ganda mengirim dua kali
+
+  let hasil;
   try {
-    const hasil = await kirimJawaban({
-      santriId,
-      pelajaranId: sesiKuis.pelajaranId,
-      mufrodatId: target.id,
-      jawabanMufrodatId: opsiDipilih.id,
-    });
-
-    if (hasil.benar) {
-      playTone(659, 'sine', 0.14, 0.08);
-      const pesanXp = hasil.sudahPernah ? 'Benar! (sudah pernah dijawab, tidak ada XP tambahan)' : `Benar! +${hasil.xpDidapat} XP`;
-      showToast(pesanXp);
-      if (hasil.lencanaBaru?.length) {
-        setTimeout(() => showToast('Lencana baru diraih!'), 900);
-      }
-      if (hasil.pelajaranSelesai) {
-        setTimeout(() => showToast('Pelajaran ini selesai — semua mufrodat sudah dikuasai!'), 1800);
-      }
-    } else {
-      playTone(300, 'sine', 0.18, 0.08);
-      showToast(`Belum tepat. Jawaban yang benar: "${target.arti}".`);
-    }
+    hasil = await kirimJawaban({ soalToken: tokenDipakai, pilihan: kunci });
   } catch (e) {
+    // 409 (sudah dijawab) & 410 (kedaluwarsa) bukan kesalahan anak —
+    // ambil soal baru, jangan tampilkan error teknis.
+    if (e.status === 409 || e.status === 410) {
+      showToast('Soalnya kedaluwarsa. Menyiapkan soal baru…');
+      muatSoal(kontainer);
+      return;
+    }
     showToast(e.message || 'Gagal mengirim jawaban. Coba lagi.');
-    [...daftarTombol.children].forEach((b) => (b.disabled = false));
+    sesiKuis.token = tokenDipakai;
+    tombol.forEach((b) => (b.disabled = false));
     return;
   }
 
-  setTimeout(() => {
-    sesiKuis.indeks++;
-    tampilkanSoal(kontainer);
-  }, 1400);
+  tandaiPilihan(tombol, kunci, hasil);
+
+  if (hasil.benar) {
+    playTone(659, 'sine', 0.14, 0.08);
+    showToast(
+      hasil.sudahPernah ? 'Benar! (sudah pernah dijawab, tidak ada XP tambahan)' : `Benar! +${hasil.xpDidapat} XP`,
+    );
+    if (hasil.lencanaBaru?.length) setTimeout(() => showToast('Lencana baru diraih!'), 900);
+  } else {
+    playTone(300, 'sine', 0.18, 0.08);
+    showToast(`Belum tepat. Jawaban yang benar: "${hasil.artiBenar}".`);
+  }
+
+  if (hasil.pelajaranSelesai) {
+    setTimeout(() => {
+      showToast('Pelajaran ini selesai — semua mufrodat sudah dikuasai!');
+      tampilkanSelesai(kontainer);
+    }, 1400);
+    return;
+  }
+
+  setTimeout(() => muatSoal(kontainer), 1400);
 }
 
-function kartuSelesai() {
-  const wrap = document.createElement('div');
-  wrap.style.cssText = 'text-align:center; padding:20px 8px;';
-  wrap.innerHTML = `
-    <div style="font-size:30px; margin-bottom:8px; color:var(--gold-dark);"><i class="ph ph-confetti"></i></div>
-    <div style="font-size:14px; font-weight:700; color:var(--teal-dark); margin-bottom:4px;">Semua soal selesai dikerjakan</div>
-    <div style="font-size:12px; color:var(--text-muted);">Buka pelajaran lain untuk terus menambah XP.</div>
-  `;
-  return wrap;
+/** Warnai pilihan yang dipilih & yang benar, supaya anak melihat koreksinya. */
+function tandaiPilihan(tombol, kunciDipilih, hasil) {
+  for (const b of tombol) {
+    const k = b.dataset.kunci;
+    if (k === hasil.kunciBenar) {
+      b.style.borderColor = 'var(--teal-primary)';
+      b.style.background = 'var(--teal-light, #E8F4F2)';
+    } else if (k === kunciDipilih && !hasil.benar) {
+      b.style.borderColor = '#B4232A';
+      b.style.background = '#FCEDED';
+    }
+  }
+}
+
+function tampilkanSelesai(kontainer) {
+  kosongkan(kontainer);
+  const wrap = el('div', 'text-align:center; padding:20px 8px;');
+
+  const ikon = el('div', 'font-size:30px; margin-bottom:8px; color:var(--gold-dark);');
+  const i = document.createElement('i');
+  i.className = 'ph ph-confetti';
+  ikon.appendChild(i);
+
+  wrap.appendChild(ikon);
+  wrap.appendChild(
+    el('div', 'font-size:14px; font-weight:700; color:var(--teal-dark); margin-bottom:4px;', 'Semua mufrodat pelajaran ini sudah dikuasai'),
+  );
+  wrap.appendChild(el('div', 'font-size:12px; color:var(--text-muted);', 'Buka pelajaran lain untuk terus menambah XP.'));
+  kontainer.appendChild(wrap);
+}
+
+/**
+ * Keadaan kosong wadah kuis, dipakai dari luar modul ini (js/ui/jenjang.js)
+ * ketika pelajarannya sendiri belum ada — jadi renderKuis() tidak pernah
+ * dipanggil dan tidak ada yang membersihkan sisa tampilan sebelumnya.
+ */
+export function tampilkanKuisKosong(pesan = 'Evaluasi untuk pelajaran ini belum tersedia.') {
+  const kontainer = document.getElementById(ID_KONTAINER);
+  if (!kontainer) return;
+  tampilkanPesan(kontainer, pesan);
 }

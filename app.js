@@ -742,7 +742,20 @@ const DeckEngine = (() => {
       const isCorrect = idx === data.correctIndex;
       const label = data.options[idx] || '';
       const textEl = document.getElementById(`optText${idx}`);
-      if (textEl) textEl.innerHTML = isCorrect ? `<strong>${label}</strong>` : label;
+      // AUDIT 10 Sep 2026 (S4): dibangun sebagai simpul DOM, bukan string
+      // HTML. Datanya memang statis di berkas ini, tapi polanya disamakan
+      // dengan seluruh aplikasi supaya tidak ada bentuk lama yang tersisa
+      // untuk disalin ke tempat yang datanya dari basis data.
+      if (textEl) {
+        while (textEl.firstChild) textEl.removeChild(textEl.firstChild);
+        if (isCorrect) {
+          const kuat = document.createElement('strong');
+          kuat.textContent = label;
+          textEl.appendChild(kuat);
+        } else {
+          textEl.textContent = label;
+        }
+      }
 
       btn.setAttribute('onclick', `DeckEngine.answerGame(${idx}, ${isCorrect}, this)`);
 

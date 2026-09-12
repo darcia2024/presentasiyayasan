@@ -1,0 +1,101 @@
+name: Pemeriksaan Kode PERISA
+
+# PERISA AZHARIYAH — Integrasi berkelanjutan (audit 10 Sep 2026, M14)
+#
+# TEMUAN. Repo ini punya dua workflow, keduanya OPERASIONAL (cadangan
+# harian & pemantauan ketersediaan). Tidak ada satu pun yang memeriksa
+# KODE. Vercel menerbitkan apa pun yang masuk ke main tanpa satu
+# pemeriksaan pun, dan `npm test` sendiri cuma menjalankan `node --check`
+# atas tiga berkas lama — 38 modul di js/, 10 modul bersama, dan 9 Edge
+# Function TypeScript tidak pernah tersentuh.
+#
+# Akibatnya nyata dan terukur: saat audit ini pertama kali menjalankan
+# `deno check`, langsung muncul ENAM kesalahan tipe yang sudah lama ada di
+# empat Edge Function. Tidak ada yang pernah melihatnya karena tidak ada
+# yang pernah memeriksanya.
+#
+# Workflow ini berjalan di setiap push & pull request ke main, dan GAGAL
+# kalau ada yang tidak lolos — bukan sekadar memberi peringatan.
+#
+# TIDAK BUTUH SECRET APA PUN. Uji asap ujung-ke-ujung (yang memang butuh
+# kredensial produksi) sengaja TIDAK dijalankan di sini; ia punya workflow
+# sendiri yang dipicu manual/terjadwal.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  periksa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Deno dipasang lewat devDependency `deno` di package.json, jadi
+      # versinya terkunci bersama sisa perkakas dan sama persis dengan yang
+      # dipakai di mesin lokal — tidak ada "jalan di laptop saya" gara-gara
+      # beda versi TypeScript.
+      - name: Pasang dependensi perkakas
+        run: npm ci
+
+      - name: Rahasia tidak boleh masuk repo
+        run: node tools/periksa-rahasia.js
+
+      - name: Sintaks seluruh JavaScript peramban
+        run: npm run lint
+
+      - name: Gaya & aturan Edge Function
+        run: npm run lint:functions
+
+      - name: Pemeriksaan TIPE Edge Function
+        run: npm run check:functions
+
+      - name: Uji unit (Node)
+        run: npm run test:unit
+
+      - name: Uji Edge Function (Deno)
+        run: npm run test:functions
+
+      # SUPABASE_URL di sini adalah repository VARIABLE (bukan secret) —
+      # nilainya memang publik, sudah ikut terbit di js/config.js. Dipakai
+      # supaya pemeriksa CSP bisa membandingkan origin di vercel.json
+      # dengan origin yang sungguh dipakai aplikasi.
+      - name: Build + konsistensi CSP
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL_PUBLIC }}
+        run: npm run build
+
+      - name: Susun folder terbit (dist) & penjaga kebocoran
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL_PUBLIC }}
+          SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY_PUBLIC }}
+        run: npm run build:dist
+
+      # Kalau `npm run build` MENGUBAH berkas yang dilacak git, berarti cap
+      # versi / ikon yang di-commit sudah basi. Itu persis penyebab
+      # pembaruan tidak sampai ke perangkat yang sudah memasang PWA —
+      # jadi lebih baik ketahuan di sini daripada di HP wali.
+      - name: Berkas hasil build harus sudah mutakhir di repo
+        run: |
+          set -euo pipefail
+          BERUBAH=$(git status --porcelain -- . ':!dist' ':!js/config.js')
+          if [ -n "$BERUBAH" ]; then
+            echo "::error::npm run build mengubah berkas yang dilacak git. Jalankan 'npm run build' lalu commit hasilnya."
+            echo "$BERUBAH"
+            git --no-pager diff -- . ':!dist' ':!js/config.js' | head -100
+            exit 1
+          fi
+          echo "Berkas hasil build sudah mutakhir."

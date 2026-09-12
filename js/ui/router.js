@@ -1,12 +1,15 @@
 /**
  * PERISA AZHARIYAH — Router Tampilan Utama
- * Beranda, Kurikulum, Modul PDF, Asisten AI, dan Panel Pengurus.
+ * Beranda, Kurikulum, Modul PDF, dan Panel Pengurus.
  *
  * Runtime mobile membungkus `switchMainView` untuk menyesuaikan app bar dan
  * tab bar bawah, jadi tanda tangan fungsi ini tidak boleh berubah.
  */
 
 import { playTone, showToast } from '../core/feedback.js';
+import { sorotModulAktif } from './syllabus.js';
+import { muatBeranda } from './beranda.js';
+import { remahKurikulum } from './jenjang.js';
 import { bukaStudio } from './studio.js';
 import { muatDanRenderDokumen } from './dokumen-viewer.js';
 import { renderWaliDashboard } from './wali-dashboard.js';
@@ -17,7 +20,6 @@ const ALL_VIEWS = [
   'viewBerandaUtama',
   'viewCoursePlayer',
   'viewModulPdf',
-  'viewAiAssistant',
   'viewAdminPanel',
   'viewStudioKurikulum'
 ];
@@ -35,7 +37,7 @@ const ROUTES = {
     view: 'viewBerandaUtama',
     nav: 'nav-beranda',
     crumb: ['Portal Utama', 'Dashboard Santri', 'Beranda Informasi Pembelajaran'],
-    toast: 'Membuka Beranda Utama Santri',
+    toast: 'Membuka Dashboard Santri',
     tone: 520
   },
   'modul-pdf': {
@@ -44,13 +46,6 @@ const ROUTES = {
     crumb: ['Perpustakaan Digital', 'Dokumen & Silabus', 'Arsip Modul PDF Resmi'],
     toast: 'Membuka Arsip Modul dan Silabus PDF',
     tone: 540
-  },
-  'ai-assistant': {
-    view: 'viewAiAssistant',
-    nav: 'nav-asisten-ai',
-    crumb: ['Asisten Pembelajaran', 'Kaidah & Konsultasi', 'Studio Asisten Bahasa Arab (Asuhan Umi Elly)'],
-    toast: 'Membuka Studio Asisten Pintar Bahasa Arab',
-    tone: 600
   },
   admin: {
     view: 'viewAdminPanel',
@@ -62,7 +57,9 @@ const ROUTES = {
   kurikulum: {
     view: 'viewCoursePlayer',
     nav: 'nav-kurikulum',
-    crumb: ['Kurikulum', 'Bahasa Arab Jenjang SMP', 'Jumlah Ismiyyah dan Fasilitas Sekolah'],
+    // Remah roti kurikulum ikut jenjang yang sedang aktif, tidak tetap —
+    // lihat remahKurikulum() di js/ui/role.js untuk alasannya.
+    crumb: remahKurikulum,
     toast: 'Membuka Kurikulum Pembelajaran Bahasa Arab',
     tone: 520
   },
@@ -75,7 +72,17 @@ const ROUTES = {
   }
 };
 
-const DEFAULT_ROUTE = 'kurikulum';
+/*
+ * 12 September 2026 — layar pendaratan berubah dari 'kurikulum' ke 'beranda'.
+ *
+ * Selama situs ini masih dek penawaran dengan aplikasi peraga di belakangnya,
+ * mendarat langsung di pemutar materi memang masuk akal: yang dituju satu
+ * layar yang paling enak dipandang saat dipresentasikan. Sebagai LMS
+ * sungguhan alurnya lain — santri masuk untuk melihat POSISINYA dulu
+ * (progres, agenda, peringkat), baru memilih mau belajar apa. Dashboard
+ * yang menjawab itu, bukan video yang langsung terbuka.
+ */
+const DEFAULT_ROUTE = 'beranda';
 
 const setText = (id, value) => {
   const el = document.getElementById(id);
@@ -100,7 +107,13 @@ export function switchMainView(viewName) {
   const nav = document.getElementById(route.nav);
   if (nav) nav.classList.add('active');
 
-  const [root, category, active] = route.crumb;
+  // Sorotan modul di sidebar hanya berlaku selama pemutar materi terbuka.
+  // Tanpa baris ini, satu modul tetap tampak "sedang dibuka" padahal santri
+  // sudah pindah ke Perpustakaan atau Dashboard. bukaModul() menyorot ulang
+  // sesudah memanggil fungsi ini, jadi urutannya tetap benar.
+  if (viewName !== 'kurikulum') sorotModulAktif(-1);
+
+  const [root, category, active] = typeof route.crumb === 'function' ? route.crumb() : route.crumb;
   setText('breadcrumbRoot', root);
   setText('breadcrumbCategory', category);
   setText('breadcrumbActiveTitle', active);
@@ -122,6 +135,11 @@ export function switchMainView(viewName) {
     // Async, sengaja tidak ditunggu (await) — switchMainView tetap sinkron
     // seperti kontrak aslinya, bukaStudio menangani render sendiri.
     bukaStudio();
+  }
+  if (viewName === 'beranda') {
+    // Async, sengaja tidak ditunggu — angkanya menyusul mengisi tempat
+    // yang sudah bertuliskan "—", bukan menahan perpindahan layar.
+    muatBeranda();
   }
   if (viewName === 'modul-pdf') {
     // Sama: gantikan kartu peraga dengan dokumen asli begitu ada yang

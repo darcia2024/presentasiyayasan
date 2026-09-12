@@ -1,14 +1,17 @@
 /**
  * PERISA AZHARIYAH — Gerbang Login (Wali + Staff)
  *
- * Alur: nomor WA -> kode OTP -> (kalau wali dengan >1 anak) pilih profil.
- * Lihat docs/fase-1-arsitektur.md untuk kenapa alurnya berbentuk begini.
+ * Alur: nomor WA + PIN -> (kalau wali punya lebih dari satu anak) pilih
+ * profil santri -> masuk.
  *
- * CATATAN: kurikulum sungguhan belum ada (itu Fase 2 — Studio Kurikulum).
- * Setelah login berhasil, jenjang santri yang dipilih dipetakan ke konten
- * peraga yang sudah ada di js/data/roles.js, supaya yang tampil paling
- * tidak SELEVEL dengan anak yang sedang login — bukan konten sungguhan
- * anaknya, tapi bukan acak juga.
+ * 12 September 2026 — OTP WhatsApp DIGANTI PIN. Alasan lengkapnya di
+ * supabase/migrations/20260912000001_login_pin.sql; ringkasnya: gateway
+ * WhatsApp-nya tidak pernah ada, dan "mode pengembangan" yang menutupi
+ * ketiadaannya membocorkan kode masuk ke siapa pun yang memintanya lewat
+ * HTTP. PIN ditetapkan pengurus saat mendaftarkan keluarga, dan bisa
+ * diganti sendiri oleh pemilik akun lewat menu Pengaturan Akun.
+ *
+ * Dua langkah OTP (minta kode -> masukkan kode) menyusut jadi satu.
  */
 
 import {
@@ -21,17 +24,16 @@ import {
   SUPABASE_TERKONFIGURASI,
 } from '../core/supabase-client.js';
 import { playTone, showToast } from '../core/feedback.js';
-import { terapkanIdentitasAsli } from './role.js';
+import { terapkanSantriAktif, terapkanIdentitasSesiAktif, beriTahuPergantianSantri } from './jenjang.js';
 import { escapeHtml } from '../core/html.js';
+import { BOLEH_MODE_PENGEMBANGAN } from '../config.js';
 
-const JENJANG_KE_PERAN = { sd: 'santri-sd', smp: 'santri-smp', sma: 'santri-sma' };
 const NAMA_JENJANG = { sd: 'SD', smp: 'SMP', sma: 'SMA' };
-const NAMA_PERAN_STAFF = { pengajar: 'Pengajar', pengurus: 'Pengurus Yayasan', superadmin: 'Pengurus Yayasan' };
 
 const $ = (id) => document.getElementById(id);
 
 function tampilkanLangkah(langkah) {
-  ['authStepNomor', 'authStepOtp', 'authStepProfil'].forEach((id) => {
+  ['authStepMasuk', 'authStepProfil'].forEach((id) => {
     const el = $(id);
     if (el) el.style.display = id === langkah ? 'flex' : 'none';
   });
@@ -51,20 +53,15 @@ function setMemuat(idTombol, memuat, labelNormal) {
   btn.textContent = memuat ? 'Memproses…' : labelNormal;
 }
 
-let nomorTerkini = '';
-
 /**
  * Ambil pesan error yang sebenarnya dari respons Edge Function.
  *
- * Klien Supabase TIDAK mengisi `data` saat status HTTP bukan 2xx (404, 429,
+ * Klien Supabase TIDAK mengisi `data` saat status HTTP bukan 2xx (401, 429,
  * dst) — hanya mengisi `error` (objek SDK generik), padahal body respons
  * kita SENDIRI berisi `{ ok:false, error:"pesan yang jelas" }`. Tanpa fungsi
- * ini, wali cuma melihat "Gagal mengirim kode" untuk SEMUA kegagalan —
- * termasuk kasus penting seperti "nomor belum terdaftar" atau "terlalu
- * banyak percobaan" yang seharusnya memandu mereka, bukan membingungkan.
- *
- * Ditemukan lewat uji klik sungguhan di browser, bukan panggilan API
- * langsung — makanya baru ketahuan di titik ini.
+ * ini, wali cuma melihat satu pesan generik untuk SEMUA kegagalan —
+ * termasuk yang penting seperti "akun dikunci 15 menit" yang seharusnya
+ * memandu mereka, bukan membingungkan.
  */
 async function ambilPesanError(data, error, fallback) {
   if (data?.error) return data.error;
@@ -79,76 +76,64 @@ async function ambilPesanError(data, error, fallback) {
   return error?.message || fallback;
 }
 
-async function ajukanOtp() {
-  const input = $('authNomorInput');
-  if (!input) return;
-  const nomor = input.value.trim();
+/**
+ * Tombol mata di kolom PIN.
+ *
+ * Bukan hiasan: PIN diketik tertutup di ponsel dengan papan ketik angka,
+ * dan wali yang salah ketik tidak punya cara membedakannya dari PIN yang
+ * memang salah. Lima kali begitu, akunnya terkunci 15 menit — dan yang
+ * menanggung teleponnya adalah pengurus.
+ */
+function pasangTombolLihatPin() {
+  const tombol = $('authPinLihat');
+  const input = $('authPinInput');
+  if (!tombol || !input) return;
 
-  setError('authNomorError', '');
-  if (!nomor) {
-    setError('authNomorError', 'Masukkan nomor WhatsApp wali.');
-    return;
-  }
-
-  setMemuat('authNomorSubmit', true, 'Kirim Kode');
-  try {
-    const client = getSupabaseClient();
-    const { data, error } = await client.functions.invoke('auth-otp-request', {
-      body: { nomor_wa: nomor },
-    });
-
-    if (error || !data?.ok) {
-      setError('authNomorError', await ambilPesanError(data, error, 'Gagal mengirim kode. Coba lagi.'));
-      return;
-    }
-
-    nomorTerkini = nomor;
-    const target = $('authOtpTarget');
-    if (target) target.textContent = nomor;
-
-    const hint = $('authDevHint');
-    if (hint) {
-      if (data.modePengembangan) {
-        hint.style.display = 'block';
-        hint.textContent = `Mode pengembangan — kode OTP: ${data.kodeDev}`;
-        const otpInput = $('authOtpInput');
-        if (otpInput) otpInput.value = data.kodeDev;
-      } else {
-        hint.style.display = 'none';
-      }
-    }
-
-    playTone(560, 'sine', 0.1, 0.06);
-    showToast(`Kode dikirim ke WhatsApp ${nomor}`);
-    tampilkanLangkah('authStepOtp');
-    $('authOtpInput')?.focus();
-  } catch (e) {
-    setError('authNomorError', e.message || 'Terjadi kesalahan jaringan.');
-  } finally {
-    setMemuat('authNomorSubmit', false, 'Kirim Kode');
-  }
+  tombol.addEventListener('click', () => {
+    const terlihat = input.type === 'text';
+    input.type = terlihat ? 'password' : 'text';
+    tombol.setAttribute('aria-label', terlihat ? 'Tampilkan PIN' : 'Sembunyikan PIN');
+    const ikon = tombol.querySelector('i');
+    if (ikon) ikon.className = terlihat ? 'ph ph-eye' : 'ph ph-eye-slash';
+    input.focus();
+  });
 }
 
-async function verifikasiOtp() {
-  const input = $('authOtpInput');
-  if (!input) return;
-  const kode = input.value.trim();
+/** Satu-satunya jalan masuk: nomor WhatsApp + PIN. */
+async function masuk() {
+  const inputNomor = $('authNomorInput');
+  const inputPin = $('authPinInput');
+  if (!inputNomor || !inputPin) return;
 
-  setError('authOtpError', '');
-  if (!kode) {
-    setError('authOtpError', 'Masukkan kode OTP.');
+  const nomor = inputNomor.value.trim();
+  const pin = inputPin.value.trim();
+
+  setError('authMasukError', '');
+  if (!nomor) {
+    setError('authMasukError', 'Masukkan nomor WhatsApp yang terdaftar.');
+    inputNomor.focus();
+    return;
+  }
+  if (!pin) {
+    setError('authMasukError', 'Masukkan PIN dari pengurus yayasan.');
+    inputPin.focus();
     return;
   }
 
-  setMemuat('authOtpSubmit', true, 'Masuk');
+  setMemuat('authMasukSubmit', true, 'Masuk');
   try {
     const client = getSupabaseClient();
-    const { data, error } = await client.functions.invoke('auth-otp-verify', {
-      body: { nomor_wa: nomorTerkini, kode },
+    const { data, error } = await client.functions.invoke('auth-login-pin', {
+      body: { nomor_wa: nomor, pin },
     });
 
     if (error || !data?.ok) {
-      setError('authOtpError', await ambilPesanError(data, error, 'Kode salah atau kedaluwarsa.'));
+      setError('authMasukError', await ambilPesanError(data, error, 'Gagal masuk. Coba lagi.'));
+      // Kosongkan PIN-nya saja, bukan nomornya — yang salah ketik hampir
+      // selalu PIN, dan mengetik ulang nomor setiap kali gagal itu menyiksa
+      // di ponsel.
+      inputPin.value = '';
+      inputPin.focus();
       return;
     }
 
@@ -164,6 +149,9 @@ async function verifikasiOtp() {
     });
     segarkanKlien();
 
+    // PIN tidak boleh tertinggal di DOM sesudah dipakai.
+    inputPin.value = '';
+
     playTone(659, 'sine', 0.14, 0.08);
 
     if (data.akun.akun_jenis === 'wali' && (data.santri || []).length > 1) {
@@ -177,9 +165,9 @@ async function verifikasiOtp() {
     }
     selesai();
   } catch (e) {
-    setError('authOtpError', e.message || 'Terjadi kesalahan jaringan.');
+    setError('authMasukError', e.message || 'Terjadi kesalahan jaringan.');
   } finally {
-    setMemuat('authOtpSubmit', false, 'Masuk');
+    setMemuat('authMasukSubmit', false, 'Masuk');
   }
 }
 
@@ -209,33 +197,23 @@ function renderPemilihProfil(daftarSantri) {
   });
 }
 
-/** Petakan jenjang santri sungguhan ke konten peraga yang ada (Fase 2 mengganti ini). */
+/**
+ * Terapkan santri yang dipilih: identitasnya ke sidebar/drawer, lalu muat
+ * kurikulum jenjangnya dari basis data.
+ *
+ * Sampai 11 September 2026 fungsi ini memetakan jenjang santri ke salah
+ * satu dari tiga PERSONA PERAGA ('santri-sd'/'santri-smp'/'santri-sma') —
+ * jadi yang tampil bukan materi anak itu, melainkan materi karangan yang
+ * kebetulan sejenjang. Sekarang jenjangnya diteruskan apa adanya dan
+ * kontennya datang dari tabel modul/pelajaran/mufrodat.
+ */
 function terapkanProfil(santri) {
-  const peran = JENJANG_KE_PERAN[santri.jenjang] || 'santri-smp';
-  if (window.PrototypeApp?.setRole) {
-    // setRole() sendiri sudah menimpa balik nama peraga dengan identitas
-    // sesi asli di ujungnya (lihat terapkanIdentitasSesiAktif() di
-    // role.js) — satu tempat yang berlaku untuk SEMUA jalan yang memanggil
-    // setRole(), bukan cuma lewat sini.
-    window.PrototypeApp.setRole(peran);
-  }
+  terapkanSantriAktif(santri);
 }
 
-/** Sama seperti terapkanProfil(), tapi untuk sesi STAFF — tidak ada "jenjang santri" untuk staff. */
+/** Identitas untuk sesi STAFF — staff tidak punya "jenjang santri". */
 function terapkanIdentitasStaff() {
-  const sesi = bacaSesi();
-  if (!sesi || sesi.akun.akun_jenis !== 'staff') return;
-  const inisial = (sesi.akun.nama || '?')
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((b) => b[0]?.toUpperCase())
-    .join('');
-  terapkanIdentitasAsli({
-    nama: sesi.akun.nama,
-    subtitel: NAMA_PERAN_STAFF[sesi.akun.staff_peran] || 'Staff Yayasan',
-    inisial: inisial || '?',
-  });
+  terapkanIdentitasSesiAktif();
 }
 
 /**
@@ -248,27 +226,46 @@ function terapkanIdentitasStaff() {
  * total untuk sesi sungguhan; dropdown perspektif digambar ulang dengan
  * anak-anak SUNGGUHAN wali itu HANYA kalau lebih dari satu (satu anak
  * tidak butuh "berganti").
+ *
+ * 12 September 2026 — syaratnya diperketat satu tingkat lagi. Sebelum ini
+ * alat peraga hanya bersembunyi kalau ADA sesi; artinya build produksi yang
+ * karena satu dan lain hal belum punya sesi (Supabase salah konfigurasi,
+ * gerbang login gagal tampil) menyajikan bar "SIMULASI SISTEM" lengkap
+ * dengan tombol berpindah ke Panel Pengurus kepada siapa pun yang membuka
+ * situsnya. Sekarang peraga hanya hidup kalau build-nya MEMANG build
+ * pengembangan (APP_ENV development/test) DAN belum ada sesi. Di produksi
+ * tidak ada keadaan apa pun yang memunculkannya.
  */
+function bolehTampilkanPeraga() {
+  return BOLEH_MODE_PENGEMBANGAN && !bacaSesi();
+}
+
 function terapkanVisibilitasDemo() {
   const sesi = bacaSesi();
-  if (!sesi) return; // mode peraga (belum ada sesi asli) — biarkan semua tampil
+  const peraga = bolehTampilkanPeraga();
 
   const demoBar = $('demoControlBar');
-  if (demoBar) demoBar.style.display = 'none';
+  if (demoBar) demoBar.style.display = peraga ? '' : 'none';
   // Kerangka desktop dihitung calc(100vh - 46px) untuk memberi ruang bar
   // demo. Begitu barnya disembunyikan, ruang itu harus dikembalikan —
   // kalau tidak, sidebar berhenti 46px sebelum dasar layar dan garis
   // pemisahnya terputus (temuan audit desain 5 Sep 2026).
-  document.body.classList.add('tanpa-bar-demo');
+  document.body.classList.toggle('tanpa-bar-demo', !peraga);
   const drawerPerspektif = $('mDrawerPerspektif');
-  if (drawerPerspektif) drawerPerspektif.style.display = 'none';
+  if (drawerPerspektif) drawerPerspektif.style.display = peraga ? '' : 'none';
   const berandaJenjang = $('berandaPilihanJenjang');
-  if (berandaJenjang) berandaJenjang.style.display = 'none';
+  if (berandaJenjang) berandaJenjang.style.display = peraga ? '' : 'none';
 
   const wrap = $('dropdownPerspektifWrap');
   if (!wrap) return;
 
-  const daftarSantri = sesi.akun.akun_jenis === 'wali' ? sesi.santri || [] : [];
+  // Mode peraga: biarkan daftar tiga persona bawaan HTML apa adanya.
+  if (peraga) {
+    wrap.style.display = '';
+    return;
+  }
+
+  const daftarSantri = sesi?.akun?.akun_jenis === 'wali' ? sesi.santri || [] : [];
   if (daftarSantri.length < 2) {
     wrap.style.display = 'none';
     return;
@@ -308,14 +305,88 @@ function gantiProfilSantri(santriId) {
   terapkanProfil(santri);
   terapkanVisibilitasDemo();
   playTone(560, 'sine', 0.1, 0.06);
-  showToast(`Beralih ke profil ${santri.nama}.`);
+  beriTahuPergantianSantri(santri.nama);
 }
 
-/** Tampilkan menu "Studio Kurikulum" di sidebar hanya untuk sesi staff. */
+/**
+ * Kelompok menu "Pengurus Yayasan" — Panel Otoritas & Studio Kurikulum.
+ *
+ * 12 September 2026: sebelum ini hanya Studio yang dijaga, sementara
+ * "Panel Otoritas Yayasan" duduk di sidebar SEMUA orang termasuk santri
+ * kelas 5 SD. Datanya memang selalu ditolak (panelnya sendiri memeriksa
+ * peran, lihat js/ui/pengurus-panel.js), jadi ini bukan lubang keamanan —
+ * tapi menu yang tidak akan pernah bisa dipakai tidak punya urusan berada
+ * di layar santri, apalagi menu bernama "Otoritas Yayasan".
+ *
+ * Tetap terlihat saat mode peraga di build pengembangan, supaya panel ini
+ * masih bisa ditunjukkan waktu presentasi lokal.
+ */
 function terapkanVisibilitasStaff() {
   const sesi = bacaSesi();
-  const item = $('navStudioKurikulumItem');
-  if (item) item.style.display = sesi?.akun?.akun_jenis === 'staff' ? '' : 'none';
+  const terlihat = sesi?.akun?.akun_jenis === 'staff' || bolehTampilkanPeraga() ? '' : 'none';
+
+  [
+    'navGroupPengurus', 'navAdminPanelItem', 'navStudioKurikulumItem',
+    'navGroupPengurusMobile', 'navAdminPanelItemMobile', 'navStudioKurikulumItemMobile',
+  ].forEach((id) => {
+    const el = $(id);
+    if (el) el.style.display = terlihat;
+  });
+}
+
+/**
+ * Tombol "Keluar" (sidebar desktop + drawer mobile). Hanya berguna kalau
+ * memang ada sesi — di mode peraga tidak ada yang bisa dikeluarkan, dan
+ * tombol yang tidak berbuat apa-apa persis jenis antarmuka yang dibersihkan
+ * audit M12.
+ */
+function terapkanVisibilitasSesi() {
+  const ada = Boolean(bacaSesi());
+  ['sidebarLogout', 'drawerLogout'].forEach((id) => {
+    const el = $(id);
+    if (el) el.style.display = ada ? '' : 'none';
+  });
+}
+
+/**
+ * Layar pendaratan sesudah login — inti alur LMS: masuk, lihat posisi,
+ * baru pilih materi.
+ *
+ *   wali   → Dashboard Wali (ringkasan seluruh anaknya)
+ *   staff  → Panel Otoritas Yayasan (dashboard kerja mereka)
+ *   sisanya→ Dashboard Santri
+ *
+ * Dipanggil dari DUA jalan: login baru (selesai) dan sesi yang bertahan
+ * lewat muat ulang halaman (initAuthGate). Keduanya harus mendarat di
+ * tempat yang sama — kalau tidak, layar pertama yang dilihat wali berbeda
+ * tergantung apakah dia baru login atau sekadar menyegarkan halaman.
+ */
+function arahkanKeDashboard() {
+  const sesi = bacaSesi();
+  if (!sesi || !window.PrototypeApp?.switchMainView) return;
+
+  const jenis = sesi.akun?.akun_jenis;
+  if (jenis === 'wali') window.PrototypeApp.switchMainView('wali-dashboard');
+  else if (jenis === 'staff') window.PrototypeApp.switchMainView('admin');
+  else window.PrototypeApp.switchMainView('beranda');
+}
+
+/**
+ * Dipanggil sekali saat boot dari js/app.js, SEBELUM initAuthGate dan tanpa
+ * syarat apa pun.
+ *
+ * Alasannya: initAuthGate berhenti lebih awal kalau Supabase belum
+ * terkonfigurasi, dan dulu itu berarti seluruh penyembunyian alat peraga
+ * ikut tidak berjalan. Build produksi yang variabel lingkungannya salah
+ * ketik akan menyajikan bar "SIMULASI SISTEM" ke publik — kegagalan
+ * konfigurasi berubah jadi kebocoran antarmuka. Sekarang aturan tampilan
+ * dijalankan lebih dulu, terlepas dari status Supabase.
+ */
+export function terapkanAturanTampilan() {
+  terapkanVisibilitasStaff();
+  terapkanVisibilitasWali();
+  terapkanVisibilitasDemo();
+  terapkanVisibilitasSesi();
 }
 
 /** Tampilkan menu "Dashboard Wali" (sidebar + drawer mobile) hanya untuk sesi wali. */
@@ -332,23 +403,10 @@ function selesai() {
   const gate = $('authGate');
   if (gate) gate.style.display = 'none';
   document.body.classList.remove('auth-gate-open');
-  terapkanVisibilitasStaff();
-  terapkanVisibilitasWali();
-  terapkanVisibilitasDemo();
+  terapkanAturanTampilan();
   if (bacaSesi()?.akun?.akun_jenis === 'staff') terapkanIdentitasStaff();
-  // Fase 6: wali mendarat di dashboard ringkasan anak dulu, bukan langsung
-  // ke konten satu anak — itulah gunanya fase ini. Staff/pengurus tetap
-  // seperti sebelumnya (tidak disentuh).
-  if (bacaSesi()?.akun?.akun_jenis === 'wali' && window.PrototypeApp?.switchMainView) {
-    window.PrototypeApp.switchMainView('wali-dashboard');
-  }
+  arahkanKeDashboard();
   showToast('Berhasil masuk. Ahlan wa sahlan!');
-}
-
-function gantiNomor() {
-  setError('authOtpError', '');
-  tampilkanLangkah('authStepNomor');
-  $('authNomorInput')?.focus();
 }
 
 /**
@@ -363,6 +421,10 @@ export function initAuthGate() {
     // Supabase belum disiapkan (mis. pengembangan lokal tanpa .env terisi).
     // Jangan kunci aplikasi — biarkan mode peraga tombol ganti akun tetap
     // bisa dipakai seperti sebelum Fase 1 ada.
+    //
+    // Catatan: aturan tampilan sudah dijalankan js/app.js sebelum fungsi ini
+    // dipanggil, jadi di BUILD PRODUKSI yang keadaannya begini alat peraga
+    // tetap tersembunyi — aplikasi tampil apa adanya tanpa panel simulasi.
     gate.style.display = 'none';
     return;
   }
@@ -377,16 +439,11 @@ export function initAuthGate() {
       if (aktif) terapkanProfil(aktif);
     }
     gate.style.display = 'none';
-    terapkanVisibilitasStaff();
-    terapkanVisibilitasWali();
-    terapkanVisibilitasDemo();
+    terapkanAturanTampilan();
     if (sesi.akun.akun_jenis === 'staff') terapkanIdentitasStaff();
-    // Sesi wali yang bertahan lewat reload halaman tetap mendarat di
-    // dashboard-nya, bukan di kurikulum() bawaan HTML — konsisten dengan
-    // login baru lewat selesai().
-    if (sesi.akun.akun_jenis === 'wali' && window.PrototypeApp?.switchMainView) {
-      window.PrototypeApp.switchMainView('wali-dashboard');
-    }
+    // Sesi yang bertahan lewat muat ulang halaman mendarat di layar yang
+    // sama dengan login baru — lihat arahkanKeDashboard().
+    arahkanKeDashboard();
     return;
   }
 
@@ -394,21 +451,20 @@ export function initAuthGate() {
     renderPemilihProfil(sesi.santri);
     tampilkanLangkah('authStepProfil');
   } else {
-    tampilkanLangkah('authStepNomor');
+    tampilkanLangkah('authStepMasuk');
   }
 
   gate.style.display = 'flex';
   document.body.classList.add('auth-gate-open');
 
-  $('authNomorSubmit')?.addEventListener('click', ajukanOtp);
+  $('authMasukSubmit')?.addEventListener('click', masuk);
+  pasangTombolLihatPin();
   $('authNomorInput')?.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') ajukanOtp();
+    if (e.key === 'Enter') $('authPinInput')?.focus();
   });
-  $('authOtpSubmit')?.addEventListener('click', verifikasiOtp);
-  $('authOtpInput')?.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') verifikasiOtp();
+  $('authPinInput')?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') masuk();
   });
-  $('authGantiNomor')?.addEventListener('click', gantiNomor);
 }
 
 /** Dipanggil dari dropdown profil — "Keluar". */

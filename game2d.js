@@ -114,6 +114,20 @@ const HiwarApp = (() => {
   }
 
   // Speak Arabic with Web Speech
+  /**
+   * AUDIT 10 Sep 2026 (S4): badge akurasi dulu dirangkai sebagai string HTML
+   * yang memuat teks target. Datanya statis di berkas ini, tapi polanya
+   * disamakan dengan seluruh aplikasi — tidak ada string HTML dari data.
+   */
+  function setBadge(el, namaIkon, teks) {
+    if (!el) return;
+    while (el.firstChild) el.removeChild(el.firstChild);
+    const i = document.createElement('i');
+    i.className = `ph ${/^ph-[a-z0-9-]+$/i.test(namaIkon) ? namaIkon : 'ph-circle'}`;
+    el.appendChild(i);
+    el.appendChild(document.createTextNode(teks));
+  }
+
   function speakArabic(text, rate = 0.85) {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
@@ -325,7 +339,8 @@ const HiwarApp = (() => {
     if (isMatch) {
       // ACCURATE / PASS
       accuracyBadge.style.color = '#006D63';
-      accuracyBadge.innerHTML = `<i class="ph ph-check-circle"></i> Suara Santri Terverifikasi: Pelafalan Tepat (${matches >= 2 ? 'Mumtaz 98%' : 'Jayyid 85%'})`;
+      setBadge(accuracyBadge, 'ph-check-circle',
+        ` Suara Santri Terverifikasi: Pelafalan Tepat (${matches >= 2 ? 'Mumtaz 98%' : 'Jayyid 85%'})`);
       speakArabic(data.targetAr, 0.9);
       playTone(784, 'triangle', 0.18, 0.1);
       showToast('Alhamdulillah! Pelafalan santri sesuai dengan target.');
@@ -337,7 +352,8 @@ const HiwarApp = (() => {
     } else {
       // MISMATCH / INCORRECT PHRASE
       accuracyBadge.style.color = '#DC2626';
-      accuracyBadge.innerHTML = `<i class="ph ph-x-circle"></i> Pelafalan Belum Sesuai Target (Akurasi Rendah). Silakan ucapkan: "${data.targetAr}"`;
+      setBadge(accuracyBadge, 'ph-x-circle',
+        ` Pelafalan Belum Sesuai Target (Akurasi Rendah). Silakan ucapkan: "${data.targetAr}"`);
       playTone(340, 'sine', 0.2, 0.08);
       showToast(`Terdeteksi: "${spoken}". Kalimat belum sesuai target silabus. Silakan coba lagi.`);
       

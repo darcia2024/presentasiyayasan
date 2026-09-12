@@ -2,9 +2,10 @@
 /**
  * PERISA AZHARIYAH — Penyusun folder `dist/` untuk penerbitan
  *
- * Sampai sekarang penerbitan dilakukan dengan mengunggah SELURUH isi repo
- * lalu menyaringnya lewat .assetsignore (lihat konfigurasi Wrangler). Cara
- * itu bekerja, tapi memakai pola yang salah arah: apa pun berkas BARU yang
+ * Penerbitan sebelumnya dilakukan dengan mengunggah SELURUH isi repo lalu
+ * menyaringnya lewat daftar pengecualian (.assetsignore, sudah dihapus
+ * bersama sisa konfigurasi Cloudflare pada audit D18). Cara itu bekerja,
+ * tapi memakai pola yang salah arah: apa pun berkas BARU yang
  * ditambahkan ke repo otomatis ikut terbit kecuali seseorang ingat
  * mendaftarkannya sebagai pengecualian. Sekali lupa, isinya tersaji ke
  * publik tanpa ada yang memberi tahu.
@@ -33,8 +34,25 @@ const DIST = path.join(ROOT, 'dist');
 /** Berkas di akar yang boleh terbit, berdasarkan akhiran namanya. */
 const AKHIRAN_AKAR = ['.html', '.css', '.js', '.png', '.svg', '.ico', '.webmanifest'];
 
-/** Berkas di akar yang cocok akhirannya TAPI tetap tidak boleh terbit. */
-const KECUALI_AKAR = new Set(['server.js']);
+/**
+ * Berkas di akar yang cocok akhirannya TAPI tetap tidak boleh terbit.
+ *
+ * proposal.html (12 Sep 2026): dek penawaran yang dulu menempati akar situs
+ * sebagai index.html. Isinya materi penjualan — harga, tahapan penawaran,
+ * dan janji fitur yang belum tentu sama dengan yang sudah jadi. Sekarang
+ * akar situs adalah APLIKASINYA, dan dek itu tidak punya alasan tersaji ke
+ * publik. Tetap disimpan di repo supaya bisa dibuka lokal saat presentasi
+ * ke pengurus (`npm start` lalu /proposal.html), cukup tidak ikut terbit.
+ */
+const KECUALI_AKAR = new Set(['server.js', 'proposal.html']);
+
+/**
+ * Berkas akar yang WAJIB ikut terbit walau akhirannya tidak ada di daftar
+ * di atas. Disebutkan satu per satu, bukan dengan melonggarkan daftar
+ * akhiran — melonggarkan '.txt' berarti setiap catatan .txt yang suatu
+ * saat ditaruh di akar repo ikut tersaji ke publik tanpa ada yang tahu.
+ */
+const BERKAS_AKAR_TAMBAHAN = new Set(['robots.txt']);
 
 /** Folder yang ikut terbit seluruhnya. */
 const FOLDER = ['js', 'icons', 'vendor'];
@@ -42,6 +60,7 @@ const FOLDER = ['js', 'icons', 'vendor'];
 /** Berkas di dalam folder di atas yang tetap tidak boleh terbit. */
 const KECUALI_ISI = new Set([
   path.join('vendor', 'phosphor', '_upstream.css'), // 4.600+ baris, hanya dipakai saat build
+  path.join('js', 'package.json'), // penanda "type": "module" untuk Node saat uji — browser tidak membacanya
 ]);
 
 /**
@@ -88,7 +107,7 @@ function main() {
     if (KECUALI_AKAR.has(nama)) continue;
     const penuh = path.join(ROOT, nama);
     if (!fs.statSync(penuh).isFile()) continue;
-    if (!AKHIRAN_AKAR.includes(path.extname(nama).toLowerCase())) continue;
+    if (!AKHIRAN_AKAR.includes(path.extname(nama).toLowerCase()) && !BERKAS_AKAR_TAMBAHAN.has(nama)) continue;
     salinBerkas(penuh, path.join(DIST, nama));
     terkumpul.push(nama);
   }

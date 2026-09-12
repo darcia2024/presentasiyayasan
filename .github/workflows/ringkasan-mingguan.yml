@@ -1,0 +1,130 @@
+name: Ringkasan Mingguan Wali PERISA
+
+# PERISA AZHARIYAH — Penjadwal ringkasan mingguan (audit 10 Sep 2026, S3)
+#
+# TEMUAN YANG MELAHIRKAN BERKAS INI. Edge Function kirim-ringkasan-mingguan
+# sudah selesai sejak Fase 6, sudah ter-deploy, dan checklist peluncuran
+# menyebutnya "sudah beres & teruji" — tapi TIDAK ADA SATU PUN yang
+# memanggilnya. Bukan di .github/workflows, bukan pg_cron, bukan penjadwal
+# dashboard Supabase, bukan pula tercatat sebagai langkah manual di docs.
+# Fungsi itu tidak akan pernah berjalan sekali pun.
+#
+# KENAPA GITHUB ACTIONS. Repo ini sudah memakai Actions untuk dua tugas
+# terjadwal lain (cadangan harian, pemantauan ketersediaan). Menambah yang
+# ketiga di tempat yang sama berarti satu tempat untuk melihat riwayat
+# jalannya, satu tempat untuk notifikasi gagal, dan tidak ada layanan baru
+# yang perlu dibayar atau dijaga. Alternatifnya (pg_cron di Supabase)
+# memerlukan ekstensi yang tidak aktif di tier gratis dan jejaknya lebih
+# sulit dilihat pengurus.
+#
+# ZONA WAKTU. Cron GitHub SELALU UTC. 12:00 UTC = 19:00 WIB, Minggu malam —
+# saat wali kemungkinan besar sedang bersama anaknya dan pekan belajarnya
+# baru saja tuntas. Fungsi sendiri menghitung batas pekannya dengan
+# kalender WIB (_shared/waktu.ts), jadi ringkasan yang dikirim Minggu
+# malam mencakup Senin–Minggu pekan itu, bukan pekan sebelumnya.
+#
+# TIDAK MENGIRIM DUA KALI. Fungsi mencatat ringkasan_mingguan_log per
+# (santri, minggu_mulai) dan melewati yang sudah tercatat. Jadi percobaan
+# ulang di bawah — atau menjalankan workflow ini manual di hari yang sama —
+# aman: wali tidak akan menerima pesan yang sama dua kali.
+#
+# AGAR JALAN — dua secret repo (Settings > Secrets and variables > Actions):
+#   SUPABASE_URL   https://<ref>.supabase.co   (sudah ada untuk cadangan)
+#   CRON_SECRET    nilai yang SAMA dengan env CRON_SECRET di Edge Function
+# Selama salah satunya kosong, workflow ini BERHENTI dengan pesan jelas —
+# bukan gagal dengan galat jaringan yang membingungkan.
+
+on:
+  schedule:
+    - cron: '0 12 * * 0' # Minggu 12:00 UTC = Minggu 19:00 WIB
+  workflow_dispatch: {}
+
+# Dua jalan bersamaan tidak berguna dan cuma menambah risiko pesan ganda.
+concurrency:
+  group: ringkasan-mingguan
+  cancel-in-progress: false
+
+jobs:
+  kirim:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Periksa konfigurasi
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          set -euo pipefail
+          KURANG=""
+          [ -z "${SUPABASE_URL:-}" ] && KURANG="$KURANG SUPABASE_URL"
+          [ -z "${CRON_SECRET:-}" ] && KURANG="$KURANG CRON_SECRET"
+          if [ -n "$KURANG" ]; then
+            echo "::error::Secret repo belum diisi:$KURANG — lihat komentar di berkas workflow ini."
+            exit 1
+          fi
+          echo "Konfigurasi lengkap."
+
+      - name: Kirim ringkasan mingguan
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          set -uo pipefail
+
+          # Coba ulang HANYA untuk kegagalan sementara (jaringan, 5xx,
+          # gateway WA sedang tidak siap). Kegagalan wewenang (401/403)
+          # TIDAK diulang: mencoba lagi dengan secret yang sama tidak akan
+          # pernah berhasil, dan pengulangannya cuma mengaburkan sebabnya
+          # di log.
+          PERCOBAAN=0
+          MAKS=3
+          JEDA=30
+
+          while [ "$PERCOBAAN" -lt "$MAKS" ]; do
+            PERCOBAAN=$((PERCOBAAN + 1))
+            echo "── Percobaan $PERCOBAAN dari $MAKS"
+
+            HTTP=$(curl -sS -o /tmp/hasil.json -w "%{http_code}" --max-time 300 \
+              -X POST "$SUPABASE_URL/functions/v1/kirim-ringkasan-mingguan" \
+              -H "Content-Type: application/json" \
+              -H "X-Cron-Secret: $CRON_SECRET" \
+              -d '{}' || echo "000")
+
+            echo "HTTP $HTTP"
+            cat /tmp/hasil.json 2>/dev/null || true
+            echo
+
+            case "$HTTP" in
+              2*)
+                # Fungsi bisa membalas 200 sambil melaporkan sebagian wali
+                # gagal dikirimi. Itu bukan kegagalan seluruh jalan, tapi
+                # harus terlihat — bukan tersembunyi di balik centang hijau.
+                GAGAL=$(node -e "try{const d=require('/tmp/hasil.json');console.log(d.waliGagal??0)}catch(e){console.log(0)}")
+                DIKIRIM=$(node -e "try{const d=require('/tmp/hasil.json');console.log(d.waliDikirimi??0)}catch(e){console.log(0)}")
+                echo "Terkirim ke $DIKIRIM wali, gagal $GAGAL."
+                if [ "$GAGAL" != "0" ]; then
+                  echo "::warning::$GAGAL wali gagal dikirimi ringkasan. Mereka akan dicoba lagi pekan depan (log tidak dicatat untuk yang gagal)."
+                fi
+                exit 0
+                ;;
+              401|403)
+                echo "::error::Ditolak (HTTP $HTTP). CRON_SECRET di repo tidak cocok dengan env CRON_SECRET di Edge Function. Tidak diulang."
+                exit 1
+                ;;
+              503)
+                echo "::error::Layanan belum siap (HTTP 503) — biasanya WA_GATEWAY_URL belum diisi di Edge Function secrets."
+                exit 1
+                ;;
+              *)
+                echo "::warning::Gagal sementara (HTTP $HTTP)."
+                if [ "$PERCOBAAN" -lt "$MAKS" ]; then
+                  echo "Menunggu ${JEDA}s sebelum mencoba lagi…"
+                  sleep "$JEDA"
+                  JEDA=$((JEDA * 3))
+                fi
+                ;;
+            esac
+          done
+
+          echo "::error::Gagal setelah $MAKS percobaan. Ringkasan pekan ini TIDAK terkirim."
+          exit 1

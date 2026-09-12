@@ -1,0 +1,33 @@
+# ==========================================================================
+# PERISA AZHARIYAH — robots.txt
+#
+# PERUBAHAN 12 September 2026 — situs berubah bentuk.
+#
+# Sebelumnya akar situs berisi DEK PENAWARAN (proposal ke pengurus) yang
+# memang layak diindeks, dan aplikasi santri hidup di /prototype.html.
+# Sekarang terbalik: akar situs ADALAH aplikasinya, dan dek penawaran
+# tidak ikut terbit sama sekali (lihat tools/build-dist.js).
+#
+# Konsekuensinya seluruh situs sekarang berada di balik login: penggunanya
+# didaftarkan pengurus satu per satu, tidak ada yang seharusnya menemukan
+# aplikasi ini lewat Google. Yang ada justru risiko — alamat yang terindeks
+# jadi sasaran percobaan masuk. Karena itu larangannya menyeluruh, bukan
+# per halaman lagi.
+#
+# CATATAN PENTING: robots.txt hanya MENCEGAH PERAYAPAN, bukan penjaminan
+# tidak muncul di hasil pencarian — mesin pencari masih bisa menampilkan
+# URL yang ditautkan dari tempat lain. Karena itu halaman aplikasi juga
+# diberi <meta name="robots" content="noindex"> di HTML-nya masing-masing.
+# Dan yang paling penting: ini BUKAN kontrol keamanan. Perayap jahat
+# mengabaikan berkas ini. Keamanan sungguhannya ada di RLS dan Edge
+# Function, bukan di sini.
+# ==========================================================================
+
+User-agent: *
+
+# Seluruh aplikasi — di balik login, tidak untuk ditemukan lewat pencarian.
+Disallow: /
+
+# Kebijakan Privasi SENGAJA dikecualikan — wali berhak menemukan dan
+# membacanya tanpa harus login lebih dulu.
+Allow: /kebijakan-privasi.html
