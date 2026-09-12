@@ -52,7 +52,12 @@ export async function renderKuis(pelajaranId) {
   if (!kontainer || !pelajaranId) return false;
 
   const santriId = santriAktifId();
-  if (!santriId) return false; // sesi peraga/staff tanpa profil anak — biarkan peraga tampil
+  if (!santriId) {
+    // Sesi staff (tidak punya profil anak). Dulu di sini peraga dibiarkan
+    // tampil; sekarang tidak ada peraga untuk dibiarkan.
+    tampilkanKuisKosong('Evaluasi hanya tersedia untuk akun santri.');
+    return false;
+  }
 
   sesiKuis = { pelajaranId, token: null, memuat: false };
   return muatSoal(kontainer);
@@ -237,4 +242,15 @@ function tampilkanSelesai(kontainer) {
   );
   wrap.appendChild(el('div', 'font-size:12px; color:var(--text-muted);', 'Buka pelajaran lain untuk terus menambah XP.'));
   kontainer.appendChild(wrap);
+}
+
+/**
+ * Keadaan kosong wadah kuis, dipakai dari luar modul ini (js/ui/jenjang.js)
+ * ketika pelajarannya sendiri belum ada — jadi renderKuis() tidak pernah
+ * dipanggil dan tidak ada yang membersihkan sisa tampilan sebelumnya.
+ */
+export function tampilkanKuisKosong(pesan = 'Evaluasi untuk pelajaran ini belum tersedia.') {
+  const kontainer = document.getElementById(ID_KONTAINER);
+  if (!kontainer) return;
+  tampilkanPesan(kontainer, pesan);
 }

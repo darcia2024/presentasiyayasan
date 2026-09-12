@@ -708,3 +708,15 @@
     mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 26px), transparent 100%);
   }
 }
+
+
+/* Keterangan di bawah satu kolom formulir — dipakai kolom PIN di Panel
+   Pengurus, tempat aturannya (6–12 angka, jangan berurutan) dan cara
+   menyampaikannya ke wali perlu dibaca SEBELUM diisi, bukan sesudah
+   ditolak server. */
+.studio-field-hint {
+  margin-top: 6px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}

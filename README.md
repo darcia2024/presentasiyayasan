@@ -1,6 +1,12 @@
 # Platform Pembelajaran Bahasa Arab Interaktif (SD - SMP - SMA) — PERISA Azhariyah
 
-Website pitch deck presentasi interaktif dan proposal resmi penawaran **Platform Pembelajaran Bahasa Arab Interaktif Berbasis Game (Tingkat SD, SMP, & SMA)** asuhan **Umi Elly & Yayasan Peradaban Islam Azhariyah**.
+**Platform pembelajaran (LMS) Bahasa Arab Interaktif Berbasis Game — Tingkat SD, SMP, & SMA** asuhan **Umi Elly & Yayasan Peradaban Islam Azhariyah**.
+
+> **12 September 2026 — situs berubah bentuk.** Akar situs (`/`) yang dulu
+> berisi dek penawaran sekarang adalah **aplikasinya sendiri**: masuk lewat
+> nomor WhatsApp, mendarat di dashboard, memilih materi dari sidebar. Dek
+> penawaran pindah ke `proposal.html`, tetap ada di repo untuk presentasi
+> lokal tapi **tidak ikut terbit ke produksi** (lihat `tools/build-dist.js`).
 
 ---
 
@@ -32,16 +38,20 @@ Website pitch deck presentasi interaktif dan proposal resmi penawaran **Platform
 
 ---
 
-## 📱 Aplikasi Mobile (PWA Native) — `prototype.html`
+## 📱 Aplikasi Mobile (PWA Native) — `index.html`
 
-Tampilan mobile `prototype.html` dibangun sebagai **Progressive Web App** yang bisa
+Tampilan mobile `index.html` dibangun sebagai **Progressive Web App** yang bisa
 dipasang ke layar utama dan dibuka dalam mode luring.
+
+> Berkas ini bernama `prototype.html` sampai 11 September 2026. Sejak akar
+> situs menjadi aplikasinya, namanya `index.html` — dan dek penawaran yang
+> dulu memakai nama itu sekarang `proposal.html`.
 
 ### Berkas PWA
 
 | Berkas | Fungsi |
 | --- | --- |
-| `manifest.webmanifest` | Identitas aplikasi: nama, ikon, warna tema, mode `standalone`, orientasi potret, dan 4 pintasan (Belajar, Suara, Asisten, Silabus). |
+| `manifest.webmanifest` | Identitas aplikasi: nama, ikon, warna tema, mode `standalone`, orientasi potret, dan 3 pintasan (Belajar, Suara, Silabus). |
 | `sw.js` | Service worker. App shell di-*precache*; CSS/JS memakai *stale-while-revalidate*, gambar & font CDN *cache-first*, `/api/*` *network-first*. |
 | `offline.html` | Halaman cadangan saat perangkat benar-benar terputus. |
 | `prototype-mobile.css` | Seluruh tampilan native mobile. Aktif hanya pada `max-width: 768px`. |
@@ -64,10 +74,9 @@ memuat modulnya langsung.
 | `js/core/speech.js` | Mesin pelafalan Arab (Web Speech API `ar-SA`). |
 | `js/ui/syllabus.js` | Render akordeon silabus dari data. |
 | `js/ui/role.js` | Pergantian peran akun. |
-| `js/ui/router.js` | Router lima tampilan utama + tab bar bawah. |
+| `js/ui/router.js` | Router tampilan utama + tab bar bawah. |
 | `js/ui/course.js` | Pemutar materi dan sub-tab modul. |
 | `js/ui/library.js` | Filter perpustakaan dan pembaca dokumen. |
-| `js/ui/assistant.js` | Studio Asisten Bahasa Arab. |
 | `js/ui/shell.js` | Drawer, dropdown profil, modal piagam. |
 | `tools/stamp-version.js` | Pencap versi otomatis untuk `?v=` dan `SW_VERSION`. |
 | `tools/build-icons.js` | Menyusun CSS ikon hanya dari ikon yang benar-benar dipakai. |
@@ -77,10 +86,10 @@ memuat modulnya langsung.
 **Dua aturan yang tidak boleh dilanggar:**
 
 1. **Struktur silabus hanya ditulis di `js/data/roles.js`**, tidak pernah
-   langsung di `prototype.html`. Sebelumnya akordeon ditulis keras di HTML
+   langsung di `index.html`. Sebelumnya akordeon ditulis keras di HTML
    sebagai materi SMP, sehingga santri SD ikut melihat kaidah Shorof SMA di
    silabusnya sendiri.
-2. **Urutan dua tag skrip di `prototype.html` jangan ditukar.**
+2. **Urutan dua tag skrip di `index.html` jangan ditukar.**
    `prototype-mobile.js` membungkus ulang lima metode `PrototypeApp` saat boot,
    dan itu hanya bekerja bila modul ES sudah selesai dieksekusi lebih dulu.
 
@@ -122,9 +131,8 @@ cp .env.example .env
 `.env` tidak pernah masuk repo. Seluruh variabel untuk fase berikutnya sudah
 terdaftar di `.env.example` beserta keterangannya.
 
-> Kunci `SUPABASE_SERVICE_ROLE_KEY` dan `ANTHROPIC_API_KEY` tidak boleh pernah
-> masuk ke berkas mana pun di dalam `js/` — seluruh isi folder itu terkirim apa
-> adanya ke browser santri.
+> Kunci `SUPABASE_SERVICE_ROLE_KEY` tidak boleh pernah masuk ke berkas mana pun
+> di dalam `js/` — seluruh isi folder itu terkirim apa adanya ke browser santri.
 
 ---
 
@@ -188,9 +196,13 @@ npm start
 
 Lalu buka:
 
-- `http://localhost:3020/prototype.html` — aplikasi santri (PWA mobile + dashboard desktop)
-- `http://localhost:3020/index.html` — pitch deck paparan
+- `http://localhost:3020/` — aplikasi santri & wali (PWA mobile + dashboard desktop)
 - `http://localhost:3020/game2d.html` — simulasi percakapan suara
+- `http://localhost:3020/proposal.html` — dek penawaran, hanya lokal (tidak terbit)
+
+Alur aplikasinya: **masuk (OTP WhatsApp) → dashboard → pilih menu di sidebar
+→ buka materi**. Wali mendarat di Dashboard Wali, pengurus di Panel Otoritas
+Yayasan, sisanya di Dashboard Santri.
 
 > Gunakan `server.js`, bukan `python -m http.server`. Server Node menyajikan
 > `manifest.webmanifest` dengan tipe MIME yang benar dan mengirim header

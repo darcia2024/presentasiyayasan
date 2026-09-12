@@ -4,7 +4,7 @@
  *
  * MASALAH YANG DIPECAHKAN
  * Sebelum berkas ini ada, setiap rilis menuntut lima suntingan manual:
- * `SW_VERSION` di sw.js plus empat parameter `?v=` di prototype.html. Kalau
+ * `SW_VERSION` di sw.js plus empat parameter `?v=` di index.html. Kalau
  * satu saja terlewat, service worker menyajikan campuran berkas lama dan baru
  * — dan karena tersimpan di cache perangkat, pengguna sulit keluar dari
  * kondisi itu sendiri.
@@ -98,21 +98,19 @@ const VERSIONED_ASSETS = [
    berkas yang tidak ter-precache membuat aplikasi gagal dibuka saat luring. */
 const SHELL_ASSETS = [
   '/',
-  '/prototype.html',
+  '/index.html',
   '/prototype.css',
   '/prototype-mobile.css',
   '/prototype-mobile.js',
   '/js/app.js',
-  '/js/data/roles.js',
-  '/js/data/documents.js',
   '/js/core/feedback.js',
   '/js/core/speech.js',
   '/js/ui/syllabus.js',
-  '/js/ui/role.js',
+  '/js/ui/jenjang.js',
+  '/js/ui/beranda.js',
   '/js/ui/router.js',
   '/js/ui/course.js',
   '/js/ui/library.js',
-  '/js/ui/assistant.js',
   '/js/ui/shell.js',
   /* Fase 1 — konfigurasi & klien Supabase. config.js dihasilkan build
      (tools/gen-config.js); kalau belum dikonfigurasi isinya string kosong,
@@ -146,8 +144,6 @@ const SHELL_ASSETS = [
   '/js/core/html.js',
   '/js/core/script-loader.js',
   '/js/core/phone.js',
-  /* Fase 5 — Asisten Bahasa Arab. */
-  '/js/core/asisten-client.js',
   '/js/core/pengurus-client.js',
   '/js/ui/pengurus-panel.js',
   '/js/ui/sertifikat-admin.js',
@@ -177,8 +173,8 @@ const SHELL_ASSETS = [
 
 const changes = [];
 
-/* ---------------------------------------------- 1. prototype.html: ?v= */
-let html = read('prototype.html');
+/* ---------------------------------------------- 1. index.html: ?v= */
+let html = read('index.html');
 const htmlBefore = html;
 
 /**
@@ -197,8 +193,8 @@ VERSIONED_ASSETS.forEach((asset) => {
 });
 
 if (html !== htmlBefore) {
-  write('prototype.html', html);
-  changes.push(`prototype.html  → ?v=<hash isi> pada ${VERSIONED_ASSETS.length} berkas`);
+  write('index.html', html);
+  changes.push(`index.html      → ?v=<hash isi> pada ${VERSIONED_ASSETS.length} berkas`);
 }
 
 /* Peringatkan bila ada berkas lokal ber-?v= yang belum terdaftar. */

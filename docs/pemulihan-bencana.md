@@ -115,7 +115,7 @@ yang putus di tengah.
 3. `pg_restore` cadangan HARIAN TERBARU dari bucket `backups-db` ke
    project baru.
 4. Set ulang seluruh secret Edge Function (`APP_JWT_SECRET`,
-   `WA_GATEWAY_URL`/`TOKEN`, `ANTHROPIC_API_KEY`, `CRON_SECRET`, dst. —
+   `WA_GATEWAY_URL`/`TOKEN`, `CRON_SECRET`, dst. —
    lihat `.env.example` untuk daftar lengkapnya) dan deploy ulang semua
    Edge Function di `supabase/functions/`.
 5. Perbarui `SUPABASE_URL`/`SUPABASE_ANON_KEY` di Environment Variables

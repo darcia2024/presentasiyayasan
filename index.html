@@ -2,1671 +2,1132 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Platform Materi & Kelas Online — Yayasan Peradaban Islam Azhariyah</title>
-  <meta name="description" content="Presentasi Penawaran Platform Kelas Online Yayasan Peradaban Islam Azhariyah: Sistem proteksi materi kajian, kontrol perizinan akses santri oleh Umi Elly & Yayasan, serta Game Edukasi Interaktif.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>PERISA — Yayasan Peradaban Islam Azhariyah</title>
 
-  <!-- Font & ikon dari repo sendiri, bukan CDN. Lihat tools/fetch-fonts.js
-       dan tools/build-icons.js. -->
+  <meta name="description" content="Aplikasi pembelajaran Bahasa Arab interaktif berbasis game untuk santri jenjang SD, SMP, dan SMA. Asuhan Umi Elly — Yayasan Peradaban Islam Azhariyah.">
+
+  <!-- ============================================================
+       PROGRESSIVE WEB APP (INSTALLABLE NATIVE MOBILE APP)
+       ============================================================ -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#072826">
+  <meta name="color-scheme" content="light">
+  <meta name="application-name" content="PERISA">
+
+  <!-- Android / Chrome -->
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- iOS Safari standalone -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="PERISA">
+  <meta name="format-detection" content="telephone=no">
+
+  <!-- Windows tile -->
+  <meta name="msapplication-TileColor" content="#072826">
+  <meta name="msapplication-TileImage" content="icons/icon-192.png">
+
+  <!-- Ikon aplikasi -->
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+  <link rel="mask-icon" href="icons/icon-192.png" color="#072826">
+
+  <!-- Layar peluncuran iOS (portrait) -->
+  <link rel="apple-touch-startup-image" href="icons/splash-1290x2796.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="icons/splash-1179x2556.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="icons/splash-1284x2778.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="icons/splash-1170x2532.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="icons/splash-1242x2688.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="icons/splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="icons/splash-828x1792.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="icons/splash-1242x2208.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="icons/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="icons/splash-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="icons/splash-1668x2388.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="icons/splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+
+  <!-- Font & ikon disajikan dari repo sendiri, bukan CDN. Santri dengan
+       jaringan buruk sebelumnya bisa mendapat tampilan tanpa satu pun ikon,
+       dan service worker tidak menolong karena yang belum pernah berhasil
+       dimuat tidak akan pernah tersimpan di cache. -->
   <link rel="stylesheet" href="vendor/fonts/fonts.css">
   <link rel="stylesheet" href="vendor/phosphor/phosphor.css">
 
-
-  <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="style.css">
+  <!-- Core App Stylesheet -->
+  <link rel="stylesheet" href="prototype.css?v=611fd7df">
+  <!-- Fase 1: Gerbang Login -->
+  <link rel="stylesheet" href="js/ui/auth.css?v=27452c6a">
+  <!-- Fase 2: Studio Kurikulum -->
+  <link rel="stylesheet" href="js/ui/studio.css?v=3ff3df16">
+  <!-- Native Mobile / PWA Layer -->
+  <link rel="stylesheet" href="prototype-mobile.css?v=6065c6a3">
 </head>
-<body>
+<body class="tanpa-bar-demo">
 
-  <!-- Ambient Islamic Geometric Background Grid & Glows -->
-  <div class="ambient-layer">
-    <div class="ambient-pattern"></div>
+  <!-- ============================================================
+       FASE 1 — GERBANG LOGIN (WALI / STAFF)
+       Disembunyikan lewat JS (js/ui/auth.js) kalau Supabase belum
+       dikonfigurasi, atau kalau sesi login masih berlaku.
+       ============================================================ -->
+  <div class="auth-gate" id="authGate" style="display: none;">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <img src="logo-perisa-emblem.png?v=d184a56f" alt="" class="auth-brand-mark">
+        <div>
+          <div class="auth-brand-title">PERISA Azhariyah</div>
+          <div class="auth-brand-sub">Yayasan Peradaban Islam Azhariyah</div>
+        </div>
+      </div>
+
+      <!-- Satu langkah: nomor WhatsApp + PIN.
+
+           Sampai 11 September 2026 di sini ada DUA langkah (minta kode ->
+           masukkan kode 6 digit dari WhatsApp). Gateway WhatsApp-nya tidak
+           pernah ada, jadi kode itu tidak pernah sampai ke siapa pun —
+           satu-satunya yang membuat login bisa jalan adalah mode
+           pengembangan yang mengembalikan kodenya di respons HTTP.
+           Lihat supabase/migrations/20260912000001_login_pin.sql. -->
+      <div class="auth-step" id="authStepMasuk">
+        <h2 class="auth-step-title">Masuk ke PERISA</h2>
+        <p class="auth-step-desc">
+          Nomor WhatsApp dan PIN yang didaftarkan pengurus yayasan. Santri
+          jenjang SD memakai akun wali, bukan akun sendiri.
+        </p>
+
+        <label class="auth-label" for="authNomorInput">Nomor WhatsApp</label>
+        <input type="tel" id="authNomorInput" class="auth-input" placeholder="0812xxxxxxxx" inputmode="numeric" autocomplete="username">
+
+        <label class="auth-label" for="authPinInput" style="margin-top: 12px;">PIN</label>
+        <div class="auth-pin-wrap">
+          <input type="password" id="authPinInput" class="auth-input auth-input-pin" placeholder="••••••" inputmode="numeric" autocomplete="current-password" maxlength="12">
+          <button type="button" class="auth-pin-lihat" id="authPinLihat" aria-label="Tampilkan PIN" title="Tampilkan PIN">
+            <i class="ph ph-eye"></i>
+          </button>
+        </div>
+
+        <div class="auth-error" id="authMasukError" style="display:none;"></div>
+        <button type="button" class="auth-btn-primary" id="authMasukSubmit">Masuk</button>
+        <p class="auth-help">
+          Belum punya PIN atau lupa PIN? Hubungi pengurus yayasan untuk
+          mengaturkannya.
+        </p>
+      </div>
+
+      <!-- Langkah 2: pilih profil anak (hanya kalau wali punya >1 santri) -->
+      <div class="auth-step" id="authStepProfil" style="display:none;">
+        <h2 class="auth-step-title">Pilih Profil Santri</h2>
+        <p class="auth-step-desc">Siapa yang mau belajar sekarang?</p>
+        <div class="auth-profil-list" id="authProfilList"></div>
+      </div>
+
+      <p style="font-size: 10.5px; color: var(--text-muted); text-align: center; margin-top: 18px;">
+        Dengan masuk, Anda menyetujui <a href="kebijakan-privasi.html" target="_blank" rel="noopener" style="color: var(--teal-primary);">Kebijakan Privasi PERISA</a>.
+      </p>
+    </div>
   </div>
 
-  <!-- Top Floating Header Bar (M3 App Bar) -->
-  <header class="top-nav-bar" id="topNav">
-    <div class="nav-brand">
-      <img src="logo-perisa-emblem.png" alt="PERISA" style="height: 38px; width: 38px; object-fit: contain; border-radius: 8px; background: #FFFFFF; padding: 2px;">
-      <div class="brand-text">
-        <span class="brand-title">PERISA • Peradaban Islam Azhariyah</span>
-        <span class="brand-sub">Platform Pembelajaran Bahasa Arab • Asuhan Umi Elly</span>
+  <!-- ============================================================
+       PWA NATIVE SHELL — BOOT SPLASH, STATUS JARINGAN,
+       PULL-TO-REFRESH, DAN PROMPT PEMASANGAN APLIKASI
+       (seluruh blok ini hanya tampil pada perangkat mobile)
+       ============================================================ -->
+  <div class="m-splash" id="mAppSplash" aria-hidden="true">
+    <img class="m-splash-mark" src="icons/icon-192.png" alt="PERISA Azhariyah">
+    <div class="m-splash-name">PERISA Azhariyah</div>
+    <div class="m-splash-sub">PLATFORM BAHASA ARAB SANTRI</div>
+    <div class="m-splash-loader"></div>
+    <div class="m-splash-foot">Yayasan Peradaban Islam Azhariyah &mdash; Asuhan Umi Elly</div>
+  </div>
+
+  <div class="m-net-banner" id="mNetBanner" role="status" aria-live="polite"></div>
+
+  <div class="m-ptr" id="mPullRefresh" aria-hidden="true">
+    <i class="ph ph-arrow-clockwise"></i>
+  </div>
+
+  <div class="m-install-card" id="mInstallCard" role="dialog" aria-label="Pasang aplikasi PERISA">
+    <img src="icons/icon-192.png" alt="">
+    <div class="m-install-copy">
+      <div class="m-install-title">Pasang Aplikasi PERISA</div>
+      <div class="m-install-sub">Buka dari layar utama, bisa diakses luring.</div>
+    </div>
+    <div class="m-install-actions">
+      <button class="m-install-yes" onclick="PerisaMobile.install()">Pasang</button>
+      <button class="m-install-no" onclick="PerisaMobile.dismissInstall()" aria-label="Tutup">
+        <i class="ph ph-x"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       BILAH "SIMULASI SISTEM" DIHAPUS — 12 September 2026
+
+       Dulu di sini ada bilah presenter: empat tombol berpindah persona
+       (Santri SD / SMP / SMA / Pengurus) plus tautan kembali ke dek
+       penawaran. Alat itu masuk akal selama yang dipresentasikan adalah
+       RENCANA platform. Sebagai platform yang dipakai keluarga sungguhan,
+       tombol yang menukar identitas pengguna dengan satu klik tidak punya
+       tempat — dan personanya sendiri (Ahmad Fauzan dkk.) sudah dihapus
+       bersama js/data/roles.js.
+
+       Peran sekarang datang dari sesi login, titik.
+       ============================================================ -->
+
+  <!-- ============================================================
+       2. NATIVE MOBILE APP TOP BAR (LEFT HAMBURGER + PROMINENT BRAND)
+       ============================================================ -->
+  <header class="mobile-top-nav">
+    <!-- Judul kompak yang menggantikan brand saat halaman digulir -->
+    <div class="m-appbar-title" id="mAppbarTitle">Beranda</div>
+
+    <div class="mobile-top-left">
+      <!-- Animated Hamburger Button on the Left -->
+      <button class="mobile-hamburger-btn" onclick="PrototypeApp.toggleMobileDrawer()" title="Buka Menu">
+        <i class="ph ph-list" id="mobileDrawerIcon"></i>
+      </button>
+
+      <!-- Prominent Brand Title -->
+      <div class="mobile-brand-wrap" onclick="PrototypeApp.switchMainView('beranda')" style="cursor: pointer;">
+        <img src="logo-perisa-emblem.png?v=d184a56f" alt="PERISA">
+        <div>
+          <div class="mobile-brand-text">PERISA Azhariyah</div>
+          <div class="mobile-brand-sub">Yayasan Peradaban Islam</div>
+        </div>
       </div>
     </div>
 
-    <!-- Center Slide Tracker Indicator -->
-    <div class="nav-slide-indicator">
-      <span class="slide-num-current" id="navSlideCurrent">01</span>
-      <span class="slide-num-divider">/</span>
-      <span class="slide-num-total" id="navSlideTotal">12</span>
-      <span class="slide-badge-title" id="navSlideTitle">Cover & Visi</span>
-    </div>
-
-    <!-- Right Controls: Audio, Overview, Autoplay, Fullscreen, and Prototype Demo -->
-    <div class="nav-actions">
-      <a href="prototype.html" class="nav-btn" style="width: auto; padding: 0 12px; border-radius: var(--radius-full); background: var(--perisa-teal-primary); color: #FFFFFF; text-decoration: none; font-size: 11.5px; font-weight: 700; gap: 5px; display: inline-flex; border-color: var(--perisa-teal-primary);" title="Buka Prototype Live Demo">
-        <i class="ph ph-sparkle"></i>
-        <span>Live Prototype</span>
+    <!-- Right Quick Actions -->
+    <div class="mobile-top-right">
+      <a href="game2d.html" class="mobile-action-icon" title="Simulasi Percakapan Suara">
+        <i class="ph ph-microphone"></i>
       </a>
-      <button class="nav-btn" id="btnAudioToggle" title="Suara Efek (M)" aria-label="Toggle Audio">
-        <i class="ph ph-speaker-high" id="audioIcon"></i>
-        <span class="btn-tooltip">Sound: ON</span>
-      </button>
-      <button class="nav-btn" id="btnAutoplayToggle" title="Autoplay / Presenter Mode (P)" aria-label="Toggle Autoplay">
-        <i class="ph ph-play" id="autoplayIcon"></i>
-        <span class="btn-tooltip">Autoplay</span>
-      </button>
-      <button class="nav-btn" id="btnOverviewToggle" title="Daftar Slide (G / O)" aria-label="Slide Overview">
-        <i class="ph ph-squares-four"></i>
-        <span class="btn-tooltip">Semua Slide</span>
-      </button>
-      <button class="nav-btn" id="btnFullscreenToggle" title="Layar Penuh (F)" aria-label="Toggle Fullscreen">
-        <i class="ph ph-corners-out" id="fullscreenIcon"></i>
-        <span class="btn-tooltip">Full Screen</span>
-      </button>
+      <div class="mobile-user-avatar-tag" id="mobileUserAvatarTag" onclick="PrototypeApp.toggleMobileDrawer()" title="Profil Santri">
+        —
+      </div>
     </div>
   </header>
 
-  <!-- Global Progress Bar at the top -->
-  <div class="deck-progress-track">
-    <div class="deck-progress-fill" id="deckProgressFill"></div>
+  <!-- ============================================================
+       3. ANIMATED MOBILE SLIDING DRAWER MENU (LEFT-TO-RIGHT)
+       ============================================================ -->
+  <div class="mobile-drawer-overlay" id="mobileDrawerOverlay" onclick="if(event.target===this) PrototypeApp.toggleMobileDrawer()">
+    <div class="mobile-drawer-menu">
+      
+      <!-- Drawer Header -->
+      <div class="drawer-header-row">
+        <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+          <img src="logo-perisa-horizontal.png?v=03e061d2" alt="PERISA Azhariyah" style="width: 100%; max-width: 195px; height: auto; object-fit: contain;">
+        </div>
+        <i class="ph ph-x" style="cursor: pointer; font-size: 22px; color: var(--text-muted); padding: 4px;" onclick="PrototypeApp.toggleMobileDrawer()"></i>
+      </div>
+
+      <!-- Identitas Santri Aktif -->
+      <div class="m-drawer-user">
+        <div class="m-drawer-avatar" id="mDrawerAvatar">—</div>
+        <div style="position: relative; min-width: 0;">
+          <div class="m-drawer-uname" id="mDrawerUserName">Memuat…</div>
+          <div class="m-drawer-usub" id="mDrawerUserSub"></div>
+        </div>
+      </div>
+
+      <!-- Pemilih perspektif ("Ganti Perspektif Pengguna": Santri SD /
+           SMP / SMA / Pengurus) DIHAPUS 12 September 2026, bersama bilah
+           presenter versi desktop dan persona peraga yang jadi isinya. -->
+
+      <!-- Navigasi drawer — cerminan sidebar desktop, kelompok yang sama.
+           "Materi Saya" (#drawerModulList) diisi js/ui/syllabus.js. -->
+      <ul class="ref-nav-list" style="margin-top: 4px;">
+
+        <li class="nav-group-label">Portal</li>
+        <!-- Hanya terlihat saat sesi login WALI aktif — lihat js/ui/auth.js -->
+        <li id="navWaliDashboardItemMobile" style="display: none;">
+          <a class="ref-nav-item" data-view="wali-dashboard" onclick="PrototypeApp.switchMainView('wali-dashboard'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-users-three"></i>
+            <span>Dashboard Wali</span>
+          </a>
+        </li>
+        <li>
+          <a class="ref-nav-item" data-view="beranda" onclick="PrototypeApp.switchMainView('beranda'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-squares-four"></i>
+            <span>Dashboard Santri</span>
+          </a>
+        </li>
+
+        <li class="nav-group-label">Belajar</li>
+        <li>
+          <a class="ref-nav-item" data-view="kurikulum" onclick="PrototypeApp.switchMainView('kurikulum'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-graduation-cap"></i>
+            <span>Kurikulum Bahasa Arab</span>
+          </a>
+        </li>
+        <li>
+          <ul class="ref-nav-sub is-open" id="drawerModulList"></ul>
+        </li>
+        <li>
+          <a class="ref-nav-item" onclick="PrototypeApp.bukaSubTab('kuis'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-check-circle"></i>
+            <span>Latihan &amp; Evaluasi</span>
+          </a>
+        </li>
+        <li>
+          <a class="ref-nav-item" onclick="PrototypeApp.bukaSubTab('audio'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-speaker-high"></i>
+            <span>Mufrodat &amp; Pelafalan</span>
+          </a>
+        </li>
+        <li>
+          <a href="game2d.html" class="ref-nav-item">
+            <i class="ph ph-microphone"></i>
+            <span>Simulasi Percakapan Suara</span>
+          </a>
+        </li>
+
+        <li class="nav-group-label">Perpustakaan &amp; Sanad</li>
+        <li>
+          <a class="ref-nav-item" data-view="modul-pdf" onclick="PrototypeApp.switchMainView('modul-pdf'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-book-open-text"></i>
+            <span>Modul &amp; Silabus PDF</span>
+          </a>
+        </li>
+        <li>
+          <a class="ref-nav-item" onclick="PrototypeApp.toggleMobileDrawer(); PrototypeApp.openCertificate();">
+            <i class="ph ph-certificate" style="color: var(--gold-dark);"></i>
+            <span>Piagam Kelulusan Sanad</span>
+          </a>
+        </li>
+
+        <!-- Kelompok pengurus: dibuka js/ui/auth.js hanya untuk sesi staff. -->
+        <li class="nav-group-label" id="navGroupPengurusMobile" style="display: none;">Pengurus Yayasan</li>
+        <li id="navAdminPanelItemMobile" style="display: none;">
+          <a class="ref-nav-item" data-view="admin" onclick="PrototypeApp.switchMainView('admin'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-shield-check"></i>
+            <span>Panel Otoritas Yayasan</span>
+          </a>
+        </li>
+        <li id="navStudioKurikulumItemMobile" style="display: none;">
+          <a class="ref-nav-item" data-view="studio-kurikulum" onclick="PrototypeApp.switchMainView('studio-kurikulum'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-pencil-simple-line"></i>
+            <span>Studio Kurikulum</span>
+          </a>
+        </li>
+      </ul>
+
+      <div style="margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 8px;">
+        <!-- Disembunyikan di mode peraga oleh js/ui/auth.js — lihat sidebarLogout. -->
+        <button class="btn-enroll-primary" id="drawerLogout" style="display: none; width: 100%; justify-content: center; font-size: 12px; padding: 10px; background: var(--teal-dark); border: none;" onclick="PrototypeApp.logout()">
+          <i class="ph ph-sign-out"></i> Keluar dari Akun
+        </button>
+      </div>
+    </div>
   </div>
 
-  <!-- MAIN SLIDES CONTAINER -->
-  <main class="presentation-stage" id="presentationStage">
+  <!-- ============================================================
+       4. MAIN APP CONTAINER (FULL-BLEED DESKTOP / FLUID MOBILE)
+       ============================================================ -->
+  <!-- ============================================================
+       LARGE TITLE MOBILE (kolaps ke app bar saat digulir)
+       ============================================================ -->
+  <section class="m-largetitle" id="mLargeTitle">
+    <div class="m-lt-eyebrow" id="mLtEyebrow"><i class="ph ph-circle-wavy-check"></i> Portal Santri</div>
+    <h1 class="m-lt-title" id="mLtTitle">Ahlan wa Sahlan!</h1>
+    <div class="m-lt-sub" id="mLtSub">Lanjutkan pembelajaran Bahasa Arab terstruktur asuhan Umi Elly.</div>
 
-        <!-- ============================================================
-         SLIDE 1: COVER / HERO PITCH (REDESIGNED ULTRA-LUXURY)
-         ============================================================ -->
-    <section class="slide-card active" data-slide-index="1" data-slide-title="Cover & Visi">
-      <div class="slide-inner slide-hero-layout">
-        
-        <div class="hero-content">
-          <div class="badge-tag">
-            <span class="badge-dot"></span>
-            <span>PROPOSAL RESMI • PERISA AZHARIYAH</span>
-          </div>
+    <div class="m-chip-row" id="mChipRow">
+      <span class="m-chip" onclick="PrototypeApp.switchMainView('kurikulum')">
+        <i class="ph ph-play-circle"></i> Lanjut Belajar
+      </span>
+      <a href="game2d.html" class="m-chip">
+        <i class="ph ph-microphone"></i> Latihan Suara
+      </a>
+      <span class="m-chip is-gold" onclick="PrototypeApp.openCertificate()">
+        <i class="ph ph-certificate"></i> Piagam Sanad
+      </span>
+    </div>
+  </section>
 
-          <h1 class="hero-title">
-            Platform Belajar Bahasa Arab
-            <span class="hero-highlight">Interaktif & Berbasis Game</span>
-          </h1>
+  <div class="app-window-frame">
 
-          <div class="hero-institution-pill">
-            <span class="inst-level">Tingkat SD • SMP • SMA</span>
-            <span class="inst-sep">•</span>
-            <span class="inst-org">Asuhan Umi Elly</span>
-          </div>
+    <!-- LEFT SIDEBAR NAVIGATION (DESKTOP) -->
+    <aside class="ref-sidebar">
+      
+      <!-- Brand Header -->
+      <div class="ref-brand-logo" style="margin-bottom: 20px; padding: 2px 4px 6px 2px;">
+        <img src="logo-perisa-horizontal.png?v=03e061d2" alt="Yayasan Peradaban Islam Azhariyah" style="width: 100%; max-width: 210px; height: auto; display: block; object-fit: contain;">
+      </div>
 
-          <p class="hero-subtitle">
-            Portal pembelajaran Bahasa Arab eksklusif <strong>Yayasan Peradaban Islam Azhariyah</strong>. Materi video terproteksi khusus santri berizin, akses praktis via WhatsApp tanpa ribet password, dan dilengkapi <strong>Game Mufrodat Edukatif</strong> agar belajar bahasa Al-Qur'an jadi mudah & dicintai generasi muda.
-          </p>
-
-          <!-- 3-Column Micro-Bento Value Strip -->
-          <div class="hero-bento-strip">
-            <div class="hero-bento-item">
-              <i class="ph ph-seal-check"></i>
-              <div class="hero-bento-title">Izin Umi & Beasiswa</div>
-              <div class="hero-bento-sub">Kendali otoritas 100% yayasan</div>
-            </div>
-            <div class="hero-bento-item">
-              <i class="ph ph-game-controller"></i>
-              <div class="hero-bento-title">Game Mufrodat XP</div>
-              <div class="hero-bento-sub">Tebak kata & praktik ngobrol harian</div>
-            </div>
-            <div class="hero-bento-item">
-              <i class="ph ph-shield-check"></i>
-              <div class="hero-bento-title">Proteksi Watermark</div>
-              <div class="hero-bento-sub">Anti-bocor & jaga marwah ilmu</div>
+      <!-- User Profile Card (Interactive Profile Switcher Dropdown) -->
+      <div style="position: relative;">
+        <div class="sidebar-user-card" id="sidebarUserCard" onclick="PrototypeApp.toggleProfileDropdown(event)">
+          <div class="user-left-info">
+            <div class="user-avatar-small" id="sidebarUserAvatar">—</div>
+            <div>
+              <div class="user-name-small" id="sidebarUserName">Memuat…</div>
+              <div style="font-size: 10px; color: var(--text-muted);" id="sidebarUserSub"></div>
             </div>
           </div>
+          <i class="ph ph-caret-down" id="sidebarUserCaret" style="color: var(--text-muted); font-size: 13px;"></i>
+        </div>
 
-          <div class="hero-actions">
-            <button class="btn-primary" id="btnStartDeck">
-              <span>Mulai Presentasi</span>
-              <div class="btn-icon-circle">
-                <i class="ph ph-arrow-right"></i>
-              </div>
+        <!-- Dropdown Menu -->
+        <div class="profile-dropdown-menu" id="profileDropdownMenu" onclick="event.stopPropagation()">
+          <div class="dropdown-user-header">
+            <div class="dropdown-avatar-large" id="dropdownAvatarLarge">—</div>
+            <div>
+              <strong style="font-size: 13px; color: var(--teal-dark);" id="dropdownUserName">Memuat…</strong>
+              <div style="font-size: 10.5px; color: var(--teal-primary); font-weight: 600;" id="dropdownUserStatus"></div>
+              <div style="font-size: 9.5px; color: var(--text-muted);" id="dropdownUserNisn"></div>
+            </div>
+          </div>
+
+          <!-- Daftar anak untuk wali yang punya LEBIH DARI SATU santri.
+               Isinya digambar js/ui/auth.js dari sesi sungguhan. Sampai 11
+               September 2026 di sini tertulis TETAP empat persona peraga
+               (Aisyah Zahra, Ahmad Fauzan, M. Rizky Pratama, Pengurus
+               Yayasan) yang terlihat oleh setiap wali — nama anak orang
+               lain di dalam akun sendiri. -->
+          <div id="dropdownPerspektifWrap" style="display: none;">
+            <div style="font-size: 10.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em;">
+              Pilih Profil Santri:
+            </div>
+            <div class="dropdown-account-list" id="dropdownAccountList"></div>
+          </div>
+
+          <div class="dropdown-quick-actions">
+            <button class="dropdown-action-btn" onclick="PrototypeApp.toggleProfileDropdown(); PrototypeApp.openCertificate();">
+              <i class="ph ph-certificate" style="color: var(--gold-dark);"></i>
+              <span>Lihat Piagam Kelulusan Santri</span>
             </button>
-            <a href="prototype.html" class="btn-secondary" style="background: var(--perisa-gold-light); border-color: var(--perisa-gold-border); color: var(--perisa-gold-dark);" title="Buka Prototype Live Demo">
-              <i class="ph ph-sparkle"></i>
-              <span>Buka Prototype Demo</span>
-            </a>
-            <button class="btn-secondary" onclick="DeckEngine.goToSlide(4)">
-              <span>Lihat Solusi Utama</span>
+            <button class="dropdown-action-btn" onclick="PrototypeApp.toggleProfileDropdown(); PrototypeApp.belumTersedia('Status infaq', event);">
+              <i class="ph ph-shield-check" style="color: var(--teal-primary);"></i>
+              <span>Status Infaq & Verifikasi</span>
             </button>
-            <div class="keyboard-tip">
-              <span class="kbd">Space</span> / <span class="kbd">→</span> Navigasi
-            </div>
           </div>
         </div>
-
-        <!-- Right Side Showcase Card -->
-        <div class="hero-visual">
-          <div class="hero-visual-card">
-            
-            <div class="hero-preview-screen">
-              <div class="hero-screen-top">
-                <div class="hero-lesson-badge">
-                  <span class="live-dot"></span> Modul 2 • SMP Kelas 8
-                </div>
-                <div class="hero-watermark-pill">
-                  <i class="ph ph-shield-check"></i> Ahmad Fauzan • Azhariyah
-                </div>
-              </div>
-
-              <div class="hero-arabic-callout">
-                الوَحْدَةُ الثَّانِيَةُ : التَّعَارُفُ وَالمُحَادَثَةُ
-              </div>
-              <div class="hero-arabic-sub">
-                Mufrodat Perkenalan & Praktik Ngobrol Harian
-              </div>
-
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                <div style="font-size: 10px; color: #A7F3EC; font-weight: 600;">Progres: 62% Tuntas</div>
-                <div style="background: rgba(0,210,190,0.2); border: 1px solid #00D2BE; color: #FFFFFF; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px;">
-                  +50 XP Siap Diklaim 🎮
-                </div>
-              </div>
-            </div>
-
-            <!-- Mini Stats Row -->
-            <div class="hero-mini-stats">
-              <div class="hero-stat-card">
-                <div class="hero-stat-val">3 Jenjang</div>
-                <div class="hero-stat-lbl">SD, SMP, SMA</div>
-              </div>
-              <div class="hero-stat-card">
-                <div class="hero-stat-val gold">+50 XP</div>
-                <div class="hero-stat-lbl">Game Edukatif</div>
-              </div>
-              <div class="hero-stat-card">
-                <div class="hero-stat-val">100%</div>
-                <div class="hero-stat-lbl">Berizin Umi Elly</div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
       </div>
-    </section>
 
-    <!-- ============================================================
-         SLIDE 2: KONDISI & MASALAH SAAT INI (THE PROBLEMS)
-         ============================================================ -->
-    <section class="slide-card" data-slide-index="2" data-slide-title="Masalah Saat Ini">
-      <div class="slide-inner slide-standard-layout">
-        
-        <div class="section-header">
-          <div class="badge-tag danger-badge">
-            <i class="ph ph-warning-circle"></i>
-            <span>KONDISI & TANTANGAN SAAT INI</span>
-          </div>
-          <h2 class="section-title">Tantangan Pengelolaan Materi Tanpa Platform Khusus</h2>
-          <p class="section-subtitle">
-            Materi kajian berharga dari Umi Elly dan para asatidz Yayasan Peradaban Islam Azhariyah rentan menghadapi kebocoran jika didistribusikan lewat grup chat biasa.
-          </p>
-        </div>
+      <!-- ============================================================
+           MENU NAVIGASI UTAMA
 
-        <div class="problem-grid-4">
-          
-          <div class="double-bezel problem-card">
-            <div class="card-inner">
-              <div class="problem-icon danger-icon">
-                <i class="ph ph-share-network"></i>
-              </div>
-              <h3 class="problem-title">1. Materi Tersebar & Diakses Tanpa Izin</h3>
-              <p class="problem-desc">
-                Link rekaman mudah dibagikan ke pihak luar. Orang yang belum diberikan hak akses resmi oleh Umi Elly atau yayasan dapat leluasa menonton materi.
-              </p>
-              <div class="problem-impact-pill">
-                <i class="ph ph-x-circle"></i>
-                <span>Amanah materi tidak terjaga</span>
-              </div>
-            </div>
-          </div>
+           Dikelompokkan per urusan, bukan satu daftar datar: santri membuka
+           menu ini setiap hari, dan "Materi Saya" di bawah Belajar adalah
+           daftar modul jenjangnya SENDIRI — digambar dari silabus yang
+           sedang aktif oleh js/ui/syllabus.js, bukan ditulis di sini.
+           Dengan begitu tiap materi bisa dibuka langsung dari sidebar,
+           tanpa harus masuk ke kurikulum lalu mencari akordeonnya.
 
-          <div class="double-bezel problem-card">
-            <div class="card-inner">
-              <div class="problem-icon danger-icon">
-                <i class="ph ph-eye-slash"></i>
-              </div>
-              <h3 class="problem-title">2. Pihak Yayasan "Buta" Data Akses</h3>
-              <p class="problem-desc">
-                Umi Elly dan pengurus yayasan tidak dapat memantau siapa saja yang sebenarnya mengakses video kajian, seberapa banyak materi ditonton, dan siapa yang menyebarkannya.
-              </p>
-              <div class="problem-impact-pill">
-                <i class="ph ph-x-circle"></i>
-                <span>Nol data pelacakan & kontrol</span>
-              </div>
-            </div>
-          </div>
+           Menu pengurus (Panel Otoritas & Studio Kurikulum) DIKUNCI
+           tersembunyi di markup dan hanya dibuka js/ui/auth.js untuk sesi
+           staff. Sebelum ini "Panel Otoritas Yayasan" terlihat oleh semua
+           orang termasuk santri — datanya memang tetap ditolak server,
+           tapi menu yang tidak akan pernah bisa dipakai tidak seharusnya
+           ada di layar santri.
+           ============================================================ -->
+      <ul class="ref-nav-list">
 
-          <div class="double-bezel problem-card">
-            <div class="card-inner">
-              <div class="problem-icon danger-icon">
-                <i class="ph ph-receipt"></i>
-              </div>
-              <h3 class="problem-title">3. Pembagian Hak Akses Manual Melelahkan</h3>
-              <p class="problem-desc">
-                Memberikan izin satu-per-satu lewat WhatsApp, cek pendaftaran manual, dan kirim link rekaman menyita banyak waktu pengurus yayasan.
-              </p>
-              <div class="problem-impact-pill">
-                <i class="ph ph-x-circle"></i>
-                <span>Beban pengurus 4-5 jam/hari</span>
-              </div>
-            </div>
-          </div>
+        <li class="nav-group-label">Portal</li>
+        <!-- Hanya terlihat saat sesi login WALI aktif — lihat js/ui/auth.js -->
+        <li id="navWaliDashboardItem" style="display: none;">
+          <a class="ref-nav-item" id="nav-wali-dashboard" onclick="PrototypeApp.switchMainView('wali-dashboard')">
+            <i class="ph ph-users-three"></i>
+            <span>Dashboard Wali</span>
+          </a>
+        </li>
+        <li>
+          <a class="ref-nav-item active" id="nav-beranda" onclick="PrototypeApp.switchMainView('beranda')">
+            <i class="ph ph-squares-four"></i>
+            <span>Dashboard Santri</span>
+          </a>
+        </li>
 
-          <div class="double-bezel problem-card">
-            <div class="card-inner">
-              <div class="problem-icon danger-icon">
-                <i class="ph ph-game-controller"></i>
-              </div>
-              <h3 class="problem-title">4. Metode Pasif & Santri Cepat Jenuh</h3>
-              <p class="problem-desc">
-                Hanya menonton rekaman panjang tanpa adanya interaktivitas, game tantangan sejarah, atau reward kuis membuat santri mudah bosan dan tidak menuntaskan silabus.
-              </p>
-              <div class="problem-impact-pill">
-                <i class="ph ph-x-circle"></i>
-                <span>Minim interaktivitas & motivasi</span>
-              </div>
-            </div>
-          </div>
+        <li class="nav-group-label">Belajar</li>
+        <li>
+          <a class="ref-nav-item" id="nav-kurikulum" onclick="PrototypeApp.switchMainView('kurikulum')">
+            <i class="ph ph-graduation-cap"></i>
+            <span>Kurikulum Bahasa Arab</span>
+          </a>
+        </li>
+        <li id="navMateriGroup">
+          <a class="ref-nav-item" id="nav-materi-toggle" onclick="PrototypeApp.toggleMateriNav(event)" aria-expanded="true" aria-controls="sidebarModulList">
+            <i class="ph ph-list-bullets"></i>
+            <span>Materi Saya</span>
+            <i class="ph ph-caret-up nav-caret" id="navMateriCaret"></i>
+          </a>
+          <!-- Diisi js/ui/syllabus.js dari silabus jenjang yang sedang aktif. -->
+          <ul class="ref-nav-sub" id="sidebarModulList"></ul>
+        </li>
+        <li>
+          <a class="ref-nav-item" id="nav-evaluasi" onclick="PrototypeApp.bukaSubTab('kuis')">
+            <i class="ph ph-check-circle"></i>
+            <span>Latihan &amp; Evaluasi</span>
+          </a>
+        </li>
+        <li>
+          <a class="ref-nav-item" id="nav-mufrodat" onclick="PrototypeApp.bukaSubTab('audio')">
+            <i class="ph ph-speaker-high"></i>
+            <span>Mufrodat &amp; Pelafalan</span>
+          </a>
+        </li>
+        <li>
+          <a href="game2d.html" class="ref-nav-item" id="nav-simulasi-2d">
+            <i class="ph ph-microphone"></i>
+            <span>Simulasi Percakapan Suara</span>
+          </a>
+        </li>
 
-        </div>
+        <li class="nav-group-label">Perpustakaan &amp; Sanad</li>
+        <li>
+          <a class="ref-nav-item" id="nav-modul-pdf" onclick="PrototypeApp.switchMainView('modul-pdf')">
+            <i class="ph ph-book-open-text"></i>
+            <span>Modul &amp; Silabus PDF</span>
+          </a>
+        </li>
+        <li>
+          <a class="ref-nav-item" id="nav-piagam" onclick="PrototypeApp.openCertificate()">
+            <i class="ph ph-certificate" style="color: var(--gold-dark);"></i>
+            <span>Piagam Kelulusan Sanad</span>
+          </a>
+        </li>
 
-      </div>
-    </section>
-
-    <!-- ============================================================
-         SLIDE 3: DAMPAK NEGATIF JIKA DIBIARKAN
-         ============================================================ -->
-    <section class="slide-card" data-slide-index="3" data-slide-title="Dampak Negatif">
-      <div class="slide-inner slide-standard-layout">
-        
-        <div class="section-header">
-          <div class="badge-tag warning-badge">
-            <i class="ph ph-trend-down"></i>
-            <span>KONSEKUENSI STRATEGIS</span>
-          </div>
-          <h2 class="section-title">Mengapa Proteksi Hak Akses & Inovasi Belajar Sangat Penting?</h2>
-          <p class="section-subtitle">
-            Menjaga materi kajian bukan sekadar persoalan teknis, melainkan menjaga adab, kemurnian ilmu, dan antusiasme santri dalam mempelajari sejarah peradaban Islam.
-          </p>
-        </div>
-
-        <div class="impact-layout">
-          
-          <div class="impact-columns">
-            <div class="double-bezel impact-item">
-              <div class="card-inner">
-                <div class="impact-badge">
-                  <i class="ph ph-scales"></i>
-                  <span>Amanah Ilmu & Keberkahan</span>
-                </div>
-                <h4 class="impact-heading">Menjaga Kehormatan Karya & Kurikulum Yayasan</h4>
-                <p class="impact-text">
-                  Karya ilmiah dan materi kajian yang disusun oleh Umi Elly serta asatidz dinikmati pihak luar tanpa izin. Adab menuntut ilmu menjadi terabaikan jika materi dibagikan sembarangan.
-                </p>
-                <div class="impact-metric-box">
-                  <span class="metric-val danger-text">100% Terlindungi</span>
-                  <span class="metric-label">Target perlindungan hak akses materi dengan platform baru</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="double-bezel impact-item">
-              <div class="card-inner">
-                <div class="impact-badge">
-                  <i class="ph ph-users-three"></i>
-                  <span>Efisiensi Waktu Pengurus</span>
-                </div>
-                <h4 class="impact-heading">Waktu Yayasan Habis Mengurus Teknis Link</h4>
-                <p class="impact-text">
-                  Pengurus yayasan kelelahan menjawab pertanyaan link berulang kali dan mencatat peserta manual, padahal energi yayasan lebih berharga untuk pengembangan program dakwah.
-                </p>
-                <div class="impact-metric-box">
-                  <span class="metric-val warning-text">80% Waktu Hemat</span>
-                  <span class="metric-label">Otomasi perizinan akses tanpa kirim link manual</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="double-bezel impact-item">
-              <div class="card-inner">
-                <div class="impact-badge">
-                  <i class="ph ph-game-controller"></i>
-                  <span>Daya Tarik Generasi Muda</span>
-                </div>
-                <h4 class="impact-heading">Minat Belajar Bahasa Arab Melonjak lewat Game</h4>
-                <p class="impact-text">
-                  Pelajar SD, SMP, hingga SMA belajar 3x lebih cepat menguasai mufrodat dan berani ngobrol Bahasa Arab saat disajikan dalam format tantangan game edukasi berpoin XP.
-                </p>
-                <div class="impact-metric-box">
-                  <span class="metric-val white-text">3x Lebih Antusias</span>
-                  <span class="metric-label">Tingkat penyelesaian modul dengan fitur game edukasi</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Bottom Quote Box -->
-          <div class="quote-callout">
-            <div class="quote-icon"><i class="ph ph-quotes"></i></div>
-            <div class="quote-content">
-              <p class="quote-phrase">
-                "Bahasa Arab adalah kunci memahami Al-Qur'an dan khazanah Islam. Platform ini kami dedikasikan agar santri tingkat SD hingga SMA mencintai Bahasa Arab dengan gembira, beradab, dan terstruktur di bawah asuhan Umi Elly."
-              </p>
-              <span class="quote-author">— Prinsip Yayasan Peradaban Islam Azhariyah</span>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ============================================================
-         SLIDE 4: SOLUSI KOMPREHENSIF (THE SOLUTION)
-         ============================================================ -->
-    <section class="slide-card" data-slide-index="4" data-slide-title="Solusi Platform">
-      <div class="slide-inner slide-standard-layout">
-        
-        <div class="section-header">
-          <div class="badge-tag gold-badge">
-            <i class="ph ph-sparkle"></i>
-            <span>SOLUSI UTAMA</span>
-          </div>
-          <h2 class="section-title">Platform Belajar Bahasa Arab & Game Mufrodat Interaktif</h2>
-          <p class="section-subtitle">
-            Portal terpadu PERISA Azhariyah untuk kurikulum Bahasa Arab berjenjang (SD, SMP, SMA) dari mufrodat dasar sampai lancar ngobrol, dengan proteksi video materi dan mini-game percakapan seru.
-          </p>
-        </div>
-
-        <div class="solution-grid-4">
-          
-          <div class="double-bezel sol-card">
-            <div class="card-inner">
-              <div class="sol-num">01</div>
-              <div class="sol-icon-wrap"><i class="ph ph-whatsapp-logo"></i></div>
-              <h3 class="sol-title">Login WA Ramah Jamaah</h3>
-              <p class="sol-desc">
-                Siswa dan wali murid cukup login dengan nomor WhatsApp terdaftar. Sangat praktis bagi anak SD maupun orang tua tanpa perlu mengingat sandi rumit.
-              </p>
-              <ul class="sol-list">
-                <li><i class="ph ph-check-circle"></i> Login 1-klik via WhatsApp OTP</li>
-                <li><i class="ph ph-check-circle"></i> Ramah pengguna segala usia</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="double-bezel sol-card">
-            <div class="card-inner">
-              <div class="sol-num">02</div>
-              <div class="sol-icon-wrap"><i class="ph ph-shield-check"></i></div>
-              <h3 class="sol-title">Proteksi Adab & Watermark</h3>
-              <p class="sol-desc">
-                Materi video penjelasan tata bahasa & percakapan asuhan Umi Elly dilengkapi <strong>Watermark Dinamis</strong> nama santri, melindungi karya kurikulum yayasan.
-              </p>
-              <ul class="sol-list">
-                <li><i class="ph ph-check-circle"></i> Anti-download file mentah</li>
-                <li><i class="ph ph-check-circle"></i> Santri segan membocorkan video</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="double-bezel sol-card">
-            <div class="card-inner">
-              <div class="sol-num">03</div>
-              <div class="sol-icon-wrap"><i class="ph ph-game-controller"></i></div>
-              <h3 class="sol-title">Game Mufrodat & Percakapan Seru</h3>
-              <p class="sol-desc">
-                Mini-game tebak mufrodat bergambar, susun kalimat bahasa Arab, dan tantangan percakapan (muhadatsah) dengan hadiah poin XP dan lencana bintang.
-              </p>
-              <ul class="sol-list">
-                <li><i class="ph ph-check-circle"></i> Tantangan peta sejarah & tokoh</li>
-                <li><i class="ph ph-check-circle"></i> Lencana prestasi & poin berkah</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="double-bezel sol-card">
-            <div class="card-inner">
-              <div class="sol-num">04</div>
-              <div class="sol-icon-wrap"><i class="ph ph-hand-heart"></i></div>
-              <h3 class="sol-title">Izin Khusus & Beasiswa</h3>
-              <p class="sol-desc">
-                Umi Elly & yayasan memegang kunci penuh. Tersedia <strong>Tombol Jalur Beasiswa</strong> gratis bagi santri dhuafa tanpa ribet, serta rekap otomatis bagi admin yayasan.
-              </p>
-              <ul class="sol-list">
-                <li><i class="ph ph-check-circle"></i> Tombol beasiswa 1-klik untuk dhuafa</li>
-                <li><i class="ph ph-check-circle"></i> Beban admin yayasan turun 90%</li>
-              </ul>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ============================================================
-         SLIDE 5: CARA KERJA & ALUR SISTEM (USER JOURNEY)
-         ============================================================ -->
-    <section class="slide-card" data-slide-index="5" data-slide-title="Alur Kerja Sistem">
-      <div class="slide-inner slide-standard-layout">
-        
-        <div class="section-header">
-          <div class="badge-tag">
-            <i class="ph ph-flow-arrow"></i>
-            <span>ALUR PERIZINAN & PEMBELAJARAN</span>
-          </div>
-          <h2 class="section-title">Alur Kerja Sistem: Rapi, Terkontrol, & Otomatis</h2>
-          <p class="section-subtitle">
-            Bagaimana santri mendaftar hingga mendapatkan izin resmi untuk mengakses materi kajian dan game edukasi di portal yayasan.
-          </p>
-        </div>
-
-        <div class="workflow-stepper">
-          
-          <div class="step-card">
-            <div class="step-badge">Tahap 1</div>
-            <div class="step-circle"><i class="ph ph-whatsapp-logo"></i></div>
-            <div class="step-body">
-              <h4 class="step-title">Login WhatsApp Instan</h4>
-              <p class="step-desc">Santri & jamaah masuk praktis menggunakan nomor WhatsApp aktif tanpa ribet hafalan password.</p>
-            </div>
-            <div class="step-connector"></div>
-          </div>
-
-          <div class="step-card">
-            <div class="step-badge">Tahap 2</div>
-            <div class="step-circle"><i class="ph ph-hand-heart"></i></div>
-            <div class="step-body">
-              <h4 class="step-title">Infaq / Jalur Beasiswa</h4>
-              <p class="step-desc">Konfirmasi infaq berkah atau pengajuan beasiswa khusus santri dhuafa langsung ke yayasan.</p>
-            </div>
-            <div class="step-connector"></div>
-          </div>
-
-          <div class="step-card highlight-step">
-            <div class="step-badge gold-step-badge">Tahap 3 (Restu)</div>
-            <div class="step-circle gold-circle"><i class="ph ph-seal-check"></i></div>
-            <div class="step-body">
-              <h4 class="step-title">Izin Resmi Umi Elly</h4>
-              <p class="step-desc">Yayasan membuka izin akses santri dengan 1 klik (baik jalur infaq reguler maupun jalur beasiswa gratis).</p>
-            </div>
-            <div class="step-connector"></div>
-          </div>
-
-          <div class="step-card">
-            <div class="step-badge">Tahap 4</div>
-            <div class="step-circle"><i class="ph ph-book-open-user"></i></div>
-            <div class="step-body">
-              <h4 class="step-title">Doa Umi & Belajar Arab Ceria</h4>
-              <p class="step-desc">Membaca pesan adab Umi Elly, menyimak video Bahasa Arab SD-SMA, dan menuntaskan game mufrodat.</p>
-            </div>
-            <div class="step-connector"></div>
-          </div>
-
-          <div class="step-card">
-            <div class="step-badge">Tahap 5</div>
-            <div class="step-circle"><i class="ph ph-certificate"></i></div>
-            <div class="step-body">
-              <h4 class="step-title">Sertifikat Sah Yayasan</h4>
-              <p class="step-desc">Rekapitulasi nilai dan sertifikat kelulusan digital diterbitkan otomatis berstempel resmi Azhariyah.</p>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="workflow-banner">
-          <div class="banner-icon"><i class="ph ph-shield-check"></i></div>
-          <div class="banner-text">
-            <strong>Keamanan Berlapis:</strong> Tanpa adanya izin resmi yang disetujui oleh Umi Elly atau yayasan, materi dan game kelas tidak akan bisa dibuka oleh siapa pun.
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ============================================================
-         SLIDE 6: PENGALAMAN MURID (LIVE INTERACTIVE DEMO)
-         ============================================================ -->
-    <section class="slide-card" data-slide-index="6" data-slide-title="Dashboard Murid">
-      <div class="slide-inner slide-mockup-layout">
-        
-        <div class="mockup-intro">
-          <div class="badge-tag gold-badge">
-            <i class="ph ph-student"></i>
-            <span>PENGALAMAN SANTRI (INTERACTIVE DEMO)</span>
-          </div>
-          <h2 class="section-title">Portal Belajar Santri: Modul Video Bahasa Arab & Game Mufrodat</h2>
-          <p class="section-subtitle">
-            Murid SD, SMP, dan SMA dapat menyimak video pembelajaran Bahasa Arab terstruktur, mengunduh lembar latihan (tashrif & mufrodat), dan bermain game kuis.
-          </p>
-
-          <div class="feature-bullets-side">
-            <div class="f-bullet">
-              <div class="f-bullet-icon"><i class="ph ph-check"></i></div>
-              <div>
-                <strong>Watermark Personal:</strong> Mencegah santri membocorkan rekaman ke orang luar.
-              </div>
-            </div>
-            <div class="f-bullet">
-              <div class="f-bullet-icon"><i class="ph ph-game-controller"></i></div>
-              <div>
-                <strong>Game Mufrodat & Muhadatsah:</strong> Tebak arti kosakata, susun kalimat harian, praktik dialog, & reward poin XP.
-              </div>
-            </div>
-            <div class="f-bullet">
-              <div class="f-bullet-icon"><i class="ph ph-check"></i></div>
-              <div>
-                <strong>Unduh PDF Resmi:</strong> Download rangkuman materi sah dari yayasan.
-              </div>
-            </div>
-          </div>
-
-          <div class="mockup-interactive-hint">
-            <i class="ph ph-cursor-click"></i>
-            <span>Coba klik item silabus atau tombol <strong>"Mainkan Game Bahasa Arab"</strong> di bawah video!</span>
-          </div>
-        </div>
-
-        <!-- LIVE INTERACTIVE STUDENT MOCKUP -->
-        <div class="mockup-stage-wrapper">
-          <div class="double-bezel os-window-bezel">
-            <div class="os-window-inner">
-              
-              <!-- OS Window Header -->
-              <div class="os-top-bar">
-                <div class="os-traffic-lights">
-                  <span class="tl red"></span>
-                  <span class="tl yellow"></span>
-                  <span class="tl green"></span>
-                </div>
-                <div class="os-url-bar">
-                  <i class="ph ph-lock-key"></i>
-                  <span>portal.azhariyah.org/bahasa-arab/smp/modul-2</span>
-                </div>
-                <div class="os-user-badge">
-                  <div class="os-avatar-initial">AF</div>
-                  <span>Ahmad Fauzan (Kelas 8 SMP • 420 XP)</span>
-                </div>
-              </div>
-
-              <!-- Student Portal Interior Layout -->
-              <div class="student-portal-ui">
-                
-                <!-- Main Video & Notes View -->
-                <div class="portal-main-area">
-                  
-                  <!-- Kalam & Pesan Doa Pengasuh (Umi Elly) -->
-                  <div class="kalam-umi-box" style="background-color: #FDF9EE; border: 1.5px solid #E5B84B; border-radius: var(--md-shape-corner-medium); padding: 8px 12px; display: flex; align-items: flex-start; gap: 8px;">
-                    <i class="ph ph-quotes" style="font-size: 18px; color: #B38415; flex-shrink: 0; margin-top: 1px;"></i>
-                    <div style="font-size: 11px; line-height: 1.45; color: var(--md-sys-color-on-surface);">
-                      <strong style="color: #B38415;">Pesan Adab & Doa dari Umi Elly:</strong>
-                      <em>"Bismillahirrohmanirrohim. Bahasa Arab adalah bahasa Al-Qur'an dan kunci ilmu agama. Belajarlah dengan gembira, istiqomah, dan penuh semangat! — Umi Elly"</em>
-                    </div>
-                  </div>
-
-                  <div class="interactive-video-player" id="interactivePlayer">
-                    <!-- Simulated Video Screen -->
-                    <div class="player-screen" id="playerScreen">
-                      <!-- Dynamic Floating Watermark -->
-                      <div class="dynamic-watermark" id="watermarkElement">
-                        <i class="ph ph-shield-check"></i>
-                        <span>Ahmad Fauzan • Izin: Yayasan Azhariyah</span>
-                      </div>
-
-                      <div class="player-center-play" id="btnPlayerCenterPlay">
-                        <i class="ph ph-play" id="centerPlayIcon"></i>
-                      </div>
-
-                      <div class="player-hud-title" id="playerHudTitle">
-                        Modul 2 (Tingkat SMP): Mufrodat Perkenalan & Percakapan Harian
-                      </div>
-                    </div>
-
-                    <!-- Player Bottom Bar Controls -->
-                    <div class="player-controls-bar">
-                      <button class="player-ctrl-btn" id="btnPlayerPlayToggle">
-                        <i class="ph ph-play" id="barPlayIcon"></i>
-                      </button>
-                      <span class="player-timestamp" id="playerTimer">08:24 / 45:10</span>
-                      
-                      <div class="player-scrub-track">
-                        <div class="player-scrub-fill" id="playerScrubFill" style="width: 28%;"></div>
-                      </div>
-
-                      <button class="speed-pill-btn" id="btnSpeedToggle">1.25x</button>
-                      <button class="player-ctrl-btn" title="Kualitas 1080p HD"><i class="ph ph-gear"></i></button>
-                      <button class="player-ctrl-btn" title="Full Screen Player"><i class="ph ph-arrows-out"></i></button>
-                    </div>
-                  </div>
-
-                  <!-- Video Info & Tabs -->
-                  <div class="video-meta-section">
-                    <div class="meta-row">
-                      <div>
-                        <h4 class="active-module-title" id="activeModuleTitle">Sesi 2: Mufrodat Perkenalan (Ta'aruf) & Praktik Menyapa Sehari-hari</h4>
-                        <p class="module-author">Kurikulum Bahasa Arab PERISA Azhariyah (SMP) • 35 Menit</p>
-                      </div>
-                      <button class="btn-mark-done" id="btnMarkComplete">
-                        <i class="ph ph-check-circle" id="markDoneIcon"></i>
-                        <span id="markDoneText">Tandai Selesai</span>
-                      </button>
-                    </div>
-
-                    <!-- Material Download & Game Launcher Row -->
-                    <div class="materials-download-pills">
-                      <a href="javascript:void(0)" class="mat-pill game-pill" onclick="DeckEngine.openGameModal()">
-                        <i class="ph ph-game-controller"></i>
-                        <span>Mainkan Game Mufrodat Arab (+50 XP)</span>
-                      </a>
-                      <a href="javascript:void(0)" class="mat-pill" onclick="DeckEngine.showToast('Mengunduh Berkas PDF: Ringkasan Kuliah Sesi 2.pdf')">
-                        <i class="ph ph-file-pdf"></i>
-                        <span>Lembar Mufrodat & Percakapan Harian.pdf</span>
-                        <span class="mat-size">(2.4 MB)</span>
-                      </a>
-                      <a href="javascript:void(0)" class="mat-pill" onclick="DeckEngine.showToast('Membuka Forum Tanya-Jawab...')">
-                        <i class="ph ph-chat-centered-text"></i>
-                        <span>Tanya Asatidz & Umi Elly</span>
-                      </a>
-                    </div>
-                  </div>
-
-                </div>
-
-                <!-- Right Sidebar: Interactive Silabus Checklist -->
-                <div class="portal-sidebar-area">
-                  <div class="sidebar-header">
-                    <div class="sidebar-header-top">
-                      <span class="sidebar-course-tag">Bahasa Arab Jenjang SMP</span>
-                      <span class="progress-pct" id="totalProgressText">62% Tuntas</span>
-                    </div>
-                    <div class="sidebar-progress-bar">
-                      <div class="sidebar-progress-fill" id="sidebarProgressFill" style="width: 62%;"></div>
-                    </div>
-                  </div>
-
-                  <div class="syllabus-list" id="syllabusList">
-                    
-                    <div class="syllabus-item done" data-module="1" data-title="Sesi 1 (Dasar): Mufrodat Benda Sehari-hari & Game Tebak Gambar" data-time="38 Menit">
-                      <div class="syl-status-icon"><i class="ph ph-check-circle"></i></div>
-                      <div class="syl-info">
-                        <span class="syl-session">Sesi 1 • Tuntas +50 XP</span>
-                        <span class="syl-title">Mufrodat Dasar: Rumah, Sekolah & Keluarga</span>
-                        <span class="syl-duration">38 Menit • Selesai</span>
-                      </div>
-                    </div>
-
-                    <div class="syllabus-item current active-syl" data-module="2" data-title="Sesi 2 (Perkenalan): Mufrodat Ta'aruf & Praktik Menyapa" data-time="45 Menit">
-                      <div class="syl-status-icon"><i class="ph ph-play-circle"></i></div>
-                      <div class="syl-info">
-                        <span class="syl-session">Sesi 2 (Diputar)</span>
-                        <span class="syl-title">Mufrodat Perkenalan & Sapaan Harian</span>
-                        <span class="syl-duration">45 Menit • Game Tersedia 🎮</span>
-                      </div>
-                    </div>
-
-                    <div class="syllabus-item" data-module="3" data-title="Sesi 3 (Muhadatsah): Ngobrol Harian di Rumah & Sekolah" data-time="52 Menit">
-                      <div class="syl-status-icon"><i class="ph ph-circle"></i></div>
-                      <div class="syl-info">
-                        <span class="syl-session">Sesi 3</span>
-                        <span class="syl-title">Praktik Dialog & Game Susun Kalimat</span>
-                        <span class="syl-duration">52 Menit • Kuis Game Level 3</span>
-                      </div>
-                    </div>
-
-                    <div class="syllabus-item locked" data-module="4" data-title="Sesi 4 (Lancar): Muhadatsah Bebas & Cerita Kegiatan Harian" data-time="48 Menit">
-                      <div class="syl-status-icon"><i class="ph ph-lock"></i></div>
-                      <div class="syl-info">
-                        <span class="syl-session">Sesi 4</span>
-                        <span class="syl-title">Roleplay Ngobrol Bebas Sehari-hari</span>
-                        <span class="syl-duration">Rilis 24 Agustus</span>
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ============================================================
-         SLIDE 7: KONTROL AKSES & PROTEKSI KONTEN (SECURITY DEEP DIVE)
-         ============================================================ -->
-    <section class="slide-card" data-slide-index="7" data-slide-title="Proteksi Konten">
-      <div class="slide-inner slide-standard-layout">
-        
-        <div class="section-header">
-          <div class="badge-tag danger-badge">
+        <!-- Kelompok pengurus: dibuka js/ui/auth.js hanya untuk sesi staff. -->
+        <li class="nav-group-label" id="navGroupPengurus" style="display: none;">Pengurus Yayasan</li>
+        <li id="navAdminPanelItem" style="display: none;">
+          <a class="ref-nav-item" id="nav-admin-panel" onclick="PrototypeApp.switchMainView('admin')">
             <i class="ph ph-shield-check"></i>
-            <span>SISTEM PROTEKSI MATERI</span>
-          </div>
-          <h2 class="section-title">4 Lapis Perlindungan Materi Kajian Yayasan</h2>
-          <p class="section-subtitle">
-            Memastikan materi hanya bisa dinikmati oleh pihak yang telah disetujui, serta terlindungi dari pembajakan dan penyebaran bebas.
-          </p>
-        </div>
+            <span>Panel Otoritas Yayasan</span>
+          </a>
+        </li>
+        <li id="navStudioKurikulumItem" style="display: none;">
+          <a class="ref-nav-item" id="nav-studio-kurikulum" onclick="PrototypeApp.switchMainView('studio-kurikulum')">
+            <i class="ph ph-pencil-simple-line"></i>
+            <span>Studio Kurikulum</span>
+          </a>
+        </li>
+      </ul>
 
-        <div class="security-pillars-grid">
-          
-          <div class="double-bezel sec-card">
-            <div class="card-inner">
-              <div class="sec-icon"><i class="ph ph-fingerprint"></i></div>
-              <h3 class="sec-title">1. Dynamic Screen Watermark</h3>
-              <p class="sec-desc">
-                Nama, nomor WhatsApp, dan ID santri melayang di atas video. Mencegah perekaman layar karena identitas penyebar akan langsung terlihat.
-              </p>
-              <div class="sec-feature-box">
-                <span class="sec-tag">Efek Psikologis Kuat</span>
-                <span>Santri tidak berani merekam dan membagikan ke publik.</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="double-bezel sec-card">
-            <div class="card-inner">
-              <div class="sec-icon"><i class="ph ph-devices"></i></div>
-              <h3 class="sec-title">2. Single Device Active Session</h3>
-              <p class="sec-desc">
-                Satu akun hanya bisa login di satu HP/perangkat. Jika password dibagikan ke teman, akun di perangkat pertama otomatis logout.
-              </p>
-              <div class="sec-feature-box">
-                <span class="sec-tag">Anti-Patungan Akun</span>
-                <span>Mencegah 1 akun dipakai ramai-ramai.</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="double-bezel sec-card">
-            <div class="card-inner">
-              <div class="sec-icon"><i class="ph ph-file-lock"></i></div>
-              <h3 class="sec-title">3. Encrypted Video Stream (HLS)</h3>
-              <p class="sec-desc">
-                Video di-stream dengan enkripsi chunk terproteksi, bukan file MP4 polos, sehingga ekstensi download browser tidak bisa mengunduh file asli.
-              </p>
-              <div class="sec-feature-box">
-                <span class="sec-tag">Anti-Download Langsung</span>
-                <span>Materi kajian tersimpan aman di server yayasan.</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="double-bezel sec-card">
-            <div class="card-inner">
-              <div class="sec-icon"><i class="ph ph-toggle-left"></i></div>
-              <h3 class="sec-title">4. Kendali Otoritas Yayasan</h3>
-              <p class="sec-desc">
-                Hak akses bisa disetting expired otomatis sesuai periode batch kajian, atau dibuka-tutup kapan saja oleh Umi Elly dan pengurus yayasan.
-              </p>
-              <div class="sec-feature-box">
-                <span class="sec-tag">Kendali Penuh Yayasan</span>
-                <span>Yayasan berhak penuh memberi atau mencabut akses.</span>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
+      <!-- Bottom Sidebar Links -->
+      <div class="sidebar-bottom-links">
+        <a class="ref-nav-item" onclick="PrototypeApp.bukaGantiPin()">
+          <i class="ph ph-gear-six"></i>
+          <span>Ganti PIN</span>
+        </a>
+        <a class="ref-nav-item" onclick="PrototypeApp.belumTersedia('Bantuan & komunikasi', event)">
+          <i class="ph ph-info"></i>
+          <span>Bantuan &amp; Layanan</span>
+        </a>
+        <!-- Hanya berguna kalau memang ada sesi; disembunyikan di mode peraga
+             oleh js/ui/auth.js supaya tidak ada tombol yang tidak berbuat apa-apa. -->
+        <a class="ref-nav-item is-danger" id="sidebarLogout" style="display: none;" onclick="PrototypeApp.logout()">
+          <i class="ph ph-sign-out"></i>
+          <span>Keluar</span>
+        </a>
       </div>
-    </section>
 
-    <!-- ============================================================
-         SLIDE 8: DASHBOARD ADMIN (LIVE INTERACTIVE DEMO)
-         ============================================================ -->
-    <section class="slide-card" data-slide-index="8" data-slide-title="Dashboard Admin">
-      <div class="slide-inner slide-mockup-layout">
-        
-        <div class="mockup-intro">
-          <div class="badge-tag gold-badge">
-            <i class="ph ph-chart-polar"></i>
-            <span>PANEL PENGELOLA YAYASAN (INTERACTIVE DEMO)</span>
-          </div>
-          <h2 class="section-title">Kendali Izin Akses Santri & Materi di Satu Layar</h2>
-          <p class="section-subtitle">
-            Umi Elly dan pengurus yayasan dapat dengan mudah memverifikasi pendaftar, memberikan izin akses, mengunggah materi kajian, dan memantau keaktifan santri.
-          </p>
+    </aside>
 
-          <div class="admin-quick-stats">
-            <div class="q-stat">
-              <div class="q-stat-val gold-text">1.284</div>
-              <div class="q-stat-lbl">Santri Terdaftar</div>
-            </div>
-            <div class="q-stat">
-              <div class="q-stat-val green-text">42 Santri</div>
-              <div class="q-stat-lbl">Beasiswa Dhuafa Gratis</div>
-            </div>
-            <div class="q-stat">
-              <div class="q-stat-val white-text">90% Hemat</div>
-              <div class="q-stat-lbl">Waktu Rekap Admin</div>
-            </div>
-          </div>
-
-          <div class="mockup-interactive-hint">
-            <i class="ph ph-cursor-click"></i>
-            <span>Coba klik tombol <strong>"Beri Izin / Verifikasi"</strong> pada tabel santri di samping!</span>
-          </div>
+    <!-- RIGHT MAIN WORKSPACE -->
+    <main class="ref-main-workspace" id="refMainWorkspace">
+      
+      <!-- Top Breadcrumbs Header Bar (Desktop Only) -->
+      <header class="ref-top-header">
+        <div class="breadcrumb-trail">
+          <span id="breadcrumbRoot">Portal Utama</span>
+          <span>/</span>
+          <span id="breadcrumbCategory">Dashboard Santri</span>
+          <span>/</span>
+          <span class="active" id="breadcrumbActiveTitle">Beranda Informasi Pembelajaran</span>
         </div>
 
-        <!-- LIVE INTERACTIVE ADMIN MOCKUP -->
-        <div class="mockup-stage-wrapper">
-          <div class="double-bezel os-window-bezel">
-            <div class="os-window-inner">
-              
-              <!-- Admin Header -->
-              <div class="os-top-bar admin-top-bar">
-                <div class="os-traffic-lights">
-                  <span class="tl red"></span>
-                  <span class="tl yellow"></span>
-                  <span class="tl green"></span>
-                </div>
-                <div class="os-url-bar">
-                  <i class="ph ph-shield-check"></i>
-                  <span>admin.azhariyah.org/manajemen-akses-santri</span>
-                </div>
-                <div class="admin-status-badge">
-                  <span class="live-dot"></span>
-                  <span>Panel Pengurus Yayasan</span>
-                </div>
-              </div>
+        <div class="top-header-right-actions">
+          <button class="icon-circle-btn" title="Simpan Arsip" onclick="PrototypeApp.belumTersedia('Simpan ke arsip', event)" aria-label="Simpan ke arsip">
+            <i class="ph ph-bookmark-simple"></i>
+          </button>
+          <button class="icon-circle-btn" title="Pemberitahuan" onclick="PrototypeApp.belumTersedia('Pemberitahuan', event)" aria-label="Pemberitahuan">
+            <i class="ph ph-bell"></i>
+          </button>
+        </div>
+      </header>
 
-              <!-- Admin Interior Layout -->
-              <div class="admin-portal-ui">
-                
-                <!-- Filter Tabs & Search -->
-                <div class="admin-table-controls">
-                  <div class="admin-tab-group" id="adminFilterTabs">
-                    <button class="admin-tab active" data-filter="all">Semua Santri (1.284)</button>
-                    <button class="admin-tab" data-filter="pending" id="tabPending">Menunggu Izin (<span id="pendingCount">2</span>)</button>
-                    <button class="admin-tab" data-filter="active">Akses Diberikan (1.240)</button>
-                    <button class="admin-tab" data-filter="expired">Kedaluwarsa (41)</button>
-                  </div>
-                  
-                  <div class="admin-search-box">
-                    <i class="ph ph-magnifying-glass"></i>
-                    <input type="text" placeholder="Cari nama santri, no WA..." readonly value="Fauzan / Siti">
-                  </div>
-                </div>
-
-                <!-- Interactive Santri Table -->
-                <div class="admin-table-wrapper">
-                  <table class="admin-santri-table" id="santriTable">
-                    <thead>
-                      <tr>
-                        <th>Santri</th>
-                        <th>Program Kajian</th>
-                        <th>Status Infaq</th>
-                        <th>Progres Belajar</th>
-                        <th>Hak Akses</th>
-                        <th>Otoritas Yayasan</th>
-                      </tr>
-                    </thead>
-                    <tbody id="santriTableBody">
-                      
-                      <!-- Row 1: Active -->
-                      <tr data-status="active" id="row-1">
-                        <td>
-                          <div class="table-user-cell">
-                            <div class="user-avatar bg-avatar-1">AF</div>
-                            <div>
-                              <div class="user-name">Ahmad Fauzan</div>
-                              <div class="user-meta">0812-8921-9921 • Jakarta</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td><span class="badge-batch">Bahasa Arab SD - Kelas 5</span></td>
-                        <td><span class="badge-status-lunas"><i class="ph ph-check"></i> Infaq Terverifikasi</span></td>
-                        <td>
-                          <div class="table-progress-wrap">
-                            <div class="table-prog-bar"><div class="table-prog-fill" style="width: 62%;"></div></div>
-                            <span class="table-prog-text">62% (420 XP)</span>
-                          </div>
-                        </td>
-                        <td>
-                          <label class="switch">
-                            <input type="checkbox" checked onchange="DeckEngine.toggleSantriAccess(1)">
-                            <span class="slider"></span>
-                          </label>
-                        </td>
-                        <td>
-                          <button class="btn-table-action" onclick="DeckEngine.showToast('Detail izin santri Ahmad Fauzan dibuka')">Detail Izin</button>
-                        </td>
-                      </tr>
-
-                      <!-- Row 2: Pending Verif (Interactive!) -->
-                      <tr data-status="pending" id="row-2" class="row-pending-highlight">
-                        <td>
-                          <div class="table-user-cell">
-                            <div class="user-avatar bg-avatar-2">SN</div>
-                            <div>
-                              <div class="user-name">Siti Nurhaliza</div>
-                              <div class="user-meta">0857-1122-3344 • Bandung</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td><span class="badge-batch">Bahasa Arab SMP (Kelas 8)</span></td>
-                        <td><span class="badge-status-pending" id="statusBadge-2"><i class="ph ph-clock"></i> Menunggu Konfirmasi Infaq</span></td>
-                        <td>
-                          <span class="text-muted" id="progText-2">Akses Belum Dibuka</span>
-                        </td>
-                        <td>
-                          <label class="switch">
-                            <input type="checkbox" id="switchAccess-2" onchange="DeckEngine.toggleSantriAccess(2)">
-                            <span class="slider"></span>
-                          </label>
-                        </td>
-                        <td>
-                          <button class="btn-table-verify" id="btnVerify-2" onclick="DeckEngine.verifySantri(2)">
-                            <i class="ph ph-check"></i>
-                            <span>Beri Izin Akses</span>
-                          </button>
-                        </td>
-                      </tr>
-
-                      <!-- Row 3: Active -->
-                      <tr data-status="active" id="row-3">
-                        <td>
-                          <div class="table-user-cell">
-                            <div class="user-avatar bg-avatar-3">MR</div>
-                            <div>
-                              <div class="user-name">M. Rizky Pratama</div>
-                              <div class="user-meta">0813-7788-9900 • Surabaya</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td><span class="badge-batch">Bahasa Arab SMP (Kelas 8)</span></td>
-                        <td><span class="badge-status-lunas"><i class="ph ph-check"></i> Infaq Terverifikasi</span></td>
-                        <td>
-                          <div class="table-progress-wrap">
-                            <div class="table-prog-bar"><div class="table-prog-fill" style="width: 100%;"></div></div>
-                            <span class="table-prog-text gold-text">100% (780 XP • Juara 1)</span>
-                          </div>
-                        </td>
-                        <td>
-                          <label class="switch">
-                            <input type="checkbox" checked onchange="DeckEngine.toggleSantriAccess(3)">
-                            <span class="slider"></span>
-                          </label>
-                        </td>
-                        <td>
-                          <button class="btn-table-action" onclick="DeckEngine.openCertModal('M. Rizky Pratama')">Sertifikat</button>
-                        </td>
-                      </tr>
-
-                      <!-- Row 4: Beasiswa Dhuafa (Interactive!) -->
-                      <tr data-status="pending" id="row-4" class="row-pending-highlight">
-                        <td>
-                          <div class="table-user-cell">
-                            <div class="user-avatar bg-avatar-4">FA</div>
-                            <div>
-                              <div class="user-name">Fajar Alamsyah (Dhuafa)</div>
-                              <div class="user-meta">0821-4455-6677 • Yogyakarta</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td><span class="badge-batch">Jalur Beasiswa Umi Elly</span></td>
-                        <td><span class="badge-status-pending" id="statusBadge-4" style="background-color: #FDF6E2; border-color: var(--md-sys-color-secondary); color: var(--md-sys-color-primary);"><i class="ph ph-hand-heart"></i> Pengajuan Beasiswa</span></td>
-                        <td>
-                          <span class="text-muted" id="progText-4">Menunggu Restu Umi Elly</span>
-                        </td>
-                        <td>
-                          <label class="switch">
-                            <input type="checkbox" id="switchAccess-4" onchange="DeckEngine.toggleSantriAccess(4)">
-                            <span class="slider"></span>
-                          </label>
-                        </td>
-                        <td>
-                          <button class="btn-table-verify" id="btnVerify-4" style="background-color: var(--md-sys-color-primary-container); border: 1px solid var(--md-sys-color-primary); color: var(--md-sys-color-primary);" onclick="DeckEngine.verifyBeasiswa(4)">
-                            <i class="ph ph-hand-heart"></i>
-                            <span>Beri Beasiswa (Gratis)</span>
-                          </button>
-                        </td>
-                      </tr>
-
-                    </tbody>
-                  </table>
-                </div>
-
-                <!-- Admin Footer Stats -->
-                <div class="admin-table-footer">
-                  <div class="footer-note">
-                    <i class="ph ph-info"></i>
-                    <span>Hak akses materi & leaderboard game dikontrol penuh oleh Umi Elly dan Pengurus Yayasan.</span>
-                  </div>
-                  <div class="footer-actions">
-                    <button class="btn-export-excel" onclick="DeckEngine.showToast('Laporan 1.284 Data Santri siap diekspor ke format Excel / CSV')">
-                      <i class="ph ph-file-arrow-down"></i>
-                      <span>Ekspor Excel</span>
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-
+      <!-- ======================================================
+           VIEW 0: DASHBOARD WALI (Fase 6)
+           Digambar oleh js/ui/wali-dashboard.js — tidak ada peraga statis
+           di sini karena tampilan ini baru, bukan pengganti sesuatu yang
+           sudah ada. Hanya terlihat lewat nav-wali-dashboard (tersembunyi
+           kecuali sesi login wali aktif).
+           ====================================================== -->
+      <div id="viewWaliDashboard" style="display: none; width: 100%;">
+        <div class="wali-dashboard-layout">
+          <div class="wali-dashboard-header">
+            <div class="wali-dashboard-header-icon"><i class="ph ph-users-three"></i></div>
+            <div>
+              <h1 class="course-main-h1" style="font-size: 19px;">Dashboard Wali</h1>
+              <div id="waliDashboardSalam" style="font-size: 12.5px; color: var(--text-muted); margin-top: 2px;">Memuat progres ananda…</div>
             </div>
           </div>
+          <div id="waliDashboardContainer" class="wali-dashboard-grid"></div>
         </div>
-
       </div>
-    </section>
 
-    <!-- ============================================================
-         SLIDE 9: CAKUPAN FITUR MVP FASE 1 (DELIVERABLES)
-         ============================================================ -->
-    <section class="slide-card" data-slide-index="9" data-slide-title="Fitur MVP & Game">
-      <div class="slide-inner slide-standard-layout">
-        
-        <div class="section-header">
-          <div class="badge-tag gold-badge">
-            <i class="ph ph-rocket-launch"></i>
-            <span>RUANG LINGKUP MVP & MODUL BAHASA ARAB SD-SMA</span>
+      <!-- ======================================================
+           VIEW 1: BERANDA UTAMA (HOME DASHBOARD)
+           ====================================================== -->
+      <div id="viewBerandaUtama" style="display: block; width: 100%;">
+        <div class="beranda-view-layout">
+
+          <!-- ==========================================================
+               DASHBOARD SANTRI
+
+               12 September 2026 — SELURUH ANGKA DI HALAMAN INI DULU PALSU.
+               "2.850 XP", "4j 20m durasi belajar pekan ini", "94/100 Indeks
+               Mumtaz", "Terverifikasi", progres "65%", agenda bimbingan
+               Ahad 16.00, dan tiga baris papan peringkat berisi nama yang
+               tidak ada orangnya. Semuanya tertulis keras di HTML dan tampil
+               sama persis untuk setiap santri yang login.
+
+               Sekarang setiap angka datang dari basis data lewat
+               js/ui/beranda.js. Yang tidak punya sumber data — durasi
+               belajar dan agenda bimbingan — DIHAPUS, bukan diganti angka
+               lain: mengarang jadwal kajian atas nama Umi Elly jauh lebih
+               berbahaya daripada satu kartu yang hilang dari dashboard.
+               ========================================================== -->
+
+          <!-- Kartu "sedang dipelajari" (mobile native) -->
+          <div class="m-progress-card m-only" id="mProgressCard">
+            <div class="m-ring">
+              <div class="m-ring-value" id="mRingXp">—</div>
+              <div class="m-ring-label">XP</div>
+            </div>
+            <div class="m-progress-body">
+              <div class="m-progress-label">Sedang Dipelajari</div>
+              <div class="m-progress-title" id="mProgressTitle">Belum ada</div>
+              <div class="m-progress-meta" id="mProgressMeta">Mulai dari menu Kurikulum</div>
+            </div>
+            <button class="m-progress-go" onclick="PrototypeApp.switchMainView('kurikulum')" aria-label="Buka kurikulum">
+              <i class="ph ph-play"></i>
+            </button>
           </div>
-          <h2 class="section-title">Fitur Siap Pakai yang Menjawab Kebutuhan Yayasan</h2>
-          <p class="section-subtitle">
-            Fokus pada kurikulum Bahasa Arab interaktif SD-SMA, player materi terproteksi, bank game mufrodat & percakapan harian, serta panel admin yayasan.
-          </p>
-        </div>
 
-        <div class="mvp-split-grid">
-          
-          <!-- Column A: Santri Module -->
-          <div class="double-bezel mvp-column-card">
-            <div class="card-inner">
-              <div class="mvp-col-header">
-                <div class="mvp-badge-icon"><i class="ph ph-student"></i></div>
-                <div>
-                  <h3 class="mvp-col-title">Portal Santri & Game (Frontend)</h3>
-                  <span class="mvp-col-sub">Akses Materi Eksklusif & Gamifikasi Santri</span>
-                </div>
+          <!-- Sapaan -->
+          <div class="beranda-welcome-banner">
+            <div>
+              <div class="beranda-banner-title" id="berandaSapaan">Ahlan wa Sahlan!</div>
+              <div class="beranda-banner-sub">
+                Selamat melanjutkan pembelajaran Bahasa Arab terstruktur asuhan <strong>Umi Elly</strong>.
               </div>
+            </div>
+            <button class="btn-enroll-primary" style="background: #FFFFFF; color: var(--teal-dark); border: none; font-weight: 800;" onclick="PrototypeApp.switchMainView('kurikulum')">
+              <i class="ph ph-play-circle" style="color: var(--teal-primary); font-size: 18px;"></i> Buka Kurikulum
+            </button>
+          </div>
 
-              <div class="mvp-feature-list">
-                <div class="mvp-f-item">
-                  <div class="mvp-check"><i class="ph ph-check"></i></div>
-                  <div class="mvp-f-text">
-                    <strong>Autentikasi Santri Aman</strong>
-                    <span>Login & registrasi mudah dengan nomor WhatsApp / Email terdaftar.</span>
-                  </div>
-                </div>
-
-                <div class="mvp-f-item">
-                  <div class="mvp-check"><i class="ph ph-check"></i></div>
-                  <div class="mvp-f-text">
-                    <strong>Player Terproteksi + Watermark Nama</strong>
-                    <span>Streaming video ber-watermark nama santri dan anti-download langsung.</span>
-                  </div>
-                </div>
-
-                <div class="mvp-f-item">
-                  <div class="mvp-check"><i class="ph ph-check"></i></div>
-                  <div class="mvp-f-text">
-                    <strong>Game Edukasi Mufrodat & Tata Bahasa Arab</strong>
-                    <span>Mini-game tebak arti mufrodat, susun kalimat harian, roleplay percakapan, dan poin XP santri per jenjang SD/SMP/SMA.</span>
-                  </div>
-                </div>
-
-                <div class="mvp-f-item">
-                  <div class="mvp-check"><i class="ph ph-check"></i></div>
-                  <div class="mvp-f-text">
-                    <strong>Progress Bar & Lencana Prestasi</strong>
-                    <span>Pelacakan otomatis sesi yang telah ditonton dan lencana pencapaian belajar santri.</span>
-                  </div>
-                </div>
-
-                <div class="mvp-f-item">
-                  <div class="mvp-check"><i class="ph ph-check"></i></div>
-                  <div class="mvp-f-text">
-                    <strong>Unduh Berkas & Ringkasan Resmi</strong>
-                    <span>Akses berkas PDF pendukung yang diterbitkan resmi oleh yayasan.</span>
-                  </div>
-                </div>
+          <!-- Empat angka, semuanya dari basis data (js/ui/beranda.js). -->
+          <div class="beranda-metrics-grid">
+            <div class="beranda-metric-card">
+              <div class="metric-ikon metric-ikon-teal"><i class="ph ph-trophy"></i></div>
+              <div>
+                <div class="metric-angka" id="metrikTotalXp">—</div>
+                <div class="metric-label">XP Terkumpul</div>
+              </div>
+            </div>
+            <div class="beranda-metric-card">
+              <div class="metric-ikon metric-ikon-gold"><i class="ph ph-chart-line-up"></i></div>
+              <div>
+                <div class="metric-angka" id="metrikXpPekan">—</div>
+                <div class="metric-label">XP Pekan Ini</div>
+              </div>
+            </div>
+            <div class="beranda-metric-card">
+              <div class="metric-ikon metric-ikon-teal"><i class="ph ph-translate"></i></div>
+              <div>
+                <div class="metric-angka" id="metrikMufrodat">—</div>
+                <div class="metric-label">Mufrodat Dikuasai</div>
+              </div>
+            </div>
+            <div class="beranda-metric-card">
+              <div class="metric-ikon metric-ikon-netral"><i class="ph ph-seal-check"></i></div>
+              <div>
+                <div class="metric-angka" id="metrikPelajaran">—</div>
+                <div class="metric-label">Pelajaran Selesai</div>
               </div>
             </div>
           </div>
 
-          <!-- Column B: Admin Module -->
-          <div class="double-bezel mvp-column-card">
-            <div class="card-inner">
-              <div class="mvp-col-header">
-                <div class="mvp-badge-icon admin-icon-bg"><i class="ph ph-sliders"></i></div>
-                <div>
-                  <h3 class="mvp-col-title">Panel Pengurus Yayasan (Admin)</h3>
-                  <span class="mvp-col-sub">Otoritas Perizinan & Manajemen Materi</span>
+          <div class="beranda-two-col">
+            <div class="beranda-continue-card">
+              <h3 style="font-size: 15px; font-weight: 800; color: var(--teal-dark);">Sedang Dipelajari</h3>
+              <div class="beranda-continue-preview" id="berandaModulAktif">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: var(--bg-subtle); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                    <i class="ph ph-book-open"></i>
+                  </div>
+                  <div>
+                    <div style="font-size: 13.5px; font-weight: 700; color: var(--teal-dark);" id="berandaModulJudul">Belum ada pelajaran yang dibuka</div>
+                    <div style="font-size: 11.5px; color: var(--text-muted);" id="berandaModulSub">Pelajaran yang sedang dikerjakan muncul di sini.</div>
+                  </div>
                 </div>
+                <button class="btn-enroll-primary" onclick="PrototypeApp.switchMainView('kurikulum')">
+                  Buka <i class="ph ph-arrow-right"></i>
+                </button>
               </div>
+            </div>
 
-              <div class="mvp-feature-list">
-                <div class="mvp-f-item">
-                  <div class="mvp-check"><i class="ph ph-check"></i></div>
-                  <div class="mvp-f-text">
-                    <strong>Pemberian & Pembatalan Izin Akses</strong>
-                    <span>Tombol aktivasi izin santri per batch/kelas secara instan.</span>
-                  </div>
-                </div>
-
-                <div class="mvp-f-item">
-                  <div class="mvp-check"><i class="ph ph-check"></i></div>
-                  <div class="mvp-f-text">
-                    <strong>Manajemen & Upload Video Kajian</strong>
-                    <span>Mudah menambahkan materi video baru, judul modul, dan PDF ringkasan.</span>
-                  </div>
-                </div>
-
-                <div class="mvp-f-item">
-                  <div class="mvp-check"><i class="ph ph-check"></i></div>
-                  <div class="mvp-f-text">
-                    <strong>Pengaturan Bank Soal & Game Bahasa Arab</strong>
-                    <span>Pengurus dapat membuat soal kuis mufrodat, tebak gambar, dan dialog harian per jenjang.</span>
-                  </div>
-                </div>
-
-                <div class="mvp-f-item">
-                  <div class="mvp-check"><i class="ph ph-check"></i></div>
-                  <div class="mvp-f-text">
-                    <strong>Pemantauan Keaktifan & Skor Santri</strong>
-                    <span>Melihat siapa santri yang paling rajin belajar dan berprestasi di kuis game.</span>
-                  </div>
-                </div>
-
-                <div class="mvp-f-item">
-                  <div class="mvp-check"><i class="ph ph-check"></i></div>
-                  <div class="mvp-f-text">
-                    <strong>Ekspor Laporan Data Santri</strong>
-                    <span>Download data peserta dan rekap infaq ke format Excel kapan saja.</span>
-                  </div>
+            <!-- Papan Peringkat: diisi js/ui/papan-peringkat.js dari xp_log
+                 sungguhan. Kalau jenjang ini belum punya XP tercatat, yang
+                 tampil keadaan kosong — bukan tiga nama karangan seperti
+                 sampai 11 September 2026. -->
+            <div class="beranda-schedule-card" id="papanPeringkatCard">
+              <h3 style="font-size: 15px; font-weight: 800; color: var(--teal-dark);"><i class="ph ph-medal" style="color: var(--gold-dark);"></i> Papan Peringkat Jenjang</h3>
+              <div id="papanPeringkatContainer" style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px;">
+                <div class="papan-kosong">
+                  <div class="kosong-judul">Memuat papan peringkat…</div>
                 </div>
               </div>
             </div>
           </div>
 
         </div>
-
       </div>
-    </section>
 
-    <!-- ============================================================
-         SLIDE 10: MANFAAT & NILAI TAMBAH (STRATEGIC IMPACT)
-         ============================================================ -->
-    <section class="slide-card" data-slide-index="10" data-slide-title="Manfaat & Nilai Tambah">
-      <div class="slide-inner slide-standard-layout">
-        
-        <div class="section-header">
-          <div class="badge-tag">
-            <i class="ph ph-trophy"></i>
-            <span>NILAI STRATEGIS BAGI YAYASAN</span>
-          </div>
-          <h2 class="section-title">Manfaat Nyata bagi Yayasan Peradaban Islam Azhariyah</h2>
-          <p class="section-subtitle">
-            Membangun platform pendidikan digital mandiri untuk mencetak generasi muda yang mahir dan mencintai Bahasa Arab sejak usia SD hingga SMA.
-          </p>
-        </div>
+      <!-- ======================================================
+           VIEW 2: KURIKULUM BAHASA ARAB (COURSE PLAYER)
+           ====================================================== -->
+      <div id="viewCoursePlayer" style="display: none; width: 100%;">
+        <div class="course-main-grid">
 
-        <div class="value-impact-grid">
-          
-          <div class="double-bezel val-card">
-            <div class="card-inner">
-              <div class="val-header">
-                <div class="val-icon gold-icon"><i class="ph ph-clock-clockwise"></i></div>
-                <div class="val-badge green-badge">Efisiensi 80%</div>
-              </div>
-              <h3 class="val-title">Penghematan Waktu Pengurus</h3>
-              <p class="val-desc">
-                Pengurus tidak lagi repot membagikan link rekaman satu-per-satu lewat chat pribadi. Sistem bekerja otomatis melayani santri berizin 24/7.
-              </p>
-              <div class="val-quote">"Yayasan bisa fokus pada penyusunan materi & kurikulum dakwah."</div>
-            </div>
-          </div>
-
-          <div class="double-bezel val-card">
-            <div class="card-inner">
-              <div class="val-header">
-                <div class="val-icon gold-icon"><i class="ph ph-shield-star"></i></div>
-                <div class="val-badge gold-badge-light">Amanah 100%</div>
-              </div>
-              <h3 class="val-title">Materi Terjaga & Berizin Sah</h3>
-              <p class="val-desc">
-                Materi kajian Umi Elly dan asatidz hanya dinikmati oleh santri yang berhak, menjaga adab dan marwah keilmuan peradaban Islam.
-              </p>
-              <div class="val-quote">"Menjaga kemurnian hak akses dan keberkahan ilmu."</div>
-            </div>
-          </div>
-
-          <div class="double-bezel val-card">
-            <div class="card-inner">
-              <div class="val-header">
-                <div class="val-icon gold-icon"><i class="ph ph-game-controller"></i></div>
-                <div class="val-badge blue-badge">Gamifikasi</div>
-              </div>
-              <h3 class="val-title">Belajar Seru & Berkesan</h3>
-              <p class="val-desc">
-                Integrasi game kuis sejarah membuat santri dari berbagai usia tidak cepat bosan dan termotivasi mengulang pelajaran hingga tuntas.
-              </p>
-              <div class="val-quote">"Sejarah peradaban Islam jadi topik yang hidup & mengasyikkan."</div>
-            </div>
-          </div>
-
-          <div class="double-bezel val-card">
-            <div class="card-inner">
-              <div class="val-header">
-                <div class="val-icon gold-icon"><i class="ph ph-chart-bar"></i></div>
-                <div class="val-badge purple-badge">Transparansi</div>
-              </div>
-              <h3 class="val-title">Akuntabilitas Finansial & Infaq</h3>
-              <p class="val-desc">
-                Data santri dan infaq pendaftaran tercatat rapi dan transparan, memudahkan pelaporan berkala bagi pembina yayasan.
-              </p>
-              <div class="val-quote">"Membangun kepercayaan santri dan umat secara profesional."</div>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </section>
-
-        <!-- ============================================================
-         SLIDE 11: ROADMAP PENGEMBANGAN MASA DEPAN (FUTURE ROADMAP)
-         ============================================================ -->
-    <section class="slide-card" data-slide-index="11" data-slide-title="Roadmap & Game">
-      <div class="slide-inner slide-standard-layout">
-        
-        <div class="section-header">
-          <div class="badge-tag gold-badge">
-            <i class="ph ph-compass"></i>
-            <span>ROADMAP PENGEMBANGAN FITUR & GAME</span>
-          </div>
-          <h2 class="section-title">Rencana Pengembangan Platform & Game Bahasa Arab</h2>
-          <p class="section-subtitle">
-            Fondasi MVP dibangun modular sehingga siap dikembangkan menjadi ekosistem digital pembelajaran Bahasa Arab interaktif terdepan untuk santri SD, SMP, hingga SMA.
-          </p>
-        </div>
-
-        <div class="roadmap-horizontal">
-          
-          <!-- Phase 1 -->
-          <div class="double-bezel road-phase current-phase">
-            <div class="card-inner">
-              <div class="road-phase-tag active-tag">
-                <span class="live-dot"></span>
-                <span>Fase 1: MVP Core + Kuis Mufrodat (Bulan 1)</span>
-              </div>
-              <h3 class="road-title">Portal Materi & Kuis Mufrodat SD-SMA</h3>
-              <ul class="road-items">
-                <li><i class="ph ph-check-circle"></i> Web Portal Santri & Video Terproteksi</li>
-                <li><i class="ph ph-check-circle"></i> Dynamic Watermark Anti-Bocor</li>
-                <li><i class="ph ph-check-circle"></i> Kontrol Izin Akses & Beasiswa Yayasan</li>
-                <li><i class="ph ph-game-controller"></i> Mini-Game Mufrodat & Poin XP</li>
-              </ul>
-              <div class="road-status-pill done-pill">Fokus Peluncuran Utama</div>
-            </div>
-          </div>
-
-          <!-- Phase 2 -->
-          <div class="double-bezel road-phase">
-            <div class="card-inner">
-              <div class="road-phase-tag">
-                <span>Fase 2: Muhadatsah & Ujian (Bulan 2-3)</span>
-              </div>
-              <h3 class="road-title">Game Muhadatsah & Sertifikat</h3>
-              <ul class="road-items">
-                <li><i class="ph ph-game-controller"></i> <strong>Game Susun Kalimat & Roleplay Percakapan</strong></li>
-                <li><i class="ph ph-trophy"></i> Leaderboard Peringkat Santri & Lencana Juara</li>
-                <li><i class="ph ph-certificate"></i> E-Sertifikat Digital QR Sanad Resmi</li>
-                <li><i class="ph ph-chat-circle-dots"></i> Forum Tanya-Jawab Asatidz & Umi Elly</li>
-              </ul>
-              <div class="road-status-pill next-pill">Pengembangan Tahap 2</div>
-            </div>
-          </div>
-
-          <!-- Phase 3 -->
-          <div class="double-bezel road-phase">
-            <div class="card-inner">
-              <div class="road-phase-tag">
-                <span>Fase 3: Ekosistem Global & Mobile (Bulan 4+)</span>
-              </div>
-              <h3 class="road-title">Aplikasi Mobile & AI Percakapan Arab</h3>
-              <ul class="road-items">
-                <li><i class="ph ph-device-mobile"></i> Aplikasi Mobile iOS & Android</li>
-                <li><i class="ph ph-sparkle"></i> Praktik Muhadatsah Interaktif Berbasis AI</li>
-                <li><i class="ph ph-broadcast"></i> Live Streaming Kelas Bahasa Arab Eksklusif</li>
-                <li><i class="ph ph-users-three"></i> Komunitas Alumni Santri Bahasa Arab</li>
-              </ul>
-              <div class="road-status-pill future-pill">Visi Jangka Panjang</div>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </section>
-
-        <!-- ============================================================
-         SLIDE 12: RENCANA IMPLEMENTASI & CLOSING PITCH (TIMELINE & CTA)
-         ============================================================ -->
-    <section class="slide-card" data-slide-index="12" data-slide-title="Penutup & Kolaborasi">
-      <div class="slide-inner slide-closing-layout">
-        
-        <div class="closing-top-pitch">
-          <div class="badge-tag gold-badge">
-            <i class="ph ph-handshake"></i>
-            <span>LANGKAH SELANJUTNYA • SINERGI BERSAMA</span>
-          </div>
-
-          <h2 class="closing-title">
-            Mari Bersinergi Mewujudkan Platform Digital <br>
-            <span class="gold-gradient-text">Yayasan Peradaban Islam Azhariyah</span>
-          </h2>
-
-          <p class="closing-subtitle">
-            Bersama Umi Elly dan Dewan Pengurus Yayasan, kita bangun platform pembelajaran Bahasa Arab mandiri berfitur lengkap yang amanah, profesional, dan menyenangkan bagi santri SD hingga SMA.
-          </p>
-        </div>
-
-        <!-- 4-Week Timeline Horizontal Tracker -->
-        <div class="timeline-4weeks">
-          
-          <div class="timeline-week-card">
-            <div class="week-num">Pekan 1</div>
-            <div class="week-title">Desain & Alur Perizinan</div>
-            <p class="week-desc">Finalisasi tampilan portal santri & panel admin sesuai kebutuhan Umi Elly dan kurikulum yayasan.</p>
-          </div>
-
-          <div class="timeline-week-card">
-            <div class="week-num">Pekan 2</div>
-            <div class="week-title">Frontend & Game Bahasa Arab</div>
-            <p class="week-desc">Pembangunan player video ber-watermark, silabus materi Bahasa Arab, dan mesin mini-game mufrodat.</p>
-          </div>
-
-          <div class="timeline-week-card">
-            <div class="week-num">Pekan 3</div>
-            <div class="week-title">Backend & Kontrol Izin</div>
-            <p class="week-desc">Sistem pendaftaran WhatsApp, integrasi verifikasi infaq/beasiswa, dan panel kendali izin pengurus.</p>
-          </div>
-
-          <div class="timeline-week-card highlight-week">
-            <div class="week-num gold-week">Pekan 4</div>
-            <div class="week-title">Uji Keamanan & Go-Live</div>
-            <p class="week-desc">Testing proteksi video, migrasi data santri lama, pelatihan tim admin, dan peluncuran resmi.</p>
-          </div>
-
-        </div>
-
-        <!-- Big CTA Card -->
-        <div class="double-bezel closing-cta-box">
-          <div class="card-inner closing-cta-inner">
-            <div class="cta-text-side">
-              <h3 class="cta-call-heading">Siap Memulai Langkah Transformasi?</h3>
-              <p class="cta-call-sub">
-                Kami siap mendemonstrasikan prototipe langsung dan mendiskusikan modul materi serta game bersama Umi Elly dan Pengurus Yayasan.
-              </p>
-            </div>
+          <!-- LEFT COLUMN: PLAYER & TABS -->
+          <div class="left-player-column">
             
-            <div class="cta-buttons-side">
-              <a href="prototype.html" class="btn-primary" style="background: linear-gradient(135deg, #D97706 0%, #B45309 100%);" title="Buka Prototype Live Demo">
-                <i class="ph ph-sparkle"></i>
-                <span>Buka Prototype Live Demo</span>
-              </a>
-              <a href="https://wa.me/6281311506025?text=Assalamu%27alaikum%20Warahmatullah%20Dar%20Dev.%20Kami%20dari%20Yayasan%20Peradaban%20Islam%20Azhariyah%20tertarik%20berdiskusi%20lebih%20lanjut%20mengenai%20Platform%20Pembelajaran%20Bahasa%20Arab%20Interaktif." target="_blank" rel="noopener" class="btn-secondary" id="btnContactWa" title="WhatsApp Dar Dev - 0813 1150 6025">
-                <i class="ph ph-whatsapp-logo"></i>
-                <span>Hubungi Dar Dev</span>
-              </a>
-              <button class="btn-secondary" onclick="DeckEngine.goToSlide(1)">
-                <i class="ph ph-arrow-counter-clockwise"></i>
-                <span>Ulangi Presentasi</span>
+            <!-- CLEAN UNBOXED CODELINGO HEADER (ZERO BADGES) -->
+            <div class="course-title-header">
+              <div>
+                <h1 class="course-main-h1">
+                  <span id="courseMainTitle">Memuat modul…</span>
+                  <span class="course-arabic-sub-tag" id="courseArabicTitle"></span>
+                </h1>
+
+                <!-- Diisi js/ui/jenjang.js dari modul terbit. Baris "Durasi:
+                     2 Jam 30 Menit" dihapus 12 Sep 2026 — tidak ada sumber
+                     datanya, angkanya karangan sejak awal. Jumlah modul
+                     sekarang dihitung dari tabel, bukan ditulis "12". -->
+                <div class="course-meta-stats-row">
+                  <span id="courseJenjangText"></span>
+                  <span class="dot-sep">•</span>
+                  <span id="courseJumlahModul">—</span>
+                  <span class="dot-sep">•</span>
+                  <span>Asuhan Umi Elly</span>
+                </div>
+              </div>
+
+              <div class="header-cta-buttons">
+                <button class="btn-share-text" onclick="PrototypeApp.salinTautanMateri()">
+                  <i class="ph ph-share-network"></i> Bagikan
+                </button>
+                <button class="btn-enroll-primary" onclick="PrototypeApp.switchSubTab('kuis')">
+                  <i class="ph ph-check-circle"></i>
+                  <span>Latihan Evaluasi</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Video Player Screen -->
+            <div class="ref-video-player-box">
+              <div class="video-screen-content">
+                
+                <!-- Floating Dynamic Moving Watermark -->
+                <!-- Diisi terapkanIdentitasAsli() dengan nama santri yang
+                     SEDANG menonton. Sampai 11 Sep 2026 di sini melintang
+                     "Ahmad Fauzan • 0812-8921-9921" — nama dan nomor telepon
+                     karangan, di atas video milik keluarga sungguhan. -->
+                <div class="ref-video-watermark">
+                  <i class="ph ph-shield-check"></i> Hak Cipta PERISA Azhariyah
+                </div>
+
+                <div style="font-size: 24px; font-weight: 700; font-family: 'Amiri', 'Traditional Arabic', Arial; margin-bottom: 4px;" id="currentVideoArabic"></div>
+                <div style="font-size: 12px; color: #A7F3EC; margin-bottom: 16px;" id="currentVideoSubtitle">Memuat pelajaran…</div>
+
+                <button class="center-glass-play" onclick="PrototypeApp.togglePlayVideo()">
+                  <i class="ph ph-play" id="playIcon"></i>
+                </button>
+
+              </div>
+            </div>
+
+            <!-- Aksi Modul (mobile native) -->
+            <div class="m-course-actions m-only">
+              <button class="btn-share-text" onclick="PrototypeApp.salinTautanMateri()">
+                <i class="ph ph-share-network"></i> Bagikan
+              </button>
+              <button class="btn-enroll-primary" onclick="PrototypeApp.switchSubTab('kuis')">
+                <i class="ph ph-check-circle"></i> Latihan Evaluasi
               </button>
             </div>
+
+            <!-- Horizontal Sub-Tabs -->
+            <div class="ref-sub-tabs-bar">
+              <button class="sub-tab-btn active" data-subtab="ringkasan" onclick="PrototypeApp.switchSubTab('ringkasan')">Ringkasan Materi</button>
+              <button class="sub-tab-btn" data-subtab="audio" onclick="PrototypeApp.switchSubTab('audio')">Pelafalan Mufrodat</button>
+              <button class="sub-tab-btn" data-subtab="kuis" onclick="PrototypeApp.switchSubTab('kuis')">Evaluasi Pemahaman</button>
+              <button class="sub-tab-btn" data-subtab="pengumuman" onclick="PrototypeApp.switchSubTab('pengumuman')">Pemberitahuan Yayasan</button>
+              <button class="sub-tab-btn" data-subtab="ulasan" onclick="PrototypeApp.switchSubTab('ulasan')">Catatan & Ulasan</button>
+            </div>
+
+            <!-- SUB-TAB CONTENT CONTAINER -->
+            <div class="sub-tab-viewport" style="margin-top: 10px;">
+
+              <!-- 1. TAB RINGKASAN MATERI -->
+              <div id="subtab-ringkasan" class="subtab-pane active">
+                <div class="about-course-block">
+                  <h3>Deskripsi Modul Pembelajaran</h3>
+                  <p id="aboutCourseDesc">Memuat deskripsi modul…</p>
+
+                  <!-- "Kompetensi Dasar Pembelajaran" (enam butir) dan kartu
+                       "Dokumen Silabus & Ringkasan Resmi (Modul 02)" dihapus
+                       12 September 2026. Keduanya menggambarkan modul SMP
+                       peraga: kompetensinya tidak pernah tersimpan di mana
+                       pun, dan tombolnya membuka dokumen peraga lewat
+                       openDocReader() yang ikut dihapus. Dokumen sungguhan
+                       ada di menu "Modul & Silabus PDF". -->
+                </div>
+              </div>
+
+              <!-- 2. TAB PELAFALAN AUDIO (REAL ARABIC VOICE SYNTHESIS) -->
+              <div id="subtab-audio" class="subtab-pane" style="display: none;">
+                <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+                    <div>
+                      <h3 style="font-size: 14px; font-weight: 800; color: var(--teal-dark); display: flex; align-items: center; gap: 8px;">
+                        <i class="ph ph-speaker-high" style="color: var(--teal-primary);"></i> Panduan Pelafalan & Makhraj Huruf (Asuhan Umi Elly)
+                      </h3>
+                      <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">
+                        Klik pada kartu mufrodat untuk mendengarkan pelafalan penutur bahasa Arab standar sanad secara langsung.
+                      </p>
+                    </div>
+                    <button class="btn-enroll-primary" style="padding: 6px 14px; font-size: 11.5px;" onclick="PrototypeApp.playAllMufrodatSequence()">
+                      <i class="ph ph-speaker-high"></i> Putar Keseluruhan
+                    </button>
+                  </div>
+
+                  <!-- Diisi js/ui/mufrodat-cards.js dari tabel mufrodat.
+                       Empat kartu peraga (المَكْتَبَةُ، الكِتَابُ، القَلَمُ،
+                       الفَصْلُ) yang dulu ditulis keras di sini dihapus 12
+                       September 2026 — kartu itu tampil untuk SETIAP
+                       pelajaran, termasuk yang mufrodatnya belum diisi. -->
+                  <div id="mufrodatCardsGrid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="mufrodat-kosong">
+                      <div class="kosong-judul">Memuat mufrodat…</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 3. TAB EVALUASI PEMAHAMAN -->
+              <div id="subtab-kuis" class="subtab-pane" style="display: none;">
+                <!-- Diisi js/ui/kuis.js dengan soal yang DITERBITKAN SERVER
+                     (audit K2). Soal peraga "المَكْتَبَةُ" beserta tiga
+                     pilihan gandanya — lengkap dengan tombol yang mengaku
+                     jawabannya sudah diverifikasi — dihapus 12 Sep 2026. -->
+                <div id="kuisContainer" style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px;">
+                  <div style="text-align: center; padding: 18px 8px; font-size: 12.5px; color: var(--text-muted);">Menyiapkan soal…</div>
+                </div>
+              </div>
+
+              <!-- 4. TAB PEMBERITAHUAN -->
+              <div id="subtab-pengumuman" class="subtab-pane" style="display: none;">
+                <!-- Pengumuman peraga ("Kajian dan Bimbingan Bahasa Arab
+                     Bersama Umi Elly", 28 Agustus 2026, Ahad 16.00 WIB)
+                     dihapus 12 Sep 2026: tidak ada tabel pengumuman, jadi
+                     jadwal itu murni karangan yang mengatasnamakan Umi Elly. -->
+                <div class="pane-kosong">
+                  <div class="kosong-judul">Belum ada pemberitahuan.</div>
+                  <div class="kosong-sub">Pengumuman resmi yayasan akan muncul di sini.</div>
+                </div>
+              </div>
+
+              <!-- 5. TAB ULASAN -->
+              <div id="subtab-ulasan" class="subtab-pane" style="display: none;">
+                <!-- Testimoni peraga ("Ibu Rina, Wali Santri Ahmad Fauzan")
+                     dihapus 12 Sep 2026 — ulasan karangan dari wali yang
+                     tidak ada, ditandai "Terverifikasi". -->
+                <div class="pane-kosong">
+                  <div class="kosong-judul">Belum ada catatan atau ulasan.</div>
+                  <div class="kosong-sub">Catatan pengajar untuk modul ini akan muncul di sini.</div>
+                </div>
+              </div>
+
+            </div>
+
           </div>
-        </div>
 
-        <!-- Closing Footer Note -->
-        <div class="closing-footer-bar">
-          <span>Yayasan Peradaban Islam Azhariyah • Asuhan Umi Elly © 2026</span>
-          <span>Menjaga Kemurnian & Hak Akses Amanah Ilmu</span>
-        </div>
+          <!-- RIGHT COLUMN: SYLLABUS & AUTHOR -->
+          <div class="right-sidebar-column">
+            
+            <!-- Syllabus Accordion -->
+            <div class="course-content-accordion-card">
+              <div class="accordion-main-title">
+                Struktur Silabus Pembelajaran
+              </div>
 
+              <!-- Bagian akordeon dirender dari js/data/roles.js oleh
+                   js/ui/syllabus.js. Jangan tulis modul di sini: isinya
+                   harus mengikuti jenjang santri yang sedang aktif. -->
+            </div>
+
+            <!-- Author Box Umi Elly — profil asli dari Lampiran I profil
+                 yayasan (surat PERISA 02/SPa/Perisa/VIII/2026). Sampai
+                 11 Sep 2026 kotak ini berisi bio umum dan angka contoh
+                 ("12 Modul Resmi", "450+ Santri Aktif") yang tidak pernah
+                 benar. Isi hanya dengan fakta, bukan angka yang tidak diukur. -->
+            <div class="author-profile-card">
+              <div class="author-head-row">
+                <div class="author-avatar-circle">UE</div>
+                <div>
+                  <div class="author-name-text">Umi Elly <i class="ph ph-seal-check" style="color: var(--teal-primary);"></i></div>
+                  <div class="author-role-sub">Dr. Elly Warti Maliki, Lc., M.A.</div>
+                  <div class="author-role-sub">Pendiri &amp; Pembina Yayasan Peradaban Islam Azhariyah</div>
+                </div>
+              </div>
+              <p class="author-bio-p">
+                Doktor Fikih Islam lulusan Universitas Al-Azhar, Kairo. Pendiri Indonesian Islamic International School (IIIS) di Jeddah untuk anak-anak pekerja migran Indonesia, kini dosen Universitas YARSI Jakarta. Beliau menyusun buku pegangan <em>Lisan Ummy</em> serta merancang dan mengawasi langsung seluruh program PERISA.
+              </p>
+              <div class="author-stat-strip">
+                <div class="author-stat-cell"><strong>Al-Azhar</strong><span>Doktor Fikih · 2005</span></div>
+                <div class="author-stat-cell"><strong>IIIS</strong><span>Pendiri · Jeddah</span></div>
+                <div class="author-stat-cell"><strong>Lisan Ummy</strong><span>Penyusun buku</span></div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
       </div>
-    </section>
 
-  </main>
+      <!-- ======================================================
+           VIEW 3: PERPUSTAKAAN SILABUS & MODUL PDF
+           ====================================================== -->
+      <div id="viewModulPdf" style="display: none; width: 100%;">
+        <div class="pdf-library-layout">
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <h2 style="font-size: 20px; font-weight: 800; color: var(--teal-dark);">Perpustakaan Modul & Dokumen Silabus</h2>
+              <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Dokumen resmi terverifikasi Yayasan Peradaban Islam Azhariyah asuhan Umi Elly.</p>
+            </div>
 
-  <!-- BOTTOM FLOATING PRESENTATION CONTROLS BAR -->
-  <nav class="bottom-dock-nav" id="bottomDock">
-    
-    <!-- Previous Slide Button -->
-    <button class="dock-nav-btn prev-btn" id="btnPrevSlide" title="Slide Sebelumnya (← / Backspace)">
-      <i class="ph ph-arrow-left"></i>
-      <span class="dock-btn-label">Prev</span>
-    </button>
+            <div class="pdf-filter-bar">
+              <button class="pdf-filter-btn active" onclick="PrototypeApp.filterPdfLibrary('all', this)">Semua Dokumen</button>
+              <button class="pdf-filter-btn" onclick="PrototypeApp.filterPdfLibrary('sd', this)">Jenjang SD</button>
+              <button class="pdf-filter-btn" onclick="PrototypeApp.filterPdfLibrary('smp', this)">Jenjang SMP</button>
+              <button class="pdf-filter-btn" onclick="PrototypeApp.filterPdfLibrary('sma', this)">Jenjang SMA</button>
+            </div>
+          </div>
 
-    <!-- Slide Quick Dots Strip -->
-    <div class="dock-dots-strip" id="dockDotsStrip" title="Pilih Slide">
-      <!-- Generated by JS -->
-    </div>
+          <!-- Diisi js/ui/dokumen-viewer.js dari tabel `dokumen`. Tiga
+               kartu peraga (Silabus Modul 02 SMP "14 Halaman", Modul 01 SD
+               "10 Halaman", Modul 03 SMA "22 Halaman") dihapus 12 September
+               2026 — ketiganya membuka dokumen peraga, dan jumlah halamannya
+               dikarang. -->
+          <div class="pdf-grid" id="pdfDocsGrid">
+            <div class="dokumen-kosong">
+              <div class="kosong-judul">Memuat dokumen…</div>
+            </div>
+          </div>
 
-    <!-- Next Slide Button -->
-    <button class="dock-nav-btn next-btn" id="btnNextSlide" title="Slide Selanjutnya (→ / Space)">
-      <span class="dock-btn-label">Next</span>
-      <i class="ph ph-arrow-right"></i>
-    </button>
+        </div>
+      </div>
 
+      <!-- ======================================================
+           VIEW 4: PANEL KENDALI OTORITAS YAYASAN (ADMIN)
+           ====================================================== -->
+      <!-- Fase 6: dirender sepenuhnya oleh js/ui/pengurus-panel.js begitu
+           dibuka (bukaPengurusPanel(), dipanggil dari router.js) — lihat
+           berkas itu untuk struktur data, bukan di sini. -->
+      <div id="viewAdminPanel" style="display: none; width: 100%;"></div>
+
+      <!-- Fase 2: dirender sepenuhnya oleh js/ui/studio.js — lihat berkas
+           itu untuk struktur data, bukan di sini. -->
+      <div id="viewStudioKurikulum" style="display: none; width: 100%;">
+        <div class="studio-header-row">
+          <h2 class="studio-title">Studio Kurikulum</h2>
+          <p class="studio-subtitle">Susun modul, pelajaran, dan mufrodat — tanpa menyentuh kode.</p>
+        </div>
+        <div class="studio-breadcrumb" id="studioBreadcrumb"></div>
+        <div id="studioBody"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ============================================================
+       5. NATIVE MOBILE BOTTOM NAVIGATION BAR
+       ============================================================ -->
+  <nav class="mobile-bottom-nav" id="mobileBottomNav">
+    <a class="bottom-nav-item active" id="bnav-beranda" onclick="PrototypeApp.switchMainView('beranda'); PrototypeApp.updateBottomNav('beranda');">
+      <i class="ph ph-squares-four"></i>
+      <span>Beranda</span>
+    </a>
+    <a class="bottom-nav-item" id="bnav-modul-pdf" onclick="PrototypeApp.switchMainView('modul-pdf'); PrototypeApp.updateBottomNav('modul-pdf');">
+      <i class="ph ph-book-open-text"></i>
+      <span>Silabus</span>
+    </a>
+    <a class="bottom-nav-item m-tab-center" id="bnav-kurikulum" onclick="PrototypeApp.switchMainView('kurikulum'); PrototypeApp.updateBottomNav('kurikulum');">
+      <i class="ph ph-graduation-cap"></i>
+      <span>Belajar</span>
+    </a>
+    <a href="game2d.html" class="bottom-nav-item" id="bnav-suara">
+      <i class="ph ph-microphone"></i>
+      <span>Suara</span>
+    </a>
+    <!-- Tab kelima menjaga tombol Belajar tetap di tengah. Dulu "AI Asisten",
+         dihapus 11 September 2026 bersama fiturnya. -->
+    <a class="bottom-nav-item" id="bnav-piagam" onclick="PrototypeApp.openCertificate()">
+      <i class="ph ph-certificate"></i>
+      <span>Piagam</span>
+    </a>
   </nav>
 
-  <!-- SLIDE OVERVIEW MODAL (GRID SELECTOR) -->
-  <div class="modal-overlay" id="overviewModal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <div class="modal-header-left">
-          <div class="modal-crest"><i class="ph ph-squares-four"></i></div>
+  <!-- ============================================================
+       6. MODALS (PDF READER & CERTIFICATE)
+       ============================================================ -->
+  <!-- Document PDF Reader Modal -->
+  <div class="pdf-reader-overlay" id="docReaderModal" style="display: none;">
+    <div class="pdf-reader-modal-box">
+      <!-- Pegangan seret (drag handle) khas bottom sheet native -->
+      <div class="m-sheet-grip m-only" aria-hidden="true"></div>
+
+      <div class="pdf-reader-topbar">
+        <div class="pdf-topbar-left">
+          <i class="ph ph-file-pdf" style="font-size: 22px; color: var(--teal-primary);"></i>
           <div>
-            <h3 class="modal-title">Daftar Seluruh Slide Presentasi</h3>
-            <p class="modal-sub">Pilih slide mana saja untuk melompat langsung ke halaman tersebut</p>
+            <strong style="font-size: 13.5px; color: var(--teal-dark);" id="readerHeaderDocTitle">Dokumen Silabus & Ringkasan Resmi</strong>
+            <div style="font-size: 10.5px; color: var(--text-muted);" id="readerHeaderDocSub">Format: PDF • Yayasan Peradaban Islam Azhariyah</div>
           </div>
         </div>
-        <button class="modal-close-btn" id="btnCloseOverview">
-          <i class="ph ph-x"></i>
-        </button>
+        <div class="pdf-topbar-actions">
+          <button class="icon-circle-btn" onclick="PrototypeApp.belumTersedia('Perbesar dokumen', event)" aria-label="Perbesar tampilan dokumen"><i class="ph ph-magnifying-glass-plus"></i></button>
+          <button class="icon-circle-btn" onclick="PrototypeApp.belumTersedia('Unduh dokumen', event)" aria-label="Unduh dokumen"><i class="ph ph-download-simple"></i></button>
+          <button class="icon-circle-btn close-btn" onclick="PrototypeApp.closeDocReader()" aria-label="Tutup pembaca dokumen"><i class="ph ph-x"></i></button>
+        </div>
       </div>
 
-      <div class="slide-overview-grid" id="slideOverviewGrid">
-        <!-- Rendered dynamically by app.js -->
+      <div class="pdf-reader-viewport">
+        <div class="pdf-sheet-paper" id="modalDocSheet">
+          <div class="pdf-sheet-header">
+            <img src="logo-perisa-horizontal.png?v=03e061d2" alt="PERISA" style="height: 38px; object-fit: contain;">
+            <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">DOKUMEN RESMI KURIKULUM BAHASA ARAB</div>
+          </div>
+          <hr style="border: none; border-top: 1.5px solid var(--border-color); margin: 14px 0;">
+          <h2 style="font-size: 18px; font-weight: 800; color: var(--teal-dark); text-align: center; margin-bottom: 6px;" id="readerSheetTitle">
+            MODUL 02: KAIDAH JUMLAH ISMIYYAH
+          </h2>
+          <div style="text-align: center; font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 18px;" id="readerSheetSub">
+            Kaidah Jumlah Ismiyyah &amp; Mufrodat Fasilitas Sekolah • Penyusun: Umi Elly
+          </div>
+          <div style="font-size: 13px; line-height: 1.7; color: var(--text-body);" id="readerSheetBody">
+            <p><strong>1. Pengertian Jumlah Ismiyyah:</strong><br>
+            Jumlah Ismiyyah adalah kalimat sempurna (kalam mufid) dalam tata bahasa Arab yang diawali dengan kata benda (Isim). Struktur utamanya terdiri dari dua rukun penting, yaitu <em>Mubtada</em> (subjek pembuka) dan <em>Khobar</em> (predikat penyempurna berita).</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
+  <!-- Certificate Modal -->
+  <div class="modal-overlay" id="certModal" style="display: none;">
+    <div class="modal-box" style="text-align: center;">
+      <!-- Pegangan seret (drag handle) khas bottom sheet native -->
+      <div class="m-sheet-grip m-only" aria-hidden="true"></div>
 
-  <!-- ============================================================
-       INTERACTIVE LIVE MINI-GAME MODAL (THE WOW FACTOR)
-       ============================================================ -->
-  <div class="modal-overlay" id="gameModal">
-    <div class="modal-card game-modal-card" style="max-width: 680px;">
-      
-      <!-- Game Modal Header -->
-      <div class="modal-header">
-        <div class="modal-header-left">
-          <div class="modal-crest" style="background-color: var(--md-sys-color-primary-container); color: var(--md-sys-color-primary);">
-            <i class="ph ph-game-controller"></i>
-          </div>
-          <div>
-            <h3 class="modal-title">Mini-Game Bahasa Arab Interaktif (Jenjang SMP)</h3>
-            <p class="modal-sub">Uji Pemahaman Modul 2 • Mufrodat & Percakapan Harian</p>
-          </div>
-        </div>
-        <button class="modal-close-btn" onclick="DeckEngine.closeGameModal()">
-          <i class="ph ph-x"></i>
-        </button>
+      <div class="m-sheet-scroll">
+      <div style="margin-bottom: 12px;">
+        <img src="logo-perisa-horizontal.png?v=03e061d2" alt="PERISA" style="height: 42px; object-fit: contain;">
+      </div>
+      <h3 style="font-size: 18px; font-weight: 800; color: var(--teal-dark); margin-bottom: 4px;" id="certTitle">PIAGAM KELULUSAN SANAD</h3>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Yayasan Peradaban Islam Azhariyah — Asuhan Umi Elly</p>
+
+      <!-- Keadaan bawaan: BELUM ADA piagam. js/ui/sertifikat-santri.js
+           membuka #certIsi hanya kalau santri aktif benar-benar punya
+           sertifikat terbit. Sampai 11 September 2026 yang tampil di sini
+           adalah contoh tetap — "Ahmad Fauzan", "MUMTAZ (94 / 100) ★★★★★",
+           nomor seri AZH-2026-SMP-0129 — untuk setiap santri, karena belum
+           ada satu pun sertifikat sungguhan yang pernah diterbitkan. -->
+      <div id="certKosong" style="padding: 22px 14px; font-size: 12.5px; color: var(--text-muted); line-height: 1.6;">
+        Memuat piagam…
       </div>
 
-      <!-- Game Content Area -->
-      <div class="game-content-box" style="display: flex; flex-direction: column; gap: 16px;">
-        
-        <!-- Score Bar & Level Tabs -->
-        <div style="display: flex; justify-content: space-between; align-items: center; background-color: var(--md-sys-color-surface-container); padding: 10px 16px; border-radius: var(--md-shape-corner-medium); border: 1px solid var(--md-sys-color-outline-variant);">
-          <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--md-sys-color-on-surface);">
-            <i class="ph ph-student" style="color: var(--md-sys-color-primary); font-size: 16px;"></i>
-            <span>Santri: <strong>Ahmad Fauzan</strong> (Kelas 8 SMP)</span>
+      <div id="certIsi" style="display: none;">
+        <div style="background: var(--bg-subtle); border: 1.5px dashed var(--teal-primary); border-radius: var(--radius-md); padding: 18px; margin-bottom: 18px;">
+          <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Diberikan kepada santri:</div>
+          <div style="font-size: 20px; font-weight: 800; color: var(--teal-primary); margin: 6px 0;" id="certStudentName"></div>
+          <div style="font-size: 12px; color: var(--text-body);">Telah menyelesaikan rangkaian evaluasi kaidah Bahasa Arab dengan predikat:</div>
+          <div style="font-size: 15px; font-weight: 800; color: var(--gold-dark); margin-top: 6px;" id="certPredikat"></div>
+        </div>
+
+        <div style="display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border-color); padding-top: 14px;">
+          <div style="font-size: 10px; color: var(--text-muted); text-align: left;" id="certMeta"></div>
+          <a href="#" id="certQrLink" target="_blank" rel="noopener" style="color: var(--teal-dark); text-decoration: none;" title="Buka halaman verifikasi">
+            <i class="ph ph-qr-code" style="font-size: 38px;"></i>
+          </a>
+          <div style="font-size: 10px; text-align: right; color: var(--teal-dark);">
+            <strong>Umi Elly</strong><br>
+            <span style="font-size: 9px; color: var(--text-muted);">Pengasuh Yayasan</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #92400E; background-color: #FEF3C7; padding: 4px 10px; border-radius: var(--md-shape-corner-full); border: 1px solid #D97706;">
-            <i class="ph ph-sparkle"></i>
-            <span id="gameScoreDisplay">420 XP (Level 3 • Mumtaz)</span>
-          </div>
         </div>
-
-        <!-- Level Selector Chips -->
-        <div style="display: flex; gap: 8px; align-items: center;">
-          <span style="font-size: 11px; font-weight: 600; color: var(--md-sys-color-on-surface-variant);">Pilih Tantangan Game:</span>
-          <button id="btnLevel1" class="admin-tab active" onclick="DeckEngine.switchGameQuestion(1)" style="font-size: 11px; padding: 4px 10px; border-radius: var(--md-shape-corner-full);">1. Mufrodat Dasar (Kosakata)</button>
-          <button id="btnLevel2" class="admin-tab" onclick="DeckEngine.switchGameQuestion(2)" style="font-size: 11px; padding: 4px 10px; border-radius: var(--md-shape-corner-full);">2. Percakapan Harian (Muhadatsah)</button>
-          <button id="btnLevel3" class="admin-tab" onclick="DeckEngine.switchGameQuestion(3)" style="font-size: 11px; padding: 4px 10px; border-radius: var(--md-shape-corner-full);">3. Susun Kalimat Harian</button>
-        </div>
-
-        <!-- Question Box (Dynamic) -->
-        <div class="game-question-card" id="gameQuestionCard" style="background-color: var(--md-sys-color-surface-container); border: 1.5px solid var(--md-sys-color-outline); border-radius: var(--md-shape-corner-large); padding: 18px; text-align: left;">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span id="gameCategoryTag" style="font-size: 11px; font-weight: 700; color: #006D64; background-color: #E6F7F5; padding: 2px 8px; border-radius: 4px; border: 1px solid #00A396; text-transform: uppercase; letter-spacing: 0.04em;">Game 1: Mufrodat Dasar Sehari-hari</span>
-            <span style="font-size: 11px; font-weight: 600; color: #92400E;">Hadiah: +50 XP</span>
-          </div>
-          <h3 id="gameQuestionText" style="font-size: 17px; font-weight: 600; color: var(--md-sys-color-on-surface); line-height: 1.5; margin-top: 8px;">
-            "Manakah arti kosakata (mufrodat) yang tepat untuk kata: <span style='color: var(--md-sys-color-primary); font-size: 20px; font-family: Arial, sans-serif;'>'المَكْتَبَةُ' (Al-Maktabatu)</span>?"
-          </h3>
-        </div>
-
-        <!-- Multiple Choice Options -->
-        <div class="game-options-grid" id="gameOptionsContainer" style="display: grid; grid-template-columns: 1fr; gap: 10px;">
-          
-          <button class="game-opt-btn" onclick="DeckEngine.answerGame(0, false, this)" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; background-color: #FFFFFF; border: 1.5px solid var(--md-sys-color-outline-variant); border-radius: var(--md-shape-corner-medium); color: var(--md-sys-color-on-surface); font-family: var(--font-family); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
-            <span style="width: 26px; height: 26px; border-radius: 50%; background-color: #F1F6F5; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: var(--md-sys-color-primary);">A</span>
-            <span id="optText0">Laboratorium Komputer</span>
-          </button>
-
-          <button class="game-opt-btn" onclick="DeckEngine.answerGame(1, true, this)" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; background-color: #FFFFFF; border: 1.5px solid var(--md-sys-color-outline-variant); border-radius: var(--md-shape-corner-medium); color: var(--md-sys-color-on-surface); font-family: var(--font-family); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
-            <span style="width: 26px; height: 26px; border-radius: 50%; background-color: #F1F6F5; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: var(--md-sys-color-primary);">B</span>
-            <span id="optText1"><strong>Perpustakaan Sekolah (Ruang Baca)</strong></span>
-          </button>
-
-          <button class="game-opt-btn" onclick="DeckEngine.answerGame(2, false, this)" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; background-color: #FFFFFF; border: 1.5px solid var(--md-sys-color-outline-variant); border-radius: var(--md-shape-corner-medium); color: var(--md-sys-color-on-surface); font-family: var(--font-family); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
-            <span style="width: 26px; height: 26px; border-radius: 50%; background-color: #F1F6F5; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: var(--md-sys-color-primary);">C</span>
-            <span id="optText2">Ruang Guru / Kantor</span>
-          </button>
-
-          <button class="game-opt-btn" onclick="DeckEngine.answerGame(3, false, this)" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; background-color: #FFFFFF; border: 1.5px solid var(--md-sys-color-outline-variant); border-radius: var(--md-shape-corner-medium); color: var(--md-sys-color-on-surface); font-family: var(--font-family); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
-            <span style="width: 26px; height: 26px; border-radius: 50%; background-color: #F1F6F5; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: var(--md-sys-color-primary);">D</span>
-            <span id="optText3">Lapangan Olahraga</span>
-          </button>
-
-        </div>
-
-        <!-- Feedback Box -->
-        <div id="gameFeedbackBox" style="display: none; padding: 12px 16px; border-radius: var(--md-shape-corner-medium); background-color: #E6F7F5; border: 1.5px solid #00A396; color: #0F2422; font-size: 12.5px; line-height: 1.5;">
-          <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; color: #006D64; margin-bottom: 4px;">
-            <i class="ph ph-check-circle" style="font-size: 18px; color: #008E82;"></i>
-            <span id="gameFeedbackTitle">Mumtaz! Jawaban Benar (+50 XP Bertambah)</span>
-          </div>
-          <div id="gameFeedbackDesc">Kata 'المَكْتَبَةُ' (Al-Maktabatu) berarti Perpustakaan. Santri sudah menguasai mufrodat dasar tempat sehari-hari!</div>
-        </div>
-
-        <!-- Game Action Footer -->
-        <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 8px;">
-          <button class="btn-secondary" onclick="DeckEngine.closeGameModal()">Tutup Game</button>
-          <button class="btn-primary" id="btnClaimGameXp" style="display: none;" onclick="DeckEngine.claimGameXp()">
-            <i class="ph ph-trophy"></i>
-            <span>Klaim +50 XP & Simpan Progres</span>
-          </button>
-        </div>
-
+        <p id="certPeragaNote" style="display: none;"></p>
       </div>
 
+            <button class="btn-enroll-primary" style="margin-top: 16px; width: 100%; justify-content: center;" onclick="PrototypeApp.closeCertModal()">Tutup Pratinjau</button>
+      </div>
     </div>
   </div>
 
   <!-- ============================================================
-       INTERACTIVE DIGITAL CERTIFICATE MODAL
+       GANTI PIN SENDIRI
+
+       Sengaja modal, bukan prompt() bawaan peramban seperti tombol "Atur
+       PIN" di Panel Pengurus. Bedanya bukan selera: prompt() menampilkan
+       apa yang diketik APA ADANYA di layar, dan yang diketik di sini
+       adalah kredensial masuk milik keluarga — bukan nilai administratif
+       yang kebetulan rahasia.
        ============================================================ -->
-  <div class="modal-overlay" id="certModal">
-    <div class="modal-card" style="max-width: 680px; background-color: #FFFFFF; border: 2px solid var(--md-sys-color-primary);">
-      
-      <div class="modal-header" style="border-bottom: 1px solid rgba(236, 243, 158, 0.3);">
-        <div class="modal-header-left">
-          <div class="modal-crest">
-            <i class="ph ph-certificate"></i>
-          </div>
-          <div>
-            <h3 class="modal-title">Sertifikat Kelulusan Digital Resmi</h3>
-            <p class="modal-sub">Yayasan Peradaban Islam Azhariyah • Terverifikasi QR Code</p>
-          </div>
-        </div>
-        <button class="modal-close-btn" onclick="DeckEngine.closeCertModal()">
-          <i class="ph ph-x"></i>
-        </button>
-      </div>
+  <div class="modal-overlay" id="gantiPinModal" style="display: none;">
+    <div class="modal-box" style="max-width: 380px;">
+      <div class="m-sheet-grip m-only" aria-hidden="true"></div>
 
-      <!-- Certificate Preview -->
-      <div style="background: linear-gradient(135deg, #F8FCFB 0%, #EFF8F6 100%); border: 2px solid var(--md-sys-color-outline); border-radius: var(--md-shape-corner-medium); padding: 24px; text-align: center; position: relative; box-shadow: 0 4px 16px rgba(0,0,0,0.06);">
-        
-        <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.15em; color: var(--md-sys-color-primary); text-transform: uppercase; margin-bottom: 6px;">
-          YAYASAN PERADABAN ISLAM AZHARIYAH
-        </div>
-        <h2 style="font-size: 20px; font-weight: 700; color: var(--md-sys-color-on-surface); margin-bottom: 12px; font-family: var(--font-family);">
-          SERTIFIKAT KELULUSAN BAHASA ARAB
-        </h2>
-        <p style="font-size: 12px; color: var(--md-sys-color-on-surface-variant); margin-bottom: 14px;">
-          Dengan penuh rasa syukur, sertifikat ini resmi dianugerahkan kepada:
-        </p>
+      <h3 style="font-size: 16px; font-weight: 800; color: var(--teal-dark); margin-bottom: 4px;">Ganti PIN</h3>
+      <p style="font-size: 11.5px; color: var(--text-muted); line-height: 1.55; margin-bottom: 14px;">
+        PIN dipakai bersama nomor WhatsApp Anda untuk masuk. Pilih 6–12 angka
+        yang tidak berurutan dan tidak berulang.
+      </p>
 
-        <div style="font-size: 22px; font-weight: 700; color: var(--md-sys-color-primary); border-bottom: 1px dashed rgba(236, 243, 158, 0.4); padding-bottom: 8px; margin-bottom: 12px; display: inline-block; min-width: 260px;" id="certStudentName">
-          Ahmad Fauzan
-        </div>
+      <label class="auth-label" for="pinLamaInput">PIN sekarang</label>
+      <input type="password" id="pinLamaInput" class="auth-input auth-input-pin" placeholder="••••••" inputmode="numeric" maxlength="12" autocomplete="current-password">
 
-        <p style="font-size: 12.5px; color: var(--md-sys-color-on-surface); line-height: 1.5; max-width: 480px; margin: 0 auto 20px auto;">
-          Telah menuntaskan seluruh modul pembelajaran video, latihan mufrodat, dan tantangan game kaidah pada <strong>Program Pembelajaran Bahasa Arab Interaktif (Jenjang SMP)</strong>.
-        </p>
+      <label class="auth-label" for="pinBaruInput" style="margin-top: 10px;">PIN baru</label>
+      <input type="password" id="pinBaruInput" class="auth-input auth-input-pin" placeholder="••••••" inputmode="numeric" maxlength="12" autocomplete="new-password">
 
-        <!-- Certificate Footer Sign & QR Code -->
-        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(236, 243, 158, 0.2); padding-top: 16px;">
-          <div style="text-align: left; font-size: 11px; color: var(--md-sys-color-on-surface-variant);">
-            <div>No. Seri: <strong style="color: var(--md-sys-color-primary);">AZH-2026-B4-0129</strong></div>
-            <div>Verifikasi: <strong style="color: var(--md-sys-color-primary);">azhariyah.org/verify</strong></div>
-          </div>
-          
-          <!-- Mock QR Code -->
-          <div style="width: 52px; height: 52px; background-color: #FFF; border-radius: 6px; padding: 4px; display: flex; align-items: center; justify-content: center;">
-            <i class="ph ph-qr-code" style="font-size: 44px; color: #132A13;"></i>
-          </div>
+      <label class="auth-label" for="pinUlangInput" style="margin-top: 10px;">Ulangi PIN baru</label>
+      <input type="password" id="pinUlangInput" class="auth-input auth-input-pin" placeholder="••••••" inputmode="numeric" maxlength="12" autocomplete="new-password">
 
-          <div style="text-align: right; font-size: 11px; color: var(--md-sys-color-on-surface);">
-            <div>Jakarta, 18 Agustus 2026</div>
-            <div style="font-weight: 700; color: var(--md-sys-color-primary); margin-top: 4px;">Umi Elly</div>
-            <div style="font-size: 10px; color: var(--md-sys-color-on-surface-variant);">Pengasuh Yayasan</div>
-          </div>
-        </div>
+      <div class="auth-error" id="gantiPinError" style="display:none;"></div>
 
-      </div>
-
-      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px;">
-        <button class="btn-secondary" onclick="DeckEngine.closeCertModal()">Tutup</button>
-        <button class="btn-primary" onclick="DeckEngine.showToast('Mengunduh Sertifikat Digital Resmi Beresolusi Tinggi (PDF)...')">
-          <i class="ph ph-download-simple"></i>
-          <span>Unduh PDF Sertifikat</span>
-        </button>
-      </div>
-
+      <button type="button" class="btn-enroll-primary" id="gantiPinSubmit" style="margin-top: 16px; width: 100%; justify-content: center;">Simpan PIN Baru</button>
+      <button type="button" class="auth-btn-text" id="gantiPinBatal" style="width: 100%;">Batal</button>
     </div>
   </div>
 
-  <!-- TOAST NOTIFICATION POPUP -->
-  <div class="toast-container" id="toastBox">
-    <div class="toast-content" id="toastMessage">Pesan Notifikasi</div>
-  </div>
+  <div class="toast-bar" id="prototypeToast">Pemberitahuan</div>
 
-  <!-- Main JavaScript Logic — sumber tunggal di app.js -->
-  <script src="app.js" defer></script>
+  <!-- Klien Supabase divendor, bukan CDN (lihat vendor/supabase/README.md
+       — alasan sama dengan font & ikon di Fase 0). Memasang window.supabase,
+       dipakai js/core/supabase-client.js. -->
+  <script src="vendor/supabase/supabase-js.2.114.0.min.js"></script>
+
+  <!-- Modul ES otomatis ditunda (defer), jadi selesai dieksekusi sebelum
+       DOMContentLoaded — tepat saat prototype-mobile.js membungkus ulang
+       metode PrototypeApp. Urutan kedua baris ini jangan ditukar. -->
+  <script type="module" src="js/app.js?v=66483bc9"></script>
+  <script defer src="prototype-mobile.js?v=37fe10e4"></script>
 </body>
 </html>

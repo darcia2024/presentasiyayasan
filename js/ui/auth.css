@@ -107,11 +107,43 @@ body.auth-gate-open {
   box-shadow: 0 0 0 3px var(--teal-border);
 }
 
-.auth-input-otp {
-  letter-spacing: 0.5em;
-  text-align: center;
+/* Kolom PIN. Menggantikan .auth-input-otp (dihapus 12 Sep 2026 bersama
+   alur OTP). Bedanya bukan cuma nama: PIN diketik tertutup, jadi butuh
+   tombol "lihat" supaya wali bisa memeriksa ketikannya sendiri sebelum
+   menekan Masuk — tanpa itu, PIN salah ketik tidak bisa dibedakan dari
+   PIN salah, dan lima kali begitu akunnya terkunci 15 menit. */
+.auth-pin-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.auth-input-pin {
+  letter-spacing: 0.35em;
   font-weight: 700;
-  font-size: 20px;
+  font-size: 18px;
+  padding-right: 46px;
+}
+
+.auth-pin-lihat {
+  position: absolute;
+  right: 6px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: var(--radius-xs);
+}
+
+.auth-pin-lihat:hover {
+  color: var(--teal-primary);
+  background: var(--bg-subtle);
 }
 
 .auth-error {
@@ -121,16 +153,11 @@ body.auth-gate-open {
   line-height: 1.5;
 }
 
-.auth-dev-hint {
-  margin-top: 10px;
-  padding: 8px 12px;
-  background: var(--gold-light);
-  border: 1px dashed var(--gold-border);
-  border-radius: var(--radius-xs);
-  font-size: 12px;
-  color: var(--gold-dark);
-  font-weight: 600;
-}
+/* .auth-dev-hint DIHAPUS 12 Sep 2026. Kotak itu menampilkan kode OTP yang
+   dikembalikan server dalam mode pengembangan — satu-satunya cara login
+   bisa jalan tanpa gateway WhatsApp, sekaligus bukti paling kasat mata
+   bahwa kodenya memang ikut di respons. Tidak ada lagi kode untuk
+   ditampilkan. */
 
 .auth-btn-primary {
   width: 100%;

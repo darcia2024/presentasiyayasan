@@ -69,6 +69,35 @@ dibatasi Row Level Security, bukan kerahasiaan.
 aplikasi menolak menampilkan/mengisikan kode OTP apa pun yang dikembalikan
 server. Lihat audit K1.
 
+Sejak 12 September 2026 gerbang yang sama juga mematikan **seluruh alat
+peraga presentasi**: bilah "SIMULASI SISTEM", pemilih perspektif di drawer
+mobile, daftar tiga persona di dropdown profil, dan kartu "Pilihan Jenjang
+Lainnya" di dashboard. Di build produksi tidak ada keadaan apa pun yang
+memunculkannya — termasuk kalau Supabase salah dikonfigurasi dan gerbang
+login gagal tampil. Nilainya gagal-tertutup (kosong = `production`), jadi
+lupa mengisinya berakibat aman, bukan bocor.
+
+### Halaman apa yang terbit
+
+| Alamat | Isi |
+| --- | --- |
+| `/` | **Aplikasinya** — login WhatsApp, dashboard, sidebar materi |
+| `/game2d.html` | Simulasi percakapan suara |
+| `/verifikasi.html` | Verifikasi sertifikat lewat pemindaian QR |
+| `/kebijakan-privasi.html` | Satu-satunya halaman yang boleh diindeks |
+| `/offline.html` | Layar cadangan service worker |
+
+**`proposal.html` (dek penawaran) TIDAK terbit.** Berkasnya ada di repo dan
+bisa dibuka lokal (`npm start` lalu `/proposal.html`) untuk presentasi ke
+pengurus, tapi `tools/build-dist.js` sengaja tidak menyalinnya ke `dist/`.
+Kalau suatu saat dek itu memang perlu tayang, hapus namanya dari
+`KECUALI_AKAR` di berkas tersebut — dan sadari isinya materi penjualan,
+bukan dokumentasi produk.
+
+Alamat lama `/prototype.html` dan `/index.html` dialihkan permanen ke `/`
+lewat `redirects` di `vercel.json`, supaya tautan dan pintasan PWA lama
+tidak mendarat di 404.
+
 ### Header HTTP & CSP
 
 Seluruh header ada di **satu tempat**: `vercel.json`. (Dulu ada dua; lihat
@@ -140,20 +169,21 @@ npx supabase secrets set APP_ENV=production
 | `APP_ENV` | ya | dianggap `production` (aman), tapi isi eksplisit |
 | `APP_JWT_SECRET` | ya | seluruh penerbitan & verifikasi sesi gagal |
 | `ALLOWED_ORIGINS` | ya | **seluruh panggilan dari peramban ditolak 503** |
-| `WA_GATEWAY_URL`, `WA_GATEWAY_TOKEN` | ya | **login mati total (503)** — lihat di bawah |
+| `WA_GATEWAY_URL`, `WA_GATEWAY_TOKEN` | tidak | ringkasan mingguan tidak terkirim; login TIDAK terpengaruh |
 | `CRON_SECRET` | ya | ringkasan mingguan menolak dipicu |
-| `ANTHROPIC_API_KEY` | opsional | Asisten AI menjawab 503, sisanya normal |
-| `AI_DAILY_LIMIT_*` | opsional | memakai batas bawaan yang konservatif |
 
-> ### URUTAN PENERBITAN ITU PENTING
+> ### GATEWAY WHATSAPP TIDAK LAGI MENAHAN LOGIN (12 September 2026)
 >
-> Sejak audit K1, gateway WhatsApp yang belum dikonfigurasi membuat
-> permintaan OTP **ditolak**, bukan jatuh ke mode yang mengembalikan kode ke
-> peramban. Itu perbaikan yang disengaja — mode lama berarti siapa pun yang
-> tahu nomor WA seorang wali bisa masuk sebagai wali itu.
+> Sampai tanggal ini, login memakai OTP WhatsApp dan gateway yang belum
+> dikonfigurasi berarti **tidak ada seorang pun yang bisa masuk**. Itulah
+> yang menahan seluruh peluncuran selama berminggu-minggu — dan yang
+> menutupinya adalah "mode pengembangan" yang mengembalikan kode OTP di
+> badan respons HTTP, yang ternyata AKTIF di produksi.
 >
-> Konsekuensinya: **jangan men-deploy Edge Function sebelum
-> `WA_GATEWAY_URL` terisi**, atau tidak ada seorang pun yang bisa login.
+> Sekarang login memakai **nomor WhatsApp + PIN** yang ditetapkan pengurus
+> (`auth-login-pin`). Tidak ada kode yang dikirim ke mana pun, jadi gateway
+> WhatsApp tidak lagi menjadi syarat untuk bisa masuk. Yang masih
+> memakainya hanya ringkasan mingguan ke wali.
 >
 > Urutan yang benar:
 > 1. Isi seluruh secret di tabel atas (termasuk gateway WhatsApp).
@@ -166,6 +196,21 @@ npx supabase secrets set APP_ENV=production
 > `kuis_soal` dan fungsi `daftarkan_wali_dan_santri`. Langkah 4 menyusul 3
 > karena kontrak kuis berubah: frontend baru bicara dengan Edge Function
 > baru, dan keduanya tidak saling kompatibel dengan versi lama.
+
+### Sekali saja: buang sisa Asisten Bahasa Arab
+
+Fitur ini dihapus 11 September 2026. `functions deploy` hanya menerbitkan
+fungsi yang **ada** di repo — ia tidak menghapus fungsi lama di server, jadi
+`tanya-asisten-ai` tetap hidup di Supabase sampai dibuang manual. Jalankan
+sekali, setelah langkah 3:
+
+```bash
+npx supabase functions delete tanya-asisten-ai
+npx supabase secrets unset AI_DAILY_LIMIT_PER_SANTRI
+```
+
+Tabelnya (`ai_pertanyaan_log`) tidak perlu diurus terpisah — migrasi
+`20260911000001_hapus_asisten_ai.sql` membuangnya di langkah 2.
 
 ---
 

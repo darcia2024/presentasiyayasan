@@ -22,6 +22,7 @@ import {
   daftarSantriAdmin,
   perbaruiSantri,
   daftarkanWaliSantri,
+  aturPinAkun,
   hapusSantri,
   cariWaliIdLewatNomor,
   cariSantriIdLewatNamaDanWali,
@@ -302,6 +303,36 @@ function tabelSantri(daftar, kelasList) {
     );
     kontrol.appendChild(chipInfaq);
 
+    /* --- Atur ulang PIN wali ---
+     * Satu-satunya jalan keluar ketika keluarga lupa PIN-nya: tidak ada
+     * "lupa PIN" otomatis, karena tidak ada kanal untuk mengirimkannya
+     * (itulah alasan OTP dilepas sejak awal). Pengurus menetapkan PIN baru
+     * lalu menyampaikannya langsung ke wali.
+     *
+     * Menetapkan PIN baru sekaligus membuka kunci akun — wali yang salah
+     * lima kali lalu menelepon pengurus tidak perlu menunggu 15 menit lagi
+     * sesudah ditolong. */
+    if (s.wali?.id) {
+      const btnPin = buatEl('button', 'studio-btn-text', 'Atur PIN');
+      btnPin.type = 'button';
+      btnPin.style.cssText = 'padding:6px 13px; font-size:11.5px;';
+      btnPin.title = `Tetapkan PIN login baru untuk wali ${s.wali.nama}`;
+      btnPin.addEventListener('click', () =>
+        jalankan(async () => {
+          const pinBaru = prompt(
+            `PIN login baru untuk wali "${s.wali.nama}" (${formatNomorWa(s.wali.nomor_wa)}).\n\n` +
+              '6–12 angka. Hindari angka berurutan atau berulang.\n' +
+              'Sampaikan langsung ke wali, jangan lewat pesan yang bisa diteruskan.',
+          );
+          if (pinBaru === null) return; // pengurus membatalkan
+          await aturPinAkun({ targetJenis: 'wali', targetId: s.wali.id, pinBaru: pinBaru.trim() });
+          playTone(620, 'sine', 0.12, 0.08);
+          showToast(`PIN wali ${s.wali.nama} berhasil diperbarui.`);
+        }, 'Gagal memperbarui PIN wali.'),
+      );
+      kontrol.appendChild(btnPin);
+    }
+
     const btnHapus = buatEl('button', 'studio-btn-danger', 'Hapus');
     btnHapus.type = 'button';
     btnHapus.style.cssText = 'padding:6px 13px; font-size:11.5px; margin-left:0;';
@@ -310,7 +341,7 @@ function tabelSantri(daftar, kelasList) {
       jalankan(async () => {
         if (
           !confirm(
-            `Hapus PERMANEN seluruh data "${s.nama}" (XP, progres, lencana, riwayat asisten AI)? Tindakan ini tidak bisa dibatalkan. Pastikan ini memang permintaan wali (hak penghapusan data — UU PDP).`,
+            `Hapus PERMANEN seluruh data "${s.nama}" (XP, progres, lencana)? Tindakan ini tidak bisa dibatalkan. Pastikan ini memang permintaan wali (hak penghapusan data — UU PDP).`,
           )
         ) {
           return;
@@ -387,6 +418,23 @@ function renderFormSantri(body) {
   const fNamaWali = fieldTeks('Nama Wali', 'text', 'Nama lengkap wali/orang tua');
   form.append(fWaWali.wrap, fNamaWali.wrap);
 
+  /* PIN login keluarga (12 Sep 2026, menggantikan OTP WhatsApp).
+     Ditaruh tepat di bawah nomor WA karena keduanya adalah SATU hal bagi
+     pengurus: pasangan yang akan mereka sampaikan ke keluarga. */
+  const fPin = fieldTeks('PIN Login (6–12 angka)', 'text', 'mis. 482913');
+  fPin.input.inputMode = 'numeric';
+  fPin.input.maxLength = 12;
+  const bantuanPin = buatEl(
+    'div',
+    'studio-field-hint',
+    'Dipakai wali untuk masuk bersama nomor WA di atas. Sampaikan langsung ke ' +
+      'wali, jangan lewat pesan yang bisa diteruskan. Wali bisa menggantinya ' +
+      'sendiri lewat Pengaturan Akun. Untuk wali yang SUDAH terdaftar, kolom ' +
+      'ini diabaikan — PIN lamanya tetap berlaku.',
+  );
+  fPin.wrap.appendChild(bantuanPin);
+  form.appendChild(fPin.wrap);
+
   const fNamaSantri = fieldTeks('Nama Santri', 'text', 'Nama lengkap santri');
   const fJenjang = fieldSelect('Jenjang', [
     { value: 'sd', label: 'SD' },
@@ -440,6 +488,7 @@ function renderFormSantri(body) {
         nomorWaWali: fWaWali.input.value,
         namaWali: fNamaWali.input.value,
         persetujuanData: true,
+        pin: fPin.input.value.trim(),
         santri: [{ nama: fNamaSantri.input.value, jenjang: fJenjang.select.value, nisn: fNisn.input.value || undefined }],
       });
       playTone(620, 'sine', 0.12, 0.08);

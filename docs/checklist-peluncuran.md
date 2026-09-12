@@ -7,8 +7,10 @@
 > Versi 5 September mencantumkan tiga hal di bawah judul **"Sudah beres &
 > teruji"** yang ternyata tidak benar:
 >
-> - *"Login WhatsApp OTP (wali & staff)"* — login memang berjalan, tapi
->   lewat mode pengembangan yang **mengembalikan kode OTP di respons HTTP**.
+> - *"Login WhatsApp OTP (wali & staff)"* — **diganti 12 Sep 2026** dengan
+>   login nomor WhatsApp + PIN. Alur OTP-nya sendiri tidak pernah benar-benar
+>   berjalan: yang bekerja adalah mode pengembangan yang **mengembalikan kode
+>   OTP di respons HTTP**.
 >   Siapa pun yang tahu nomor WA seorang wali bisa masuk sebagai wali itu.
 > - *"XP dihitung di server, tidak bisa dicurangi dari peramban"* — server
 >   mencatat XP, tapi tidak menilai benar/salah sama sekali; klien mengirim
@@ -35,7 +37,7 @@
 
 | Hal | Bukti |
 |---|---|
-| Batas hak akses pengajar (nomor WA wali, sertifikat, pertanyaan AI, kelas) | 8 uji asap lulus terhadap produksi |
+| Batas hak akses pengajar (nomor WA wali, sertifikat, kelas) | 7 uji asap lulus terhadap produksi |
 | Penghapusan materi TERBIT hanya oleh pengurus | uji asap: pengajar ditolak, pengurus boleh |
 | Pendaftaran wali+santri atomik (gagal di tengah = tidak ada yang tersimpan) | uji asap: rollback terbukti, tanpa santri kembar |
 | Persetujuan data (UU PDP) ditegakkan basis data | uji asap: wali baru tanpa persetujuan ditolak |
@@ -64,59 +66,36 @@
 
 ## 🔒 BLOCKED — hanya Anda yang bisa membukanya
 
-### 1. Gateway WhatsApp — **ini yang menahan segalanya**
+### 1. ~~Gateway WhatsApp~~ — **sudah tidak menahan apa pun**
 
-**Kenapa penting:** sampai ini terisi, produksi masih memakai mode yang
-mengembalikan kode OTP ke pemanggil. Uji asap sengaja dibuat **GAGAL**
-selama itu masih terjadi:
+**Selesai 12 September 2026.** Login diganti dari OTP WhatsApp menjadi
+**nomor WhatsApp + PIN** yang ditetapkan pengurus. Tidak ada kode yang
+dikirim ke mana pun, jadi gateway berbayar tidak lagi menjadi syarat
+peluncuran.
 
-```
-GAGAL auth-otp-request: kode OTP TIDAK ikut di respons (regresi K1)
-      — MODE PENGEMBANGAN MASIH AKTIF DI TARGET INI
-```
+Yang mendorong perubahan ini bukan cuma biaya: verifikasi 12 September
+menunjukkan produksi **masih mengembalikan kode OTP di badan respons HTTP**
+(`{"ok":true,"modePengembangan":true,"kodeDev":"..."}`) karena secret
+`APP_ENV` di Edge Function berisi `development`. Menutup lubang itu tanpa
+mengganti alurnya berarti login mati total sampai gateway dibayar. Dengan
+PIN, lubangnya hilang DAN login tetap hidup.
 
-**Yang perlu Anda lakukan:** daftar ke penyedia gateway WhatsApp (Fonnte,
-Wablas, atau sejenisnya), lalu kirimkan ke saya — atau isi sendiri di
-Supabase → Edge Functions → Secrets:
+Gateway WhatsApp tetap berguna untuk **ringkasan mingguan ke wali** — tapi
+itu fitur tambahan, bukan penghalang peluncuran. Kalau suatu saat mau
+diisi:
 
 ```
 WA_GATEWAY_URL    = <endpoint kirim pesan>
 WA_GATEWAY_TOKEN  = <token>
 ```
 
-**PENTING — urutan:** jangan men-deploy Edge Function sebelum ini terisi.
-Perbaikan keamanannya membuat login **ditolak** kalau gateway belum siap,
-jadi men-deploy lebih dulu berarti tidak ada yang bisa login sama sekali.
+**MASIH PERLU DILAKUKAN:** setel `APP_ENV=production` di secret Edge
+Function. Itu tidak lagi mematikan login, tapi tetap gerbang yang menjaga
+keluaran rahasia lain:
 
-### 2. Deploy Edge Function + push frontend
-
-Setelah poin 1 beres, urutannya (ada di DEPLOY.md bagian 3):
-
-```
+```bash
 npx supabase secrets set APP_ENV=production
-npx supabase secrets set ALLOWED_ORIGINS=https://presentasiyayasan.vercel.app
-npx supabase functions deploy
-git push origin main
-npm run test:smoke     # harus 0 gagal, 0 dilewati
 ```
-
-Saya belum menjalankan ini karena langkah pertama memutus login sampai
-poin 1 selesai.
-
-### 3. Secret & variable GitHub Actions
-
-| Nama | Jenis | Untuk |
-|---|---|---|
-| `SUPABASE_DB_URL`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | secret | cadangan harian |
-| `CRON_SECRET` | secret | ringkasan mingguan (nilai sama dengan di Edge Function) |
-| `BACKUP_ENCRYPTION_PASSPHRASE` | secret | cadangan terenkripsi di luar Supabase |
-| `SITE_URL`, `SUPABASE_URL_PUBLIC`, `SUPABASE_ANON_KEY_PUBLIC` | variable | pemantauan & CI |
-
-**Cabut token lama** di https://github.com/settings/tokens sekalian —
-beberapa PAT sempat dipakai/terekspos saat push 5 September.
-
-`BACKUP_ENCRYPTION_PASSPHRASE`: **simpan juga di luar GitHub.** Tanpa frasa
-itu, cadangan terenkripsinya tidak bisa dibuka lagi selamanya.
 
 ---
 
@@ -126,12 +105,12 @@ Ringkasnya di sini; alasan lengkap tiap butir ada di laporan audit.
 
 | # | Keputusan | Rekomendasi saya |
 |---|---|---|
-| 1 | **Berapa lama** pertanyaan Asisten AI & log audit disimpan | Jalankan workflow "Retensi Data PERISA" mode `laporan` dulu untuk melihat angka nyata |
-| 2 | **Batas biaya AI** per santri / staff / yayasan per hari | Bawaan 20/30/500 konservatif; sesuaikan setelah tahu tagihan sepekan pertama |
+| 1 | **Berapa lama** log audit disimpan | Jalankan workflow "Retensi Data PERISA" mode `laporan` dulu untuk melihat angka nyata |
+| 2 | ~~Batas biaya AI per santri / staff / yayasan per hari~~ | Gugur — Asisten AI dihapus 11 September 2026 |
 | 3 | Bolehkah **pengajar menerbitkan modul** sendiri? | Naikkan ke pengurus saja — alur "draf → ditinjau → terbit" baru berarti kalau peninjaunya orang lain |
 | 4 | Bolehkah **papan peringkat menampilkan nama lengkap** santri ke seluruh wali sejenjang? | Ganti ke nama depan + inisial |
 | 5 | Nasib **11 tombol** yang fiturnya belum ada | Sembunyikan untuk uji coba; sekarang sudah berkata jujur "belum tersedia" |
-| 6 | Halaman apa yang seharusnya di **alamat root `/`** | Alihkan ke aplikasi; dek penawaran pindah ke `/proposal.html` |
+| 6 | ~~Halaman apa yang seharusnya di **alamat root `/`**~~ | **Selesai 12 Sep 2026** — `/` sekarang aplikasinya; dek penawaran jadi `proposal.html` dan tidak ikut terbit |
 | 7 | **Tujuan cadangan eksternal** (kalau mau lebih dari artefak GitHub) | Artefak GitHub sudah cukup untuk uji coba terbatas |
 | 8 | Peninjauan **kebijakan privasi** oleh yang paham hukum | Sebelum keluarga sungguhan menyetujuinya |
 

@@ -856,295 +856,6 @@ html, body {
 }
 
 
-/* ==========================================================================
-   SETO-STYLE ARABIC AI ASSISTANT STUDIO DASHBOARD
-   ========================================================================== */
-.seto-dashboard-layout {
-  display: grid;
-  grid-template-columns: 1fr 320px;
-  min-height: calc(100vh - 46px);
-  background: #FAFCFB;
-  width: 100%;
-}
-
-.seto-main-hub {
-  padding: 40px 48px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 100%;
-}
-
-.seto-center-content {
-  width: 100%;
-  max-width: 780px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
-.seto-emblem-star {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 135, 122, 0.18) 0%, rgba(197, 146, 27, 0.1) 60%, transparent 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--teal-primary);
-  font-size: 32px;
-  margin-bottom: 20px;
-}
-
-.seto-h1-welcome {
-  font-size: 32px;
-  font-weight: 800;
-  color: var(--teal-dark);
-  letter-spacing: -0.02em;
-  margin-bottom: 8px;
-}
-
-.seto-p-sub {
-  font-size: 14px;
-  color: var(--text-muted);
-  max-width: 520px;
-  line-height: 1.5;
-  margin-bottom: 36px;
-}
-
-/* 3 Shortcut Action Cards */
-.seto-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  width: 100%;
-  margin-bottom: 40px;
-}
-
-.seto-action-card {
-  background: #FFFFFF;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 22px 18px;
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.seto-action-card:hover {
-  border-color: var(--teal-primary);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-  background: var(--bg-subtle);
-}
-
-.seto-card-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: var(--radius-sm);
-  background: var(--teal-light);
-  color: var(--teal-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  margin-bottom: 6px;
-}
-
-.seto-card-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--teal-dark);
-}
-
-.seto-card-desc {
-  font-size: 12px;
-  color: var(--text-muted);
-  line-height: 1.45;
-}
-
-/* Central Prompt Input Bar (Bottom Dock) */
-.seto-prompt-dock {
-  width: 100%;
-  max-width: 780px;
-  background: #FFFFFF;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 14px 18px;
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.seto-prompt-dock:focus-within {
-  border-color: var(--teal-primary);
-  box-shadow: 0 4px 20px rgba(0, 135, 122, 0.12);
-}
-
-.seto-input-field {
-  width: 100%;
-  border: none;
-  outline: none;
-  font-family: var(--font-family);
-  font-size: 13.5px;
-  color: var(--text-main);
-  background: transparent;
-}
-
-.seto-input-field::placeholder {
-  color: var(--text-muted);
-}
-
-.seto-prompt-bottom-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-top: 1px solid var(--border-subtle);
-  padding-top: 10px;
-}
-
-.seto-pill-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.seto-pill-btn {
-  background: var(--bg-subtle);
-  border: 1px solid var(--border-color);
-  color: var(--text-body);
-  padding: 4px 12px;
-  border-radius: var(--radius-full);
-  font-size: 11.5px;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  transition: all 0.15s ease;
-}
-
-.seto-pill-btn:hover {
-  background: var(--teal-light);
-  color: var(--teal-primary);
-  border-color: var(--teal-primary);
-}
-
-.seto-send-btn {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: var(--teal-dark);
-  color: #FFFFFF;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.seto-send-btn:hover {
-  background: var(--teal-primary);
-}
-
-/* Right History Column */
-.seto-history-column {
-  background: #FFFFFF;
-  border-left: 1px solid var(--border-color);
-  padding: 24px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  overflow-y: auto;
-}
-
-.seto-history-title-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.seto-history-h3 {
-  font-size: 14px;
-  font-weight: 800;
-  color: var(--teal-dark);
-}
-
-.seto-search-box {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--bg-subtle);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 8px 12px;
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.seto-search-input {
-  border: none;
-  background: transparent;
-  outline: none;
-  font-family: var(--font-family);
-  font-size: 12px;
-  width: 100%;
-  color: var(--text-main);
-}
-
-.seto-history-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  flex-grow: 1;
-}
-
-.seto-history-card {
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 12px 14px;
-  background: #FFFFFF;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.seto-history-card:hover {
-  border-color: var(--teal-primary);
-  background: var(--bg-subtle);
-}
-
-.seto-history-heading {
-  font-size: 12.5px;
-  font-weight: 700;
-  color: var(--teal-dark);
-  margin-bottom: 4px;
-}
-
-.seto-history-snippet {
-  font-size: 11px;
-  color: var(--text-muted);
-  line-height: 1.4;
-}
-
-.seto-history-time {
-  font-size: 10px;
-  color: var(--text-muted);
-  margin-top: 6px;
-  text-align: right;
-}
-
-
 /* Word Card Audio Speaking State */
 .arabic-word-card {
   background: #FFFFFF;
@@ -1304,12 +1015,6 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 3px;
-}
-
-/* ASISTEN AI (Fase 5) — indikator "sedang menyusun jawaban" */
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
 }
 
 /* DASHBOARD WALI (Fase 6) */
@@ -2071,170 +1776,6 @@ html, body {
 }
 
 /* ==========================================================================
-   SETO AI STUDIO STYLES
-   ========================================================================== */
-.seto-dashboard-layout {
-  display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 24px;
-  padding: 24px 32px;
-}
-
-.seto-main-hub {
-  background: #FFFFFF;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 28px 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.seto-emblem-star {
-  margin-bottom: 14px;
-}
-
-.seto-h1-welcome {
-  font-size: 20px;
-  font-weight: 800;
-  color: var(--teal-dark);
-  margin-bottom: 6px;
-}
-
-.seto-p-sub {
-  font-size: 12.5px;
-  color: var(--text-muted);
-  max-width: 540px;
-  line-height: 1.5;
-  margin-bottom: 22px;
-}
-
-.seto-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  width: 100%;
-  margin-bottom: 24px;
-}
-
-.seto-card-item {
-  background: var(--bg-subtle);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 16px 14px;
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.seto-card-item:hover {
-  border-color: var(--teal-primary);
-  background: var(--teal-light);
-  transform: translateY(-2px);
-}
-
-.seto-card-icon {
-  font-size: 22px;
-  color: var(--teal-primary);
-}
-
-.seto-card-title {
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--teal-dark);
-}
-
-.seto-card-desc {
-  font-size: 11px;
-  color: var(--text-muted);
-  line-height: 1.4;
-}
-
-.seto-prompt-dock {
-  width: 100%;
-  max-width: 640px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.seto-pill-actions {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.seto-pill-badge {
-  background: var(--bg-subtle);
-  border: 1px solid var(--border-color);
-  padding: 4px 12px;
-  border-radius: var(--radius-full);
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--teal-dark);
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.seto-pill-badge:hover {
-  background: var(--teal-light);
-  color: var(--teal-primary);
-  border-color: var(--teal-primary);
-}
-
-.seto-input-wrap {
-  display: flex;
-  align-items: center;
-  background: #FFFFFF;
-  border: 1.5px solid var(--teal-primary);
-  border-radius: var(--radius-full);
-  padding: 4px 6px 4px 18px;
-  box-shadow: 0 4px 16px rgba(0, 135, 122, 0.12);
-}
-
-.seto-text-input {
-  flex: 1;
-  border: none;
-  outline: none;
-  font-family: var(--font-family);
-  font-size: 12.5px;
-  color: var(--text-main);
-}
-
-.seto-send-btn {
-  background: var(--teal-primary);
-  color: #FFFFFF;
-  border: none;
-  border-radius: var(--radius-full);
-  padding: 8px 16px;
-  font-family: var(--font-family);
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: background 0.15s ease;
-}
-
-.seto-send-btn:hover {
-  background: var(--teal-hover);
-}
-
-.seto-history-column {
-  background: #FFFFFF;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 20px 18px;
-}
-
-/* ==========================================================================
    PDF LIBRARY & READER MODAL STYLES
    ========================================================================== */
 .pdf-library-layout {
@@ -2918,23 +2459,6 @@ html, body {
     grid-template-columns: 1fr !important;
   }
 
-  .seto-dashboard-layout {
-    grid-template-columns: 1fr !important;
-  }
-
-  .seto-main-hub {
-    padding: 16px 14px !important;
-  }
-
-  .seto-cards-grid {
-    grid-template-columns: 1fr !important;
-    gap: 10px !important;
-  }
-
-  .seto-history-column {
-    padding: 14px !important;
-  }
-
   /* 4. Native Bottom Navigation Bar */
   .mobile-bottom-nav {
     display: flex !important;
@@ -2988,7 +2512,6 @@ html, body {
    umum yang dipakai pengurus — hasilnya:
      Beranda      meluber  149px, kolom Agenda menyusut jadi 153px
      Kurikulum    meluber  107px, 64 elemen keluar area
-     Asisten AI   meluber  179px
    Semuanya rapi lagi di 1440px, jadi cacat ini tidak pernah terlihat
    selama pengembangan di layar besar.
 
@@ -3013,15 +2536,6 @@ html, body {
     padding: 24px 24px 40px;
   }
 
-  /* Asisten AI: kolom riwayat turun ke bawah */
-  .seto-dashboard-layout {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .seto-cards-grid {
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  }
-
   .pdf-library-layout {
     padding: 24px 24px 40px;
   }
@@ -3034,7 +2548,6 @@ html, body {
 @media (min-width: 769px) {
   .beranda-view-layout,
   .course-main-grid,
-  .seto-dashboard-layout,
   .pdf-library-layout {
     max-width: 100%;
     overflow-x: clip;
@@ -3042,8 +2555,7 @@ html, body {
 
   .beranda-metrics-grid > *,
   .beranda-two-col > *,
-  .course-main-grid > *,
-  .seto-dashboard-layout > * {
+  .course-main-grid > * {
     min-width: 0;
   }
 }
@@ -3071,10 +2583,6 @@ html, body {
 
   body.tanpa-bar-demo .ref-sidebar,
   body.tanpa-bar-demo .ref-main-workspace {
-    min-height: 100vh;
-  }
-
-  body.tanpa-bar-demo .seto-dashboard-layout {
     min-height: 100vh;
   }
 }
@@ -3173,4 +2681,231 @@ html, body {
 .sub-tab-btn {
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+
+/* ==========================================================================
+   SIDEBAR LMS — KELOMPOK MENU & DAFTAR MATERI (12 September 2026)
+
+   Sidebar sebelumnya satu daftar datar berisi enam tautan, cukup selama
+   situs ini masih dek penawaran dengan aplikasi peraga di belakangnya.
+   Begitu akar situs menjadi aplikasinya sendiri, sidebar berubah peran:
+   dia satu-satunya peta yang dipunya santri. Yang ditambahkan di sini:
+
+     .nav-group-label — label kelompok (Portal / Belajar / Perpustakaan /
+       Pengurus). Bukan hiasan: tanpa pengelompokan, sebelas menu berturut
+       terbaca sebagai satu tumpukan tanpa hierarki.
+
+     .ref-nav-sub — daftar modul jenjang yang sedang aktif, digambar
+       js/ui/syllabus.js. Inilah yang membuat tiap materi bisa dibuka
+       langsung dari sidebar.
+
+     .ref-nav-item.is-danger — "Keluar". Diberi warna sendiri supaya tidak
+       terpencet sambil lalu saat mencari "Pengaturan".
+   ========================================================================== */
+
+.nav-group-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 14px 14px 4px;
+  user-select: none;
+}
+
+/* Kelompok pertama tidak perlu jarak atas — sudah ada kartu profil di atasnya. */
+.ref-nav-list > .nav-group-label:first-child {
+  padding-top: 2px;
+}
+
+.ref-nav-item .nav-caret {
+  margin-left: auto;
+  font-size: 13px;
+  transition: transform 0.2s ease;
+}
+
+/* Daftar modul di bawah "Materi Saya". Tertutup secara bawaan hanya kalau
+   pengguna sendiri yang menutupnya (kelas dilepas js/ui/shell.js). */
+.ref-nav-sub {
+  list-style: none;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  margin: 2px 0 6px;
+  padding-left: 16px;
+  border-left: 1.5px solid var(--border-color);
+  margin-left: 22px;
+}
+
+.ref-nav-sub.is-open {
+  display: flex;
+}
+
+.ref-nav-subitem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.ref-nav-subitem:hover {
+  background: var(--bg-subtle);
+  color: var(--teal-primary);
+}
+
+.ref-nav-subitem.active {
+  background: var(--teal-light);
+  color: var(--teal-primary);
+  font-weight: 800;
+}
+
+/* Nomor modul di depan judulnya — pengganti ikon, supaya urutan langsung
+   terbaca tanpa menghitung baris. */
+.nav-subitem-num {
+  flex-shrink: 0;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 4px;
+  border-radius: var(--radius-xs);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-size: 9.5px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ref-nav-subitem.active .nav-subitem-num {
+  background: var(--teal-primary);
+  border-color: var(--teal-primary);
+  color: #FFFFFF;
+}
+
+.nav-subitem-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Modul bertanda emas (sertifikat / sanad). */
+.ref-nav-subitem.is-gold .nav-subitem-num {
+  background: var(--gold-light);
+  border-color: var(--gold-border);
+  color: var(--gold-dark);
+}
+
+.ref-nav-sub-empty {
+  padding: 8px 10px;
+  font-size: 11px;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.ref-nav-item.is-danger {
+  color: #A33A2E;
+}
+
+.ref-nav-item.is-danger:hover {
+  background: #FDF0EE;
+  color: #8E2F24;
+}
+
+
+/* ==========================================================================
+   KEADAAN KOSONG & ANGKA DASHBOARD (12 September 2026)
+
+   Sampai 11 September 2026 aplikasi ini tidak punya satu pun keadaan kosong.
+   Setiap tempat yang datanya belum ada diisi PERAGA: silabus karangan,
+   empat kartu mufrodat, tiga baris papan peringkat berisi nama yang tidak
+   ada orangnya, piagam "MUMTAZ (94/100)". Peraga itu dihapus, dan setiap
+   tempatnya butuh cara mengatakan "belum ada" yang tidak terlihat seperti
+   halaman rusak.
+
+   Satu pasang kelas dipakai di semuanya (.kosong-judul + .kosong-sub)
+   supaya kalimat "belum ada" di seluruh aplikasi terlihat sebagai satu
+   keluarga, bukan enam gaya berbeda.
+   ========================================================================== */
+
+.silabus-kosong,
+.mufrodat-kosong,
+.papan-kosong,
+.dokumen-kosong,
+.pane-kosong {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  text-align: center;
+  padding: 26px 18px;
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+}
+
+/* Grid mufrodat & perpustakaan berkolom; keadaan kosongnya melintang penuh. */
+.mufrodat-kosong,
+.dokumen-kosong {
+  grid-column: 1 / -1;
+}
+
+.kosong-judul {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-body);
+}
+
+.kosong-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  max-width: 42ch;
+  line-height: 1.55;
+}
+
+/* Papan peringkat duduk di dalam kartu yang sudah punya latar sendiri. */
+.papan-kosong {
+  padding: 18px 14px;
+  background: transparent;
+}
+
+/* --------------------------------------------------------------------------
+   Kartu angka di Dashboard Santri. Dulu tiap kartu memakai style= sebaris
+   yang diulang empat kali; sekarang berkelas karena isinya diganti
+   js/ui/beranda.js dan strukturnya harus tetap sama di keempatnya.
+   -------------------------------------------------------------------------- */
+.metric-ikon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.metric-ikon-teal   { background: var(--teal-light); color: var(--teal-primary); }
+.metric-ikon-gold   { background: var(--gold-light); color: var(--gold-dark); }
+.metric-ikon-netral { background: var(--bg-subtle);  color: var(--text-body); }
+
+.metric-angka {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--teal-dark);
+  letter-spacing: -0.02em;
+}
+
+.metric-label {
+  font-size: 10.5px;
+  color: var(--text-muted);
 }

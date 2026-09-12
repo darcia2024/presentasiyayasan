@@ -8,21 +8,22 @@
  *
  * ============================ AUDIT 10 Sep 2026 (M15) ======================
  * KENAPA BERKAS INI DIROMBAK. Versi lama MEMBUTUHKAN kerentanan K1 supaya
- * bisa lulus:
+ * bisa lulus: ia menuntut server mengembalikan kode OTP di badan respons.
+ * Artinya begitu lubangnya ditutup, satu-satunya uji ujung-ke-ujung yang
+ * dimiliki proyek ini akan gagal — dan tekanan untuk "membuat CI hijau
+ * lagi" akan mengarah ke tempat yang salah.
  *
- *     cek('auth-otp-request: mode pengembangan mengembalikan kodeDev',
- *         typeof otpReq.data?.kodeDev === 'string', ...)
+ * Sekarang terbalik: uji login di bawah justru MENUNTUT server menolak.
+ * Sesi untuk uji-uji berikutnya diterbitkan langsung dari APP_JWT_SECRET
+ * (sama seperti yang dilakukan Edge Function auth-login-pin), jadi
+ * pengujian tidak pernah lagi bergantung pada kelemahan sistem yang
+ * diujinya.
  *
- * Uji itu MENUNTUT produksi membocorkan kode OTP di badan respons. Artinya
- * begitu lubangnya ditutup, satu-satunya uji ujung-ke-ujung yang dimiliki
- * proyek ini akan gagal — dan tekanan untuk "membuat CI hijau lagi" akan
- * mengarah ke tempat yang salah.
- *
- * Sekarang terbalik: uji pertama di bawah justru MENUNTUT produksi TIDAK
- * membocorkan kode apa pun. Sesi untuk uji-uji berikutnya diterbitkan
- * langsung dari APP_JWT_SECRET (sama seperti yang dilakukan Edge Function
- * auth-otp-verify), jadi pengujian tidak pernah lagi bergantung pada
- * kelemahan sistem yang diujinya.
+ * 12 Sep 2026 — OTP diganti PIN (lihat migrasi 20260912000001_login_pin.sql).
+ * Bagian K1 di bawah menyesuaikan: yang diperiksa bukan lagi "kode tidak
+ * ikut di respons", melainkan bahwa PIN yang salah dan nomor yang tidak
+ * terdaftar sama-sama ditolak dengan pesan yang SAMA — supaya halaman login
+ * tidak bisa dipakai menguji nomor siapa yang terdaftar di yayasan.
  * ===========================================================================
  *
  * TIDAK menambah dependensi runtime — murni fetch bawaan Node.
@@ -241,34 +242,80 @@ async function fungsiAda(nama) {
     console.log('  Data uji siap.');
 
     /* ==================================================================
-     * K1 — KODE OTP TIDAK BOLEH BOCOR
+     * K1 — LOGIN PIN TIDAK BOLEH MEMBOCORKAN APA PUN
      * ================================================================== */
-    console.log('\n=== Keamanan login (K1) ===');
+    console.log('\n=== Keamanan login PIN (K1) ===');
 
-    const otpReq = await panggilFungsi('auth-otp-request', null, { nomor_wa: NOMOR_WALI });
+    const adaLoginPin = await fungsiAda('auth-login-pin');
+    if (!adaLoginPin) {
+      lewati('seluruh uji login PIN', 'Edge Function auth-login-pin belum di-deploy (jalankan supabase functions deploy)');
+    } else {
+      // Wali uji di atas dibuat langsung lewat service_role, jadi belum
+      // punya baris kredensial. Itu justru keadaan yang paling penting
+      // diuji: akun tanpa PIN TIDAK BOLEH bisa dimasuki.
+      const pinSalah = await panggilFungsi('auth-login-pin', null, {
+        nomor_wa: NOMOR_WALI,
+        pin: '482913',
+      });
+      cek('auth-login-pin: akun tanpa PIN ditolak', pinSalah.status === 401, pinSalah.status);
 
-    // Dua hasil yang sama-sama BENAR untuk produksi yang sudah diperbaiki:
-    //   503 -> gateway WhatsApp belum dikonfigurasi, permintaan ditolak
-    //          sebelum menyentuh basis data (gagal tertutup).
-    //   200 -> gateway aktif, kode benar-benar dikirim ke WhatsApp.
-    // Yang TIDAK boleh, apa pun statusnya: kode ikut di badan respons.
-    const bocor = otpReq.data && (otpReq.data.kodeDev !== undefined || otpReq.data.modePengembangan !== undefined);
-    cek(
-      'auth-otp-request: kode OTP TIDAK ikut di respons (regresi K1)',
-      !bocor,
-      bocor ? { catatan: 'MODE PENGEMBANGAN MASIH AKTIF DI TARGET INI', respons: otpReq.data } : undefined,
-    );
-    cek(
-      'auth-otp-request: status 200 (gateway aktif) atau 503 (gateway belum siap)',
-      otpReq.status === 200 || otpReq.status === 503,
-      otpReq,
-    );
+      const nomorAsing = await panggilFungsi('auth-login-pin', null, {
+        nomor_wa: '628999999999',
+        pin: '482913',
+      });
+      cek('auth-login-pin: nomor tak terdaftar ditolak', nomorAsing.status === 401, nomorAsing.status);
 
-    const otpNomorAsing = await panggilFungsi('auth-otp-request', null, { nomor_wa: '628999999999' });
-    cek('auth-otp-request: nomor tak terdaftar ditolak', [404, 503].includes(otpNomorAsing.status), otpNomorAsing.status);
+      // Inti pertahanan terhadap pengumpulan nomor: kedua penolakan di atas
+      // harus TIDAK BISA DIBEDAKAN. Kalau berbeda, halaman login berubah
+      // jadi alat untuk menguji nomor siapa yang jadi keluarga santri di
+      // yayasan ini.
+      cek(
+        'auth-login-pin: pesan penolakan SAMA untuk nomor asing & PIN salah',
+        pinSalah.data?.error === nomorAsing.data?.error,
+        { tanpaPin: pinSalah.data?.error, asing: nomorAsing.data?.error },
+      );
 
-    const otpVerifSalah = await panggilFungsi('auth-otp-verify', null, { nomor_wa: NOMOR_WALI, kode: '000000' });
-    cek('auth-otp-verify: kode asal-asalan ditolak', otpVerifSalah.status >= 400, otpVerifSalah.status);
+      cek(
+        'auth-login-pin: tidak ada token/PIN yang ikut di respons gagal',
+        !pinSalah.data?.access_token && !JSON.stringify(pinSalah.data || {}).includes('482913'),
+        pinSalah.data,
+      );
+
+      const tanpaPin = await panggilFungsi('auth-login-pin', null, { nomor_wa: NOMOR_WALI });
+      cek('auth-login-pin: PIN kosong ditolak 400', tanpaPin.status === 400, tanpaPin.status);
+
+      const nomorNgawur = await panggilFungsi('auth-login-pin', null, {
+        nomor_wa: 'bukan-nomor',
+        pin: '482913',
+      });
+      cek('auth-login-pin: format nomor ngawur ditolak 400', nomorNgawur.status === 400, nomorNgawur.status);
+    }
+
+    const adaAturPin = await fungsiAda('auth-atur-pin');
+    if (!adaAturPin) {
+      lewati('uji wewenang atur PIN', 'Edge Function auth-atur-pin belum di-deploy (jalankan supabase functions deploy)');
+    } else {
+      const tanpaSesi = await panggilFungsi('auth-atur-pin', null, {
+        target_jenis: 'wali',
+        target_id: ids.wali,
+        pin_baru: '482913',
+      });
+      cek('auth-atur-pin: tanpa sesi ditolak', tanpaSesi.status === 401, tanpaSesi.status);
+
+      const olehWali = await panggilFungsi('auth-atur-pin', tokenWali, {
+        target_jenis: 'wali',
+        target_id: ids.waliLain,
+        pin_baru: '482913',
+      });
+      cek(
+        'auth-atur-pin: wali TIDAK boleh mengatur PIN akun lain',
+        olehWali.status === 403,
+        olehWali.status,
+      );
+
+      const pinLemah = await panggilFungsi('auth-atur-pin', tokenWali, { pin_lama: '482913', pin_baru: '123456' });
+      cek('auth-atur-pin: PIN berurutan ditolak', pinLemah.status === 400, pinLemah.status);
+    }
 
     /* ==================================================================
      * K2 — KUIS OTORITATIF SERVER
@@ -428,10 +475,6 @@ async function fungsiAda(nama) {
     const sertOlehPengajar = await restSebagai('GET', 'sertifikat', tokenPengajar, '?select=id&limit=5');
     cek('pengajar TIDAK bisa membaca sertifikat di luar kelas ampuannya',
       Array.isArray(sertOlehPengajar.data) && sertOlehPengajar.data.length === 0, sertOlehPengajar.data);
-
-    const aiOlehPengajar = await restSebagai('GET', 'ai_pertanyaan_log', tokenPengajar, '?select=id&limit=5');
-    cek('pengajar TIDAK bisa membaca pertanyaan AI santri di luar kelasnya',
-      Array.isArray(aiOlehPengajar.data) && aiOlehPengajar.data.length === 0, aiOlehPengajar.data);
 
     // Menghapus modul TERBIT: pengajar ditolak, pengurus boleh.
     const [modulTerbit] = await admin('POST', 'modul', {

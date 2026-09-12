@@ -88,8 +88,7 @@ export function periksaStaffAktif(
 /**
  * Pastikan sesi wali masih sah dan santri yang dituju memang anaknya DAN
  * masih berstatus aktif. Santri yang sudah dinonaktifkan pengurus tidak
- * boleh lagi mengumpulkan XP atau memakai kuota asisten AI — sebelum audit,
- * keduanya masih bisa.
+ * boleh lagi mengumpulkan XP — sebelum audit, itu masih bisa.
  */
 export function periksaSantriBolehBelajar(
   santri: { wali_id?: unknown; status?: unknown } | null,

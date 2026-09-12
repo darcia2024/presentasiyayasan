@@ -4,7 +4,7 @@
  * Menggambar ulang tiga baris peraga di kartu "Papan Peringkat Jenjang"
  * pada Beranda dengan data XP sungguhan dari RPC papan_peringkat() —
  * pola yang sama dengan renderSyllabus()/renderMufrodatCards(): peraga
- * dulu (sudah tertulis statis di prototype.html), digantikan begitu ada
+ * dulu (sudah tertulis statis di index.html), digantikan begitu ada
  * santri dengan XP tercatat di jenjang aktif. Kalau belum ada seorang
  * pun, peraga tetap tampil apa adanya.
  *
@@ -78,9 +78,39 @@ export async function upgradePapanPeringkat(jenjang) {
 
   const daftar = await ambilPapanPeringkat(jenjang);
   if (giliranSaya !== giliranTerakhir) return false; // sudah keburu ganti jenjang
-  if (!daftar || !daftar.length) return false; // belum ada XP tercatat — biarkan peraga tampil
+  if (!daftar || !daftar.length) {
+    // Dulu: "biarkan peraga tampil" — tiga nama karangan (Ahmad Fauzan,
+    // Siti Rahma, Rizky Hidayat) lengkap dengan angka XP, di papan
+    // peringkat yang seharusnya memajang teman sejenjang yang NYATA.
+    // Untuk jenjang yang belum punya satu pun XP tercatat, papan kosong
+    // adalah jawaban yang benar.
+    tampilkanPapanKosong();
+    return false;
+  }
 
   kontainer.innerHTML = '';
   daftar.forEach((baris, i) => kontainer.appendChild(buatBaris(baris, i)));
   return true;
+}
+
+/** Keadaan kosong papan peringkat — belum ada satu pun XP di jenjang ini. */
+export function tampilkanPapanKosong(pesan = 'Belum ada XP tercatat di jenjang ini.') {
+  const kontainer = document.getElementById(ID_KONTAINER);
+  if (!kontainer) return;
+
+  kontainer.replaceChildren();
+
+  const kosong = document.createElement('div');
+  kosong.className = 'papan-kosong';
+
+  const judul = document.createElement('div');
+  judul.className = 'kosong-judul';
+  judul.textContent = pesan;
+
+  const sub = document.createElement('div');
+  sub.className = 'kosong-sub';
+  sub.textContent = 'Peringkat terisi sendiri begitu santri mulai mengerjakan evaluasi.';
+
+  kosong.append(judul, sub);
+  kontainer.appendChild(kosong);
 }

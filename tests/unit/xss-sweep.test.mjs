@@ -49,17 +49,25 @@ const SINK = /(innerHTML|outerHTML|insertAdjacentHTML|document\.write)/;
  * gagal kalau baris itu berubah isinya.
  */
 const DIKECUALIKAN = [
-  {
-    berkas: 'js/ui/library.js',
-    potongan: 'body.innerHTML = data.bodyHtml',
-    alasan:
-      'data.bodyHtml berasal dari js/data/documents.js — HTML yang ditulis pengembang di dalam repo, bukan data yang bisa disunting staff. Harus dirender sebagai HTML.',
-  },
-  {
-    berkas: 'js/ui/sertifikat-santri.js',
-    potongan: 'els.meta.innerHTML = PERAGA.metaHtml',
-    alasan: 'PERAGA adalah konstanta peraga di berkas yang sama, tidak pernah berasal dari basis data.',
-  },
+  /*
+   * DUA PENGECUALIAN DICABUT 12 September 2026, bukan diperbaiki —
+   * kode yang membutuhkannya sudah tidak ada:
+   *
+   *   js/ui/library.js "body.innerHTML = data.bodyHtml"
+   *     openDocReader() dan js/data/documents.js dihapus bersama seluruh
+   *     data peraga. Dokumen sungguhan dirender js/ui/dokumen-viewer.js
+   *     sebagai <iframe> ke berkas PDF, tanpa menempel HTML apa pun.
+   *
+   *   js/ui/sertifikat-santri.js "els.meta.innerHTML = PERAGA.metaHtml"
+   *     Konstanta PERAGA (piagam contoh "Ahmad Fauzan / MUMTAZ 94") dihapus.
+   *     Yang tersisa di berkas itu satu innerHTML berisi nomor seri dan
+   *     tanggal DARI BASIS DATA — dan keduanya sudah dibungkus escapeHtml(),
+   *     jadi lolos aturan biasa tanpa perlu pengecualian.
+   *
+   * Uji "setiap pengecualian yang terdaftar masih benar-benar ada" di bawah
+   * yang menangkap keduanya. Itu memang tujuannya: daftar pengecualian tidak
+   * boleh menyimpan izin untuk kode yang sudah lama hilang.
+   */
   {
     berkas: 'app.js',
     potongan: 'questionEl.innerHTML = data.question',

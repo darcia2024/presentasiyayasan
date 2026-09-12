@@ -1,10 +1,10 @@
 /**
  * PERISA AZHARIYAH — Perpustakaan Dokumen PDF Sungguhan (Fase 3)
  *
- * Mengganti kartu peraga di "Modul & Silabus PDF" dengan dokumen PDF asli
- * (tabel dokumen, diisi lewat Studio Kurikulum) begitu ada yang terbit.
- * Kalau belum ada satu pun, kartu peraga tetap tampil — pola upgrade yang
- * sama dengan silabus dan kartu mufrodat.
+ * Mengisi "Modul & Silabus PDF" dengan dokumen PDF asli dari tabel
+ * `dokumen` (diisi lewat Studio Kurikulum). Kalau belum ada satu pun,
+ * grid-nya mengatakan begitu — sampai 11 September 2026 yang tampil justru
+ * empat kartu peraga yang terlihat seperti dokumen resmi yayasan.
  *
  * Pembaca PDF: <iframe> dengan #toolbar=0&navpanes=0 (bekerja di Chrome,
  * mayoritas perangkat santri). Ini PENCEGAHAN YANG WAJAR terhadap unduhan
@@ -82,11 +82,33 @@ export async function muatDanRenderDokumen() {
   if (dokumenTerbitCache === null) {
     dokumenTerbitCache = await muatDokumenTerbit();
   }
-  if (!dokumenTerbitCache.length) return 0;
+  if (!dokumenTerbitCache.length) {
+    tampilkanDokumenKosong(grid);
+    return 0;
+  }
 
   grid.innerHTML = '';
   dokumenTerbitCache.forEach((d) => grid.appendChild(buatKartu(d)));
   return dokumenTerbitCache.length;
+}
+
+/** Grid perpustakaan saat belum ada satu pun dokumen terbit. */
+function tampilkanDokumenKosong(grid) {
+  grid.replaceChildren();
+
+  const kosong = document.createElement('div');
+  kosong.className = 'dokumen-kosong';
+
+  const judul = document.createElement('div');
+  judul.className = 'kosong-judul';
+  judul.textContent = 'Belum ada dokumen terbit.';
+
+  const sub = document.createElement('div');
+  sub.className = 'kosong-sub';
+  sub.textContent = 'Silabus dan modul PDF yang diunggah pengurus akan muncul di sini.';
+
+  kosong.append(judul, sub);
+  grid.appendChild(kosong);
 }
 
 /** Buka pembaca PDF sungguhan lewat modal docReaderModal yang sudah ada. */
@@ -111,5 +133,8 @@ function bukaDokumenAsli(d) {
   }
 
   if (modal) modal.classList.add('open');
+  // Di ponsel, modal ini berperilaku sebagai bottom sheet — lihat
+  // PerisaMobile.bukaSheetDokumen() di prototype-mobile.js.
+  window.PerisaMobile?.bukaSheetDokumen?.();
   showToast(`Membuka dokumen: "${d.judul}"`);
 }

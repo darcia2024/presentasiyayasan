@@ -3,7 +3,7 @@
  *
  * Menggambar ulang grid "Panduan Pelafalan & Makhraj Huruf" dari mufrodat
  * SUNGGUHAN, menggantikan empat kartu peraga yang ditulis keras di
- * prototype.html. Kalau belum ada mufrodat asli untuk pelajaran yang aktif,
+ * index.html. Kalau belum ada mufrodat asli untuk pelajaran yang aktif,
  * kartu peraga tetap tampil — pola yang sama dengan renderSyllabus() di
  * Fase 2 (peraga dulu, digantikan begitu ada konten sungguhan).
  */
@@ -55,7 +55,7 @@ export function renderMufrodatCards(daftarMufrodat) {
   if (!grid) return false;
 
   if (!daftarMufrodat || !daftarMufrodat.length) {
-    setPlaylistAktif(null); // kembali ke playlist peraga
+    tampilkanMufrodatKosong();
     return false;
   }
 
@@ -69,4 +69,34 @@ export function renderMufrodatCards(daftarMufrodat) {
 
   setPlaylistAktif(playlist);
   return true;
+}
+
+/**
+ * Keadaan kosong grid mufrodat.
+ *
+ * Empat kartu peraga dulu ditulis keras di index.html dan tetap tampil
+ * kalau pelajaran aktif belum punya mufrodat sungguhan. Dihapus 12
+ * September 2026 — santri berhak tahu bahwa materinya memang belum ada,
+ * bukan mengira empat kata itu isi pelajarannya.
+ */
+export function tampilkanMufrodatKosong(pesan = 'Pelajaran ini belum punya mufrodat.') {
+  const grid = document.getElementById(ID_GRID);
+  if (!grid) return;
+
+  grid.replaceChildren();
+  setPlaylistAktif(null);
+
+  const kosong = document.createElement('div');
+  kosong.className = 'mufrodat-kosong';
+
+  const judul = document.createElement('div');
+  judul.className = 'kosong-judul';
+  judul.textContent = pesan;
+
+  const sub = document.createElement('div');
+  sub.className = 'kosong-sub';
+  sub.textContent = 'Mufrodat beserta rekaman pelafalannya diisi pengurus lewat Studio Kurikulum.';
+
+  kosong.append(judul, sub);
+  grid.appendChild(kosong);
 }

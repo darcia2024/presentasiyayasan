@@ -19,14 +19,14 @@
  * ---------------------------------------------------------------------
  * KENAPA MASIH ADA 'unsafe-inline'
  *
- * script-src: prototype.html memuat 96 penangan kejadian sebaris
- * (onclick="PrototypeApp...."), index.html 27, game2d.html 6. Tanpa
+ * script-src: index.html memuat 96 penangan kejadian sebaris
+ * (onclick="PrototypeApp...."), proposal.html 27, game2d.html 6. Tanpa
  * 'unsafe-inline' seluruh antarmuka berhenti bekerja. Memindahkannya ke
  * addEventListener adalah pekerjaan besar yang menyentuh hampir setiap
  * tombol di aplikasi — layak dilakukan, tapi bukan sebagai bagian dari
  * perbaikan keamanan yang tidak bisa diuji manual satu per satu.
  *
- * style-src: 213 atribut style= sebaris di prototype.html saja.
+ * style-src: 213 atribut style= sebaris di index.html saja.
  *
  * YANG TETAP DITUTUP CSP INI meski 'unsafe-inline' ada:
  *   - <script src="https://penyerang/"> ditolak (script-src 'self').

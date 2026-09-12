@@ -262,8 +262,10 @@
   var CHIPS = {
     lanjut:   { icon: 'ph-play-circle',  label: 'Lanjut Belajar', act: "PrototypeApp.switchMainView('kurikulum')" },
     suara:    { icon: 'ph-microphone',   label: 'Latihan Suara',  href: 'game2d.html' },
-    asisten:  { icon: 'ph-sparkle',      label: 'Tanya Asisten',  act: "PrototypeApp.switchMainView('ai-assistant')" },
-    silabus:  { icon: 'ph-book-open',    label: 'Buka Silabus',   act: "PrototypeApp.openDocReader(1)" },
+    // Dulu membuka dokumen PERAGA lewat openDocReader(1) — dokumen itu
+    // dan fungsinya dihapus 12 Sep 2026. Sekarang mengarah ke perpustakaan
+    // sungguhan, tempat dokumen terbit berada.
+    silabus:  { icon: 'ph-book-open',    label: 'Perpustakaan',   act: "PrototypeApp.switchMainView('modul-pdf')" },
     evaluasi: { icon: 'ph-check-circle', label: 'Latihan Evaluasi', act: "PrototypeApp.switchSubTab('kuis')" },
     mufrodat: { icon: 'ph-speaker-high', label: 'Pelafalan Mufrodat', act: "PrototypeApp.switchSubTab('audio')" },
     piagam:   { icon: 'ph-certificate',  label: 'Piagam Sanad',   act: 'PrototypeApp.openCertificate()', gold: true },
@@ -278,12 +280,16 @@
       title: 'Ahlan wa Sahlan!',
       sub: 'Lanjutkan pembelajaran Bahasa Arab terstruktur asuhan Umi Elly.',
       bar: 'Beranda',
-      chips: ['lanjut', 'suara', 'asisten', 'piagam']
+      chips: ['lanjut', 'suara', 'arsip', 'piagam']
     },
+    /* Judul & subjudulnya DIBACA DARI LAYAR saat digambar (lihat
+       paintLargeTitle) — dulu tertulis tetap "Kaidah Jumlah Ismiyyah /
+       Jenjang SMP Kelas 8 • 12 Modul", jadi santri SD di ponsel membaca
+       judul modul SMP di atas materi SD-nya sendiri. */
     'kurikulum': {
       eyebrow: 'Kurikulum Bahasa Arab',
-      title: 'Kaidah Jumlah Ismiyyah',
-      sub: 'Jenjang SMP Kelas 8 • 12 Modul • Asuhan Umi Elly',
+      title: 'Kurikulum',
+      sub: '',
       bar: 'Kurikulum',
       chips: ['evaluasi', 'mufrodat', 'silabus', 'suara']
     },
@@ -292,14 +298,7 @@
       title: 'Modul & Silabus',
       sub: 'Dokumen resmi terverifikasi Yayasan Peradaban Islam Azhariyah.',
       bar: 'Silabus',
-      chips: ['silabus', 'lanjut', 'asisten', 'piagam']
-    },
-    'ai-assistant': {
-      eyebrow: 'Asisten Pembelajaran',
-      title: 'Asisten Bahasa Arab',
-      sub: 'Konsultasi kaidah Nahwu-Shorof, mufrodat, dan susunan kalimat.',
-      bar: 'Asisten',
-      chips: ['mufrodat', 'suara', 'lanjut', 'arsip']
+      chips: ['silabus', 'lanjut', 'suara', 'piagam']
     },
     'admin': {
       eyebrow: 'Otoritas Yayasan',
@@ -307,13 +306,52 @@
       sub: 'Tata kelola santri, verifikasi infaq, dan sertifikat sanad.',
       bar: 'Pengurus',
       chips: ['santri', 'sinkron', 'piagam', 'arsip']
+    },
+    /* Dua layar di bawah dulu tidak punya entri sama sekali, jadi judul
+       besarnya jatuh ke cadangan VIEW_META.kurikulum: wali yang membuka
+       Dashboard Wali di ponsel melihat judul "Kaidah Jumlah Ismiyyah".
+       Ketahuan begitu Dashboard Wali jadi layar PENDARATAN wali. */
+    'wali-dashboard': {
+      eyebrow: 'Portal Wali',
+      title: 'Progres Ananda',
+      sub: 'Ringkasan pembelajaran seluruh santri dalam tanggungan Anda.',
+      bar: 'Dashboard Wali',
+      chips: ['lanjut', 'arsip', 'piagam', 'sinkron']
+    },
+    'studio-kurikulum': {
+      eyebrow: 'Studio Kurikulum',
+      title: 'Susun Modul',
+      sub: 'Menyusun modul, pelajaran, dan mufrodat untuk santri.',
+      bar: 'Studio',
+      chips: ['arsip', 'sinkron', 'lanjut']
     }
   };
 
-  var currentView = 'kurikulum';
+  /* Layar pendaratan LMS: dashboard dulu, materi menyusul — sejalan dengan
+     DEFAULT_ROUTE di js/ui/router.js. Jangan diubah sebelah pihak saja. */
+  var currentView = 'beranda';
+
+  /** Judul kurikulum yang SEDANG tampil di layar, bukan yang ditulis tetap. */
+  function metaKurikulumTerkini() {
+    var judul = $('courseMainTitle');
+    var jenjang = $('courseJenjangText');
+    var jumlah = $('courseJumlahModul');
+    var bagian = [];
+    if (jenjang && jenjang.textContent.trim()) bagian.push(jenjang.textContent.trim());
+    if (jumlah && jumlah.textContent.trim()) bagian.push(jumlah.textContent.trim());
+    return {
+      title: (judul && judul.textContent.trim()) || 'Kurikulum',
+      sub: bagian.join(' • ')
+    };
+  }
 
   function paintLargeTitle(viewKey) {
-    var meta = VIEW_META[viewKey] || VIEW_META.kurikulum;
+    var meta = VIEW_META[viewKey] || VIEW_META.beranda;
+
+    if (viewKey === 'kurikulum') {
+      var hidup = metaKurikulumTerkini();
+      meta = { eyebrow: meta.eyebrow, bar: meta.bar, chips: meta.chips, title: hidup.title, sub: hidup.sub };
+    }
     var eyebrow = $('mLtEyebrow');
     var title = $('mLtTitle');
     var sub = $('mLtSub');
@@ -747,7 +785,7 @@
     /* --- switchMainView: judul besar, tab bar, animasi masuk ----------- */
     var baseSwitch = PrototypeApp.switchMainView;
     PrototypeApp.switchMainView = function (viewName) {
-      var key = viewName || 'kurikulum';
+      var key = viewName || 'beranda';
       baseSwitch.apply(null, arguments);
       currentView = key;
 
@@ -755,15 +793,15 @@
         paintLargeTitle(key);
         syncTabBar(key);
         syncDrawerNav(key);
-        body.classList.toggle('m-view-ai', key === 'ai-assistant');
         body.classList.remove('m-tabbar-hidden');
 
         var viewEl = document.querySelector(
-          '#viewBerandaUtama, #viewCoursePlayer, #viewModulPdf, #viewAiAssistant, #viewAdminPanel'
+          '#viewBerandaUtama, #viewCoursePlayer, #viewModulPdf, #viewAdminPanel,' +
+          '#viewWaliDashboard, #viewStudioKurikulum'
         );
         var visible = [
           $('viewBerandaUtama'), $('viewCoursePlayer'), $('viewModulPdf'),
-          $('viewAiAssistant'), $('viewAdminPanel')
+          $('viewAdminPanel'), $('viewWaliDashboard'), $('viewStudioKurikulum')
         ].filter(function (el) { return el && el.style.display !== 'none'; })[0] || viewEl;
 
         if (visible) {
@@ -787,42 +825,29 @@
       try { history.replaceState(history.state, '', '?view=' + key); } catch (_) {}
     };
 
-    /* --- setRole: perbarui identitas di drawer + sapaan ---------------- */
-    var baseSetRole = PrototypeApp.setRole;
-    PrototypeApp.setRole = function (roleName) {
-      baseSetRole.apply(null, arguments);
-      if (!isMobile()) return;
+    /* --- muatKontenJenjang: segarkan judul besar setelah konten datang -
+       Menggantikan pembungkus setRole yang dihapus 12 Sep 2026 bersama
+       sistem persona peraga. Yang dibutuhkan versi mobile bukan "peran"
+       melainkan satu isyarat bahwa isi kurikulum baru saja berganti,
+       supaya judul besar tidak tertinggal menampilkan modul sebelumnya.
+       Identitas di drawer sudah ditulis langsung oleh
+       terapkanIdentitasAsli() di js/ui/jenjang.js. */
+    var baseMuatJenjang = PrototypeApp.muatKontenJenjang;
+    if (typeof baseMuatJenjang === 'function') {
+      PrototypeApp.muatKontenJenjang = function () {
+        var hasil = baseMuatJenjang.apply(null, arguments);
+        if (!isMobile()) return hasil;
 
-      var nameEl = $('sidebarUserName');
-      var subEl = $('sidebarUserSub');
-      var avatarEl = $('sidebarUserAvatar');
-
-      var dName = $('mDrawerUserName');
-      var dSub = $('mDrawerUserSub');
-      var dAvatar = $('mDrawerAvatar');
-      var topAvatar = $('mobileUserAvatarTag');
-
-      if (dName && nameEl) dName.textContent = nameEl.textContent;
-      if (dSub && subEl) dSub.textContent = subEl.textContent;
-      if (dAvatar && avatarEl) dAvatar.textContent = avatarEl.textContent;
-      if (topAvatar && avatarEl) topAvatar.textContent = avatarEl.textContent;
-
-      var roleBtns = document.querySelectorAll('.mobile-drawer-menu .role-btn[data-role]');
-      for (var i = 0; i < roleBtns.length; i++) {
-        roleBtns[i].classList.toggle('active', roleBtns[i].getAttribute('data-role') === roleName);
-      }
-
-      currentView = (roleName === 'admin') ? 'admin' : 'kurikulum';
-      body.classList.remove('m-view-ai');
-      paintLargeTitle(currentView);
-      syncTabBar(currentView);
-      syncDrawerNav(currentView);
-      syncGreeting();
-      window.scrollTo({ top: 0, behavior: 'auto' });
-      lastScrollY = 0;
-      body.classList.remove('m-scrolled', 'm-tabbar-hidden');
-      haptic(10);
-    };
+        var segarkan = function () {
+          syncGreeting();
+          if (currentView === 'kurikulum') paintLargeTitle('kurikulum');
+        };
+        segarkan();
+        // Kontennya datang belakangan (jaringan); gambar ulang setelahnya.
+        if (hasil && typeof hasil.then === 'function') hasil.then(segarkan, segarkan);
+        return hasil;
+      };
+    }
 
     /* --- toggleMobileDrawer: kunci gulir + riwayat --------------------- */
     PrototypeApp.toggleMobileDrawer = function () {
@@ -866,12 +891,12 @@
       else if (m) m.style.display = 'none';
     };
 
-    var baseOpenDoc = PrototypeApp.openDocReader;
-    PrototypeApp.openDocReader = function () {
-      baseOpenDoc.apply(null, arguments);
-      if (isMobile()) openSheet($('docReaderModal'), 'sheet-doc');
-      else { var m = $('docReaderModal'); if (m) m.style.display = 'flex'; }
-    };
+    /* Pembungkus PrototypeApp.openDocReader DIHAPUS 12 Sep 2026 bersama
+       fungsinya — dulu itu pembaca dokumen PERAGA. Pembaca yang sungguhan
+       (js/ui/dokumen-viewer.js) membuka modal yang sama, jadi yang
+       dibutuhkan cuma satu kait supaya modalnya tetap berperilaku sebagai
+       bottom sheet di ponsel: PerisaMobile.bukaSheetDokumen(), dipanggil
+       dokumen-viewer sesudah modalnya dibuka. */
 
     var baseCloseDoc = PrototypeApp.closeDocReader;
     PrototypeApp.closeDocReader = function () {
@@ -883,7 +908,7 @@
 
     /* --- Umpan balik haptik untuk aksi lain --------------------------- */
     ['speakArabic', 'togglePlayVideo', 'claimGameXp', 'toggleAccordion',
-     'filterPdfLibrary', 'fillAiPrompt', 'handleAiSend'].forEach(function (fn) {
+     'filterPdfLibrary'].forEach(function (fn) {
       var base = PrototypeApp[fn];
       if (typeof base !== 'function') return;
       PrototypeApp[fn] = function () {
@@ -911,7 +936,14 @@
       dismissInstall: dismissInstall,
       haptic: haptic,
       refresh: runRefresh,
-      closeDrawer: function () { setDrawer(false); }
+      closeDrawer: function () { setDrawer(false); },
+      /* Dipanggil js/ui/dokumen-viewer.js sesudah modal pembaca dibuka,
+         supaya di ponsel ia naik sebagai bottom sheet (bisa diseret turun
+         untuk menutup) dan bukan sekadar kotak melayang. */
+      bukaSheetDokumen: function () {
+        if (!isMobile()) return;
+        openSheet($('docReaderModal'), 'sheet-doc');
+      }
     };
 
     if (!isMobile()) return;
@@ -928,7 +960,7 @@
     window.addEventListener('scroll', onScroll, { passive: true });
 
     // Layar awal: hormati parameter ?view= (juga dipakai shortcut manifest).
-    var startView = 'kurikulum';
+    var startView = 'beranda';
     try {
       var q = new URLSearchParams(location.search).get('view');
       if (q && VIEW_META[q]) startView = q;
@@ -949,7 +981,7 @@
   MOBILE_QUERY.addEventListener('change', function (e) {
     if (!e.matches) {
       unlockScroll();
-      body.classList.remove('m-scrolled', 'm-tabbar-hidden', 'm-view-ai', 'm-mobile');
+      body.classList.remove('m-scrolled', 'm-tabbar-hidden', 'm-mobile');
     } else if (!body.classList.contains('m-mobile')) {
       location.reload();
     }

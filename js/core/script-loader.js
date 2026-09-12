@@ -3,7 +3,7 @@
  *
  * Beberapa pustaka (jsPDF, qrcodejs) hanya dipakai staff pengurus saat
  * menerbitkan sertifikat — memuatnya lewat <script> statis di
- * prototype.html berarti SETIAP santri ikut mengunduhnya, melanggar
+ * index.html berarti SETIAP santri ikut mengunduhnya, melanggar
  * prinsip Fase 0 (jaringan santri bisa buruk, jangan memaksa unduhan
  * yang tidak perlu). muatSkrip() memuat sekali saja per URL dan
  * meng-cache Promise-nya, supaya dipanggil berkali-kali tetap aman.

@@ -8,10 +8,10 @@
 // ke seorang anak, dan dua sesi belajar di hari yang sama (pagi & malam)
 // bisa terhitung dua hari.
 //
-// Yang membingungkan: kuota harian asisten AI SUDAH benar memakai WIB
-// (awalHariIniWib di tanya-asisten-ai), dan ringkasan mingguan SUDAH benar
-// memakai WIB. Jadi ada tiga tempat menghitung "hari" dengan dua aturan
-// berbeda. Berkas ini menjadikannya satu.
+// Yang membingungkan: ringkasan mingguan SUDAH benar memakai WIB, begitu
+// pula kuota harian Asisten AI (fitur itu dihapus 11 September 2026). Jadi
+// ada beberapa tempat menghitung "hari" dengan dua aturan berbeda. Berkas
+// ini menjadikannya satu.
 //
 // CATATAN untuk yang mengubah nanti: Indonesia punya tiga zona (WIB/WITA/
 // WIT). Yayasan ini berjalan di WIB, jadi satu offset tetap sudah cukup dan

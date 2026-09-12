@@ -7,10 +7,10 @@
      0. Token & fondasi native            7. Pull-to-refresh
      1. Boot splash aplikasi              8. Beranda (dashboard santri)
      2. Banner jaringan & pemasangan      9. Kurikulum / pemutar modul
-     3. App bar + judul besar kolaps     10. Asisten AI
-     4. Drawer geser native              11. Perpustakaan silabus
-     5. Tab bar bawah (center raised)    12. Panel pengurus
-     6. Kontainer tampilan & transisi    13. Bottom sheet, toast, utilitas
+     3. App bar + judul besar kolaps     10. Perpustakaan silabus
+     4. Drawer geser native              11. Panel pengurus
+     5. Tab bar bawah (center raised)    12. Bottom sheet, toast, utilitas
+     6. Kontainer tampilan & transisi
    ========================================================================== */
 
 /* ==========================================================================
@@ -937,7 +937,6 @@
   #viewBerandaUtama,
   #viewCoursePlayer,
   #viewModulPdf,
-  #viewAiAssistant,
   #viewAdminPanel {
     padding: 0 0 calc(var(--m-tabbar-h) + var(--m-sab) + 26px) 0 !important;
     width: 100% !important;
@@ -1600,158 +1599,7 @@
 
 
   /* ======================================================================
-     10. ASISTEN AI BAHASA ARAB
-     ====================================================================== */
-  .seto-dashboard-layout {
-    display: block !important;
-    grid-template-columns: 1fr !important;
-    padding: 0 !important;
-    gap: 0 !important;
-  }
-
-  .seto-main-hub {
-    margin: 0 var(--m-gutter) !important;
-    padding: 20px 16px !important;
-    border-radius: var(--m-radius) !important;
-    box-shadow: var(--m-shadow-card) !important;
-    border: 1px solid rgba(7, 40, 38, 0.055) !important;
-  }
-
-  .seto-emblem-star img { width: 52px !important; height: 52px !important; }
-  .seto-h1-welcome { font-size: 18px !important; letter-spacing: -0.02em !important; }
-  .seto-p-sub { font-size: 12.5px !important; margin-bottom: 18px !important; }
-
-  .seto-cards-grid {
-    grid-template-columns: 1fr !important;
-    gap: 9px !important;
-    margin-bottom: 18px !important;
-  }
-
-  .seto-card-item {
-    display: grid !important;
-    grid-template-columns: 42px 1fr !important;
-    grid-template-areas: "icon title" "icon desc" !important;
-    align-items: center !important;
-    column-gap: 13px !important;
-    row-gap: 2px !important;
-    padding: 14px 13px !important;
-    border-radius: var(--m-radius-sm) !important;
-    min-height: 68px !important;
-    transition: transform 0.16s var(--m-ease), background 0.2s ease !important;
-  }
-
-  .seto-card-item:active { transform: scale(0.975) !important; }
-
-  .seto-card-icon {
-    grid-area: icon !important;
-    align-self: center !important;
-    width: 42px !important;
-    height: 42px !important;
-    border-radius: 13px !important;
-    background: var(--teal-light) !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 21px !important;
-    flex-shrink: 0 !important;
-  }
-
-  .seto-card-title {
-    grid-area: title !important;
-    font-size: 13px !important;
-    align-self: end !important;
-  }
-
-  .seto-card-desc {
-    grid-area: desc !important;
-    font-size: 10.5px !important;
-    line-height: 1.4 !important;
-    align-self: start !important;
-  }
-
-  /* Dok input menempel di atas tab bar seperti komposer chat native */
-  .seto-prompt-dock {
-    position: fixed !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: calc(var(--m-tabbar-h) + var(--m-sab)) !important;
-    z-index: 8500 !important;
-    max-width: 100% !important;
-    padding: 10px var(--m-gutter) 12px var(--m-gutter) !important;
-    background: rgba(242, 246, 245, 0.94) !important;
-    backdrop-filter: saturate(180%) blur(18px) !important;
-    -webkit-backdrop-filter: saturate(180%) blur(18px) !important;
-    border-top: 1px solid rgba(7, 40, 38, 0.07) !important;
-    gap: 9px !important;
-    display: none !important;
-  }
-
-  #viewAiAssistant[style*="block"] ~ * .seto-prompt-dock,
-  body.m-view-ai .seto-prompt-dock { display: flex !important; }
-
-  .seto-pill-actions {
-    justify-content: flex-start !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
-    gap: 6px !important;
-  }
-
-  .seto-pill-actions::-webkit-scrollbar { display: none !important; }
-
-  .seto-pill-badge {
-    flex: 0 0 auto !important;
-    padding: 7px 13px !important;
-    font-size: 11.5px !important;
-    min-height: 34px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    background: var(--m-surface) !important;
-    box-shadow: var(--m-shadow-card) !important;
-  }
-
-  .seto-input-wrap {
-    padding: 5px 5px 5px 16px !important;
-    box-shadow: 0 6px 20px rgba(0, 135, 122, 0.14) !important;
-    border-width: 1.5px !important;
-  }
-
-  .seto-text-input {
-    font-size: 14px !important;
-    min-height: 42px !important;
-    background: transparent !important;
-  }
-
-  .seto-send-btn {
-    padding: 0 !important;
-    width: 42px !important;
-    height: 42px !important;
-    min-width: 42px !important;
-    border-radius: 50% !important;
-    justify-content: center !important;
-    font-size: 17px !important;
-  }
-
-  .seto-send-btn span,
-  .seto-send-btn .m-send-label { display: none !important; }
-
-  .seto-history-column {
-    margin: 16px var(--m-gutter) 0 var(--m-gutter) !important;
-    padding: 16px !important;
-    border-radius: var(--m-radius) !important;
-    box-shadow: var(--m-shadow-card) !important;
-    border: 1px solid rgba(7, 40, 38, 0.055) !important;
-  }
-
-  /* Ruang ekstra agar dok input tidak menutupi konten terakhir */
-  body.m-view-ai #viewAiAssistant {
-    padding-bottom: calc(var(--m-tabbar-h) + var(--m-sab) + 130px) !important;
-  }
-
-
-  /* ======================================================================
-     11. PERPUSTAKAAN SILABUS (PDF)
+     10. PERPUSTAKAAN SILABUS (PDF)
      ====================================================================== */
   .pdf-library-layout { padding: 0 !important; }
 
@@ -1874,7 +1722,7 @@
 
 
   /* ======================================================================
-     12. PANEL PENGURUS YAYASAN
+     11. PANEL PENGURUS YAYASAN
      ====================================================================== */
   #viewAdminPanel { padding: 0 0 calc(var(--m-tabbar-h) + var(--m-sab) + 26px) 0 !important; }
 
@@ -2008,7 +1856,7 @@
 
 
   /* ======================================================================
-     13. BOTTOM SHEET, TOAST & UTILITAS
+     12. BOTTOM SHEET, TOAST & UTILITAS
      ====================================================================== */
 
   /* --- Sheet umum (sertifikat & pembaca dokumen) ------------------------ */
@@ -2253,5 +2101,71 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+
+/* ==========================================================================
+   DRAWER: JANGAN MENGEMPISKAN ISI SAAT MENUNYA PANJANG (12 September 2026)
+
+   TEMUAN saat menguji sidebar LMS di lebar 375px. Drawer adalah kolom flex
+   dengan overflow-y: auto — tapi `overflow-y: auto` TIDAK mencegah anak-anak
+   flex dikempiskan lebih dulu: bawaan `flex-shrink: 1` berlaku duluan, dan
+   peramban baru menggulir setelah semuanya sudah sekecil mungkin.
+
+   Selama menunya cuma enam baris, sisa ruangnya cukup dan tidak ada yang
+   terlihat. Begitu daftar menu bertambah jadi empat kelompok plus daftar
+   modul, kartu identitas santri di atas ikut diperas: tingginya jatuh dari
+   76px ke 26px dan barisnya "Santri Jenjang SMP Kelas 8" terpotong separuh
+   di dalam kartu gelapnya sendiri.
+
+   Perbaikannya satu baris di induknya, bukan tinggi tetap di tiap kartu:
+   berlaku juga untuk apa pun yang ditambahkan ke drawer nanti.
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .mobile-drawer-menu > * {
+    flex-shrink: 0 !important;
+  }
+}
+
+
+/* ==========================================================================
+   CINCIN PROGRES → ANGKA XP (12 September 2026)
+
+   Cincin di kartu "sedang dipelajari" dulu berupa SVG beranimasi yang
+   selalu berhenti di 65% — angka yang ditulis langsung di stroke-dashoffset
+   CSS, sama untuk setiap santri, tidak pernah berubah. Persentase progres
+   sungguhan butuh "berapa pelajaran dari berapa total" per santri, dan itu
+   belum dihitung di mana pun.
+
+   Diganti angka XP yang memang ada di xp_log. Lebih jujur, dan kebetulan
+   lebih berguna: XP itulah yang dikejar santri.
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .m-ring {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    border-radius: 50%;
+    background: var(--teal-light);
+    border: 2px solid rgba(0, 135, 122, 0.18);
+  }
+
+  .m-ring .m-ring-value {
+    position: static;
+    font-size: 15px;
+    line-height: 1.05;
+  }
+
+  .m-ring-label {
+    font-size: 8.5px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--teal-primary);
+    text-transform: uppercase;
   }
 }

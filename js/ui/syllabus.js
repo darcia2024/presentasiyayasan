@@ -1,10 +1,18 @@
 /**
- * PERISA AZHARIYAH — Akordeon Struktur Silabus
+ * PERISA AZHARIYAH — Akordeon Struktur Silabus & Daftar Materi di Sidebar
  *
  * Seluruh akordeon dirender dari data peran, bukan ditulis keras di HTML.
  * Sebelum perubahan ini `setRole` memakai querySelector tunggal sehingga hanya
  * bagian pertama yang ikut berganti; tiga bagian sisanya tetap menampilkan
  * materi SMP dan SMA apa pun jenjang santrinya.
+ *
+ * 12 September 2026 — berkas ini juga menggambar DAFTAR MODUL DI SIDEBAR.
+ * Sengaja di sini, bukan di modul navigasi tersendiri: daftar sidebar dan
+ * akordeon adalah dua tampilan dari SATU sumber data yang sama, dan sumber
+ * itu berganti dua kali (silabus peraga dulu, silabus terbit sungguhan
+ * menyusul — lihat js/ui/role.js). Menaruh keduanya di satu fungsi berarti
+ * tidak mungkin ada keadaan sidebar menampilkan modul jenjang lama sementara
+ * akordeonnya sudah modul yang baru.
  */
 
 import { playTone, showToast } from '../core/feedback.js';
@@ -111,12 +119,109 @@ function buildSection(section) {
  */
 export function renderSyllabus(syllabus) {
   const card = document.querySelector('.course-content-accordion-card');
-  if (!card) return;
 
-  card.querySelectorAll('.accordion-section').forEach((el) => el.remove());
+  if (card) {
+    card.querySelectorAll('.accordion-section, .silabus-kosong').forEach((el) => el.remove());
+    if (syllabus && syllabus.length) {
+      syllabus.forEach((section) => card.appendChild(buildSection(section)));
+    }
+  }
 
-  if (!syllabus || !syllabus.length) return;
-  syllabus.forEach((section) => card.appendChild(buildSection(section)));
+  // Sidebar ikut digambar walau kartu akordeonnya tidak ada di halaman ini.
+  renderNavModul(syllabus);
+}
+
+/* ==========================================================================
+   DAFTAR MODUL DI SIDEBAR
+
+   Satu baris per modul, di sidebar desktop DAN drawer mobile sekaligus —
+   keduanya diisi dari daftar yang sama supaya tidak ada satu pun keadaan
+   di mana ponsel dan desktop menampilkan daftar materi yang berbeda.
+   ========================================================================== */
+
+/** Wadah daftar modul: sidebar desktop + drawer mobile. */
+const WADAH_NAV_MODUL = ['sidebarModulList', 'drawerModulList'];
+
+function buildNavModulItem(section, index) {
+  const li = document.createElement('li');
+
+  const a = document.createElement('a');
+  a.className = 'ref-nav-subitem';
+  if (section.accent === 'emas') a.classList.add('is-gold');
+  a.dataset.modul = String(index);
+  a.title = section.title;
+
+  const num = document.createElement('span');
+  num.className = 'nav-subitem-num';
+  num.textContent = section.code;
+
+  const label = document.createElement('span');
+  label.className = 'nav-subitem-label';
+  label.textContent = section.title;
+
+  a.append(num, label);
+  a.addEventListener('click', () => bukaModul(index));
+
+  li.appendChild(a);
+  return li;
+}
+
+/** Gambar ulang daftar modul di sidebar & drawer dari silabus yang aktif. */
+export function renderNavModul(syllabus) {
+  WADAH_NAV_MODUL.forEach((id) => {
+    const wadah = document.getElementById(id);
+    if (!wadah) return;
+
+    wadah.replaceChildren();
+
+    if (!syllabus || !syllabus.length) {
+      const kosong = document.createElement('li');
+      kosong.className = 'ref-nav-sub-empty';
+      kosong.textContent = 'Belum ada modul untuk jenjang ini.';
+      wadah.appendChild(kosong);
+    } else {
+      syllabus.forEach((section, i) => wadah.appendChild(buildNavModulItem(section, i)));
+    }
+
+    // Terbuka secara bawaan. Kalau santri menutupnya sendiri lewat
+    // toggleMateriNav (js/ui/shell.js), kelas ini yang dilepas — dan
+    // penggambaran ulang di sini menghormatinya, tidak memaksa buka lagi.
+    if (!wadah.dataset.ditutupPengguna) wadah.classList.add('is-open');
+  });
+
+  sorotModulAktif(-1);
+}
+
+/** Sorot satu modul di daftar sidebar; -1 untuk membersihkan sorotan. */
+export function sorotModulAktif(index) {
+  document.querySelectorAll('.ref-nav-subitem').forEach((el) => {
+    el.classList.toggle('active', Number(el.dataset.modul) === index);
+  });
+}
+
+/**
+ * Buka satu modul dari sidebar: pindah ke tampilan kurikulum, bentangkan
+ * akordeon modul itu, lalu gulirkan ke posisinya.
+ *
+ * Penundaan singkat sebelum menggulir memang disengaja: switchMainView
+ * mengembalikan posisi gulir ke atas (dan runtime mobile memanggil
+ * window.scrollTo sendiri sesudahnya). Menggulir tanpa jeda berarti
+ * gulirannya langsung ditimpa balik dan modulnya tidak pernah terlihat.
+ */
+export function bukaModul(index) {
+  if (window.PrototypeApp?.switchMainView) window.PrototypeApp.switchMainView('kurikulum');
+  sorotModulAktif(index);
+
+  setTimeout(() => {
+    const seksi = document.querySelectorAll('.course-content-accordion-card .accordion-section')[index];
+    if (!seksi) return;
+
+    const head = seksi.querySelector('.section-head');
+    const list = seksi.querySelector('.lesson-sub-list');
+    if (list && list.style.display === 'none') toggleAccordion(head);
+
+    seksi.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 90);
 }
 
 /** Buka atau tutup satu bagian silabus. */
@@ -135,4 +240,38 @@ export function toggleAccordion(headEl) {
     caret.classList.add(isOpen ? 'ph-caret-down' : 'ph-caret-up');
   }
   playTone(isOpen ? 460 : 560, 'sine', 0.07, 0.045);
+}
+
+/**
+ * Keadaan kosong akordeon silabus — dipakai saat jenjang santri belum punya
+ * satu pun modul berstatus terbit.
+ *
+ * Sampai 11 September 2026 keadaan ini tidak pernah terlihat: kalau konten
+ * asli belum ada, silabus PERAGA dari js/data/roles.js yang tampil. Santri
+ * jadi melihat empat modul lengkap dengan durasi dan kunci gembok — untuk
+ * materi yang belum pernah ditulis siapa pun.
+ */
+export function tampilkanSilabusKosong(
+  pesan = 'Belum ada modul terbit untuk jenjang ini.',
+) {
+  const card = document.querySelector('.course-content-accordion-card');
+  if (card) {
+    card.querySelectorAll('.accordion-section, .silabus-kosong').forEach((el) => el.remove());
+
+    const kosong = document.createElement('div');
+    kosong.className = 'silabus-kosong';
+
+    const judul = document.createElement('div');
+    judul.className = 'kosong-judul';
+    judul.textContent = pesan;
+
+    const sub = document.createElement('div');
+    sub.className = 'kosong-sub';
+    sub.textContent = 'Modul yang diterbitkan pengurus lewat Studio Kurikulum akan muncul di sini.';
+
+    kosong.append(judul, sub);
+    card.appendChild(kosong);
+  }
+
+  renderNavModul([]);
 }

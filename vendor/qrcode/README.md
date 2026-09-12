@@ -12,7 +12,7 @@ SHA-256: `c541ef06327885a8415bca8df6071e14189b4855336def4f36db54bde8484f36`
 
 Lisensi: MIT. Memasang konstruktor global `QRCode` — `new QRCode(elemen, {text, width, height})` menggambar QR ke `<canvas>`/`<img>` di dalam elemen yang diberikan.
 
-**PENTING — TIDAK dimuat statis di `prototype.html` dan TIDAK ikut
+**PENTING — TIDAK dimuat statis di `index.html` dan TIDAK ikut
 precache app shell**, sama seperti `vendor/jspdf/` — dimuat dinamis lewat
 `js/core/script-loader.js` hanya saat panel sertifikat dibuka.
 

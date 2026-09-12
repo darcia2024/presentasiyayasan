@@ -34,8 +34,17 @@ const DIST = path.join(ROOT, 'dist');
 /** Berkas di akar yang boleh terbit, berdasarkan akhiran namanya. */
 const AKHIRAN_AKAR = ['.html', '.css', '.js', '.png', '.svg', '.ico', '.webmanifest'];
 
-/** Berkas di akar yang cocok akhirannya TAPI tetap tidak boleh terbit. */
-const KECUALI_AKAR = new Set(['server.js']);
+/**
+ * Berkas di akar yang cocok akhirannya TAPI tetap tidak boleh terbit.
+ *
+ * proposal.html (12 Sep 2026): dek penawaran yang dulu menempati akar situs
+ * sebagai index.html. Isinya materi penjualan — harga, tahapan penawaran,
+ * dan janji fitur yang belum tentu sama dengan yang sudah jadi. Sekarang
+ * akar situs adalah APLIKASINYA, dan dek itu tidak punya alasan tersaji ke
+ * publik. Tetap disimpan di repo supaya bisa dibuka lokal saat presentasi
+ * ke pengurus (`npm start` lalu /proposal.html), cukup tidak ikut terbit.
+ */
+const KECUALI_AKAR = new Set(['server.js', 'proposal.html']);
 
 /**
  * Berkas akar yang WAJIB ikut terbit walau akhirannya tidak ada di daftar

@@ -7,12 +7,44 @@
  */
 
 import { playTone, showToast } from '../core/feedback.js';
+import { gantiPinSendiri } from '../core/pengurus-client.js';
+import { bacaSesi } from '../core/supabase-client.js';
 
 export function toggleMobileDrawer() {
   const drawer = document.getElementById('mobileDrawerOverlay');
   if (!drawer) return;
   drawer.classList.toggle('open');
   playTone(560, 'sine', 0.08, 0.05);
+}
+
+/**
+ * Bentangkan / tutup daftar "Materi Saya" di sidebar.
+ *
+ * Pilihan santri disimpan di dataset wadahnya, bukan di variabel modul:
+ * daftarnya digambar ULANG setiap kali silabus berganti (ganti jenjang,
+ * konten terbit menyusul), dan penggambaran ulang itu tidak boleh
+ * memaksa daftar terbuka lagi kalau santri sudah menutupnya sendiri.
+ */
+export function toggleMateriNav(e) {
+  if (e) e.stopPropagation();
+
+  const wadah = document.getElementById('sidebarModulList');
+  if (!wadah) return;
+
+  const terbuka = wadah.classList.toggle('is-open');
+  if (terbuka) delete wadah.dataset.ditutupPengguna;
+  else wadah.dataset.ditutupPengguna = '1';
+
+  const toggle = document.getElementById('nav-materi-toggle');
+  if (toggle) toggle.setAttribute('aria-expanded', String(terbuka));
+
+  const caret = document.getElementById('navMateriCaret');
+  if (caret) {
+    caret.classList.remove('ph-caret-up', 'ph-caret-down');
+    caret.classList.add(terbuka ? 'ph-caret-up' : 'ph-caret-down');
+  }
+
+  playTone(terbuka ? 560 : 460, 'sine', 0.07, 0.045);
 }
 
 export function toggleProfileDropdown(e) {
@@ -60,7 +92,7 @@ export function bindOutsideClick() {
 /* ==========================================================================
  * AUDIT 10 September 2026 (M12) — ANTARMUKA YANG BERBOHONG
  *
- * TEMUAN. prototype.html memuat 15 kontrol yang satu-satunya efeknya adalah
+ * TEMUAN. Halaman aplikasi memuat 15 kontrol yang satu-satunya efeknya adalah
  * memunculkan toast. Tujuh di antaranya MENGAKU BERHASIL melakukan sesuatu
  * yang tidak pernah terjadi:
  *
@@ -127,4 +159,104 @@ export async function salinTautanMateri() {
     showToast('Peramban ini tidak mengizinkan menyalin otomatis. Salin dari kolom alamat, ya.');
     playTone(320, 'sine', 0.1, 0.05);
   }
+}
+
+
+/* ==========================================================================
+   GANTI PIN SENDIRI (12 September 2026)
+
+   Pengurus yang menetapkan PIN sebuah keluarga ikut mengetahuinya. Selama
+   wali tidak punya cara menggantinya, tidak pernah ada satu momen pun di
+   mana PIN sebuah keluarga hanya diketahui keluarga itu sendiri. Ini yang
+   menutup celah itu — dan sepenuhnya opsional, tidak menambah langkah bagi
+   yang tidak memakainya.
+   ========================================================================== */
+
+const $pin = (id) => document.getElementById(id);
+
+function setGantiPinError(pesan) {
+  const el = $pin('gantiPinError');
+  if (!el) return;
+  el.textContent = pesan || '';
+  el.style.display = pesan ? 'block' : 'none';
+}
+
+function tutupGantiPin() {
+  const modal = $pin('gantiPinModal');
+  if (modal) modal.classList.remove('open');
+  ['pinLamaInput', 'pinBaruInput', 'pinUlangInput'].forEach((id) => {
+    const el = $pin(id);
+    if (el) el.value = '';
+  });
+  setGantiPinError('');
+}
+
+async function simpanPinBaru() {
+  const lama = $pin('pinLamaInput')?.value.trim() || '';
+  const baru = $pin('pinBaruInput')?.value.trim() || '';
+  const ulang = $pin('pinUlangInput')?.value.trim() || '';
+  const tombol = $pin('gantiPinSubmit');
+
+  setGantiPinError('');
+  if (!lama || !baru || !ulang) {
+    setGantiPinError('Ketiga kolom wajib diisi.');
+    return;
+  }
+  // Diperiksa di sini, bukan cuma di server: salah ketik ulangan adalah
+  // kekeliruan paling sering, dan tidak ada gunanya menempuh jaringan
+  // untuk mengetahuinya.
+  if (baru !== ulang) {
+    setGantiPinError('PIN baru dan ulangannya belum sama.');
+    return;
+  }
+
+  if (tombol) {
+    tombol.disabled = true;
+    tombol.textContent = 'Menyimpan…';
+  }
+  try {
+    await gantiPinSendiri(lama, baru);
+    playTone(659, 'sine', 0.14, 0.08);
+    showToast('PIN berhasil diganti. Pakai PIN baru saat masuk berikutnya.');
+    tutupGantiPin();
+  } catch (e) {
+    setGantiPinError(e.message || 'Gagal mengganti PIN. Coba lagi.');
+  } finally {
+    if (tombol) {
+      tombol.disabled = false;
+      tombol.textContent = 'Simpan PIN Baru';
+    }
+  }
+}
+
+/** Buka dialog ganti PIN. Dipanggil dari menu "Ganti PIN" di sidebar. */
+export function bukaGantiPin() {
+  // Mode peraga (belum ada sesi) tidak punya PIN untuk diganti — katakan
+  // apa adanya, jangan buka formulir yang pasti gagal.
+  if (!bacaSesi()) {
+    showToast('Masuk dulu untuk mengganti PIN.');
+    return;
+  }
+
+  const modal = $pin('gantiPinModal');
+  if (!modal) return;
+
+  setGantiPinError('');
+  modal.classList.add('open');
+  $pin('pinLamaInput')?.focus();
+
+  // Dipasang sekali saja — modal ini dibuka berkali-kali selama satu sesi.
+  if (!modal.dataset.terpasang) {
+    modal.dataset.terpasang = '1';
+    $pin('gantiPinSubmit')?.addEventListener('click', simpanPinBaru);
+    $pin('gantiPinBatal')?.addEventListener('click', tutupGantiPin);
+    $pin('pinUlangInput')?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') simpanPinBaru();
+    });
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) tutupGantiPin();
+    });
+  }
+
+  playTone(560, 'sine', 0.08, 0.05);
 }

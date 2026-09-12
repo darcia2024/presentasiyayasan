@@ -13,6 +13,28 @@
 import { getSupabaseClient } from './supabase-client.js';
 import { normalizeNomorWa } from './phone.js';
 
+/**
+ * Tetapkan / atur ulang PIN login sebuah akun.
+ *
+ * Dipakai dua arah oleh Panel Pengurus: menetapkan PIN keluarga baru, dan
+ * menolong keluarga yang lupa PIN-nya. Keduanya tercatat di audit_log oleh
+ * Edge Function-nya.
+ *
+ * @param {{targetJenis:'wali'|'staff', targetId:string, pinBaru:string}} p
+ */
+export async function aturPinAkun(p) {
+  return panggilFungsi('auth-atur-pin', {
+    target_jenis: p.targetJenis,
+    target_id: p.targetId,
+    pin_baru: p.pinBaru,
+  });
+}
+
+/** Ganti PIN milik sendiri — butuh PIN lama, tidak butuh wewenang pengurus. */
+export async function gantiPinSendiri(pinLama, pinBaru) {
+  return panggilFungsi('auth-atur-pin', { pin_lama: pinLama, pin_baru: pinBaru });
+}
+
 async function panggilFungsi(nama, body) {
   const client = getSupabaseClient();
   const { data, error } = await client.functions.invoke(nama, { body });
@@ -55,7 +77,7 @@ export async function daftarSantriAdmin() {
   const client = getSupabaseClient();
   const { data, error } = await client
     .from('santri')
-    .select('id, nama, jenjang, nisn, inisial, status, beasiswa, infaq_aktif, created_at, kelas_id, wali:wali_id(nama, nomor_wa), kelas:kelas_id(nama)')
+    .select('id, nama, jenjang, nisn, inisial, status, beasiswa, infaq_aktif, created_at, kelas_id, wali:wali_id(id, nama, nomor_wa), kelas:kelas_id(nama)')
     .order('created_at', { ascending: false });
   if (error) {
     console.error('[pengurus-client] gagal memuat santri:', error.message);
@@ -81,6 +103,10 @@ export async function daftarkanWaliSantri(payload) {
     nomor_wa_wali: payload.nomorWaWali,
     nama_wali: payload.namaWali,
     persetujuan_data: !!payload.persetujuanData,
+    // Wajib untuk wali BARU — itulah kredensial yang dipakai keluarga masuk
+    // (12 Sep 2026, menggantikan OTP). Diabaikan server untuk wali yang
+    // sudah ada; lihat supabase/functions/daftarkan-wali-santri/index.ts.
+    pin: payload.pin || undefined,
     santri: payload.santri.map((s) => ({
       nama: s.nama,
       jenjang: s.jenjang,

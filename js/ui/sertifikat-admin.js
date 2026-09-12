@@ -3,7 +3,7 @@
  *
  * jsPDF dan qrcodejs dimuat DINAMIS (js/core/script-loader.js) — hanya
  * saat pengurus benar-benar menekan "Terbitkan Sertifikat", bukan dimuat
- * untuk semua orang lewat prototype.html. Lihat vendor/jspdf/README.md
+ * untuk semua orang lewat index.html. Lihat vendor/jspdf/README.md
  * untuk alasannya.
  *
  * Alur: 1) Edge Function terbitkan-sertifikat membuat baris basis data +

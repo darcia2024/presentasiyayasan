@@ -1,12 +1,19 @@
 /**
- * PERISA AZHARIYAH — Perpustakaan Digital & Pembaca Dokumen
+ * PERISA AZHARIYAH — Penyaring Perpustakaan Digital
  *
- * CATATAN FASE 3: isi dokumen masih HTML statis dari data/documents.js.
- * Nantinya diganti berkas PDF sungguhan dengan pembaca terproteksi dan
- * tombol unduh dimatikan.
+ * 12 September 2026 — openDocReader() DIHAPUS bersama js/data/documents.js.
+ *
+ * Fungsi itu membuka dokumen PERAGA: dua "PDF" yang sebenarnya potongan
+ * HTML di dalam repo, lengkap dengan nama penyusun dan nomor modul.
+ * Dokumen SUNGGUHAN dibuka js/ui/dokumen-viewer.js dari tabel `dokumen` —
+ * berkas PDF asli di Storage, ditampilkan lewat modal yang sama. Selama
+ * keduanya hidup berdampingan, tombol "Buka Silabus" di halaman materi
+ * SELALU membuka yang peraga, apa pun yang sudah diterbitkan pengurus.
+ *
+ * Yang tersisa di sini murni tampilan: menyaring kartu per jenjang dan
+ * menutup modal.
  */
 
-import { pdfDocsData } from '../data/documents.js';
 import { playTone, showToast } from '../core/feedback.js';
 
 /**
@@ -33,34 +40,6 @@ export function filterPdfLibrary(category, btnEl) {
 
   showToast(`Menampilkan ${visibleCount} dokumen silabus untuk filter: ${category.toUpperCase()}`);
   playTone(540, 'sine', 0.08, 0.05);
-}
-
-export function openDocReader(docId) {
-  const data = pdfDocsData[docId] || pdfDocsData[1];
-  const modal = document.getElementById('docReaderModal');
-
-  const setText = (id, value) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = value;
-  };
-
-  setText('readerHeaderDocTitle', data.file);
-  setText('readerSheetTitle', data.title);
-  setText('readerSheetSub', `${data.sub} • Penyusun: ${data.author}`);
-
-  const body = document.getElementById('readerSheetBody');
-  // PENGECUALIAN YANG DISENGAJA (ditinjau ulang audit S4, 10 Sep 2026):
-  // data.bodyHtml berasal dari js/data/documents.js — HTML yang DITULIS
-  // PENGEMBANG di dalam repo, bukan data yang bisa disunting staff lewat
-  // Studio/Panel. Memang harus dirender sebagai HTML (isinya dokumen
-  // berformat). Kalau suatu saat isi dokumen dipindah ke basis data,
-  // baris ini WAJIB berubah — itu titik masuk XSS yang paling langsung
-  // di seluruh aplikasi.
-  if (body) body.innerHTML = data.bodyHtml;
-
-  if (modal) modal.classList.add('open');
-  showToast(`Membuka dokumen silabus: "${data.title}"`);
-  playTone(600, 'sine', 0.1, 0.06);
 }
 
 export function closeDocReader() {

@@ -8,7 +8,7 @@
      • Endpoint /api/*               -> network-first + fallback cache terakhir
    ========================================================================== */
 
-const SW_VERSION   = 'perisa-v1.1.0-4e1d7f41';
+const SW_VERSION   = 'perisa-v1.1.0-46ea6fc1';
 const SHELL_CACHE  = `${SW_VERSION}-shell`;
 const ASSET_CACHE  = `${SW_VERSION}-assets`;
 const CDN_CACHE    = `${SW_VERSION}-cdn`;
@@ -19,32 +19,30 @@ const OFFLINE_URL = '/offline.html';
 /* App shell yang di-precache saat instalasi */
 const SHELL_ASSETS = [
   '/',
-  '/prototype.html',
-  '/prototype.css?v=ef53d6a9',
-  '/prototype-mobile.css?v=12276e33',
-  '/prototype-mobile.js?v=6058199a',
-  '/js/app.js?v=f2cecea0',
-  '/js/data/roles.js',
-  '/js/data/documents.js',
+  '/index.html',
+  '/prototype.css?v=611fd7df',
+  '/prototype-mobile.css?v=6065c6a3',
+  '/prototype-mobile.js?v=37fe10e4',
+  '/js/app.js?v=66483bc9',
   '/js/core/feedback.js',
   '/js/core/speech.js',
   '/js/ui/syllabus.js',
-  '/js/ui/role.js',
+  '/js/ui/jenjang.js',
+  '/js/ui/beranda.js',
   '/js/ui/router.js',
   '/js/ui/course.js',
   '/js/ui/library.js',
-  '/js/ui/assistant.js',
   '/js/ui/shell.js',
   '/js/config.js',
   '/js/core/supabase-client.js',
   '/js/ui/auth.js',
-  '/js/ui/auth.css?v=c696769b',
+  '/js/ui/auth.css?v=27452c6a',
   '/vendor/supabase/supabase-js.2.114.0.min.js',
   '/js/core/curriculum-client.js',
   '/js/core/csv.js',
   '/js/core/content-loader.js',
   '/js/ui/studio.js',
-  '/js/ui/studio.css?v=ebac38f6',
+  '/js/ui/studio.css?v=3ff3df16',
   '/js/ui/mufrodat-cards.js',
   '/js/core/video-client.js',
   '/js/ui/video-player.js',
@@ -57,7 +55,6 @@ const SHELL_ASSETS = [
   '/js/core/html.js',
   '/js/core/script-loader.js',
   '/js/core/phone.js',
-  '/js/core/asisten-client.js',
   '/js/core/pengurus-client.js',
   '/js/ui/pengurus-panel.js',
   '/js/ui/sertifikat-admin.js',
@@ -208,7 +205,7 @@ self.addEventListener('fetch', (event) => {
       } catch (_) {
         const cache = await caches.open(SHELL_CACHE);
         return (await cache.match(request)) ||
-               (await cache.match('/prototype.html')) ||
+               (await cache.match('/index.html')) ||
                (await cache.match(OFFLINE_URL)) ||
                new Response('Luring', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
       }

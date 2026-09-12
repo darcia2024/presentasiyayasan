@@ -1,7 +1,13 @@
 // PERISA AZHARIYAH — Edge Function: daftarkan wali + santri (Fase 6, pengurus).
 //
-// POST { nomor_wa_wali, nama_wali, persetujuan_data, santri: [{ nama,
+// POST { nomor_wa_wali, nama_wali, persetujuan_data, pin?, santri: [{ nama,
 //         jenjang, tanggal_lahir?, nisn?, kelas_id?, beasiswa? }, ...] }
+//
+// `pin` WAJIB kalau nomor walinya belum pernah terdaftar — itulah kredensial
+// yang dipakai keluarga untuk masuk (12 Sep 2026, menggantikan OTP; lihat
+// migrasi 20260912000001_login_pin.sql). Untuk wali yang SUDAH ada — misalnya
+// saat menambahkan anak kedua — `pin` diabaikan: PIN-nya sudah ada, dan
+// menimpanya diam-diam akan mengunci keluarga itu keluar tanpa ada yang tahu.
 //   (header Authorization: Bearer <sesi JWT staff admin>)
 // -> { ok: true, waliId, waliBaru, santri: [{id, nama, jenjang, inisial}] }
 // -> { ok: false, error: string }
@@ -28,6 +34,7 @@ import { gerbangCors, balasJson } from '../_shared/cors.ts';
 import { bacaSesiDariHeader } from '../_shared/sesi.ts';
 import { normalizeNomorWa } from '../_shared/phone.ts';
 import { periksaStaffAktif, KOLOM_STAFF } from '../_shared/akun-aktif.ts';
+import { buatKredensial, periksaPinBaru } from '../_shared/pin.ts';
 
 const supabase = createClient(
   Deno.env.get('SUPABASE_URL')!,
@@ -72,6 +79,7 @@ Deno.serve(async (req) => {
     const nomorMentah = body?.nomor_wa_wali;
     const namaWali = typeof body?.nama_wali === 'string' ? body.nama_wali.trim() : '';
     const persetujuanData = body?.persetujuan_data === true;
+    const pinBaru = typeof body?.pin === 'string' ? body.pin.trim() : '';
     const daftarSantriInput: SantriInput[] = Array.isArray(body?.santri) ? body.santri : [];
 
     if (typeof nomorMentah !== 'string' || !nomorMentah.trim()) {
@@ -93,6 +101,28 @@ Deno.serve(async (req) => {
       }
       if (!JENJANG_VALID.includes(s.jenjang)) {
         return balasJson(hCors, { ok: false, error: `Jenjang santri "${s.nama}" tidak valid.` }, 400);
+      }
+    }
+
+    /* ---------------------------------------------------------------- PIN
+     * Wali baru WAJIB punya PIN sejak awal — akun tanpa kredensial tidak
+     * bisa dimasuki siapa pun, dan keluarga yang sudah didaftarkan tapi
+     * tidak bisa masuk adalah kegagalan yang baru ketahuan di rumah.
+     *
+     * Diperiksa SEBELUM RPC pendaftaran dijalankan. Kalau diperiksa
+     * sesudahnya, PIN yang tidak valid berarti wali dan santrinya sudah
+     * terlanjur tersimpan sementara permintaannya dijawab "gagal".
+     */
+    const { data: waliSudahAda } = await supabase
+      .from('wali')
+      .select('id')
+      .eq('nomor_wa', nomorWa)
+      .maybeSingle();
+
+    if (!waliSudahAda) {
+      const salahPin = periksaPinBaru(pinBaru);
+      if (salahPin) {
+        return balasJson(hCors, { ok: false, error: `PIN untuk wali baru: ${salahPin}` }, 400);
       }
     }
 
@@ -133,10 +163,53 @@ Deno.serve(async (req) => {
       santri: { id: string; nama: string; jenjang: string; inisial: string; sudah_ada: boolean }[];
     };
 
+    /* ------------------------------------------------- simpan PIN wali baru
+     * Sengaja DI LUAR transaksi RPC di atas: kredensial hidup di tabelnya
+     * sendiri (wali_kredensial) yang tidak boleh disentuh RPC ber-SECURITY
+     * DEFINER itu, dan hash-nya diturunkan di sini — bukan di SQL.
+     *
+     * Kalau langkah ini yang gagal, keluarganya SUDAH tersimpan. Yang
+     * berbahaya bukan itu, melainkan kalau pengurus tidak diberi tahu:
+     * mereka akan menyerahkan PIN yang tidak pernah tersimpan. Karena itu
+     * kegagalannya dilaporkan apa adanya, lengkap dengan jalan keluarnya.
+     */
+    let pinTersimpan = false;
+    if (keluaran.wali_baru) {
+      try {
+        const kredensial = await buatKredensial(pinBaru);
+        const { error: errPin } = await supabase.from('wali_kredensial').upsert(
+          {
+            wali_id: keluaran.wali_id,
+            ...kredensial,
+            diperbarui_at: new Date().toISOString(),
+            diperbarui_oleh: sesi.akunId,
+            percobaan: 0,
+            terkunci_sampai: null,
+          },
+          { onConflict: 'wali_id' },
+        );
+        if (errPin) throw errPin;
+        pinTersimpan = true;
+      } catch (errPin) {
+        console.error('[daftarkan-wali-santri] PIN gagal disimpan:', errPin);
+        return balasJson(
+          hCors,
+          {
+            ok: false,
+            error:
+              'Wali dan santri BERHASIL didaftarkan, tetapi PIN-nya gagal disimpan. ' +
+              'Buka daftar Santri & Wali lalu atur PIN wali ini sebelum memberitahukannya ke keluarga.',
+          },
+          500,
+        );
+      }
+    }
+
     return balasJson(hCors, {
       ok: true,
       waliId: keluaran.wali_id,
       waliBaru: keluaran.wali_baru,
+      pinTersimpan,
       santri: keluaran.santri.map((s) => ({
         id: s.id,
         nama: s.nama,

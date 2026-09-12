@@ -1,7 +1,7 @@
 /* ==========================================================================
    PERISA AZHARIYAH — Ikon Phosphor (subset)
    DIHASILKAN OTOMATIS oleh tools/build-icons.js. Jangan disunting tangan.
-   Berisi 95 ikon dari 1530 yang tersedia.
+   Berisi 97 ikon dari 1530 yang tersedia.
    Menambah ikon di markup cukup dijalankan ulang lewat `npm run stamp`.
    ========================================================================== */
 
@@ -55,6 +55,7 @@
 .ph.ph-caret-up:before { content: "\e13c"; }
 .ph.ph-certificate:before { content: "\e766"; }
 .ph.ph-chart-bar:before { content: "\e150"; }
+.ph.ph-chart-line-up:before { content: "\e156"; }
 .ph.ph-chart-polar:before { content: "\eaa8"; }
 .ph.ph-chat-centered-text:before { content: "\e166"; }
 .ph.ph-chat-circle-dots:before { content: "\e16c"; }
@@ -62,7 +63,6 @@
 .ph.ph-check-circle:before { content: "\e184"; }
 .ph.ph-check-fat:before { content: "\eba6"; }
 .ph.ph-circle:before { content: "\e18a"; }
-.ph.ph-circle-notch:before { content: "\eb44"; }
 .ph.ph-circle-wavy-check:before { content: "\e606"; }
 .ph.ph-clock:before { content: "\e19a"; }
 .ph.ph-clock-clockwise:before { content: "\e19e"; }
@@ -74,6 +74,7 @@
 .ph.ph-device-mobile:before { content: "\e1e0"; }
 .ph.ph-devices:before { content: "\eba4"; }
 .ph.ph-download-simple:before { content: "\e20c"; }
+.ph.ph-eye:before { content: "\e220"; }
 .ph.ph-eye-slash:before { content: "\e224"; }
 .ph.ph-file-arrow-down:before { content: "\e232"; }
 .ph.ph-file-lock:before { content: "\e95c"; }
@@ -90,6 +91,7 @@
 .ph.ph-image:before { content: "\e2ca"; }
 .ph.ph-info:before { content: "\e2ce"; }
 .ph.ph-list:before { content: "\e2f0"; }
+.ph.ph-list-bullets:before { content: "\e2f2"; }
 .ph.ph-list-checks:before { content: "\eadc"; }
 .ph.ph-list-star:before { content: "\ebdc"; }
 .ph.ph-lock:before { content: "\e2fa"; }
@@ -98,9 +100,9 @@
 .ph.ph-magnifying-glass-plus:before { content: "\e310"; }
 .ph.ph-medal:before { content: "\e320"; }
 .ph.ph-microphone:before { content: "\e326"; }
-.ph.ph-paper-plane-right:before { content: "\e396"; }
 .ph.ph-pause:before { content: "\e39e"; }
 .ph.ph-pencil-simple:before { content: "\e3b4"; }
+.ph.ph-pencil-simple-line:before { content: "\ebc6"; }
 .ph.ph-play:before { content: "\e3d0"; }
 .ph.ph-play-circle:before { content: "\e3d2"; }
 .ph.ph-qr-code:before { content: "\e3e6"; }
@@ -112,6 +114,7 @@
 .ph.ph-share-network:before { content: "\e408"; }
 .ph.ph-shield-check:before { content: "\e40c"; }
 .ph.ph-shield-star:before { content: "\ec34"; }
+.ph.ph-sign-out:before { content: "\e42a"; }
 .ph.ph-sliders:before { content: "\e432"; }
 .ph.ph-sparkle:before { content: "\e6a2"; }
 .ph.ph-speaker-high:before { content: "\e44a"; }
@@ -121,7 +124,6 @@
 .ph.ph-student:before { content: "\e73e"; }
 .ph.ph-toggle-left:before { content: "\e674"; }
 .ph.ph-translate:before { content: "\e4a2"; }
-.ph.ph-tree-structure:before { content: "\e67c"; }
 .ph.ph-trend-down:before { content: "\e4ac"; }
 .ph.ph-trend-up:before { content: "\e4ae"; }
 .ph.ph-trophy:before { content: "\e67e"; }

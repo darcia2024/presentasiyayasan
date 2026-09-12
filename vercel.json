@@ -3,6 +3,18 @@
   "buildCommand": "npm run build:dist",
   "outputDirectory": "dist",
   "framework": null,
+  "redirects": [
+    {
+      "source": "/prototype.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/sw.js",

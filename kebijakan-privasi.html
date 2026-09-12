@@ -32,8 +32,14 @@
   3. Bagian 6 hanya bicara soal progres belajar, padahal sistem juga
      menyimpan pertanyaan bebas yang diketik santri ke Asisten AI.
 
+  11 September 2026 — Asisten AI DIHAPUS seluruhnya atas keputusan
+  pemilik (tampilan, Edge Function, dan tabel lognya). Penyebutannya di
+  bagian 2, 3, 5, dan 6 ikut dicabut: dokumen ini hanya boleh menyebut
+  pengolahan yang benar-benar terjadi, dan Anthropic tidak lagi menerima
+  data apa pun dari platform ini.
+
   MASIH PERLU KEPUTUSAN PEMILIK (OWNER REVIEW):
-     - BERAPA HARI pertanyaan Asisten AI & catatan aktivitas disimpan.
+     - BERAPA HARI catatan aktivitas disimpan.
        Mekanismenya sudah ada (lihat .github/workflows/retensi-data.yml);
        angkanya belum ditetapkan, dan selama belum ditetapkan tidak ada
        yang dihapus. Begitu angkanya diputuskan, sebutkan di bagian 6.
@@ -142,7 +148,6 @@
       <tr><td>Identitas wali</td><td>Nama, nomor WhatsApp</td></tr>
       <tr><td>Identitas santri</td><td>Nama, tanggal lahir (opsional), NISN (opsional), jenjang, kelas</td></tr>
       <tr><td>Data pembelajaran</td><td>Progres modul, XP, jawaban kuis, lencana, sertifikat yang diterbitkan</td></tr>
-      <tr><td>Data konsultasi</td><td>Pertanyaan yang diajukan ke Asisten Bahasa Arab (kalau fitur ini aktif) dan jawabannya</td></tr>
       <tr><td>Data infaq</td><td>Jumlah dan status verifikasi infaq — <strong>kami TIDAK pernah menyimpan nomor kartu, rekening, atau kredensial pembayaran apa pun</strong></td></tr>
       <tr><td>Data teknis</td><td>Waktu masuk (login), catatan keamanan untuk mencegah penyalahgunaan kode OTP</td></tr>
     </table>
@@ -155,7 +160,6 @@
       <li>Menampilkan materi pembelajaran sesuai jenjang santri, dan mencatat progresnya.</li>
       <li>Menyusun ringkasan mingguan yang dikirim ke WhatsApp wali.</li>
       <li>Menerbitkan sertifikat resmi berkode verifikasi.</li>
-      <li>Menjawab pertanyaan lewat Asisten Bahasa Arab (kalau diaktifkan), digrounding ke materi yang diterbitkan Umi Elly.</li>
       <li>Pencatatan infaq dan verifikasinya oleh pengurus.</li>
       <li>Menjaga keamanan akun — mencegah percobaan masuk yang tidak sah.</li>
     </ul>
@@ -173,7 +177,6 @@
     <ul>
       <li><strong>Supabase</strong> — basis data dan autentikasi, server berlokasi di kawasan Asia Pasifik (Sydney, Australia).</li>
       <li><strong>Penyedia gateway WhatsApp</strong> — mengirim kode OTP dan ringkasan mingguan ke nomor WhatsApp wali.</li>
-      <li><strong>Anthropic (Claude)</strong> — kalau Asisten Bahasa Arab aktif, teks pertanyaan santri dikirim ke penyedia ini untuk dijawab. Tidak ada data identitas (nama, nomor WA) yang disertakan dalam permintaan tersebut.</li>
       <li><strong>Vercel</strong> — menyajikan halaman web ini ke peramban Anda.</li>
     </ul>
     <p>Setiap pihak di atas terikat memproses data hanya untuk kepentingan menjalankan layanan PERISA, bukan untuk kepentingan mereka sendiri.</p>
@@ -182,11 +185,7 @@
   <div class="kartu">
     <h2><span class="no">6.</span> Berapa Lama Data Disimpan</h2>
     <p>Data santri disimpan selama akun tersebut aktif digunakan. Kalau santri berhenti dari program dan wali tidak meminta penghapusan, data progres belajar tetap kami simpan sebagai riwayat pembelajaran resmi (mis. dasar penerbitan sertifikat) — bukan untuk tujuan lain. Wali bisa meminta penghapusan kapan pun (lihat bagian 7).</p>
-    <p>Selain progres belajar, sistem juga menyimpan dua hal yang masa simpannya kami batasi:</p>
-    <ul>
-      <li><strong>Kode masuk (OTP)</strong> — hanya bentuk terenkripsi satu-arahnya, dan dihapus otomatis setelah kedaluwarsa.</li>
-      <li><strong>Pertanyaan ke Asisten Bahasa Arab</strong> — teks pertanyaan santri beserta jawabannya disimpan agar bisa dibuka kembali sebagai riwayat belajar, dan dihapus otomatis setelah masa simpan yang kami tetapkan terlampaui.</li>
-    </ul>
+    <p>Selain progres belajar, sistem juga menyimpan <strong>kode masuk (OTP)</strong> — hanya bentuk terenkripsi satu-arahnya, dan dihapus otomatis setelah kedaluwarsa.</p>
     <p>Kami juga menyimpan catatan aktivitas internal (siapa mendaftarkan siapa, kapan sertifikat diterbitkan) sebagai jejak pertanggungjawaban pengurus. Catatan itu tidak memuat isi pembelajaran santri.</p>
   </div>
 
@@ -222,7 +221,7 @@
     <p>Kebijakan ini bisa diperbarui seiring berkembangnya platform. Perubahan berarti akan diberi tahu lewat pengumuman di aplikasi atau ringkasan WhatsApp mingguan.</p>
   </div>
 
-  <p class="tanggal">Berlaku sejak 5 September 2026 · Diperbarui 10 September 2026 · Yayasan Peradaban Islam Azhariyah</p>
+  <p class="tanggal">Berlaku sejak 5 September 2026 · Diperbarui 11 September 2026 · Yayasan Peradaban Islam Azhariyah</p>
 </main>
 </body>
 </html>
