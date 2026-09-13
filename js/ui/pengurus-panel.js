@@ -1117,7 +1117,11 @@ async function renderLaporan(body) {
   }
 
   const pemilih = buatEl('div', 'studio-form');
-  pemilih.style.cssText = 'max-width:none; display:flex; gap:10px; align-items:flex-end; margin-bottom:20px;';
+  // flex-wrap:wrap seperti tiga baris sejenis di tab lain. Tanpa itu, di
+  // layar 375px tombol "Ekspor CSV" terdorong 5px keluar layar dan tidak
+  // bisa disentuh sama sekali — dan karena gaya ini inline, media query
+  // di studio.css tidak bisa menolongnya (audit 14 Sep 2026).
+  pemilih.style.cssText = 'max-width:none; display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; margin-bottom:20px;';
   const fKelas = fieldSelect(
     'Pilih Kelas',
     STATE.kelasList.map((k) => ({ value: k.id, label: `${k.nama} (${NAMA_JENJANG[k.jenjang]})` })),

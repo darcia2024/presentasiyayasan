@@ -2068,6 +2068,33 @@
 
   body.m-standalone .m-largetitle { padding-top: 16px; }
 
+  /* --- Judul view tidak diulang dua kali -------------------------------- */
+  /*
+     TEMUAN AUDIT 14 September 2026.
+
+     Shell mobile sudah menggambar judul besar tiap layar di .m-largetitle
+     ("Dashboard Guru", "Susun Modul", "Panel Pengurus") beserta
+     subjudulnya. Tiga view di index.html membawa kepalanya SENDIRI —
+     .studio-header-row — yang ditulis untuk tata letak desktop, tempat
+     kepala besar itu tidak ada.
+
+     Akibatnya di ponsel judul dan subjudulnya tampil dua kali berturut-
+     turut, kadang dengan kalimat yang sedikit berbeda (banner berkata
+     "verifikasi infaq dan sertifikat sanad", isinya berkata "kelas, infaq,
+     dan sertifikat"), sehingga terbaca seperti dua bagian berbeda yang
+     kebetulan mirip — bukan satu layar.
+
+     Yang disembunyikan kepala VIEW-nya, bukan kepala shell: kepala shell
+     ikut menempel saat digulir dan menyatu dengan bilah atas, sedangkan
+     kepala view cuma teks statis. Membuang yang statis tidak menghilangkan
+     informasi apa pun dari layar.
+  */
+  #viewGuruDashboard > .studio-header-row,
+  #viewStudioKurikulum > .studio-header-row,
+  #viewAdminPanel > .studio-header-row {
+    display: none;
+  }
+
 } /* ================= akhir @media (max-width: 768px) ================= */
 
 

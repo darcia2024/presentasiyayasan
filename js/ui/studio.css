@@ -8,6 +8,18 @@
   max-width: 980px;
 }
 
+/* Dashboard Guru memakai kelas .studio-* dan .pengurus-* yang sama, tapi
+   sampai audit 14 Sep 2026 tidak pernah diberi padding apa pun — di ponsel
+   seluruh isinya menempel rapat ke tepi layar (jarak kiri dan kanan
+   terukur 0px), termasuk kartu kelasnya. Disamakan dengan Studio, bukan
+   diberi angka sendiri: keduanya layar kerja staff yang dibuka
+   bergantian, dan tepi yang berbeda-beda terbaca sebagai layar yang
+   dibangun terpisah-pisah. */
+#viewGuruDashboard {
+  padding: 24px 28px 60px;
+  max-width: 980px;
+}
+
 .studio-header-row {
   margin-bottom: 18px;
 }
@@ -524,7 +536,8 @@
 }
 
 @media (max-width: 600px) {
-  #viewStudioKurikulum {
+  #viewStudioKurikulum,
+  #viewGuruDashboard {
     padding: 16px 16px 48px;
   }
 
@@ -887,4 +900,96 @@
   }
   .studio-ppt-baris-kiri { flex-basis: 100%; }
   .studio-ppt-status { width: auto; flex: 1; align-items: flex-start; }
+
+  /* Judul buku dan bab dibiarkan membungkus. Elipsis berguna di layar lebar
+     supaya tinggi barisnya seragam — di ponsel ia memotong tepat di bagian
+     yang membedakan satu bab dari bab lain, dan Umi harus mengenali 60 bab
+     dari daftar ini. */
+  .studio-ppt-buku-judul,
+  .studio-ppt-judul {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+}
+
+/* ==========================================================================
+   BARIS DAFTAR DI LAYAR SEMPIT — MENUMPUK, BUKAN TERGENCET
+
+   TEMUAN AUDIT 14 September 2026, diukur di lebar 375px.
+
+   Baris `.studio-list-item` adalah flex `nowrap`. Begitu kolom aksi berisi
+   kontrol ber-lebar-minimum ditambahkan ke dalamnya (pemilih kategori guru
+   190px, pemilih pengajar 210px — keduanya lahir 13 Sep), kolom teksnya
+   yang `flex: 1 1 0` dengan `min-width: 0` menyusut sampai NOL:
+
+     tab Guru   — nama guru dapat 8,7px untuk teks yang butuh 280px, jadi
+                  dua baris sama-sama terbaca "U  Pengajar". Ustazah Afida
+                  dan Ustaz Rahman tidak bisa dibedakan sama sekali.
+     tab Kelas  — nama kelas lebarnya 0 (hilang), dan tombol
+                  "+ Daftarkan Santri" mendarat 52px DI LUAR layar, jadi
+                  tidak bisa disentuh sama sekali.
+
+   Keduanya lolos dari pemeriksaan meluber otomatis: tidak ada yang
+   melewati batas dokumen — flexbox "menyelesaikan" masalahnya dengan
+   menggencet teks sampai lenyap. Yang menemukan ini mata, bukan skrip.
+
+   Di bawah 720px baris dibiarkan membungkus: teks mengambil satu baris
+   penuh, kontrolnya baris berikutnya.
+   ========================================================================== */
+
+@media (max-width: 720px) {
+  .studio-list-item {
+    flex-wrap: wrap;
+    align-items: stretch;
+    row-gap: 10px;
+  }
+
+  .studio-list-item-main {
+    flex: 1 1 100%;
+    min-width: 0;
+    /* Menumpuk, bukan sebaris. Judul dan keterangannya disejajarkan pada
+       baseline yang sama di layar lebar; begitu judulnya membungkus jadi
+       dua baris, keterangan di kanan tertinggal menggantung di baris
+       pertama dan terbaca seperti potongan yang salah tempat. */
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+  }
+
+  /* Nama lengkap lebih berguna daripada satu baris yang rapi. Di layar
+     lebar elipsis menjaga tinggi baris tetap seragam; di ponsel ia cuma
+     menyembunyikan bagian yang membedakan satu guru dari guru lain. */
+  .studio-list-item-judul {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  .studio-list-item-aksi {
+    max-width: none;
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .studio-list-item-aksi .studio-field-hint {
+    text-align: left;
+  }
+
+  /* Lebar minimum dari tata letak lebar dilepas — di sinilah asal
+     gencetannya. */
+  .studio-list-item select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* Tombol berteks melebar penuh supaya tidak terdorong keluar layar.
+     Tombol IKON (.studio-btn-icon) sengaja tidak ikut: ukurannya memang
+     30px persegi, dan melebarkannya jadi sepenuh baris akan membuat satu
+     ikon pensil terlihat seperti tombol utama. */
+  .studio-list-item > .studio-btn-secondary,
+  .studio-list-item > .studio-btn-primary,
+  .studio-list-item > .studio-btn-text {
+    width: 100%;
+  }
 }
