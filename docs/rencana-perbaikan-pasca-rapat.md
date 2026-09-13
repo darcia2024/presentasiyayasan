@@ -275,9 +275,18 @@ dan arsitekturnya harus dipilih ulang. Uji ini murah dan harus dilakukan duluan.
   progres sama sekali, jadi unggahannya dikirim lewat XMLHttpRequest. Berkas
   200 MB di jaringan sekolah bisa lima menit tanpa tanda kehidupan, dan layar
   yang diam lima menit dibaca sebagai "hang" lalu ditutup.
-- **C3 — BELUM, dan memang terhalang.** Pemutar PPT (maju-mundur per langkah,
-  layar penuh). Butuh jawaban 10.2 **dan** PPT asli buku 1 bab 1 — kesetiaan
-  animasinya harus diuji sebelum satu baris pun ditulis.
+- **C3 — BELUM. Kini WAJIB, bukan pilihan.** Pemutar PPT dalam aplikasi
+  (maju-mundur per langkah, layar penuh). Butir 10.2 dijawab 14 Sep — *"guru
+  mitra hanya bisa melihat"* — dan itu menghapus satu-satunya jalan murah:
+  membiarkan guru mengunduh dan membukanya di PowerPoint.
+
+  Sejak 14 Sep, guru mitra **ditolak** mengunduh berkas (`MITRA_TANPA_UNDUH`),
+  jadi sampai pemutar ini ada mereka tidak punya akses materi sama sekali.
+
+  Sisa penghalangnya tinggal satu: **PPT asli buku 1 bab 1**. Pertanyaannya
+  bukan lagi "boleh unduh atau tidak", melainkan "apakah animasi Umi selamat
+  melewati konversi" — kalau tidak, seluruh pendekatan render server-side gugur
+  dan arsitekturnya harus dipilih ulang. Uji itu murah dan harus duluan.
 - **C4 — BELUM.** Hapus jalur input dan tampilan PDF lama (tabel `dokumen`,
   menu "Modul & Silabus PDF"). Ditunda sampai terlihat Umi benar-benar memakai
   jalur PPT; membuang jalur lama sebelum penggantinya terbukti dipakai berarti
@@ -366,10 +375,10 @@ Tanpa keempat ini, fase C, D, dan E tidak bisa jalan:
 
 | # | Yang dibutuhkan | Menghalangi | Kenapa mendesak |
 |---|---|---|---|
-| 1 | **PPT asli buku 1 bab 1** | Seluruh Fase C | Menentukan apakah pendekatan konversi bisa dipakai sama sekali |
+| 1 | **PPT asli buku 1 bab 1** | Fase C3 — dan kini juga AKSES GURU MITRA | Satu-satunya penghalang C3 yang tersisa sejak 10.2 dijawab. Tanpa ini, guru mitra tidak punya akses materi sama sekali |
 | 2 | **Salinan catatan/absen manual guru** | Penyesuaian Fase D | Fase D sudah dibangun dari gambaran di rapat; contohnya dipakai untuk mencocokkan kolom, bukan lagi penghalang mulai |
 | 3 | **Foto buku + halaman materi** | Fase E, dan pengisian gambaran materi | Sumber isi game dan daftar materi |
-| 4 | **Jawaban soal unduh PPT guru eksternal** | Arsitektur Fase C | Lihat 10.2 |
+| ~~4~~ | ~~Jawaban soal unduh PPT guru eksternal~~ | — | **TERJAWAB 14 Sep: hanya boleh melihat.** Lihat 10.2 |
 
 ---
 
@@ -381,12 +390,35 @@ Teks Arab dibiarkan polos (`كتاب`), atau harokat dalam kata tetap ada dan ya
 dibuang hanya tanwin/akhiran (`كِتَاب`)? Menentukan seluruh 60 PPT dan seluruh
 data mufrodat. Salah tebak = kerja ulang total.
 
-### 10.2 Guru eksternal boleh mengunduh PPT atau tidak?
+### 10.2 Guru eksternal boleh mengunduh PPT atau tidak? — **TERJAWAB 14 Sep 2026**
 
-Kalau **boleh**, pekerjaan Fase C runtuh jadi sekadar penyimpanan berkas —
-murah dan animasinya sempurna. Kalau **tidak boleh**, harus ada pemutar
-server-side dan animasi bergantung pada kesetiaan konversi. Perbedaan biayanya
-besar sekali, dan jawabannya menentukan sebelum satu baris pun ditulis.
+> **"Guru mitra hanya bisa melihat."**
+
+Artinya jalur mahal yang diambil: harus ada pemutar dalam aplikasi, dan
+animasinya bergantung pada kesetiaan konversi.
+
+**Sudah ditegakkan (14 Sep).** `ppt-signed-url` menolak sesi berkategori
+`eksternal` dengan kode `MITRA_TANPA_UNDUH`. Endpoint itu gunanya menyerahkan
+BERKAS, jadi bagi mitra jawabannya tidak — titik. Menghilangkan `download` dari
+signed URL tidak cukup: peramban tetap mengunduh `.pptx` karena tidak bisa
+merendernya inline, jadi "inline" di situ hanyalah unduhan dengan nama yang
+lebih jelek. Dijaga uji asap (69 → 70), dan tesnya sengaja merupakan
+PEMBALIKAN dari tes sebelumnya supaya pelonggaran diam-diam ketahuan.
+
+Ditutup sekarang, bukan nanti, karena belum ada satu pun guru mitra sungguhan —
+alasan yang sama dengan migrasi 20260913000003. Membuka dulu lalu menutup
+setelah 60 berkas tersebar bukan langkah yang bisa diambil kembali.
+
+**KONSEKUENSI YANG HARUS DISADARI:** sampai pemutar C3 ada, guru mitra **tidak
+punya akses materi sama sekali**. Itu harga langsung dari aturan ini. Kalau
+yayasan ingin mereka bisa mulai lebih awal, jalan tercepat adalah Umi mengunggah
+ekspor PDF di samping PPT-nya — repo sudah punya pembaca PDF tanpa tombol unduh
+(`js/ui/dokumen-viewer.js`, iframe `#toolbar=0&navpanes=0`; pencegahan wajar,
+bukan jaminan mutlak).
+
+**Yang masih menghalangi C3:** PPT asli buku 1 bab 1 (penghalang #1 di bagian 9).
+Pertanyaannya bukan lagi "boleh unduh atau tidak", melainkan "apakah animasi Umi
+selamat melewati konversi" — dan itu hanya bisa dijawab dengan berkas aslinya.
 
 ### 10.3 Ujian akhir semester masuk LMS atau tetap di buku?
 

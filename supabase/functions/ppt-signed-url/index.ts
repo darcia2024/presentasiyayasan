@@ -57,12 +57,41 @@ Deno.serve(async (req) => {
     // menunggu tokennya kedaluwarsa (pelajaran audit 5 Sep).
     const { data: barisStaff } = await supabase
       .from('staff')
-      .select(KOLOM_STAFF)
+      .select(`${KOLOM_STAFF}, kategori`)
       .eq('id', sesi.akunId)
       .maybeSingle();
     const berhak = periksaStaffAktif(barisStaff, sesi);
     if (!berhak.boleh) {
       return balasJson(hCors, { ok: false, error: berhak.alasan! }, 403);
+    }
+
+    // KEPUTUSAN UMI, 14 September 2026 (butir 10.2): guru mitra HANYA BOLEH
+    // MELIHAT, tidak memegang berkasnya.
+    //
+    // Endpoint ini gunanya satu: menyerahkan berkas PPT-nya. Jadi bagi guru
+    // mitra jawabannya tidak, titik. Menghilangkan `download` dari signed URL
+    // TIDAK cukup — peramban tetap mengunduh .pptx karena tidak bisa
+    // merendernya inline, jadi "inline" di sini hanyalah unduhan dengan nama
+    // yang lebih jelek.
+    //
+    // KONSEKUENSINYA JUJUR: sampai pemutar dalam aplikasi (C3) ada, guru
+    // mitra tidak punya akses materi sama sekali. Itu memang harga dari
+    // aturan ini, dan ditutup SEKARANG karena belum ada satu pun guru mitra
+    // sungguhan — alasan yang sama dengan migrasi 20260913000003. Membuka
+    // dulu lalu menutup setelah 60 berkas tersebar bukan langkah yang bisa
+    // diambil kembali.
+    const kategori = (barisStaff as { kategori?: string } | null)?.kategori;
+    if (kategori === 'eksternal') {
+      return balasJson(
+        hCors,
+        {
+          ok: false,
+          kode: 'MITRA_TANPA_UNDUH',
+          error: 'Akun guru mitra hanya boleh menayangkan materi, bukan mengunduhnya. '
+            + 'Pemutar materi dalam aplikasi sedang disiapkan yayasan.',
+        },
+        403,
+      );
     }
 
     const body = await req.json().catch(() => null);

@@ -789,9 +789,15 @@ async function fungsiAda(nama) {
       await admin('PATCH', 'staff', { query: `?id=eq.${ids.pengajar}`, body: { kategori: 'eksternal' } });
       const pptOlehMitra = await panggilFungsi('ppt-signed-url', tokenPengajar, { pelajaran_id: ids.pelajaran });
       const santriOlehMitra = await restSebagai('GET', 'santri', tokenPengajar, '?select=id&limit=5');
-      cek('ppt-signed-url: GURU MITRA tetap dapat PPT, tapi tetap buta terhadap santri',
-        pptOlehMitra.status === 200 && (santriOlehMitra.data?.length ?? 0) === 0,
-        { ppt: pptOlehMitra.status, santri: santriOlehMitra.data });
+      /* KEPUTUSAN UMI 14 Sep (butir 10.2): guru mitra HANYA BOLEH MELIHAT.
+         Endpoint ini menyerahkan BERKAS-nya, jadi bagi mitra jawabannya
+         tidak. Sebelum keputusan ini mitra justru boleh — pembalikan yang
+         disengaja, dan tes ini yang menjaganya tidak diam-diam kembali. */
+      cek('ppt-signed-url: GURU MITRA DITOLAK mengunduh berkas (hanya boleh melihat)',
+        pptOlehMitra.status === 403 && pptOlehMitra.data?.kode === 'MITRA_TANPA_UNDUH',
+        pptOlehMitra);
+      cek('guru mitra tetap buta terhadap data santri',
+        (santriOlehMitra.data?.length ?? 0) === 0, santriOlehMitra.data);
       await admin('PATCH', 'staff', { query: `?id=eq.${ids.pengajar}`, body: { kategori: 'internal' } });
 
       /* Tautannya harus benar-benar mengembalikan berkasnya — signed URL
