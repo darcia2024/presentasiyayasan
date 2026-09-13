@@ -44,7 +44,14 @@ verify_jwt = false
 [functions.kirim-ringkasan-mingguan]
 verify_jwt = false
 
-# Sisanya (kuis-soal, submit-jawaban, video-signed-url,
-# terbitkan-sertifikat, daftarkan-wali-santri, auth-atur-pin) memakai verify_jwt baku
-# = true, LALU memverifikasi ulang sesinya sendiri lewat
-# _shared/sesi.ts untuk tahu SIAPA pemanggilnya — bukan cuma "sudah login".
+# Sisanya (kuis-soal, submit-jawaban, video-signed-url, terbitkan-sertifikat,
+# daftarkan-wali-santri, daftarkan-santri-kelas, atur-kategori-guru,
+# auth-atur-pin) memakai verify_jwt baku = true, LALU memverifikasi ulang
+# sesinya sendiri lewat _shared/sesi.ts untuk tahu SIAPA pemanggilnya — bukan
+# cuma "sudah login".
+#
+# Yang bergerbang PENGURUS/SUPERADMIN (periksaStaffAktif(..., true), dibaca
+# dari tabel `staff` — bukan dari klaim JWT, supaya penurunan peran berlaku
+# seketika): daftarkan-wali-santri, daftarkan-santri-kelas, atur-kategori-guru,
+# terbitkan-sertifikat. auth-atur-pin memakai keduanya: mengatur PIN ORANG
+# LAIN butuh admin, mengatur PIN SENDIRI tidak.

@@ -190,6 +190,31 @@
   color: var(--text-muted);
 }
 
+/* Kolom aksi di ujung kanan satu baris daftar: sebuah kontrol (mis. pemilih
+   pengajar atau kategori guru) beserta keterangan di bawahnya. Kolom, bukan
+   baris — keterangannya menjelaskan kontrol tepat di atasnya, dan menaruhnya
+   berdampingan membuat keduanya terbaca sebagai dua hal terpisah. */
+.studio-list-item-aksi {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+  max-width: 260px;
+}
+
+.studio-list-item-aksi .studio-field-hint {
+  margin-top: 0;
+  text-align: right;
+}
+
+/* Baris daftar yang isinya kontrol tidak boleh ikut mewarisi cursor:pointer
+   dari .studio-list-item — seluruh barisnya terlihat bisa diklik padahal
+   hanya select di dalamnya yang melakukan sesuatu. */
+.studio-list-item:has(.studio-list-item-aksi) {
+  cursor: default;
+}
+
 /* ---------------------------------------------------------------- Chips */
 
 .studio-chip {

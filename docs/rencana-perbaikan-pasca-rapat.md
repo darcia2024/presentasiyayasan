@@ -146,10 +146,37 @@ lagi:
 Kolom terakhir yang penting: materi ajar **tetap terbuka**. Itu seluruh alasan
 akun guru mitra ada.
 
-**Masih menganggur:** belum ada UI untuk mengubah kategori — tabel `staff` tidak
-punya kebijakan tulis sama sekali (hanya `staff_select_self` dan
-`staff_select_admin`), jadi butuh Edge Function bergerbang superadmin. Sementara
-ini lewat `node tools/daftarkan-akun-awal.js ... --kategori eksternal`.
+**Pengelolaannya di Panel Pengurus** (ditambahkan 13 Sep, menutup dua sisa B2):
+
+- Tab **Guru** baru — daftar staff, dan kategori pengajar bisa diubah di sana.
+  Lewat Edge Function `atur-kategori-guru`, **bukan** kebijakan RLS: RLS
+  menyaring BARIS, sedangkan batas yang dibutuhkan di sini adalah batas KOLOM.
+  Membuka `update staff` untuk `auth_is_admin()` akan sekaligus membuka kolom
+  `peran` — cukup satu permintaan REST dari console peramban untuk seorang
+  pengurus menaikkan dirinya jadi superadmin. Di fungsinya, kolomnya ditulis
+  mati: hanya `kategori`, nilainya hanya dua, dan nama kolom tidak pernah
+  datang dari pemanggil.
+- Tab **Kelas** — tiap kelas punya pemilih pengajar. Ini **lewat RLS biasa**
+  (`kelas_update_admin` sudah ada, dan `trg_audit_kelas` sudah mencatatnya
+  sendiri); menambah Edge Function di sini hanya menduplikasi keduanya.
+  Kategori ditulis di label pilihannya, dan guru mitra yang terpilih memunculkan
+  peringatan bahwa kelas itu tetap tidak akan tampil di dashboard-nya — batas
+  yang disengaja harus terbaca sebagai disengaja, bukan sebagai aplikasi rusak.
+
+Perubahan kategori dicatat ke `audit_log` secara eksplisit, karena tabel `staff`
+— tidak seperti santri/kelas/infaq — tidak punya trigger audit.
+
+Sepuluh pemeriksaan tambahan di uji asap, semuanya tentang yang TIDAK boleh:
+pengajar mengubah kategorinya sendiri (403), wali (403), tanpa sesi (401),
+kategori untuk pengurus (400), nilai ngawur (400), dan kolom selundupan
+(`peran`/`aktif` dikirim bersama `kategori`) yang harus diabaikan. Pencabutannya
+terbukti berlaku **seketika dengan token yang sama**, bukan menunggu JWT lama
+kedaluwarsa.
+
+**Masih menganggur:** pembuatan akun staff tetap lewat
+`node tools/daftarkan-akun-awal.js` — sengaja, karena membuat staff berarti
+menetapkan PERAN, dan itu keputusan yang pantas dilakukan sadar-sadar, bukan
+lewat formulir yang bisa terklik di sela pekerjaan lain.
 
 ### B3. Petakan ulang struktur kurikulum ke model 12 buku — BELUM
 

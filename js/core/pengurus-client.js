@@ -186,7 +186,10 @@ export async function hapusSantri(santriId) {
 
 export async function daftarKelas() {
   const client = getSupabaseClient();
-  const { data, error } = await client.from('kelas').select('id, nama, jenjang, tahun_ajaran').order('nama');
+  const { data, error } = await client
+    .from('kelas')
+    .select('id, nama, jenjang, tahun_ajaran, pengajar_id')
+    .order('nama');
   if (error) {
     console.error('[pengurus-client] gagal memuat kelas:', error.message);
     return [];
@@ -199,10 +202,74 @@ export async function buatKelas({ nama, jenjang, tahunAjaran }) {
   const { data, error } = await client
     .from('kelas')
     .insert({ nama, jenjang, tahun_ajaran: tahunAjaran })
-    .select('id, nama, jenjang, tahun_ajaran')
+    .select('id, nama, jenjang, tahun_ajaran, pengajar_id')
     .single();
   if (error) throw new Error(error.message || 'Gagal membuat kelas.');
   return data;
+}
+
+/* -------------------------------------------------------------------- GURU */
+
+/**
+ * Daftar staff yayasan beserta kategorinya.
+ *
+ * Dibaca lewat kebijakan `staff_select_admin` — pengurus/superadmin melihat
+ * semua baris, staff lain hanya dirinya sendiri. Tidak ada Edge Function di
+ * sini karena membaca daftar guru bukan penulisan apa pun.
+ */
+export async function daftarStaff() {
+  const client = getSupabaseClient();
+  const { data, error } = await client
+    .from('staff')
+    .select('id, nama, peran, kategori, aktif, nomor_wa')
+    .order('nama');
+  if (error) {
+    console.error('[pengurus-client] gagal memuat staff:', error.message);
+    return [];
+  }
+  return data || [];
+}
+
+/**
+ * Tugaskan (atau lepas, dengan pengajarId null) seorang guru ke satu kelas.
+ *
+ * LEWAT RLS, BUKAN EDGE FUNCTION — berbeda dengan ubahKategoriGuru() di
+ * bawah. Kebijakan `kelas_update_admin` memang sudah membuka update tabel
+ * `kelas` untuk pengurus, dan tabel itu punya trigger audit (trg_audit_kelas)
+ * yang mencatat perubahannya sendiri. Menambahkan Edge Function di sini hanya
+ * akan menduplikasi keduanya tanpa menutup apa pun.
+ *
+ * Bedanya dengan `staff`: di sana tidak ada kebijakan tulis sama sekali, dan
+ * membukanya berarti membuka SEMUA kolom termasuk `peran`.
+ */
+export async function tugaskanPengajarKelas(kelasId, pengajarId) {
+  const client = getSupabaseClient();
+  const { data, error } = await client
+    .from('kelas')
+    .update({ pengajar_id: pengajarId || null })
+    .eq('id', kelasId)
+    .select('id, pengajar_id');
+  if (error) throw new Error(error.message || 'Gagal menugaskan pengajar.');
+  // RLS yang menolak UPDATE menjawab 200 dengan NOL baris, bukan error —
+  // tanpa pemeriksaan ini antarmuka akan berkata "tersimpan" untuk
+  // penyimpanan yang tidak pernah terjadi (pelajaran audit, lihat
+  // js/core/curriculum-client.js).
+  if (!Array.isArray(data) || data.length === 0) {
+    throw new Error('Penugasan tidak tersimpan — kemungkinan izin ditolak.');
+  }
+  return data[0];
+}
+
+/**
+ * Ubah kategori seorang pengajar: 'internal' atau 'eksternal' (Fase B2).
+ *
+ * Lewat Edge Function karena tabel `staff` tidak punya kebijakan tulis, dan
+ * membukanya untuk pengurus berarti membuka kolom `peran` juga — satu
+ * permintaan REST dari console peramban sudah cukup untuk menaikkan diri jadi
+ * superadmin. Alasan lengkapnya ada di kepala berkas fungsinya.
+ */
+export async function ubahKategoriGuru(staffId, kategori) {
+  return panggilFungsi('atur-kategori-guru', { staff_id: staffId, kategori });
 }
 
 /* ------------------------------------------------------------------- INFAQ */

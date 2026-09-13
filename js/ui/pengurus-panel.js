@@ -24,6 +24,9 @@ import {
   perbaruiSantri,
   daftarkanWaliSantri,
   daftarkanSantriKelas,
+  daftarStaff,
+  tugaskanPengajarKelas,
+  ubahKategoriGuru,
   aturPinAkun,
   hapusSantri,
   cariWaliIdLewatNomor,
@@ -60,11 +63,14 @@ function pilihanJenjang() {
 const TABS = [
   { key: 'ringkasan', label: 'Ringkasan' },
   { key: 'santri', label: 'Santri & Wali' },
+  { key: 'guru', label: 'Guru' },
   { key: 'kelas', label: 'Kelas' },
   { key: 'infaq', label: 'Infaq' },
   { key: 'sertifikat', label: 'Sertifikat' },
   { key: 'laporan', label: 'Laporan' },
 ];
+
+const NAMA_PERAN = { pengajar: 'Pengajar', pengurus: 'Pengurus', superadmin: 'Super Admin' };
 
 const STATE = {
   tab: 'ringkasan',
@@ -162,7 +168,10 @@ async function render() {
   body.style.padding = '20px 32px 32px';
   root.appendChild(body);
 
-  const muat = { ringkasan: renderRingkasan, santri: renderSantri, kelas: renderKelas, infaq: renderInfaq, sertifikat: renderSertifikatTab, laporan: renderLaporan };
+  const muat = {
+    ringkasan: renderRingkasan, santri: renderSantri, guru: renderGuru, kelas: renderKelas,
+    infaq: renderInfaq, sertifikat: renderSertifikatTab, laporan: renderLaporan,
+  };
   const fn = muat[STATE.tab];
   if (fn) await jalankan(() => fn(body));
 }
@@ -554,6 +563,103 @@ function fieldSelect(label, opsi) {
   return { wrap, select };
 }
 
+/* ================================================================= GURU */
+
+/**
+ * Daftar staff yayasan, dan satu-satunya tempat kategori guru bisa diubah
+ * tanpa membuka terminal (Fase B2).
+ *
+ * TIDAK ADA TOMBOL BUAT AKUN di sini, dan itu disengaja. Membuat staff
+ * berarti menetapkan PERAN, dan peran menentukan siapa yang boleh membaca
+ * data seluruh santri yayasan — keputusan yang pantas dilakukan sadar-sadar
+ * lewat `tools/daftarkan-akun-awal.js`, bukan lewat formulir yang bisa
+ * terklik di sela-sela pekerjaan lain. Yang bisa diubah di layar ini hanya
+ * kategori, dan hanya untuk pengajar.
+ */
+async function renderGuru(body) {
+  const rowHeader = buatEl('div', 'studio-row-header');
+  rowHeader.appendChild(buatEl('h3', 'studio-h3', 'Guru & Staff Yayasan'));
+  body.appendChild(rowHeader);
+
+  const ket = buatEl('div', 'studio-field-hint',
+    'Guru internal direkrut yayasan dan memegang data santri kelas ampuannya. '
+    + 'Guru mitra (mis. TPA Gorontalo) hanya memegang materi ajar — tidak melihat '
+    + 'santri, absensi, maupun sertifikat, walau ditugaskan ke sebuah kelas.');
+  ket.style.marginBottom = '16px';
+  body.appendChild(ket);
+
+  const wrapMuat = pesanMemuat();
+  body.appendChild(wrapMuat);
+  const daftar = await daftarStaff();
+  body.removeChild(wrapMuat);
+
+  if (!daftar.length) {
+    body.appendChild(pesanKosong('Belum ada staff terdaftar.'));
+    return;
+  }
+
+  const list = buatEl('div', 'studio-list');
+  daftar.forEach((s) => {
+    const item = buatEl('div', 'studio-list-item');
+
+    const main = buatEl('div', 'studio-list-item-main');
+    main.appendChild(buatEl('div', 'studio-list-item-judul', s.nama));
+    main.appendChild(buatEl('div', 'studio-list-item-meta',
+      `${NAMA_PERAN[s.peran] || s.peran}${s.aktif ? '' : ' • NONAKTIF'}`));
+    item.appendChild(main);
+
+    if (s.peran !== 'pengajar') {
+      // Pengurus membaca data santri lewat auth_is_admin(), bukan lewat
+      // kelas ampuan — menandainya 'eksternal' tidak membatasi apa pun.
+      // Menyembunyikan pilihannya lebih jujur daripada menyediakan tombol
+      // yang hasilnya tidak sesuai namanya.
+      item.appendChild(buatEl('div', 'studio-field-hint', 'Kategori tidak berlaku untuk peran ini.'));
+      list.appendChild(item);
+      return;
+    }
+
+    const aksi = buatEl('div', 'studio-list-item-aksi');
+    const select = document.createElement('select');
+    select.className = 'studio-input';
+    select.style.minWidth = '190px';
+    select.setAttribute('aria-label', `Kategori ${s.nama}`);
+    [
+      { value: 'internal', label: 'Internal — akses penuh' },
+      { value: 'eksternal', label: 'Mitra — materi saja' },
+    ].forEach((o) => {
+      const opt = document.createElement('option');
+      opt.value = o.value;
+      opt.textContent = o.label;
+      if (o.value === s.kategori) opt.selected = true;
+      select.appendChild(opt);
+    });
+
+    select.addEventListener('change', () =>
+      jalankan(async () => {
+        const sebelum = s.kategori;
+        select.disabled = true;
+        try {
+          const hasil = await ubahKategoriGuru(s.id, select.value);
+          s.kategori = hasil.staff?.kategori || select.value;
+          showToast(s.kategori === 'eksternal'
+            ? `${s.nama} jadi guru mitra — akses data santri dicabut.`
+            : `${s.nama} jadi guru internal — akses data santri dibuka.`);
+        } catch (e) {
+          select.value = sebelum;
+          throw e;
+        } finally {
+          select.disabled = false;
+        }
+      }, 'Gagal mengubah kategori guru.'),
+    );
+
+    aksi.appendChild(select);
+    item.appendChild(aksi);
+    list.appendChild(item);
+  });
+  body.appendChild(list);
+}
+
 /* ================================================================ KELAS */
 
 async function renderKelas(body) {
@@ -591,13 +697,15 @@ async function renderKelas(body) {
 
   const wrapMuat = pesanMemuat();
   body.appendChild(wrapMuat);
-  const daftar = await daftarKelas();
+  const [daftar, staff] = await Promise.all([daftarKelas(), daftarStaff()]);
   body.removeChild(wrapMuat);
 
   if (!daftar.length) {
     body.appendChild(pesanKosong('Belum ada kelas dibuat.'));
     return;
   }
+
+  const pengajar = staff.filter((s) => s.peran === 'pengajar' && s.aktif);
 
   const list = buatEl('div', 'studio-list');
   daftar.forEach((k) => {
@@ -606,6 +714,8 @@ async function renderKelas(body) {
     main.appendChild(buatEl('div', 'studio-list-item-judul', k.nama));
     main.appendChild(buatEl('div', 'studio-list-item-meta', `Jenjang ${NAMA_JENJANG[k.jenjang]} • Tahun Ajaran ${k.tahun_ajaran}`));
     item.appendChild(main);
+
+    item.appendChild(pilihPengajar(k, pengajar));
 
     const btnIsi = buatEl('button', 'studio-btn-secondary', '+ Daftarkan Santri');
     btnIsi.type = 'button';
@@ -619,6 +729,76 @@ async function renderKelas(body) {
     list.appendChild(item);
   });
   body.appendChild(list);
+}
+
+/**
+ * Pemilih pengajar untuk satu kelas.
+ *
+ * KATEGORI DITULIS DI LABELNYA, dan guru mitra yang terpilih diberi
+ * peringatan. Menugaskan guru eksternal ke sebuah kelas TIDAK membuatnya
+ * melihat kelas itu — auth_kelas_diampu() mengembalikan kosong untuk mereka
+ * (migrasi 20260913000003). Tanpa peringatan ini, pengurus menugaskan,
+ * melihat tersimpan, lalu ditelepon gurunya yang layarnya kosong; dugaan
+ * pertamanya pasti "aplikasinya rusak", dan ia akan menugaskan ulang
+ * berkali-kali. Batas yang disengaja harus terbaca sebagai disengaja.
+ */
+function pilihPengajar(kelas, pengajar) {
+  const wrap = buatEl('div', 'studio-list-item-aksi');
+
+  const select = document.createElement('select');
+  select.className = 'studio-input';
+  select.style.minWidth = '210px';
+  select.setAttribute('aria-label', `Pengajar untuk ${kelas.nama}`);
+
+  const kosong = document.createElement('option');
+  kosong.value = '';
+  kosong.textContent = '— Belum ditugaskan —';
+  select.appendChild(kosong);
+
+  pengajar.forEach((g) => {
+    const opt = document.createElement('option');
+    opt.value = g.id;
+    opt.textContent = `${g.nama}${g.kategori === 'eksternal' ? ' (mitra)' : ''}`;
+    if (g.id === kelas.pengajar_id) opt.selected = true;
+    select.appendChild(opt);
+  });
+  wrap.appendChild(select);
+
+  const catatan = buatEl('div', 'studio-field-hint', '');
+  wrap.appendChild(catatan);
+
+  const perbaruiCatatan = () => {
+    const g = pengajar.find((x) => x.id === select.value);
+    catatan.textContent = g && g.kategori === 'eksternal'
+      ? 'Guru mitra hanya memegang materi — kelas ini tidak akan tampil di dashboard-nya.'
+      : '';
+  };
+  perbaruiCatatan();
+
+  select.addEventListener('change', () =>
+    jalankan(async () => {
+      const sebelum = kelas.pengajar_id;
+      select.disabled = true;
+      try {
+        await tugaskanPengajarKelas(kelas.id, select.value);
+        kelas.pengajar_id = select.value || null;
+        perbaruiCatatan();
+        const g = pengajar.find((x) => x.id === select.value);
+        showToast(g ? `${kelas.nama} diampu ${g.nama}.` : `Pengajar ${kelas.nama} dilepas.`);
+      } catch (e) {
+        // Kembalikan pilihannya ke keadaan sebenarnya. Select yang tetap
+        // menampilkan nama guru baru setelah penyimpanan gagal adalah
+        // kebohongan yang baru ketahuan berminggu-minggu kemudian.
+        select.value = sebelum || '';
+        perbaruiCatatan();
+        throw e;
+      } finally {
+        select.disabled = false;
+      }
+    }, 'Gagal menugaskan pengajar.'),
+  );
+
+  return wrap;
 }
 
 /**

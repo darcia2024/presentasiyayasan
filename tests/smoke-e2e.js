@@ -662,6 +662,75 @@ async function fungsiAda(nama) {
     cek('dikembalikan ke internal, aksesnya pulih (gerbangnya memang kategori)',
       kelasPulih.data?.length === 1, kelasPulih.data);
 
+    /* ==================================================================
+     * B2 — EDGE FUNCTION atur-kategori-guru
+     *
+     * Tabel `staff` tidak punya satu pun kebijakan tulis, jadi satu-satunya
+     * jalan mengubah kategori adalah fungsi ini. Yang diuji terutama bukan
+     * jalur suksesnya, melainkan yang TIDAK boleh: kalau seorang pengajar
+     * bisa memanggilnya, guru mitra Gorontalo bisa membuka sendiri seluruh
+     * data santri yayasan — persis lubang yang B2 ada untuk menutupnya.
+     * ================================================================== */
+    console.log('\n=== Gerbang kategori guru (B2) ===');
+
+    const adaFnKategori = await fungsiAda('atur-kategori-guru');
+    if (!adaFnKategori) {
+      lewati('atur-kategori-guru', 'fungsi belum ter-deploy');
+    } else {
+      const fnKategori = (jwt, muatan) => panggilFungsi('atur-kategori-guru', jwt, muatan);
+
+      const kategoriTanpaSesi = await fnKategori(null, { staff_id: ids.pengajar, kategori: 'eksternal' });
+      cek('atur-kategori-guru: tanpa sesi ditolak 401', kategoriTanpaSesi.status === 401, kategoriTanpaSesi.status);
+
+      /* Inti B2: guru tidak boleh mengangkat kategorinya sendiri. */
+      const olehPengajar = await fnKategori(tokenPengajar, { staff_id: ids.pengajar, kategori: 'internal' });
+      cek('atur-kategori-guru: PENGAJAR TIDAK BISA MENGUBAH KATEGORINYA SENDIRI',
+        olehPengajar.status === 403, olehPengajar);
+
+      const olehWaliKategori = await fnKategori(tokenWali, { staff_id: ids.pengajar, kategori: 'eksternal' });
+      cek('atur-kategori-guru: wali ditolak 403', olehWaliKategori.status === 403, olehWaliKategori.status);
+
+      const kePengurus = await fnKategori(tokenStaff, { staff_id: ids.staff, kategori: 'eksternal' });
+      cek('atur-kategori-guru: pengurus tidak bisa diberi kategori (labelnya tidak membatasi apa pun)',
+        kePengurus.status === 400, kePengurus);
+
+      const nilaiNgawur = await fnKategori(tokenStaff, { staff_id: ids.pengajar, kategori: 'superadmin' });
+      cek('atur-kategori-guru: nilai kategori ngawur ditolak 400', nilaiNgawur.status === 400, nilaiNgawur.status);
+
+      /* Kolom selundupan: `peran` dikirim bersama `kategori`. Kalau ini
+         sampai tertulis, seorang pengurus bisa menaikkan dirinya sendiri. */
+      const selundupan = await fnKategori(tokenStaff, {
+        staff_id: ids.pengajar, kategori: 'eksternal', peran: 'superadmin', aktif: false,
+      });
+      const sesudahSelundupan = await admin('GET', 'staff', { query: `?id=eq.${ids.pengajar}&select=peran,aktif,kategori` });
+      cek('atur-kategori-guru: kolom selundupan (peran/aktif) DIABAIKAN',
+        selundupan.status === 200 && sesudahSelundupan[0].peran === 'pengajar'
+        && sesudahSelundupan[0].aktif === true && sesudahSelundupan[0].kategori === 'eksternal',
+        { balasan: selundupan.data, sesudah: sesudahSelundupan[0] });
+
+      /* Pencabutannya harus berlaku SEKETIKA, dengan token yang sama —
+         bukan menunggu JWT lama kedaluwarsa (pelajaran audit 5 Sep). */
+      const kelasSesudahCabut = await restSebagai('GET', 'kelas', tokenPengajar, `?select=id&id=eq.${ids.kelasB}`);
+      cek('atur-kategori-guru: akses tercabut SEKETIKA dengan token yang sama',
+        (kelasSesudahCabut.data?.length ?? 0) === 0, kelasSesudahCabut.data);
+
+      const auditKategori = await admin('GET', 'audit_log', {
+        query: `?aksi=eq.ubah_kategori_guru&target_id=eq.${ids.pengajar}&order=created_at.desc&limit=1&select=detail`,
+      });
+      cek('atur-kategori-guru: perubahan tercatat di audit_log (tabel staff tidak punya trigger audit)',
+        auditKategori[0]?.detail?.ke === 'eksternal', auditKategori[0]);
+
+      const ulangSama = await fnKategori(tokenStaff, { staff_id: ids.pengajar, kategori: 'eksternal' });
+      cek('atur-kategori-guru: nilai yang sama dilaporkan tidak_berubah',
+        ulangSama.status === 200 && ulangSama.data?.tidak_berubah === true, ulangSama.data);
+
+      const balikInternal = await fnKategori(tokenStaff, { staff_id: ids.pengajar, kategori: 'internal' });
+      const kelasPulihFn = await restSebagai('GET', 'kelas', tokenPengajar, `?select=id&id=eq.${ids.kelasB}`);
+      cek('atur-kategori-guru: dikembalikan internal, akses pulih',
+        balikInternal.status === 200 && kelasPulihFn.data?.length === 1,
+        { balik: balikInternal.data, kelas: kelasPulihFn.data });
+    }
+
     console.log(`\n=== HASIL: ${lulus} lulus, ${gagal} gagal, ${dilewati} dilewati ===\n`);
   } finally {
     console.log('=== Membersihkan data uji ===');
