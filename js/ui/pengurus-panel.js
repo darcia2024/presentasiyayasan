@@ -1007,14 +1007,24 @@ async function renderSertifikatTab(body) {
   form.style.cssText = 'max-width:none; display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; margin-bottom:20px;';
   const fWaWali = fieldTeks('Nomor WhatsApp Wali Santri', 'tel', '0812xxxxxxxx');
   const fNamaSantri = fieldTeks('Nama Santri (persis)', 'text', 'mis. Ahmad Fauzan');
-  const fJudul = fieldTeks('Judul Sertifikat', 'text', 'mis. Kelulusan Jenjang SMP Tahap 1');
-  [fWaWali.wrap, fNamaSantri.wrap, fJudul.wrap].forEach((w) => (w.style.marginBottom = '0'));
+  const fJudul = fieldTeks('Judul Sertifikat', 'text', 'mis. Kelulusan Buku 1');
+  // 12 level, satu per buku (rapat 12 Sep: berjenjang seperti IELTS).
+  // Boleh dikosongkan — sertifikat kelulusan yang bukan bagian dari 12 buku
+  // tetap ada tempatnya, dan memaksa level di situ akan membuat pengurus
+  // mengarang angka supaya formulirnya mau jalan.
+  const fLevel = fieldSelect('Level', [
+    { value: '', label: 'Tanpa level' },
+    ...Array.from({ length: 12 }, (_, i) => ({ value: String(i + 1), label: `Level ${i + 1}` })),
+  ]);
+  [fWaWali.wrap, fNamaSantri.wrap, fJudul.wrap, fLevel.wrap].forEach((w) => (w.style.marginBottom = '0'));
   const btnTerbit = buatEl('button', 'studio-btn-primary', 'Terbitkan');
   btnTerbit.type = 'button';
-  form.append(fWaWali.wrap, fNamaSantri.wrap, fJudul.wrap, btnTerbit);
+  form.append(fWaWali.wrap, fNamaSantri.wrap, fJudul.wrap, fLevel.wrap, btnTerbit);
   body.appendChild(form);
 
-  const catatan = buatEl('p', 'studio-note', 'Sertifikat dirangkai jadi PDF di peramban Anda dan diunggah otomatis — proses beberapa detik, jangan tutup halaman.');
+  const catatan = buatEl('p', 'studio-note',
+    'Sertifikat dirangkai jadi PDF di peramban Anda dan diunggah otomatis — proses beberapa detik, jangan tutup halaman. '
+    + 'Kelulusan level ditentukan guru dari buku latihan cetak; platform mencatat keputusan itu, tidak menghitungnya sendiri.');
   body.appendChild(catatan);
 
   btnTerbit.addEventListener('click', () =>
@@ -1031,7 +1041,11 @@ async function renderSertifikatTab(body) {
       btnTerbit.disabled = true;
       btnTerbit.textContent = 'Merangkai PDF…';
       try {
-        const hasil = await terbitkanDanUnggahSertifikat({ santriId, judul: fJudul.input.value.trim() });
+        const hasil = await terbitkanDanUnggahSertifikat({
+          santriId,
+          judul: fJudul.input.value.trim(),
+          level: fLevel.select.value ? Number(fLevel.select.value) : undefined,
+        });
         playTone(660, 'sine', 0.14, 0.08);
         showToast(`Sertifikat ${hasil.nomorSeri} berhasil diterbitkan.`);
         unduhBlob(hasil.blob, hasil.namaBerkas);
@@ -1057,7 +1071,8 @@ async function renderSertifikatTab(body) {
   daftar.forEach((c) => {
     const item = buatEl('div', 'studio-list-item');
     const main = buatEl('div', 'studio-list-item-main');
-    main.appendChild(buatEl('div', 'studio-list-item-judul', `${c.santri?.nama || '—'} — ${c.judul}`));
+    main.appendChild(buatEl('div', 'studio-list-item-judul',
+      `${c.santri?.nama || '—'} — ${c.level ? `Level ${c.level}: ` : ''}${c.judul}`));
     const tanggal = new Date(c.diterbitkan_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
     main.appendChild(buatEl('div', 'studio-list-item-meta', `Nomor Seri ${c.nomor_seri} • Diterbitkan ${tanggal}`));
     item.appendChild(main);

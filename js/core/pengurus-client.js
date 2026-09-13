@@ -310,7 +310,7 @@ export async function daftarSertifikat() {
   const client = getSupabaseClient();
   const { data, error } = await client
     .from('sertifikat')
-    .select('id, judul, nomor_seri, kode_verifikasi, pdf_url, diterbitkan_at, santri:santri_id(nama, jenjang)')
+    .select('id, judul, level, nomor_seri, kode_verifikasi, pdf_url, diterbitkan_at, santri:santri_id(nama, jenjang)')
     .order('diterbitkan_at', { ascending: false });
   if (error) {
     console.error('[pengurus-client] gagal memuat sertifikat:', error.message);

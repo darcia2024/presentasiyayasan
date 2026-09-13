@@ -879,9 +879,75 @@ async function fungsiAda(nama) {
         yatim.length === 0, yatim.slice(0, 5));
     }
 
+    /* ==================================================================
+     * FASE F — SERTIFIKAT PER LEVEL
+     *
+     * Rapat 12 September: 12 level, berjenjang seperti IELTS.
+     *
+     * Yang dijaga di sini terutama SATU hal: level yang sama tidak boleh
+     * terbit dua kali. Dua dokumen resmi bernomor seri berbeda untuk
+     * pencapaian yang sama membuat verifikasi publik kehilangan gunanya —
+     * dan pengurus yang ragu apakah sudah terbit PASTI menekan tombolnya
+     * lagi.
+     * ================================================================== */
+    console.log('\n=== Sertifikat per level (Fase F) ===');
+
+    const adaFnSertifikat = await fungsiAda('terbitkan-sertifikat');
+    if (!adaFnSertifikat) {
+      lewati('terbitkan-sertifikat', 'fungsi belum ter-deploy');
+    } else {
+      const terbitkan = (jwt, muatan) => panggilFungsi('terbitkan-sertifikat', jwt, muatan);
+      ids.sertifikat = [];
+
+      for (const nilai of [0, 13, 2.5, 'tiga']) {
+        const r = await terbitkan(tokenStaff, { santri_id: ids.santri, judul: 'Uji Asap', level: nilai });
+        cek(`sertifikat: level ${JSON.stringify(nilai)} ditolak 400`, r.status === 400, r.data);
+      }
+
+      const lv3 = await terbitkan(tokenStaff, { santri_id: ids.santri, judul: 'Kelulusan Buku 3', level: 3 });
+      cek('sertifikat: level 3 terbit dan levelnya ikut dikembalikan',
+        lv3.status === 200 && lv3.data?.level === 3, lv3.data);
+      if (lv3.data?.sertifikatId) ids.sertifikat.push(lv3.data.sertifikatId);
+
+      const barisLv3 = await admin('GET', 'sertifikat', { query: `?select=level&id=eq.${lv3.data?.sertifikatId}` });
+      cek('sertifikat: level benar-benar tersimpan di basis data', barisLv3[0]?.level === 3, barisLv3[0]);
+
+      /* Intinya Fase F. */
+      const dobel = await terbitkan(tokenStaff, { santri_id: ids.santri, judul: 'Kelulusan Buku 3 lagi', level: 3 });
+      const jumlahLv3 = await admin('GET', 'sertifikat', {
+        query: `?select=id&santri_id=eq.${ids.santri}&level=eq.3`,
+      });
+      cek('sertifikat: LEVEL YANG SAMA DITOLAK, dan tetap hanya ada satu',
+        dobel.status === 409 && dobel.data?.kode === 'LEVEL_SUDAH_TERBIT' && jumlahLv3.length === 1,
+        { balasan: dobel.data, jumlah: jumlahLv3.length });
+
+      const lv4 = await terbitkan(tokenStaff, { santri_id: ids.santri, judul: 'Kelulusan Buku 4', level: 4 });
+      cek('sertifikat: level LAIN untuk santri yang sama tetap boleh', lv4.status === 200, lv4.data);
+      if (lv4.data?.sertifikatId) ids.sertifikat.push(lv4.data.sertifikatId);
+
+      /* Indeks uniknya PARSIAL (where level is not null). Kalau suatu saat
+         diubah jadi penuh, dua sertifikat tanpa level akan saling bentrok
+         dan seluruh sertifikat lama ikut tidak bisa diterbitkan ulang. */
+      const tanpaLevel1 = await terbitkan(tokenStaff, { santri_id: ids.santri, judul: 'Penghargaan Khusus' });
+      const tanpaLevel2 = await terbitkan(tokenStaff, { santri_id: ids.santri, judul: 'Penghargaan Khusus Kedua' });
+      cek('sertifikat: dua sertifikat TANPA level tidak saling bentrok (indeks parsial)',
+        tanpaLevel1.status === 200 && tanpaLevel1.data?.level === null && tanpaLevel2.status === 200,
+        { satu: tanpaLevel1.data?.level, dua: tanpaLevel2.status });
+      [tanpaLevel1, tanpaLevel2].forEach((r) => { if (r.data?.sertifikatId) ids.sertifikat.push(r.data.sertifikatId); });
+    }
+
     console.log(`\n=== HASIL: ${lulus} lulus, ${gagal} gagal, ${dilewati} dilewati ===\n`);
   } finally {
     console.log('=== Membersihkan data uji ===');
+    // PALING DULU: sertifikat.santri_id adalah ON DELETE RESTRICT, jadi
+    // selama sertifikatnya ada, santri TIDAK BISA dihapus — dan wali-nya
+    // ikut tertahan karena santri masih menunjuk ke sana. Menaruh ini di
+    // urutan yang salah membuat uji asap meninggalkan satu wali di produksi
+    // tiap kali dijalankan, dan satu-satunya tanda adalah angka "Sisa data
+    // uji" yang tidak nol.
+    for (const idSert of ids.sertifikat || []) {
+      await admin('DELETE', 'sertifikat', { query: `?id=eq.${idSert}` }).catch(() => {});
+    }
     for (const kode of ['UJI-ASAP-HAPUS', 'UJI-ASAP-DRAF', 'UJI-ASAP-TERBIT']) {
       await admin('DELETE', 'modul', { query: `?kode=eq.${kode}` }).catch(() => {});
     }

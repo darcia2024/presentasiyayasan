@@ -339,16 +339,52 @@ Materinya menunggu foto buku dan halaman dari Prima.
 
 ---
 
-## 7. Fase F — Sertifikat per level
+## 7. Fase F — Sertifikat per level — **SELESAI 14 Sep 2026**
 
 Sekarang sertifikat terbit sekali per santri. Yang diminta: **per level**, 12
 level, disamakan dengan sertifikasi berjenjang seperti IELTS.
 
-Perlu penyesuaian `sertifikat` supaya menyimpan level, dan kondisi kelulusan per
-level. Baru relevan setelah pembelajaran berjalan dan ada yang menyelesaikan
-satu buku penuh — jadi **paling akhir**.
+**Yang dikerjakan:** `supabase/migrations/20260914000001_sertifikat_level.sql`
++ `terbitkan-sertifikat` + pemilih Level di Panel Pengurus + level tercetak di
+lembar PDF-nya.
 
-**Ukuran:** sedang.
+### KELULUSAN TIDAK DIHITUNG PLATFORM — ini keputusan desainnya
+
+Godaannya membuat syarat otomatis: XP sekian, kuis lulus sekian persen, progres
+modul 100%. Rapat yang sama menutup jalan itu — latihan dan evaluasi ada di
+**buku cetak**, dan `evaluasi-digital` justru dikunci di Fase A.
+
+Satu-satunya pihak yang tahu seorang santri lulus level 3 adalah **gurunya**,
+dari buku latihan di tangannya. Platform **mencatat** keputusan itu, bukan
+membuatnya. Syarat otomatis di atas data yang tidak pernah diisi hanya
+menghasilkan dua kemungkinan — tidak ada yang pernah lulus, atau semua lulus
+karena ambangnya nol — dan keduanya terlihat seperti sistem yang bekerja.
+
+### Satu sertifikat per santri per level
+
+Indeks unik parsial `(santri_id, level) where level is not null`. Pengurus yang
+ragu apakah level 3 sudah terbit **pasti** menekan tombolnya lagi, dan dua
+dokumen resmi bernomor seri berbeda untuk pencapaian yang sama membuat
+verifikasi publik kehilangan gunanya. Ditolak dengan kode `LEVEL_SUDAH_TERBIT`
+beserta nomor seri yang sudah ada — bukan "gagal, coba lagi".
+
+Parsial, supaya sertifikat lama (tanpa level) tidak saling bentrok dan tetap sah
+apa adanya.
+
+`level` angka 1–12 adalah sumber kebenaran yang tercetak; `modul_id` cuma
+penunjuk yang boleh hilang. Menjadikan modul sumber kebenaran berarti menghapus
+satu baris modul salah ketik bisa membatalkan sertifikat yang sudah dicetak dan
+ditandatangani.
+
+**Dibuktikan:** sembilan pemeriksaan baru di uji asap (70 → 79), termasuk
+penolakan level 0/13/2.5/"tiga", penolakan ganda, dan perilaku indeks parsial.
+Cetakan PDF-nya diperiksa isinya — lembarnya benar memuat "Level 3 dari 12".
+
+**Ikut diperbaiki:** nomor seri dulu memakai tanggal UTC, jadi sertifikat yang
+terbit sebelum pukul 07.00 WIB mencetak tanggal **kemarin**. Tempat terakhir
+yang terlewat saat audit M10 menyatukan aturan "hari" ke `_shared/waktu.ts`. Di
+lencana salah hari cuma memutus streak; di sini ia tercetak pada dokumen resmi
+yang dibingkai dan ditunjukkan orang tua.
 
 ---
 

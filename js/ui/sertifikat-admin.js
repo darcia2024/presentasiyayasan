@@ -45,7 +45,7 @@ function buatDataUrlQr(teks) {
 
 const NAMA_JENJANG = { sd: 'Sekolah Dasar', smp: 'Sekolah Menengah Pertama', sma: 'Sekolah Menengah Atas' };
 
-function buatPdf({ santriNama, jenjang, judul, nomorSeri, diterbitkanAt, urlVerifikasi }) {
+function buatPdf({ santriNama, jenjang, judul, level, nomorSeri, diterbitkanAt, urlVerifikasi }) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
   const W = doc.internal.pageSize.getWidth();
@@ -85,7 +85,14 @@ function buatPdf({ santriNama, jenjang, judul, nomorSeri, diterbitkanAt, urlVeri
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(60, 60, 60);
   const jenjangTeks = NAMA_JENJANG[jenjang] || jenjang.toUpperCase();
-  doc.text(`Jenjang ${jenjangTeks}`, W / 2, 84, { align: 'center' });
+  // Level ikut TERCETAK. Sertifikat berjenjang yang tidak menyebut
+  // jenjangnya di lembarnya sendiri memaksa siapa pun yang memegangnya
+  // membuka verifikasi daring hanya untuk tahu ini level berapa — dan
+  // dokumen yang dibingkai di dinding rumah tidak punya tautan.
+  doc.text(
+    level ? `Jenjang ${jenjangTeks} — Level ${level} dari 12` : `Jenjang ${jenjangTeks}`,
+    W / 2, 84, { align: 'center' },
+  );
 
   doc.setFontSize(12);
   doc.setFont('helvetica', 'italic');
@@ -121,11 +128,11 @@ function buatPdf({ santriNama, jenjang, judul, nomorSeri, diterbitkanAt, urlVeri
  * rangkai PDF-nya, unggah ke Storage, lalu kembalikan berkas & metadatanya
  * supaya UI bisa menawarkan unduhan dan menampilkan tautan verifikasi.
  *
- * @param {{santriId:string, judul:string}} params
+ * @param {{santriId:string, judul:string, level?:number}} params
  * @returns {Promise<{blob:Blob, namaBerkas:string, pdfUrl:string, urlVerifikasi:string, nomorSeri:string, kodeVerifikasi:string}>}
  */
-export async function terbitkanDanUnggahSertifikat({ santriId, judul }) {
-  const hasil = await terbitkanSertifikat({ santri_id: santriId, judul });
+export async function terbitkanDanUnggahSertifikat({ santriId, judul, level }) {
+  const hasil = await terbitkanSertifikat({ santri_id: santriId, judul, level: level || undefined });
 
   await pastikanPustakaSiap();
 
@@ -134,6 +141,7 @@ export async function terbitkanDanUnggahSertifikat({ santriId, judul }) {
     santriNama: hasil.santriNama,
     jenjang: hasil.jenjang,
     judul: hasil.judul,
+    level: hasil.level,
     nomorSeri: hasil.nomorSeri,
     diterbitkanAt: hasil.diterbitkanAt,
     urlVerifikasi,

@@ -23,6 +23,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { gerbangCors, balasJson } from '../_shared/cors.ts';
 import { bacaSesiDariHeader } from '../_shared/sesi.ts';
 import { periksaStaffAktif, KOLOM_STAFF } from '../_shared/akun-aktif.ts';
+import { tanggalWib } from '../_shared/waktu.ts';
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const supabase = createClient(SUPABASE_URL, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
@@ -79,6 +80,22 @@ Deno.serve(async (req) => {
       return balasJson(hCors, { ok: false, error: 'santri_id dan judul wajib diisi.' }, 400);
     }
 
+    // LEVEL (Fase F, rapat 12 Sep): 12 level, satu per buku, seperti IELTS.
+    //
+    // Opsional supaya penerbitan lama (tanpa level) tetap bisa jalan —
+    // sertifikat kelulusan yang bukan bagian dari 12 buku tetap ada tempatnya.
+    // Tapi begitu diisi, angkanya divalidasi di sini DAN dibatasi indeks unik
+    // di basis data; keduanya perlu, karena yang pertama menjelaskan
+    // kesalahannya dan yang kedua yang benar-benar menegakkannya.
+    let level: number | null = null;
+    if (body?.level !== undefined && body?.level !== null && body?.level !== '') {
+      level = Number(body.level);
+      if (!Number.isInteger(level) || level < 1 || level > 12) {
+        return balasJson(hCors, { ok: false, error: 'Level harus angka 1 sampai 12.' }, 400);
+      }
+    }
+    const modulId = typeof body?.modul_id === 'string' && body.modul_id ? body.modul_id : null;
+
     const { data: santri, error: errSantri } = await supabase
       .from('santri')
       .select('id, nama, jenjang')
@@ -86,6 +103,31 @@ Deno.serve(async (req) => {
       .maybeSingle();
     if (errSantri || !santri) {
       return balasJson(hCors, { ok: false, error: 'Santri tidak ditemukan.' }, 404);
+    }
+
+    // Diperiksa LEBIH DULU supaya pengurus dapat kalimat yang menjelaskan,
+    // bukan "gagal menerbitkan, coba lagi" dari tabrakan indeks. Pemeriksaan
+    // ini balapan-mungkin (dua pengurus menekan bersamaan), dan itu tidak
+    // apa-apa: indeks uniknya yang jadi wasit terakhir, ditangkap di bawah.
+    if (level !== null) {
+      const { data: sudahAda } = await supabase
+        .from('sertifikat')
+        .select('id, nomor_seri, diterbitkan_at')
+        .eq('santri_id', santri.id)
+        .eq('level', level)
+        .maybeSingle();
+      if (sudahAda) {
+        return balasJson(
+          hCors,
+          {
+            ok: false,
+            kode: 'LEVEL_SUDAH_TERBIT',
+            error: `${santri.nama} sudah punya sertifikat Level ${level} `
+              + `(nomor ${sudahAda.nomor_seri}). Hapus yang lama dulu kalau memang perlu diterbitkan ulang.`,
+          },
+          409,
+        );
+      }
     }
 
     let sertifikatId: string | null = null;
@@ -102,6 +144,8 @@ Deno.serve(async (req) => {
           santri_id: santri.id,
           jenjang: santri.jenjang,
           judul,
+          level,
+          modul_id: modulId,
           nomor_seri: nomorSeri,
           kode_verifikasi: kodeVerifikasi,
           diterbitkan_oleh: sesi.akunId,
@@ -116,8 +160,23 @@ Deno.serve(async (req) => {
         break;
       }
       if (error?.code === '23505') {
-        // nomor_seri atau kode_verifikasi (sangat kecil kemungkinan) bentrok
-        // — coba lagi dengan nilai acak baru, bukan error ke pengguna.
+        // TIDAK semua 23505 pantas diulang. Sejak Fase F ada indeks unik
+        // (santri_id, level): kalau ITU yang bentrok, mengulang dengan nomor
+        // seri acak baru akan bentrok lagi — lima kali — lalu menyerah dengan
+        // pesan "coba lagi" yang menyuruh pengurus melakukan hal yang tidak
+        // akan pernah berhasil. Hanya tabrakan nomor_seri/kode_verifikasi
+        // yang layak diulang, karena hanya itu yang berubah tiap percobaan.
+        if (error.message?.includes('idx_sertifikat_santri_level')) {
+          return balasJson(
+            hCors,
+            {
+              ok: false,
+              kode: 'LEVEL_SUDAH_TERBIT',
+              error: `${santri.nama} sudah punya sertifikat Level ${level}.`,
+            },
+            409,
+          );
+        }
         errTerakhir = error.message;
         continue;
       }
@@ -162,6 +221,7 @@ Deno.serve(async (req) => {
       santriNama: santri.nama,
       jenjang: santri.jenjang,
       judul,
+      level,
       diterbitkanAt: baruDiperbarui?.diterbitkan_at || new Date().toISOString(),
     });
   } catch (err) {
@@ -170,9 +230,19 @@ Deno.serve(async (req) => {
   }
 });
 
-/** "PERISA-SMP-20260904-A1B2" — cukup unik, tetap terbaca manusia. */
+/**
+ * "PERISA-SMP-20260904-A1B2" — cukup unik, tetap terbaca manusia.
+ *
+ * Tanggalnya WIB, bukan UTC. Sebelum 14 Sep 2026 berkas ini memakai
+ * `toISOString().slice(0,10)` langsung — tempat terakhir yang terlewat saat
+ * audit M10 menyatukan aturan "hari" ke _shared/waktu.ts. Akibatnya
+ * sertifikat yang diterbitkan sebelum pukul 07.00 WIB mencetak tanggal
+ * KEMARIN di nomor serinya. Di lencana, salah hari cuma memutus streak; di
+ * sini ia tercetak pada dokumen resmi yang dibingkai dan ditunjukkan orang
+ * tua — dan tidak ada cara memperbaikinya selain menerbitkan ulang.
+ */
 function buatNomorSeri(jenjang: string): string {
-  const tanggal = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const tanggal = tanggalWib().replace(/-/g, '');
   return `PERISA-${jenjang.toUpperCase()}-${tanggal}-${kodeAcakAman(4)}`;
 }
 
