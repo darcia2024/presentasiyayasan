@@ -745,3 +745,146 @@
   line-height: 1.5;
   color: var(--text-muted);
 }
+
+/* ==========================================================================
+   LAYAR MATERI PPT (Fase C2)
+
+   Satu baris per bab, dan berkas bisa diseret langsung ke barisnya. Bentuk
+   daftar dipilih supaya "bab mana yang belum ada materinya" terjawab dengan
+   memindai satu kolom dari atas ke bawah — bukan dengan membuka 60 layar.
+   ========================================================================== */
+
+.studio-ppt-buku {
+  margin-bottom: 18px;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.studio-ppt-buku-kepala {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--bg-subtle);
+  border-bottom: 1.5px solid var(--border-color);
+}
+
+.studio-ppt-buku-judul {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.studio-ppt-baris {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--border-color);
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.studio-ppt-baris:first-of-type { border-top: none; }
+
+/* Sasaran seret harus terlihat JELAS saat berkas melayang di atasnya —
+   seret yang tidak memberi umpan balik membuat orang melepas berkasnya di
+   tempat yang salah, lalu menyalahkan dirinya sendiri. */
+.studio-ppt-baris.is-seret {
+  background: var(--teal-light);
+  box-shadow: inset 0 0 0 2px var(--teal-primary);
+}
+
+.studio-ppt-baris-kiri {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.studio-ppt-nomor {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.studio-ppt-judul {
+  font-size: 13px;
+  color: var(--text-main);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.studio-ppt-status {
+  flex-shrink: 0;
+  width: 210px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+}
+
+.studio-ppt-status-teks {
+  font-size: 11px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+/* Baris yang sudah ada materinya ditandai warna, bukan hanya kata-kata:
+   itu yang membuat sisa pekerjaan terbaca dalam sekali pandang. */
+.studio-ppt-baris.is-terisi .studio-ppt-status-teks {
+  color: var(--teal-dark);
+  font-weight: 600;
+}
+
+.studio-ppt-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--border-color);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.studio-ppt-bar-isi {
+  height: 100%;
+  width: 0;
+  background: var(--teal-primary);
+  transition: width 0.2s ease;
+}
+
+/* Progres tidak terukur (di balik sebagian proxy): barnya berdenyut supaya
+   terbaca "sedang berjalan", bukan "berhenti di nol". */
+.studio-ppt-bar.is-tak-terukur .studio-ppt-bar-isi {
+  animation: studio-ppt-denyut 1.1s ease-in-out infinite;
+}
+
+@keyframes studio-ppt-denyut {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 1; }
+}
+
+.studio-ppt-aksi {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+@media (max-width: 720px) {
+  .studio-ppt-baris {
+    flex-wrap: wrap;
+  }
+  .studio-ppt-baris-kiri { flex-basis: 100%; }
+  .studio-ppt-status { width: auto; flex: 1; align-items: flex-start; }
+}

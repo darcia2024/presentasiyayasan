@@ -29,6 +29,7 @@ import {
   unggahVideoPelajaran,
   unggahPptPelajaran,
   hapusPptPelajaran,
+  daftarSemuaBabPpt,
   daftarDokumen,
   simpanDokumen,
   hapusDokumen,
@@ -59,7 +60,8 @@ const STATE = {
   pelajaranList: [],
   pelajaranAktif: null,
   mufrodatList: [],
-  layar: 'modul-list', // modul-list | modul-form | pelajaran-list | pelajaran-form | mufrodat-list | mufrodat-form | impor-csv
+  bukuPpt: [],
+  layar: 'modul-list', // modul-list | modul-form | pelajaran-list | pelajaran-form | mufrodat-list | mufrodat-form | impor-csv | materi-ppt
 };
 
 /* ---------------------------------------------------------------- UTILITAS */
@@ -202,6 +204,9 @@ function render() {
     case 'impor-csv':
       renderImporCsv(body);
       break;
+    case 'materi-ppt':
+      renderMateriPpt(body);
+      break;
     case 'dokumen-list':
       renderDaftarDokumen(body);
       break;
@@ -212,6 +217,14 @@ function render() {
 }
 
 function renderBreadcrumb(el) {
+  if (STATE.layar === 'materi-ppt') {
+    const a = buatEl('button', 'studio-breadcrumb-item', 'Materi PPT');
+    a.type = 'button';
+    a.addEventListener('click', () => { STATE.layar = 'materi-ppt'; render(); });
+    el.appendChild(a);
+    return;
+  }
+
   if (STATE.layar === 'dokumen-list' || STATE.layar === 'dokumen-form') {
     const a = buatEl('button', 'studio-breadcrumb-item', 'Dokumen PDF');
     a.type = 'button';
@@ -259,6 +272,21 @@ function renderDaftarModul(body) {
   headerRow.appendChild(buatEl('h3', 'studio-h3', `Modul — Jenjang ${NAMA_JENJANG[STATE.jenjang]}`));
 
   const kananHeader = buatEl('div', 'studio-header-actions');
+  const btnPpt = buatEl('button', 'studio-btn-secondary', 'Materi PPT');
+  btnPpt.type = 'button';
+  btnPpt.addEventListener('click', () =>
+    jalankan(async () => {
+      STATE.bukuPpt = await daftarSemuaBabPpt(STATE.jenjang);
+      STATE.layar = 'materi-ppt';
+      render();
+    }, 'Gagal memuat daftar bab.'),
+  );
+
+  // Materi PPT lebih dulu: itu yang dipakai setiap hari di fase ini,
+  // sementara Dokumen PDF adalah jalur lama yang tinggal menunggu dipensiunkan
+  // (butir C4 di rencana pasca-rapat).
+  kananHeader.appendChild(btnPpt);
+
   const btnDokumen = buatEl('button', 'studio-btn-secondary', 'Dokumen PDF');
   btnDokumen.type = 'button';
   btnDokumen.addEventListener('click', () =>
@@ -746,6 +774,199 @@ function bidangMedia(label, id, urlAwal, jenis, accept) {
   return wrap;
 }
 
+/* ==========================================================================
+   LAYAR MATERI PPT (Fase C2)
+
+   SATU LAYAR BERISI SELURUH BAB, dan alasannya bukan kerapian.
+
+   Jalur unggah yang ada di formulir pelajaran menuntut lima langkah untuk
+   SATU bab: pilih jenjang, buka modul, cari bab, klik sunting, baru ada
+   bidang unggahnya. Umi harus melakukannya sekitar 60 kali, dan di antaranya
+   tidak pernah ada satu layar pun yang menjawab "yang mana yang belum".
+
+   Prima juga menyebut PPT sering disusun ulang — jadi MENGGANTI berkas harus
+   sekali seret, bukan alur berlapis (butir C2 di rencana).
+
+   Di sini tiap bab satu baris: seret berkas ke barisnya, selesai. Baris yang
+   sudah terisi menunjukkan nama berkas dan tanggalnya; yang belum ditandai
+   jelas, dan dihitung di kepala layar.
+   ========================================================================== */
+
+function renderMateriPpt(body) {
+  const tabs = buatEl('div', 'studio-tabs');
+  jenjangAktif().forEach((j) => {
+    const btn = buatEl('button', `studio-tab${j === STATE.jenjang ? ' studio-tab--active' : ''}`, NAMA_JENJANG[j]);
+    btn.type = 'button';
+    btn.addEventListener('click', () =>
+      jalankan(async () => {
+        STATE.jenjang = j;
+        STATE.bukuPpt = await daftarSemuaBabPpt(j);
+        render();
+      }, 'Gagal memuat daftar bab.'),
+    );
+    tabs.appendChild(btn);
+  });
+  body.appendChild(tabs);
+
+  const buku = STATE.bukuPpt || [];
+  const semuaBab = buku.flatMap((m) => m.pelajaran);
+  const terisi = semuaBab.filter((p) => p.ppt_path).length;
+
+  const headerRow = buatEl('div', 'studio-row-header');
+  headerRow.appendChild(buatEl('h3', 'studio-h3', `Materi PPT — Jenjang ${NAMA_JENJANG[STATE.jenjang]}`));
+  body.appendChild(headerRow);
+
+  // Angka kemajuan di paling atas: satu-satunya pertanyaan yang Umi punya
+  // tiap kali membuka layar ini adalah "tinggal berapa lagi".
+  const ringkas = buatEl('div', 'studio-note',
+    semuaBab.length
+      ? `${terisi} dari ${semuaBab.length} bab sudah ada materinya.`
+      : 'Belum ada bab sama sekali. Buat modul dan babnya dulu lewat menu Modul.');
+  ringkas.style.marginBottom = '16px';
+  body.appendChild(ringkas);
+
+  if (!buku.length) return;
+
+  buku.forEach((modul) => {
+    const kartu = buatEl('div', 'studio-ppt-buku');
+
+    const kepala = buatEl('div', 'studio-ppt-buku-kepala');
+    kepala.appendChild(buatEl('span', 'studio-list-item-kode', modul.kode || ''));
+    kepala.appendChild(buatEl('span', 'studio-ppt-buku-judul', modul.judul));
+    kepala.appendChild(chipStatus(modul.status));
+    kartu.appendChild(kepala);
+
+    if (!modul.pelajaran.length) {
+      kartu.appendChild(buatEl('div', 'studio-note', 'Belum ada bab di modul ini.'));
+    } else {
+      modul.pelajaran.forEach((bab, i) => kartu.appendChild(barisBabPpt(bab, i + 1)));
+    }
+
+    body.appendChild(kartu);
+  });
+}
+
+/** Satu bab = satu baris yang bisa diseret berkas ke atasnya. */
+function barisBabPpt(bab, nomor) {
+  const baris = buatEl('div', 'studio-ppt-baris');
+
+  const kiri = buatEl('div', 'studio-ppt-baris-kiri');
+  kiri.appendChild(buatEl('span', 'studio-ppt-nomor', `Bab ${nomor}`));
+  kiri.appendChild(buatEl('span', 'studio-ppt-judul', bab.judul));
+  baris.appendChild(kiri);
+
+  const status = buatEl('div', 'studio-ppt-status');
+  const bar = buatEl('div', 'studio-ppt-bar');
+  const barIsi = buatEl('div', 'studio-ppt-bar-isi');
+  bar.appendChild(barIsi);
+  bar.hidden = true;
+  const teks = buatEl('span', 'studio-ppt-status-teks', '');
+  status.append(teks, bar);
+  baris.appendChild(status);
+
+  const aksi = buatEl('div', 'studio-ppt-aksi');
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.pptx,.ppt,.odp,.pdf';
+  input.hidden = true;
+  const btnUnggah = buatEl('button', 'studio-btn-secondary', '');
+  btnUnggah.type = 'button';
+  btnUnggah.addEventListener('click', () => input.click());
+  const btnLepas = buatEl('button', 'studio-btn-text', 'Lepas');
+  btnLepas.type = 'button';
+  aksi.append(input, btnUnggah, btnLepas);
+  baris.appendChild(aksi);
+
+  const perbarui = () => {
+    if (bab.ppt_path) {
+      baris.classList.add('is-terisi');
+      const ukuran = ukuranTerbaca(bab.ppt_ukuran_bytes);
+      teks.textContent = `${bab.ppt_nama || 'PPT tersimpan'}${ukuran ? ` · ${ukuran}` : ''}`;
+      btnUnggah.textContent = 'Ganti';
+      btnLepas.hidden = false;
+    } else {
+      baris.classList.remove('is-terisi');
+      teks.textContent = 'Belum ada materi';
+      btnUnggah.textContent = 'Unggah';
+      btnLepas.hidden = true;
+    }
+  };
+  perbarui();
+
+  const kirim = (file) =>
+    jalankan(async () => {
+      if (!file) return;
+      btnUnggah.disabled = true;
+      btnLepas.disabled = true;
+      bar.hidden = false;
+      barIsi.style.width = '0%';
+      teks.textContent = `Mengunggah ${file.name}…`;
+      try {
+        const path = await unggahPptPelajaran(file, bab.id, (rasio) => {
+          if (rasio === null) {
+            // Progres tidak terukur di balik sebagian proxy — barnya dibuat
+            // penuh-samar, bukan diam di 0% yang terbaca sebagai macet.
+            bar.classList.add('is-tak-terukur');
+            barIsi.style.width = '100%';
+            return;
+          }
+          barIsi.style.width = `${Math.round(rasio * 100)}%`;
+          teks.textContent = `Mengunggah ${file.name}… ${Math.round(rasio * 100)}%`;
+        });
+        bab.ppt_path = path;
+        bab.ppt_nama = file.name;
+        bab.ppt_ukuran_bytes = file.size;
+        showToast(`Materi bab "${bab.judul}" tersimpan.`);
+        // Digambar ulang supaya penghitung "x dari y" di kepala layar ikut
+        // maju — itu yang memberi Umi rasa bahwa pekerjaannya berkurang.
+        render();
+      } catch (e) {
+        perbarui();
+        throw e;
+      } finally {
+        btnUnggah.disabled = false;
+        btnLepas.disabled = false;
+        bar.hidden = true;
+        bar.classList.remove('is-tak-terukur');
+        input.value = '';
+      }
+    }, 'Gagal mengunggah materi.');
+
+  input.addEventListener('change', () => kirim(input.files[0]));
+
+  btnLepas.addEventListener('click', () =>
+    jalankan(async () => {
+      if (!window.confirm(`Lepas "${bab.ppt_nama || 'materi'}" dari bab "${bab.judul}"? Berkasnya ikut terhapus.`)) return;
+      await hapusPptPelajaran(bab.id);
+      bab.ppt_path = null;
+      bab.ppt_nama = null;
+      bab.ppt_ukuran_bytes = null;
+      showToast('Materi dilepas.');
+      render();
+    }, 'Gagal melepas materi.'),
+  );
+
+  // Seret-dan-lepas ke barisnya — inilah "sekali seret" yang diminta C2.
+  ['dragenter', 'dragover'].forEach((n) =>
+    baris.addEventListener(n, (e) => {
+      e.preventDefault();
+      baris.classList.add('is-seret');
+    }),
+  );
+  ['dragleave', 'drop'].forEach((n) =>
+    baris.addEventListener(n, (e) => {
+      e.preventDefault();
+      baris.classList.remove('is-seret');
+    }),
+  );
+  baris.addEventListener('drop', (e) => {
+    const file = e.dataTransfer?.files?.[0];
+    if (file) kirim(file);
+  });
+
+  return baris;
+}
+
 /** "1048576" -> "1 MB". Untuk memberi tahu Umi berkasnya sebesar apa. */
 function ukuranTerbaca(bytes) {
   if (!bytes) return '';
@@ -828,7 +1049,7 @@ function bidangPpt(pelajaran) {
       // Melepas PPT menghapus berkasnya dari storage dan tidak bisa
       // dibatalkan — pertanyaan yang pantas ditanyakan sekali.
       if (!window.confirm(`Lepas "${pelajaran.ppt_nama || 'PPT ini'}" dari bab ini? Berkasnya ikut terhapus.`)) return;
-      await hapusPptPelajaran(pelajaran.id, pelajaran.ppt_path);
+      await hapusPptPelajaran(pelajaran.id);
       pelajaran.ppt_path = null;
       pelajaran.ppt_nama = null;
       pelajaran.ppt_ukuran_bytes = null;

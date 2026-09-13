@@ -259,16 +259,31 @@ dan arsitekturnya harus dipilih ulang. Uji ini murah dan harus dilakukan duluan.
 
 ### Pekerjaan setelah uji lolos
 
-- **C1** — Ganti tabel `dokumen` (berorientasi PDF: `file_url`, `ukuran_bytes`)
-  menjadi materi PPT yang menempel ke `pelajaran`.
-- **C2** — Area unggah/ganti PPT yang **gampang** di Panel Super Admin. Prima
-  menekankan PPT sering disusun ulang, jadi mengganti berkas harus sekali seret,
-  bukan alur berlapis.
-- **C3** — Pemutar PPT: maju-mundur per langkah, tombol layar penuh (dipakai
-  memproyeksikan di kelas). Ukuran kotak yang sekarang sudah dinyatakan pas.
-- **C4** — Hapus seluruh jalur input dan tampilan PDF.
+- **C1 — SELESAI 13 Sep.** Materi PPT menempel ke `pelajaran`
+  (`ppt_path`/`ppt_nama`/`ppt_ukuran_bytes`/`ppt_diunggah_pada`), bukan lagi ke
+  tabel `dokumen` yang berorientasi PDF. Tabel lamanya belum dibuang — itu C4.
+- **C2 — SELESAI 14 Sep.** Layar **Materi PPT** di Studio Kurikulum: seluruh
+  bab satu jenjang dalam satu daftar, satu baris per bab, berkas bisa
+  **diseret langsung ke barisnya**. Kepala layar menghitung "x dari y bab sudah
+  ada materinya" — satu-satunya pertanyaan yang Umi punya tiap kali membukanya.
 
-**Ukuran:** besar, dan **terhalang** berkas dari PERISA (lihat bagian 9).
+  Jalur unggah sebelumnya menuntut lima langkah untuk SATU bab dan tidak pernah
+  menjawab "yang mana yang belum". Dikali 60 bab, itu bukan ketidaknyamanan —
+  itu alasan pengisian materi berhenti di tengah jalan.
+
+  **Progres unggahan ditampilkan.** supabase-js tidak menyediakan callback
+  progres sama sekali, jadi unggahannya dikirim lewat XMLHttpRequest. Berkas
+  200 MB di jaringan sekolah bisa lima menit tanpa tanda kehidupan, dan layar
+  yang diam lima menit dibaca sebagai "hang" lalu ditutup.
+- **C3 — BELUM, dan memang terhalang.** Pemutar PPT (maju-mundur per langkah,
+  layar penuh). Butuh jawaban 10.2 **dan** PPT asli buku 1 bab 1 — kesetiaan
+  animasinya harus diuji sebelum satu baris pun ditulis.
+- **C4 — BELUM.** Hapus jalur input dan tampilan PDF lama (tabel `dokumen`,
+  menu "Modul & Silabus PDF"). Ditunda sampai terlihat Umi benar-benar memakai
+  jalur PPT; membuang jalur lama sebelum penggantinya terbukti dipakai berarti
+  tidak ada tempat kembali kalau ada yang tidak cocok.
+
+**Ukuran sisa:** C3 besar dan terhalang; C4 kecil.
 
 ---
 

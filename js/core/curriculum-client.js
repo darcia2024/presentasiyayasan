@@ -8,7 +8,8 @@
  * sendiri yang menolak, bukan kode ini.
  */
 
-import { getSupabaseClient } from './supabase-client.js';
+import { getSupabaseClient, bacaSesi } from './supabase-client.js';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from '../config.js';
 
 const TABEL_MODUL = 'modul';
 const TABEL_PELAJARAN = 'pelajaran';
@@ -268,6 +269,74 @@ export async function unggahVideoPelajaran(file, pelajaranId) {
 /* ------------------------------------------------------------------- PPT */
 
 /**
+ * Kirim satu berkas ke Supabase Storage lewat XMLHttpRequest, BUKAN lewat
+ * client.storage.upload().
+ *
+ * ALASANNYA CUMA SATU: progres. supabase-js tidak menyediakan callback
+ * progres unggahan sama sekali (dicek pada 2.114.0 yang divendor di sini),
+ * sementara berkas PPT boleh sampai 200 MB. Unggahan 200 MB di jaringan
+ * sekolah bisa memakan lima menit tanpa satu pun tanda kehidupan — dan layar
+ * yang diam lima menit dibaca sebagai "aplikasinya hang", lalu ditutup atau
+ * diulang. Umi harus mengunggah sekitar 60 berkas; sekali saja ia menyimpulkan
+ * unggahannya macet, seluruh pengisian materi berhenti di situ.
+ *
+ * fetch() tidak bisa dipakai menggantikan: ia belum punya progres unggahan di
+ * peramban mana pun yang dipakai yayasan ini.
+ *
+ * Endpoint dan aturannya sama persis dengan yang dipakai supabase-js —
+ * kebijakan RLS bucket tetap yang menentukan boleh atau tidak; ini cuma cara
+ * lain mengirim permintaan yang sama.
+ */
+function kirimBerkasKeStorage(bucket, path, file, onProgres) {
+  return new Promise((resolve, reject) => {
+    const sesi = bacaSesi();
+    if (!sesi?.token) {
+      reject(new Error('Sesi sudah berakhir. Masuk lagi untuk mengunggah.'));
+      return;
+    }
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`);
+    xhr.setRequestHeader('apikey', SUPABASE_ANON_KEY);
+    xhr.setRequestHeader('Authorization', `Bearer ${sesi.token}`);
+    if (file.type) xhr.setRequestHeader('Content-Type', file.type);
+    xhr.setRequestHeader('x-upsert', 'false');
+    xhr.setRequestHeader('cache-control', 'max-age=3600');
+
+    if (typeof onProgres === 'function') {
+      xhr.upload.addEventListener('progress', (e) => {
+        // lengthComputable false terjadi di balik sebagian proxy. Jatuh ke
+        // null supaya antarmuka menampilkan "sedang mengunggah" tanpa angka,
+        // bukan persentase karangan yang berhenti di tempat.
+        onProgres(e.lengthComputable ? e.loaded / e.total : null);
+      });
+    }
+
+    xhr.addEventListener('load', () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(path);
+        return;
+      }
+      let pesan = `Gagal mengunggah berkas (${xhr.status}).`;
+      try {
+        const isi = JSON.parse(xhr.responseText);
+        if (isi?.message) pesan = isi.message;
+      } catch (_) { /* balasan bukan JSON */ }
+      // Dua kegagalan paling mungkin bagi Umi, diterjemahkan ke bahasa yang
+      // memberitahunya apa yang harus dilakukan.
+      if (xhr.status === 413) pesan = 'Berkas terlalu besar — maksimal 200 MB.';
+      if (xhr.status === 415) pesan = 'Jenis berkas ini tidak didukung. Pakai .pptx, .ppt, .odp, atau .pdf.';
+      reject(new Error(pesan));
+    });
+
+    xhr.addEventListener('error', () => reject(new Error('Koneksi terputus saat mengunggah. Coba lagi.')));
+    xhr.addEventListener('abort', () => reject(new Error('Unggahan dibatalkan.')));
+
+    xhr.send(file);
+  });
+}
+
+/**
  * Unggah PPT satu bab ke bucket PRIVAT kurikulum-ppt, lalu simpan PATH-nya
  * ke pelajaran.ppt_path.
  *
@@ -278,16 +347,12 @@ export async function unggahVideoPelajaran(file, pelajaranId) {
  * bernama "Bab 1.pptx" tidak saling menimpa — tapi berkas yang mendarat di
  * komputer guru harus bernama seperti yang Umi beri, bukan UUID.
  */
-export async function unggahPptPelajaran(file, pelajaranId) {
+export async function unggahPptPelajaran(file, pelajaranId, onProgres) {
   const client = getSupabaseClient();
   const ekstensi = file.name.split('.').pop();
   const path = `${pelajaranId}/${crypto.randomUUID()}.${ekstensi}`;
 
-  const { error: errUpload } = await client.storage.from(BUCKET_PPT).upload(path, file, {
-    cacheControl: '3600',
-    upsert: false,
-  });
-  lemparJikaError(errUpload, 'Gagal mengunggah PPT');
+  await kirimBerkasKeStorage(BUCKET_PPT, path, file, onProgres);
 
   const { data, error: errUpdate } = await client
     .from(TABEL_PELAJARAN)
@@ -318,8 +383,25 @@ export async function unggahPptPelajaran(file, pelajaranId) {
  * siapa pun. Urutan sebaliknya meninggalkan bab yang menunjuk ke berkas yang
  * sudah tidak ada — dan itu tampil sebagai galat di depan guru saat mengajar.
  */
-export async function hapusPptPelajaran(pelajaranId, path) {
+export async function hapusPptPelajaran(pelajaranId) {
   const client = getSupabaseClient();
+
+  // Path dibaca ULANG dari barisnya, tidak diterima dari pemanggil.
+  //
+  // Versi pertama menerimanya sebagai argumen, dan layar Materi PPT
+  // memberikan penanda 'ada' alih-alih path sungguhan — akibatnya baris DB
+  // bersih, berkasnya tertinggal selamanya di storage, dan layarnya berkata
+  // "Materi dilepas". Kegagalan yang sepenuhnya tak terlihat sampai isi
+  // bucket diperiksa satu per satu. Pemanggil sekarang tidak bisa salah
+  // karena tidak lagi diminta tahu.
+  const { data: sebelum, error: errBaca } = await client
+    .from(TABEL_PELAJARAN)
+    .select('ppt_path')
+    .eq('id', pelajaranId)
+    .maybeSingle();
+  lemparJikaError(errBaca, 'Gagal membaca data bab');
+  const path = sebelum?.ppt_path || null;
+
   const { data, error } = await client
     .from(TABEL_PELAJARAN)
     .update({ ppt_path: null, ppt_nama: null, ppt_ukuran_bytes: null, ppt_diunggah_pada: null })
@@ -334,6 +416,36 @@ export async function hapusPptPelajaran(pelajaranId, path) {
     const { error: errHapus } = await client.storage.from(BUCKET_PPT).remove([path]);
     if (errHapus) console.error('[curriculum-client] berkas PPT yatim tertinggal:', path, errHapus.message);
   }
+}
+
+/**
+ * Seluruh bab satu jenjang beserta status PPT-nya, dalam SATU permintaan.
+ *
+ * Dipakai layar "Materi PPT" — yang seluruh gunanya adalah menjawab
+ * pertanyaan "bab mana yang belum ada materinya" dalam sekali lihat. Memuat
+ * 12 modul lalu menembak 12 permintaan pelajaran akan membuat jawabannya
+ * muncul sepotong-sepotong, dan yang dicari Umi justru gambaran utuhnya.
+ *
+ * Modul berstatus apa pun ikut — draf sekalipun. Umi menyiapkan materi
+ * SEBELUM modulnya diterbitkan; menyaring ke 'terbit' saja akan
+ * menyembunyikan persis bab yang sedang ia kerjakan.
+ */
+export async function daftarSemuaBabPpt(jenjang) {
+  const client = getSupabaseClient();
+  const { data, error } = await client
+    .from(TABEL_MODUL)
+    .select('id, kode, judul, tahap, urutan, status, pelajaran(id, judul, urutan, tipe, ppt_path, ppt_nama, ppt_ukuran_bytes, ppt_diunggah_pada)')
+    .eq('jenjang', jenjang)
+    .order('tahap', { ascending: true })
+    .order('urutan', { ascending: true });
+  lemparJikaError(error, 'Gagal memuat daftar bab');
+
+  return (data || []).map((m) => ({
+    ...m,
+    // PostgREST tidak menjamin urutan baris bersarang — diurutkan di sini
+    // supaya nomor bab yang dilihat Umi sama dengan urutan di silabus.
+    pelajaran: [...(m.pelajaran || [])].sort((a, b) => (a.urutan ?? 0) - (b.urutan ?? 0)),
+  }));
 }
 
 /**

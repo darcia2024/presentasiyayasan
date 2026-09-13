@@ -817,6 +817,60 @@ async function fungsiAda(nama) {
       const pptKosong = await panggilFungsi('ppt-signed-url', tokenPengajar, { pelajaran_id: ids.pelajaran });
       cek('ppt-signed-url: bab tanpa PPT dijawab 404, bukan galat server',
         pptKosong.status === 404, pptKosong.status);
+
+      /* Berkas uji dibereskan DULU. Pemeriksaan yatim di bawah adalah
+         invarian atas seluruh bucket, dan berkas milik uji ini sendiri —
+         yang barusan sengaja dilepas dari babnya untuk menguji kasus 404 —
+         memang yatim pada titik ini. Membiarkannya berarti tes selalu
+         menuduh dirinya sendiri. */
+      await fetch(`${env.SUPABASE_URL}/storage/v1/object/kurikulum-ppt`, {
+        method: 'DELETE',
+        headers: {
+          apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+          Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prefixes: [pathPpt] }),
+      }).catch(() => {});
+      ids.pptPath = null;
+
+      /* BERKAS YATIM.
+
+         Melepas PPT harus menghapus baris DB *dan* berkasnya. Bug 13 Sep:
+         antarmuka mengirim penanda 'ada' alih-alih path sungguhan, jadi
+         barisnya bersih, berkasnya tertinggal selamanya, dan layarnya tetap
+         berkata "Materi dilepas". Kegagalan yang tidak terlihat dari mana
+         pun kecuali dengan memeriksa isi bucket satu per satu — dan berkas
+         200 MB yang menumpuk diam-diam adalah tagihan yang terus jalan.
+
+         Diperiksa sebagai INVARIAN atas seluruh bucket, bukan cuma atas
+         berkas uji: apa pun jalur yang melahirkannya, yatim tetap ketahuan. */
+      const daftarObjek = async (prefix) => {
+        const r = await fetch(`${env.SUPABASE_URL}/storage/v1/object/list/kurikulum-ppt`, {
+          method: 'POST',
+          headers: {
+            apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+            Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ prefix, limit: 500 }),
+        });
+        return r.ok ? await r.json() : [];
+      };
+
+      const dipakai = new Set(
+        (await admin('GET', 'pelajaran', { query: '?select=ppt_path&ppt_path=not.is.null' }))
+          .map((x) => x.ppt_path),
+      );
+      const yatim = [];
+      for (const folder of await daftarObjek('')) {
+        for (const berkas of await daftarObjek(`${folder.name}/`)) {
+          const penuh = `${folder.name}/${berkas.name}`;
+          if (!dipakai.has(penuh)) yatim.push(penuh);
+        }
+      }
+      cek('tidak ada berkas PPT yatim di storage (berkas tanpa bab yang menunjuknya)',
+        yatim.length === 0, yatim.slice(0, 5));
     }
 
     console.log(`\n=== HASIL: ${lulus} lulus, ${gagal} gagal, ${dilewati} dilewati ===\n`);
