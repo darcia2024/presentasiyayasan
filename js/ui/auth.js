@@ -324,15 +324,34 @@ function gantiProfilSantri(santriId) {
  */
 function terapkanVisibilitasStaff() {
   const sesi = bacaSesi();
-  const terlihat = sesi?.akun?.akun_jenis === 'staff' || bolehTampilkanPeraga() ? '' : 'none';
+  const staff = sesi?.akun?.akun_jenis === 'staff';
+  const peraga = bolehTampilkanPeraga();
+  const peran = sesi?.akun?.staff_peran;
 
-  [
-    'navGroupPengurus', 'navAdminPanelItem', 'navStudioKurikulumItem',
-    'navGroupPengurusMobile', 'navAdminPanelItemMobile', 'navStudioKurikulumItemMobile',
-  ].forEach((id) => {
+  /*
+   * Dipisah per peran, bukan satu saklar "staff atau bukan".
+   *
+   * Sebelum Fase D, seluruh menu staff muncul untuk SETIAP staff — termasuk
+   * pengajar, yang kalau menekan "Panel Otoritas Yayasan" hanya disambut
+   * kalimat "panel ini khusus pengurus/superadmin". Selama satu-satunya
+   * akun staff yang dipakai adalah pengurus, itu tidak pernah kelihatan.
+   * Di fase ini pengajar justru pengguna utamanya, jadi menu yang menjanjikan
+   * sesuatu lalu menolaknya sendiri akan ditemui setiap hari — persis jenis
+   * antarmuka yang dibersihkan audit M12.
+   */
+  const guru = staff || peraga ? '' : 'none';
+  const admin = (staff && (peran === 'pengurus' || peran === 'superadmin')) || peraga ? '' : 'none';
+
+  const pasang = (ids, nilai) => ids.forEach((id) => {
     const el = $(id);
-    if (el) el.style.display = terlihat;
+    if (el) el.style.display = nilai;
   });
+
+  pasang(['navGroupGuru', 'navGuruDashboardItem',
+          'navGroupGuruMobile', 'navGuruDashboardItemMobile'], guru);
+
+  pasang(['navGroupPengurus', 'navAdminPanelItem', 'navStudioKurikulumItem',
+          'navGroupPengurusMobile', 'navAdminPanelItemMobile', 'navStudioKurikulumItemMobile'], admin);
 }
 
 /**
@@ -373,7 +392,13 @@ function arahkanKeDashboard() {
   // berarti mendaratkan orang di layar kosong, jadi selama kunci itu aktif
   // semua yang bukan staff mendarat di materi kurikulum — layar yang memang
   // dipakai guru di kelas.
-  if (jenis === 'staff') window.PrototypeApp.switchMainView('admin');
+  // Pengajar mendarat di Dashboard Guru, bukan Panel Pengurus — panel itu
+  // memang digerbang ke pengurus/superadmin, jadi mengarahkan pengajar ke
+  // sana berarti mendaratkannya di layar yang menolaknya sendiri.
+  if (jenis === 'staff') {
+    const peran = sesi.akun?.staff_peran;
+    window.PrototypeApp.switchMainView(peran === 'pengajar' ? 'guru-dashboard' : 'admin');
+  }
   else if (fiturTerkunci('kelas-online')) window.PrototypeApp.switchMainView('kurikulum');
   else if (jenis === 'wali') window.PrototypeApp.switchMainView('wali-dashboard');
   else window.PrototypeApp.switchMainView('beranda');

@@ -14,9 +14,11 @@ import { bukaStudio } from './studio.js';
 import { muatDanRenderDokumen } from './dokumen-viewer.js';
 import { renderWaliDashboard } from './wali-dashboard.js';
 import { bukaPengurusPanel } from './pengurus-panel.js';
+import { bukaGuruDashboard } from './guru-dashboard.js';
 import { fiturTerkunci } from './fase.js';
 
 const ALL_VIEWS = [
+  'viewGuruDashboard',
   'viewWaliDashboard',
   'viewBerandaUtama',
   'viewCoursePlayer',
@@ -46,6 +48,13 @@ const ROUTES = {
     nav: 'nav-modul-pdf',
     crumb: ['Perpustakaan Digital', 'Gambaran Materi', 'Modul & Silabus per Jenjang'],
     toast: 'Membuka gambaran materi per jenjang',
+    tone: 540
+  },
+  'guru-dashboard': {
+    view: 'viewGuruDashboard',
+    nav: 'nav-guru-dashboard',
+    crumb: ['Portal Guru', 'Kelas & Pertemuan', 'Dashboard Guru'],
+    toast: 'Membuka Dashboard Guru',
     tone: 540
   },
   admin: {
@@ -125,6 +134,11 @@ export function switchMainView(viewName) {
   if (viewName === 'admin') {
     // Sama seperti wali-dashboard/studio-kurikulum: async, tidak ditunggu.
     bukaPengurusPanel();
+  }
+  if (viewName === 'guru-dashboard') {
+    // Sama seperti rute async lain: kerangka layarnya sudah ada di markup,
+    // isinya menyusul — switchMainView tetap sinkron seperti kontraknya.
+    bukaGuruDashboard();
   }
   if (viewName === 'wali-dashboard') {
     // Sama seperti studio-kurikulum/modul-pdf: async, tidak ditunggu di

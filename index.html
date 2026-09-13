@@ -300,6 +300,13 @@
         </li>
 
         <!-- Kelompok pengurus: dibuka js/ui/auth.js hanya untuk sesi staff. -->
+        <li class="nav-group-label" id="navGroupGuruMobile" style="display: none;">Portal Guru</li>
+        <li id="navGuruDashboardItemMobile" style="display: none;">
+          <a class="ref-nav-item" data-view="guru-dashboard" onclick="PrototypeApp.switchMainView('guru-dashboard'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-clipboard-text"></i>
+            <span>Dashboard Guru</span>
+          </a>
+        </li>
         <li class="nav-group-label" id="navGroupPengurusMobile" style="display: none;">Pengurus Yayasan</li>
         <li id="navAdminPanelItemMobile" style="display: none;">
           <a class="ref-nav-item" data-view="admin" onclick="PrototypeApp.switchMainView('admin'); PrototypeApp.toggleMobileDrawer();">
@@ -492,6 +499,13 @@
         </li>
 
         <!-- Kelompok pengurus: dibuka js/ui/auth.js hanya untuk sesi staff. -->
+        <li class="nav-group-label" id="navGroupGuru" style="display: none;">Portal Guru</li>
+        <li id="navGuruDashboardItem" style="display: none;">
+          <a class="ref-nav-item" id="nav-guru-dashboard" onclick="PrototypeApp.switchMainView('guru-dashboard')">
+            <i class="ph ph-clipboard-text"></i>
+            <span>Dashboard Guru</span>
+          </a>
+        </li>
         <li class="nav-group-label" id="navGroupPengurus" style="display: none;">Pengurus Yayasan</li>
         <li id="navAdminPanelItem" style="display: none;">
           <a class="ref-nav-item" id="nav-admin-panel" onclick="PrototypeApp.switchMainView('admin')">
@@ -945,6 +959,16 @@
            berkas itu untuk struktur data, bukan di sini. -->
       <div id="viewAdminPanel" style="display: none; width: 100%;"></div>
 
+      <!-- Fase D: dirender sepenuhnya oleh js/ui/guru-dashboard.js — lihat
+           berkas itu untuk struktur layarnya, bukan di sini. -->
+      <div id="viewGuruDashboard" style="display: none; width: 100%;">
+        <div class="studio-header-row">
+          <h2 class="studio-title">Dashboard Guru</h2>
+          <p class="studio-subtitle">Kelas yang diampu, laporan pertemuan, dan absensi santri.</p>
+        </div>
+        <div id="guruDashboardBody"></div>
+      </div>
+
       <!-- Fase 2: dirender sepenuhnya oleh js/ui/studio.js — lihat berkas
            itu untuk struktur data, bukan di sini. -->
       <div id="viewStudioKurikulum" style="display: none; width: 100%;">
@@ -1127,6 +1151,6 @@
        DOMContentLoaded — tepat saat prototype-mobile.js membungkus ulang
        metode PrototypeApp. Urutan kedua baris ini jangan ditukar. -->
   <script type="module" src="js/app.js?v=06eadf92"></script>
-  <script defer src="prototype-mobile.js?v=aae5316e"></script>
+  <script defer src="prototype-mobile.js?v=05bfa650"></script>
 </body>
 </html>

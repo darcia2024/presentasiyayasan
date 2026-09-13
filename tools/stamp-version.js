@@ -149,6 +149,9 @@ const SHELL_ASSETS = [
   '/js/core/script-loader.js',
   '/js/core/phone.js',
   '/js/core/pengurus-client.js',
+  /* Fase D — Dashboard Guru. */
+  '/js/core/guru-client.js',
+  '/js/ui/guru-dashboard.js',
   '/js/ui/pengurus-panel.js',
   '/js/ui/sertifikat-admin.js',
   '/js/ui/sertifikat-santri.js',

@@ -300,6 +300,13 @@
       bar: 'Silabus',
       chips: ['silabus', 'lanjut', 'suara', 'piagam']
     },
+    'guru-dashboard': {
+      eyebrow: 'Portal Guru',
+      title: 'Dashboard Guru',
+      sub: 'Kelas yang diampu, laporan pertemuan, dan absensi santri.',
+      bar: 'Dashboard Guru',
+      chips: ['lanjut', 'mufrodat', 'silabus', 'suara']
+    },
     'admin': {
       eyebrow: 'Otoritas Yayasan',
       title: 'Panel Pengurus',
@@ -386,7 +393,15 @@
   function syncGreeting() {
     var nameEl = $('sidebarUserName');
     if (!nameEl) return;
-    var first = (nameEl.textContent || '').trim().split(' ')[0] || 'Santri';
+
+    // Nama di sidebar diisi belakangan oleh sesi. Sebelum itu isinya teks
+    // penampung ("Memuat…") — dan menyapa seseorang dengan nama penampung
+    // lebih buruk daripada tidak menyapa sama sekali, jadi sapaannya
+    // ditahan sampai namanya sungguhan ada.
+    var teks = (nameEl.textContent || '').trim();
+    if (!teks || teks.indexOf('…') !== -1) return;
+
+    var first = teks.split(' ')[0] || 'Santri';
     VIEW_META.beranda.title = 'Ahlan wa Sahlan, ' + first + '!';
     if (currentView === 'beranda') paintLargeTitle('beranda');
   }

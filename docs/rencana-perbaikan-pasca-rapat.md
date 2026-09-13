@@ -178,6 +178,12 @@ dan arsitekturnya harus dipilih ulang. Uji ini murah dan harus dilakukan duluan.
 
 ## 5. Fase D — Dashboard guru & laporan pertemuan
 
+> **Status: SELESAI, 13 September 2026.** Migrasi
+> `20260913000001_pertemuan_guru.sql`, `js/core/guru-client.js`, dan
+> `js/ui/guru-dashboard.js`. Bentuk formulirnya disusun dari gambaran di
+> rapat karena salinan catatan manual belum diterima — begitu contohnya
+> datang, kolomnya tinggal disesuaikan (lihat catatan di bawah).
+
 Ini **bangunan paling besar yang benar-benar baru** — sekarang tidak ada
 sama sekali (`js/ui/` tidak punya modul guru).
 
@@ -250,7 +256,7 @@ Tanpa keempat ini, fase C, D, dan E tidak bisa jalan:
 | # | Yang dibutuhkan | Menghalangi | Kenapa mendesak |
 |---|---|---|---|
 | 1 | **PPT asli buku 1 bab 1** | Seluruh Fase C | Menentukan apakah pendekatan konversi bisa dipakai sama sekali |
-| 2 | **Salinan catatan/absen manual guru** | Fase D | Bentuk formulir harus mengikuti kebiasaan yang sudah jalan |
+| 2 | **Salinan catatan/absen manual guru** | Penyesuaian Fase D | Fase D sudah dibangun dari gambaran di rapat; contohnya dipakai untuk mencocokkan kolom, bukan lagi penghalang mulai |
 | 3 | **Foto buku + halaman materi** | Fase E, dan pengisian gambaran materi | Sumber isi game dan daftar materi |
 | 4 | **Jawaban soal unduh PPT guru eksternal** | Arsitektur Fase C | Lihat 10.2 |
 
