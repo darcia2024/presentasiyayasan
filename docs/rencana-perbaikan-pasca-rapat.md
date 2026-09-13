@@ -88,11 +88,11 @@ pembelajaran. Menu di LMS disembunyikan dulu sampai bentuk digitalnya diputuskan
 
 ---
 
-## 3. Fase B — Fondasi guru-first
+## 3. Fase B — Fondasi guru-first — **B1 & B2 SELESAI 13 Sep 2026**
 
 Struktur data dan hak akses supaya guru bisa jadi pengguna utama.
 
-### B1. `santri.wali_id` dilonggarkan jadi boleh kosong
+### B1. `santri.wali_id` dilonggarkan jadi boleh kosong — SELESAI
 
 Sekarang `not null references wali(id)`. Di fase ini wali tidak dipakai sama
 sekali, sementara guru harus memasukkan sekitar 25 anak per kelas (Ustazah Afida
@@ -100,10 +100,23 @@ saja memegang 3 kelas ≈ 75 anak). Tanpa perubahan ini, setiap anak menuntut sa
 baris wali kosong lebih dulu — kerja sia-sia sekaligus data sampah yang nanti
 sulit dibersihkan saat wali sungguhan mulai didaftarkan.
 
-**Ukuran:** kecil (satu migrasi). **Catatan:** kebijakan RLS wali yang sudah ada
-perlu ikut diperiksa supaya tidak ada yang mengasumsikan `wali_id` selalu terisi.
+**Yang dikerjakan:**
 
-### B2. Kategori guru: internal vs eksternal
+- `supabase/migrations/20260913000002_santri_tanpa_wali.sql` — kolom dilonggarkan
+  + fungsi `daftarkan_santri_kelas(kelas, santri[], aktor)`. Jenjang diambil **dari
+  kelasnya**, bukan dari pemanggil. Satu transaksi, dan nama yang sudah ada di
+  kelas itu dilaporkan `sudah_ada` alih-alih dibuat dua kali.
+- `supabase/functions/daftarkan-santri-kelas/` — Edge Function, khusus
+  pengurus/superadmin lewat `periksaStaffAktif()` (tabel `staff`, bukan klaim JWT).
+- Panel Pengurus → tab **Kelas** → tombol **"+ Daftarkan Santri"** per kelas: satu
+  kotak teks, satu nama per baris. Pengurus menempelkan daftar absen yang sudah
+  ada, bukan mengisi formulir 25 kali.
+
+**Kebijakan RLS wali tidak perlu disunting.** `santri_select_wali` memakai
+`wali_id = auth.uid()`; di SQL `NULL = <uuid>` bernilai NULL (bukan true), jadi
+santri tanpa wali otomatis tidak terlihat wali mana pun — persis yang diinginkan.
+
+### B2. Kategori guru: internal vs eksternal — SELESAI
 
 Tambah kolom pada `staff` (mis. `kategori text check in ('internal','eksternal')`).
 
@@ -112,12 +125,33 @@ Tambah kolom pada `staff` (mis. `kategori text check in ('internal','eksternal')
 - **Eksternal** — guru TPA hasil kerja sama Pemda Gorontalo (pelatihan Desember).
   **Hanya akses PPT.** Tidak melihat data murid, tidak mengisi laporan.
 
-Pengaturannya ditaruh di Panel Super Admin.
+**Yang dikerjakan:** `supabase/migrations/20260913000003_kategori_guru.sql`.
 
-**Ukuran:** sedang — menyentuh skema, RLS, Edge Function yang memeriksa peran
-(pakai `periksaStaffAktif()`, jangan percaya klaim JWT saja), dan panel admin.
+Penjagaannya ditaruh di **satu titik** — fungsi `auth_kelas_diampu()`, yang
+dipakai belasan kebijakan RLS (santri, sertifikat, xp_log, santri_lencana,
+progres_santri, kuis_soal, pertemuan, absensi). Guru eksternal selalu
+mengembalikan himpunan kosong, jadi semuanya ikut tertutup sekaligus.
+Alternatifnya — menyunting sembilan kebijakan satu per satu — akan membuat
+kebijakan kesepuluh yang ditulis bulan depan lupa ikut diperketat.
 
-### B3. Petakan ulang struktur kurikulum ke model 12 buku
+Dibuktikan lewat uji asap (`npm run test:smoke`), bukan diasumsikan. Seorang
+pengajar yang **tetap ditugaskan kelasnya** dibalik kategorinya, lalu dibalik
+lagi:
+
+| | kelas | santri | pertemuan | absensi | sertifikat | **modul** |
+|---|---|---|---|---|---|---|
+| internal | 1 | 2 | ✓ | ✓ | ✓ | **1** |
+| eksternal | 0 | 0 | 0 | 0 | 0 | **1** |
+
+Kolom terakhir yang penting: materi ajar **tetap terbuka**. Itu seluruh alasan
+akun guru mitra ada.
+
+**Masih menganggur:** belum ada UI untuk mengubah kategori — tabel `staff` tidak
+punya kebijakan tulis sama sekali (hanya `staff_select_self` dan
+`staff_select_admin`), jadi butuh Edge Function bergerbang superadmin. Sementara
+ini lewat `node tools/daftarkan-akun-awal.js ... --kategori eksternal`.
+
+### B3. Petakan ulang struktur kurikulum ke model 12 buku — BELUM
 
 Model sekarang `jenjang → modul → pelajaran` ternyata **sudah cocok**, tinggal
 diganti penamaannya dan diisi:

@@ -16,12 +16,14 @@
 
 import { bacaSesi } from '../core/supabase-client.js';
 import { playTone, showToast } from '../core/feedback.js';
+import { jenjangAktif } from './fase.js';
 import { buatCsv } from '../core/csv.js';
 import {
   ambilRingkasanPengurus,
   daftarSantriAdmin,
   perbaruiSantri,
   daftarkanWaliSantri,
+  daftarkanSantriKelas,
   aturPinAkun,
   hapusSantri,
   cariWaliIdLewatNomor,
@@ -39,6 +41,22 @@ import { terbitkanDanUnggahSertifikat, unduhBlob } from './sertifikat-admin.js';
 const $ = (id) => document.getElementById(id);
 const NAMA_JENJANG = { sd: 'SD', smp: 'SMP', sma: 'SMA' };
 
+/**
+ * Pilihan jenjang untuk setiap dropdown di panel ini — mengikuti fase yang
+ * sedang berjalan, bukan daftar mati.
+ *
+ * Membuat kelas atau santri SMP selagi SMP terkunci menghasilkan baris yang
+ * kurikulumnya sengaja disembunyikan: guru membukanya dan menemukan layar
+ * kosong, tanpa apa pun yang menjelaskan kenapa.
+ *
+ * SATU FUNGSI, dipakai dua dropdown. Versi pertama perubahan ini hanya
+ * menambal salah satunya, dan yang tertinggal tidak terlihat sampai
+ * dropdown-nya dibuka satu per satu.
+ */
+function pilihanJenjang() {
+  return jenjangAktif().map((j) => ({ value: j, label: NAMA_JENJANG[j] }));
+}
+
 const TABS = [
   { key: 'ringkasan', label: 'Ringkasan' },
   { key: 'santri', label: 'Santri & Wali' },
@@ -50,7 +68,8 @@ const TABS = [
 
 const STATE = {
   tab: 'ringkasan',
-  subLayar: null, // null | 'santri-form' | 'kelas-form' | 'infaq-form' | 'sertifikat-form'
+  subLayar: null, // null | 'santri-form' | 'santri-kelas-form' | 'kelas-form' | 'infaq-form' | 'sertifikat-form'
+  kelasUntukRombongan: null,
   kelasList: [],
   kelasTerpilih: null,
   laporanBaris: [],
@@ -94,6 +113,7 @@ export async function bukaPengurusPanel() {
   }
   STATE.tab = 'ringkasan';
   STATE.subLayar = null;
+  STATE.kelasUntukRombongan = null;
   await render();
 }
 
@@ -131,6 +151,7 @@ async function render() {
     btn.addEventListener('click', () => {
       STATE.tab = t.key;
       STATE.subLayar = null;
+      STATE.kelasUntukRombongan = null;
       render();
     });
     tabsWrap.appendChild(btn);
@@ -436,11 +457,7 @@ function renderFormSantri(body) {
   form.appendChild(fPin.wrap);
 
   const fNamaSantri = fieldTeks('Nama Santri', 'text', 'Nama lengkap santri');
-  const fJenjang = fieldSelect('Jenjang', [
-    { value: 'sd', label: 'SD' },
-    { value: 'smp', label: 'SMP' },
-    { value: 'sma', label: 'SMA' },
-  ]);
+  const fJenjang = fieldSelect('Jenjang', pilihanJenjang());
   const fNisn = fieldTeks('NISN (opsional)', 'text', 'Kosongkan bila belum ada');
   form.append(fNamaSantri.wrap, fJenjang.wrap, fNisn.wrap);
 
@@ -540,6 +557,11 @@ function fieldSelect(label, opsi) {
 /* ================================================================ KELAS */
 
 async function renderKelas(body) {
+  if (STATE.subLayar === 'santri-kelas-form' && STATE.kelasUntukRombongan) {
+    renderFormSantriKelas(body);
+    return;
+  }
+
   const rowHeader = buatEl('div', 'studio-row-header');
   rowHeader.appendChild(buatEl('h3', 'studio-h3', 'Kelas'));
   body.appendChild(rowHeader);
@@ -547,11 +569,7 @@ async function renderKelas(body) {
   const form = buatEl('div', 'studio-form');
   form.style.cssText = 'max-width:none; display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; margin-bottom:20px;';
   const fNama = fieldTeks('Nama Kelas', 'text', 'mis. SD-1A');
-  const fJenjang = fieldSelect('Jenjang', [
-    { value: 'sd', label: 'SD' },
-    { value: 'smp', label: 'SMP' },
-    { value: 'sma', label: 'SMA' },
-  ]);
+  const fJenjang = fieldSelect('Jenjang', pilihanJenjang());
   const fTahun = fieldTeks('Tahun Ajaran', 'text', '2026/2027');
   [fNama.wrap, fJenjang.wrap, fTahun.wrap].forEach((w) => (w.style.marginBottom = '0'));
   const btnBuat = buatEl('button', 'studio-btn-primary', '+ Buat Kelas');
@@ -588,9 +606,107 @@ async function renderKelas(body) {
     main.appendChild(buatEl('div', 'studio-list-item-judul', k.nama));
     main.appendChild(buatEl('div', 'studio-list-item-meta', `Jenjang ${NAMA_JENJANG[k.jenjang]} • Tahun Ajaran ${k.tahun_ajaran}`));
     item.appendChild(main);
+
+    const btnIsi = buatEl('button', 'studio-btn-secondary', '+ Daftarkan Santri');
+    btnIsi.type = 'button';
+    btnIsi.addEventListener('click', () => {
+      STATE.subLayar = 'santri-kelas-form';
+      STATE.kelasUntukRombongan = k;
+      render();
+    });
+    item.appendChild(btnIsi);
+
     list.appendChild(item);
   });
   body.appendChild(list);
+}
+
+/**
+ * Isi daftar hadir satu kelas sekaligus — satu nama per baris.
+ *
+ * SATU KOTAK TEKS, bukan formulir per anak. Pengurus menyalin daftar yang
+ * sudah ada (dari buku absen, pesan WhatsApp, atau spreadsheet); memaksanya
+ * menekan "+ tambah baris" dua puluh lima kali adalah cara tercepat membuat
+ * daftar hadir tidak pernah selesai diisi.
+ *
+ * Santri di sini sengaja TANPA WALI. Akun wali belum dipakai di fase ini,
+ * dan membuat 25 baris wali kosong hanya untuk memenuhi kolom wajib berarti
+ * 25 baris sampah yang tidak bisa dibedakan dari wali sungguhan yang datanya
+ * belum lengkap (lihat migrasi 20260913000002_santri_tanpa_wali.sql).
+ */
+function renderFormSantriKelas(body) {
+  const k = STATE.kelasUntukRombongan;
+
+  const rowHeader = buatEl('div', 'studio-row-header');
+  rowHeader.appendChild(buatEl('h3', 'studio-h3', `Daftarkan Santri — ${k.nama}`));
+  const kembali = buatEl('button', 'studio-btn-text', '← Kembali ke Kelas');
+  kembali.type = 'button';
+  kembali.addEventListener('click', () => {
+    STATE.subLayar = null;
+    STATE.kelasUntukRombongan = null;
+    render();
+  });
+  rowHeader.appendChild(kembali);
+  body.appendChild(rowHeader);
+
+  const form = buatEl('div', 'studio-form');
+
+  const field = buatEl('div', 'studio-field');
+  field.appendChild(buatEl('label', 'studio-label', 'Nama santri — satu nama per baris'));
+  const area = document.createElement('textarea');
+  area.className = 'studio-input';
+  area.rows = 10;
+  area.placeholder = 'Aisyah Zahra\nMuhammad Fauzan\nKhadijah Salma';
+  field.appendChild(area);
+  field.appendChild(buatEl('div', 'studio-field-hint',
+    `Jenjang mengikuti kelasnya (${NAMA_JENJANG[k.jenjang]}), tidak perlu diisi. `
+    + 'Nama yang sudah ada di kelas ini dilewati, bukan didaftarkan dua kali. '
+    + 'Wali bisa disambungkan nanti saat kelas online dibuka.'));
+  form.appendChild(field);
+
+  const aksi = buatEl('div', 'studio-form-actions');
+  const simpan = buatEl('button', 'studio-btn-primary', 'Daftarkan ke Kelas');
+  simpan.type = 'button';
+  simpan.addEventListener('click', () =>
+    jalankan(async () => {
+      // \r?\n: daftar yang ditempel dari Excel atau Notepad di Windows
+      // datang dengan CRLF, dan \r yang tertinggal akan ikut tersimpan
+      // sebagai bagian dari nama anak.
+      const nama = area.value
+        .split(/\r?\n/)
+        .map((b) => b.trim())
+        .filter(Boolean);
+
+      if (!nama.length) {
+        showToast('Isi dulu minimal satu nama santri.');
+        return;
+      }
+
+      simpan.disabled = true;
+      simpan.textContent = 'Mendaftarkan…';
+      try {
+        const hasil = await daftarkanSantriKelas(k.id, nama.map((n) => ({ nama: n })));
+        const baru = (hasil.santri || []).filter((x) => !x.sudah_ada).length;
+        const lama = (hasil.santri || []).length - baru;
+        // Dilaporkan apa adanya, termasuk yang dilewati — pengurus yang
+        // menempelkan daftar dua kali berhak tahu mana yang benar-benar baru.
+        showToast(
+          lama
+            ? `${baru} santri didaftarkan, ${lama} sudah ada sebelumnya.`
+            : `${baru} santri berhasil didaftarkan.`,
+        );
+        STATE.subLayar = null;
+        STATE.kelasUntukRombongan = null;
+        render();
+      } finally {
+        simpan.disabled = false;
+        simpan.textContent = 'Daftarkan ke Kelas';
+      }
+    }, 'Gagal mendaftarkan santri.'),
+  );
+  aksi.appendChild(simpan);
+  form.appendChild(aksi);
+  body.appendChild(form);
 }
 
 /* ================================================================ INFAQ */

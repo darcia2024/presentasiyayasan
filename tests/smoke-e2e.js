@@ -571,6 +571,97 @@ async function fungsiAda(nama) {
     });
     cek('wali baru tanpa persetujuan data ditolak', tanpaPersetujuan.status >= 400, tanpaPersetujuan.status);
 
+    /* ==================================================================
+     * FASE B — SANTRI TANPA WALI & GERBANG GURU EKSTERNAL
+     *
+     * Dua batas yang lahir dari rapat 12 September. Keduanya diuji di sini,
+     * bukan cuma sekali saat dibangun, karena keduanya dijaga oleh SATU
+     * fungsi (auth_kelas_diampu) yang dipakai belasan kebijakan: perubahan
+     * kecil di situ bisa membuka data santri untuk guru mitra tanpa terlihat
+     * mencurigakan di diff mana pun.
+     * ================================================================== */
+    console.log('\n=== Fase B: santri per kelas & guru eksternal ===');
+
+    const [kelasB] = await admin('POST', 'kelas', {
+      body: { nama: 'Kelas Uji Asap B', jenjang: 'sd', tahun_ajaran: '2026/2027', pengajar_id: ids.pengajar },
+    });
+    ids.kelasB = kelasB.id;
+
+    /* --- B1: santri boleh terdaftar tanpa wali, jenjang diambil dari kelas --- */
+    const daftarB = await adminRpc('daftarkan_santri_kelas', {
+      p_kelas_id: ids.kelasB,
+      // jenjang SENGAJA tidak dikirim; kelasnya 'sd'.
+      p_santri: [{ nama: 'Anak Kelas Satu' }, { nama: 'Anak Kelas Dua' }],
+      p_aktor_staff: ids.staff,
+    });
+    cek('daftarkan_santri_kelas: dua santri terdaftar tanpa wali',
+      daftarB.status === 200 && daftarB.data?.santri?.length === 2, daftarB.data);
+
+    const barisB = await admin('GET', 'santri', { query: `?kelas_id=eq.${ids.kelasB}&select=id,jenjang,wali_id` });
+    cek('santri Fase B benar-benar ber-wali_id NULL',
+      barisB.length === 2 && barisB.every((x) => x.wali_id === null), barisB);
+    cek('jenjang diambil dari KELAS, bukan dari pemanggil',
+      barisB.every((x) => x.jenjang === 'sd'), barisB.map((x) => x.jenjang));
+
+    const ulangB = await adminRpc('daftarkan_santri_kelas', {
+      p_kelas_id: ids.kelasB,
+      p_santri: [{ nama: 'Anak Kelas Satu' }, { nama: 'Anak Kelas Dua' }],
+      p_aktor_staff: ids.staff,
+    });
+    const sesudahUlang = await admin('GET', 'santri', { query: `?kelas_id=eq.${ids.kelasB}&select=id` });
+    cek('pengulangan tidak melahirkan santri kembar',
+      ulangB.status === 200 && (ulangB.data?.santri || []).every((x) => x.sudah_ada === true)
+      && sesudahUlang.length === 2, { sudahAda: ulangB.data?.santri, jumlah: sesudahUlang.length });
+
+    const namaKosongB = await adminRpc('daftarkan_santri_kelas', {
+      p_kelas_id: ids.kelasB,
+      p_santri: [{ nama: 'Anak Sah' }, { nama: '   ' }],
+      p_aktor_staff: ids.staff,
+    });
+    const sesudahGagal = await admin('GET', 'santri', { query: `?kelas_id=eq.${ids.kelasB}&select=id` });
+    cek('nama kosong ditolak DAN yang sebelumnya ikut dibatalkan (atomik)',
+      namaKosongB.status >= 400 && sesudahGagal.length === 2,
+      { status: namaKosongB.status, jumlah: sesudahGagal.length });
+
+    /* --- B2: kategori guru adalah gerbangnya, bukan penugasan kelas --- */
+    /* Pengajar uji asap SUDAH mengampu kelasB. Yang berubah hanya kategori. */
+    const tokenPengajarB = buatSessionJwt({ akunId: ids.pengajar, akunJenis: 'staff', staffPeran: 'pengajar' });
+
+    const kelasInternal = await restSebagai('GET', 'kelas', tokenPengajarB, `?select=id&id=eq.${ids.kelasB}`);
+    const santriInternal = await restSebagai('GET', 'santri', tokenPengajarB, `?select=id&kelas_id=eq.${ids.kelasB}`);
+    cek('guru INTERNAL melihat kelas ampuannya dan isinya',
+      kelasInternal.data?.length === 1 && santriInternal.data?.length === 2,
+      { kelas: kelasInternal.data?.length, santri: santriInternal.data?.length });
+
+    await admin('PATCH', 'staff', { query: `?id=eq.${ids.pengajar}`, body: { kategori: 'eksternal' } });
+
+    const kelasEks = await restSebagai('GET', 'kelas', tokenPengajarB, `?select=id&id=eq.${ids.kelasB}`);
+    const santriEks = await restSebagai('GET', 'santri', tokenPengajarB, `?select=id&kelas_id=eq.${ids.kelasB}`);
+    const pertemuanEks = await restSebagai('GET', 'pertemuan', tokenPengajarB, '?select=id&limit=5');
+    const absensiEks = await restSebagai('GET', 'absensi', tokenPengajarB, '?select=santri_id&limit=5');
+    const sertifikatEks = await restSebagai('GET', 'sertifikat', tokenPengajarB, '?select=id&limit=5');
+    cek('guru EKSTERNAL buta terhadap kelas, santri, pertemuan, absensi, sertifikat — TANPA penugasan diubah',
+      (kelasEks.data?.length ?? 0) === 0 && (santriEks.data?.length ?? 0) === 0
+      && (pertemuanEks.data?.length ?? 0) === 0 && (absensiEks.data?.length ?? 0) === 0
+      && (sertifikatEks.data?.length ?? 0) === 0,
+      { kelas: kelasEks.data, santri: santriEks.data, pertemuan: pertemuanEks.data, absensi: absensiEks.data, sertifikat: sertifikatEks.data });
+
+    /* Yang justru HARUS tetap terbuka: materi ajar. Inilah seluruh alasan
+       akun guru mitra ada ("mereka cuma punya akses PPT doang"). */
+    const modulEks = await restSebagai('GET', 'modul', tokenPengajarB, `?select=id&id=eq.${ids.modul}`);
+    cek('guru EKSTERNAL TETAP bisa membaca materi ajar', (modulEks.data?.length ?? 0) === 1, modulEks.data);
+
+    /* Dan barisnya sendiri, supaya antarmuka bisa menjelaskan alasannya. */
+    const kategoriSendiri = await restSebagai('GET', 'staff', tokenPengajarB, `?select=kategori&id=eq.${ids.pengajar}`);
+    cek('guru EKSTERNAL bisa membaca kategori dirinya sendiri',
+      kategoriSendiri.data?.[0]?.kategori === 'eksternal', kategoriSendiri.data);
+
+    await admin('PATCH', 'staff', { query: `?id=eq.${ids.pengajar}`, body: { kategori: 'internal' } });
+
+    const kelasPulih = await restSebagai('GET', 'kelas', tokenPengajarB, `?select=id&id=eq.${ids.kelasB}`);
+    cek('dikembalikan ke internal, aksesnya pulih (gerbangnya memang kategori)',
+      kelasPulih.data?.length === 1, kelasPulih.data);
+
     console.log(`\n=== HASIL: ${lulus} lulus, ${gagal} gagal, ${dilewati} dilewati ===\n`);
   } finally {
     console.log('=== Membersihkan data uji ===');
@@ -582,6 +673,11 @@ async function fungsiAda(nama) {
     if (ids.pengajar) await admin('DELETE', 'staff', { query: `?id=eq.${ids.pengajar}` }).catch(() => {});
     if (ids.santri) await admin('DELETE', 'santri', { query: `?id=eq.${ids.santri}` }).catch(() => {});
     if (ids.santriPemakaiNisn) await admin('DELETE', 'santri', { query: `?id=eq.${ids.santriPemakaiNisn}` }).catch(() => {});
+    if (ids.kelasB) {
+      await admin('DELETE', 'santri', { query: `?kelas_id=eq.${ids.kelasB}` }).catch(() => {});
+      await admin('DELETE', 'pertemuan', { query: `?kelas_id=eq.${ids.kelasB}` }).catch(() => {});
+      await admin('DELETE', 'kelas', { query: `?id=eq.${ids.kelasB}` }).catch(() => {});
+    }
     if (ids.waliDaftar) {
       await admin('DELETE', 'santri', { query: `?wali_id=eq.${ids.waliDaftar}` }).catch(() => {});
       await admin('DELETE', 'wali', { query: `?id=eq.${ids.waliDaftar}` }).catch(() => {});

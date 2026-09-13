@@ -17,11 +17,14 @@
  * di tools/build-dist.js).
  *
  * PEMAKAIAN
- *   node tools/daftarkan-akun-awal.js staff <nomor_wa> "<nama>" --pin <PIN> [peran]
+ *   node tools/daftarkan-akun-awal.js staff <nomor_wa> "<nama>" --pin <PIN> [peran] [--kategori internal|eksternal]
  *   node tools/daftarkan-akun-awal.js wali  <nomor_wa> "<nama wali>" --pin <PIN> \
  *        --santri "<nama santri>" --jenjang sd [--kelas "SD — Bahasa Arab Dasar"]
  *
  *   peran staff: pengurus (baku) | superadmin | pengajar
+ *   kategori   : internal (baku) | eksternal — eksternal HANYA melihat materi,
+ *                tidak pernah melihat data santri walau ditugaskan ke kelas
+ *                (Fase B2, lihat migrasi 20260913000003_kategori_guru.sql)
  *   jenjang    : sd | smp | sma
  *   PIN        : 6–12 angka, tidak berurutan, tidak berulang
  *
@@ -155,19 +158,24 @@ async function simpanPin(jenis, akunId, pin) {
   console.log('  ✓ PIN login tersimpan (di-hash, tidak disimpan apa adanya).');
 }
 
-async function buatStaff(nomorMentah, nama, peran, pin) {
+async function buatStaff(nomorMentah, nama, peran, pin, kategori) {
   const nomor = normalkanNomor(nomorMentah);
   const PERAN_SAH = ['pengajar', 'pengurus', 'superadmin'];
   if (!PERAN_SAH.includes(peran)) throw new Error(`peran harus salah satu dari: ${PERAN_SAH.join(', ')}`);
+  const KATEGORI_SAH = ['internal', 'eksternal'];
+  if (!KATEGORI_SAH.includes(kategori)) throw new Error(`kategori harus salah satu dari: ${KATEGORI_SAH.join(', ')}`);
 
-  const ada = await rest('GET', 'staff', { query: `?nomor_wa=eq.${nomor}&select=id,nama,peran` });
+  const ada = await rest('GET', 'staff', { query: `?nomor_wa=eq.${nomor}&select=id,nama,peran,kategori` });
   let baris;
   if (ada.length) {
     baris = ada[0];
-    console.log(`  · Staff dengan nomor ${nomor} sudah ada: ${baris.nama} (${baris.peran}). PIN-nya diperbarui.`);
+    // Kategori ikut diperbarui: skrip ini adalah satu-satunya jalan mengubahnya
+    // sampai panel super admin punya layarnya sendiri.
+    await rest('PATCH', 'staff', { query: `?id=eq.${baris.id}`, body: { kategori }, prefer: 'return=minimal' });
+    console.log(`  · Staff dengan nomor ${nomor} sudah ada: ${baris.nama} (${baris.peran}). PIN & kategori diperbarui.`);
   } else {
-    baris = (await rest('POST', 'staff', { body: { nomor_wa: nomor, nama, peran, aktif: true } }))[0];
-    console.log(`  ✓ Staff dibuat: ${baris.nama} — ${baris.peran} — ${nomor}`);
+    baris = (await rest('POST', 'staff', { body: { nomor_wa: nomor, nama, peran, kategori, aktif: true } }))[0];
+    console.log(`  ✓ Staff dibuat: ${baris.nama} — ${baris.peran} / ${kategori} — ${nomor}`);
   }
 
   await simpanPin('staff', baris.id, pin);
@@ -252,7 +260,7 @@ async function buatWaliSantri(nomorMentah, namaWali, namaSantri, jenjang, namaKe
 
   if (jenis === 'staff') {
     const peranArg = argv.slice(3).find((a) => ['pengurus', 'superadmin', 'pengajar'].includes(a));
-    await buatStaff(nomor, nama, peranArg || 'pengurus', pin);
+    await buatStaff(nomor, nama, peranArg || 'pengurus', pin, (ambilOpsi('kategori', argv) || 'internal').toLowerCase());
   } else if (jenis === 'wali') {
     await buatWaliSantri(
       nomor,

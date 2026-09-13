@@ -29,6 +29,7 @@ import {
   ambilAbsensi,
   simpanAbsensi,
   ringkasanKelas,
+  kategoriStaffSaya,
   tanggalHariIniWib,
 } from '../core/guru-client.js';
 
@@ -51,6 +52,8 @@ const STATE = {
   santri: [],
   /** @type {Map<string, {status:string, catatan:string}>} kunci: santri_id */
   absen: new Map(),
+  /** 'internal' | 'eksternal' — menentukan kalimat, bukan izin. */
+  kategori: 'internal',
 };
 
 function buatEl(tag, kelas, teks) {
@@ -90,12 +93,26 @@ function kosongkan(el) {
 /* ========================================================================= */
 
 async function renderDaftarKelas(wadah) {
+  // Subjudulnya ikut menyesuaikan. Menjanjikan "pilih satu kelas untuk
+  // mencatat absensi" tepat di atas kalimat yang menerangkan bahwa guru
+  // mitra tidak memegang kelas membuat layarnya membantah dirinya sendiri.
   wadah.appendChild(buatEl('div', 'studio-subtitle',
-    'Kelas yang Anda ampu. Pilih satu kelas untuk mencatat pertemuan dan absensi.'));
+    STATE.kategori === 'eksternal' && !STATE.kelasList.length
+      ? 'Portal guru mitra PERISA.'
+      : 'Kelas yang Anda ampu. Pilih satu kelas untuk mencatat pertemuan dan absensi.'));
 
   if (!STATE.kelasList.length) {
+    // Guru eksternal TIDAK akan pernah melihat kelas, sebanyak apa pun ia
+    // ditugaskan — batasnya kategori, bukan penugasan (20260913000003).
+    // Menyuruhnya "hubungi pengurus untuk ditugaskan" mengirimnya mengejar
+    // sesuatu yang tidak akan mengubah apa pun, dan membuat pengurus
+    // menugaskan kelas berulang kali sambil menyangka sistemnya rusak.
     const kosong = buatEl('div', 'studio-empty',
-      'Belum ada kelas yang diampu. Hubungi pengurus yayasan untuk ditugaskan ke sebuah kelas.');
+      STATE.kategori === 'eksternal'
+        ? 'Akun Anda terdaftar sebagai guru mitra. Akses Anda adalah materi ajar — '
+          + 'buka menu Kurikulum untuk memproyeksikan materi di kelas. '
+          + 'Data santri dan absensi dikelola guru internal yayasan.'
+        : 'Belum ada kelas yang diampu. Hubungi pengurus yayasan untuk ditugaskan ke sebuah kelas.');
     wadah.appendChild(kosong);
     return;
   }
@@ -487,7 +504,14 @@ export async function bukaGuruDashboard() {
   wadah.appendChild(buatEl('div', 'studio-empty', 'Memuat kelas…'));
 
   await jalankan(async () => {
-    STATE.kelasList = await daftarKelasSaya();
+    // Berbarengan: kategori tidak bergantung pada daftar kelas, dan dua
+    // perjalanan berurutan hanya menambah waktu tunggu layar pertama.
+    const [kelas, kategori] = await Promise.all([
+      daftarKelasSaya(),
+      kategoriStaffSaya(),
+    ]);
+    STATE.kelasList = kelas;
+    STATE.kategori = kategori;
     // Selalu kembali ke daftar kelas saat menu dibuka lagi dari sidebar —
     // membuka menu seharusnya berarti "mulai dari awal", bukan melanjutkan
     // lembar yang entah kapan terakhir dibuka.

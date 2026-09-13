@@ -94,6 +94,24 @@ export async function perbaruiSantri(santriId, patch) {
 }
 
 /**
+ * Daftarkan santri langsung ke satu kelas, TANPA wali (Fase B1).
+ *
+ * Dipakai untuk mengisi daftar hadir kelas di fase guru-first: yang
+ * dibutuhkan guru cuma nama-namanya, sementara akun wali belum dipakai.
+ * Jenjang tidak dikirim — server mengambilnya dari kelasnya sendiri supaya
+ * santri tidak bisa terdaftar di jenjang yang berbeda dari kelasnya.
+ *
+ * @param {string} kelasId
+ * @param {Array<{nama:string, nisn?:string}>} santri
+ */
+export async function daftarkanSantriKelas(kelasId, santri) {
+  return panggilFungsi('daftarkan-santri-kelas', {
+    kelas_id: kelasId,
+    santri: santri.map((s) => ({ nama: s.nama, nisn: s.nisn || undefined })),
+  });
+}
+
+/**
  * @param {{nomorWaWali:string, namaWali:string, persetujuanData:boolean, santri: Array<{nama:string, jenjang:string, tanggalLahir?:string, nisn?:string, kelasId?:string, beasiswa?:boolean}>}} payload
  *   persetujuanData WAJIB true kalau ini wali BARU (UU PDP) — Edge Function
  *   yang menegakkan aturannya, di sini cuma diteruskan apa adanya.

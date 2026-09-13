@@ -11,7 +11,7 @@
  * server seperti sertifikat. Alasan lengkapnya ada di kepala migrasinya.
  */
 
-import { getSupabaseClient } from './supabase-client.js';
+import { getSupabaseClient, bacaSesi } from './supabase-client.js';
 import { jenjangAktif } from '../ui/fase.js';
 
 const TABEL_KELAS = 'kelas';
@@ -100,6 +100,40 @@ export async function jenjangUntukSesiStaff() {
     // jatuh ke jenjang baku di bawah.
   }
   return aktif[0];
+}
+
+/**
+ * Kategori staff yang sedang login: 'internal' | 'eksternal'.
+ *
+ * Dipakai HANYA untuk memilih kalimat yang tepat di layar, bukan sebagai
+ * penjaga. Penjagaannya ada di auth_kelas_diampu() dan kebijakan RLS
+ * (20260913000003) — guru eksternal yang memalsukan nilai ini di peramban
+ * tetap mendapat nol baris dari server.
+ *
+ * Membaca barisnya sendiri diizinkan kebijakan `staff_select_self`. Gagal
+ * baca dijawab 'internal' supaya guru sungguhan yang jaringannya sedang
+ * bermasalah tidak dituduh eksternal dan dikirim ke pesan yang salah.
+ *
+ * Kegagalannya DICATAT ke console, tidak ditelan diam-diam. Versi pertama
+ * fungsi ini mengambil id dari `sesi.akunId` — kolom yang tidak pernah ada;
+ * bacaSesi() menaruhnya di `sesi.akun.id`. Query-nya selalu galat, jalur
+ * mundur selalu menjawab 'internal', dan layarnya terlihat wajar. Jalur
+ * mundur yang diam mengubah kesalahan menjadi jawaban yang salah.
+ */
+export async function kategoriStaffSaya() {
+  const akunId = bacaSesi()?.akun?.id;
+  if (!akunId) return 'internal';
+  const client = getSupabaseClient();
+  const { data, error } = await client
+    .from('staff')
+    .select('kategori')
+    .eq('id', akunId)
+    .maybeSingle();
+  if (error || !data) {
+    console.error('[guru-client] gagal membaca kategori staff:', error?.message || 'baris kosong');
+    return 'internal';
+  }
+  return data.kategori === 'eksternal' ? 'eksternal' : 'internal';
 }
 
 /** Santri aktif di satu kelas, urut nama — urutan absen yang dipakai guru. */
