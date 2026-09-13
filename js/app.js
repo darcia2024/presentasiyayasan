@@ -38,11 +38,18 @@ import {
   salinTautanMateri
 } from './ui/shell.js';
 import { initAuthGate, logout, terapkanAturanTampilan } from './ui/auth.js';
+import { fiturTerkunci } from './ui/fase.js';
 
 const PrototypeApp = {
   // Navigasi
   switchMainView,
   updateBottomNav,
+
+  // Gerbang fase peluncuran. Diekspos karena prototype-mobile.js adalah
+  // skrip biasa (bukan modul ES) sehingga tidak bisa mengimpor fase.js
+  // langsung — tanpa ini ia akan memakai daftar layar awalnya sendiri dan
+  // mendaratkan pengguna di layar yang justru sedang dikunci.
+  fiturTerkunci,
 
   // Kerangka antarmuka
   toggleMobileDrawer,

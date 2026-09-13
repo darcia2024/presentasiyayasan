@@ -63,7 +63,7 @@
   <!-- Fase 2: Studio Kurikulum -->
   <link rel="stylesheet" href="js/ui/studio.css?v=3ff3df16">
   <!-- Native Mobile / PWA Layer -->
-  <link rel="stylesheet" href="prototype-mobile.css?v=6065c6a3">
+  <link rel="stylesheet" href="prototype-mobile.css?v=57b759aa">
 </head>
 <body class="tanpa-bar-demo">
 
@@ -243,14 +243,14 @@
 
         <li class="nav-group-label">Portal</li>
         <!-- Hanya terlihat saat sesi login WALI aktif — lihat js/ui/auth.js -->
-        <li id="navWaliDashboardItemMobile" style="display: none;">
+        <li id="navWaliDashboardItemMobile" data-terkunci="kelas-online" style="display: none;">
           <a class="ref-nav-item" data-view="wali-dashboard" onclick="PrototypeApp.switchMainView('wali-dashboard'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-users-three"></i>
             <span>Dashboard Wali</span>
           </a>
         </li>
         <li>
-          <a class="ref-nav-item" data-view="beranda" onclick="PrototypeApp.switchMainView('beranda'); PrototypeApp.toggleMobileDrawer();">
+          <a class="ref-nav-item" data-terkunci="kelas-online" data-view="beranda" onclick="PrototypeApp.switchMainView('beranda'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-squares-four"></i>
             <span>Dashboard Santri</span>
           </a>
@@ -267,7 +267,7 @@
           <ul class="ref-nav-sub is-open" id="drawerModulList"></ul>
         </li>
         <li>
-          <a class="ref-nav-item" onclick="PrototypeApp.bukaSubTab('kuis'); PrototypeApp.toggleMobileDrawer();">
+          <a class="ref-nav-item" data-terkunci="evaluasi-digital" onclick="PrototypeApp.bukaSubTab('kuis'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-check-circle"></i>
             <span>Latihan &amp; Evaluasi</span>
           </a>
@@ -429,14 +429,14 @@
 
         <li class="nav-group-label">Portal</li>
         <!-- Hanya terlihat saat sesi login WALI aktif — lihat js/ui/auth.js -->
-        <li id="navWaliDashboardItem" style="display: none;">
+        <li id="navWaliDashboardItem" data-terkunci="kelas-online" style="display: none;">
           <a class="ref-nav-item" id="nav-wali-dashboard" onclick="PrototypeApp.switchMainView('wali-dashboard')">
             <i class="ph ph-users-three"></i>
             <span>Dashboard Wali</span>
           </a>
         </li>
         <li>
-          <a class="ref-nav-item active" id="nav-beranda" onclick="PrototypeApp.switchMainView('beranda')">
+          <a class="ref-nav-item active" id="nav-beranda" data-terkunci="kelas-online" onclick="PrototypeApp.switchMainView('beranda')">
             <i class="ph ph-squares-four"></i>
             <span>Dashboard Santri</span>
           </a>
@@ -459,7 +459,7 @@
           <ul class="ref-nav-sub" id="sidebarModulList"></ul>
         </li>
         <li>
-          <a class="ref-nav-item" id="nav-evaluasi" onclick="PrototypeApp.bukaSubTab('kuis')">
+          <a class="ref-nav-item" id="nav-evaluasi" data-terkunci="evaluasi-digital" onclick="PrototypeApp.bukaSubTab('kuis')">
             <i class="ph ph-check-circle"></i>
             <span>Latihan &amp; Evaluasi</span>
           </a>
@@ -573,7 +573,7 @@
       <!-- ======================================================
            VIEW 1: BERANDA UTAMA (HOME DASHBOARD)
            ====================================================== -->
-      <div id="viewBerandaUtama" style="display: block; width: 100%;">
+      <div id="viewBerandaUtama" style="display: none; width: 100%;">
         <div class="beranda-view-layout">
 
           <!-- ==========================================================
@@ -693,7 +693,7 @@
       <!-- ======================================================
            VIEW 2: KURIKULUM BAHASA ARAB (COURSE PLAYER)
            ====================================================== -->
-      <div id="viewCoursePlayer" style="display: none; width: 100%;">
+      <div id="viewCoursePlayer" style="display: block; width: 100%;">
         <div class="course-main-grid">
 
           <!-- LEFT COLUMN: PLAYER & TABS -->
@@ -724,7 +724,7 @@
                 <button class="btn-share-text" onclick="PrototypeApp.salinTautanMateri()">
                   <i class="ph ph-share-network"></i> Bagikan
                 </button>
-                <button class="btn-enroll-primary" onclick="PrototypeApp.switchSubTab('kuis')">
+                <button class="btn-enroll-primary" data-terkunci="evaluasi-digital" onclick="PrototypeApp.switchSubTab('kuis')">
                   <i class="ph ph-check-circle"></i>
                   <span>Latihan Evaluasi</span>
                 </button>
@@ -759,7 +759,7 @@
               <button class="btn-share-text" onclick="PrototypeApp.salinTautanMateri()">
                 <i class="ph ph-share-network"></i> Bagikan
               </button>
-              <button class="btn-enroll-primary" onclick="PrototypeApp.switchSubTab('kuis')">
+              <button class="btn-enroll-primary" data-terkunci="evaluasi-digital" onclick="PrototypeApp.switchSubTab('kuis')">
                 <i class="ph ph-check-circle"></i> Latihan Evaluasi
               </button>
             </div>
@@ -768,7 +768,7 @@
             <div class="ref-sub-tabs-bar">
               <button class="sub-tab-btn active" data-subtab="ringkasan" onclick="PrototypeApp.switchSubTab('ringkasan')">Ringkasan Materi</button>
               <button class="sub-tab-btn" data-subtab="audio" onclick="PrototypeApp.switchSubTab('audio')">Pelafalan Mufrodat</button>
-              <button class="sub-tab-btn" data-subtab="kuis" onclick="PrototypeApp.switchSubTab('kuis')">Evaluasi Pemahaman</button>
+              <button class="sub-tab-btn" data-terkunci="evaluasi-digital" data-subtab="kuis" onclick="PrototypeApp.switchSubTab('kuis')">Evaluasi Pemahaman</button>
               <button class="sub-tab-btn" data-subtab="pengumuman" onclick="PrototypeApp.switchSubTab('pengumuman')">Pemberitahuan Yayasan</button>
               <button class="sub-tab-btn" data-subtab="ulasan" onclick="PrototypeApp.switchSubTab('ulasan')">Catatan & Ulasan</button>
             </div>
@@ -912,14 +912,14 @@
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
             <div>
               <h2 style="font-size: 20px; font-weight: 800; color: var(--teal-dark);">Perpustakaan Modul & Dokumen Silabus</h2>
-              <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Dokumen resmi terverifikasi Yayasan Peradaban Islam Azhariyah asuhan Umi Elly.</p>
+              <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Gambaran materi yang dipelajari di setiap jenjang. Dokumen dibaca di tempat, tidak diunduh.</p>
             </div>
 
             <div class="pdf-filter-bar">
               <button class="pdf-filter-btn active" onclick="PrototypeApp.filterPdfLibrary('all', this)">Semua Dokumen</button>
               <button class="pdf-filter-btn" onclick="PrototypeApp.filterPdfLibrary('sd', this)">Jenjang SD</button>
-              <button class="pdf-filter-btn" onclick="PrototypeApp.filterPdfLibrary('smp', this)">Jenjang SMP</button>
-              <button class="pdf-filter-btn" onclick="PrototypeApp.filterPdfLibrary('sma', this)">Jenjang SMA</button>
+              <button class="pdf-filter-btn" data-terkunci="jenjang-lanjut" onclick="PrototypeApp.filterPdfLibrary('smp', this)">Jenjang SMP</button>
+              <button class="pdf-filter-btn" data-terkunci="jenjang-lanjut" onclick="PrototypeApp.filterPdfLibrary('sma', this)">Jenjang SMA</button>
             </div>
           </div>
 
@@ -963,7 +963,7 @@
        5. NATIVE MOBILE BOTTOM NAVIGATION BAR
        ============================================================ -->
   <nav class="mobile-bottom-nav" id="mobileBottomNav">
-    <a class="bottom-nav-item active" id="bnav-beranda" onclick="PrototypeApp.switchMainView('beranda'); PrototypeApp.updateBottomNav('beranda');">
+    <a class="bottom-nav-item active" id="bnav-beranda" data-terkunci="kelas-online" onclick="PrototypeApp.switchMainView('beranda'); PrototypeApp.updateBottomNav('beranda');">
       <i class="ph ph-squares-four"></i>
       <span>Beranda</span>
     </a>
@@ -1006,7 +1006,6 @@
         </div>
         <div class="pdf-topbar-actions">
           <button class="icon-circle-btn" onclick="PrototypeApp.belumTersedia('Perbesar dokumen', event)" aria-label="Perbesar tampilan dokumen"><i class="ph ph-magnifying-glass-plus"></i></button>
-          <button class="icon-circle-btn" onclick="PrototypeApp.belumTersedia('Unduh dokumen', event)" aria-label="Unduh dokumen"><i class="ph ph-download-simple"></i></button>
           <button class="icon-circle-btn close-btn" onclick="PrototypeApp.closeDocReader()" aria-label="Tutup pembaca dokumen"><i class="ph ph-x"></i></button>
         </div>
       </div>
@@ -1127,7 +1126,7 @@
   <!-- Modul ES otomatis ditunda (defer), jadi selesai dieksekusi sebelum
        DOMContentLoaded — tepat saat prototype-mobile.js membungkus ulang
        metode PrototypeApp. Urutan kedua baris ini jangan ditukar. -->
-  <script type="module" src="js/app.js?v=66483bc9"></script>
-  <script defer src="prototype-mobile.js?v=37fe10e4"></script>
+  <script type="module" src="js/app.js?v=06eadf92"></script>
+  <script defer src="prototype-mobile.js?v=aae5316e"></script>
 </body>
 </html>

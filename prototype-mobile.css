@@ -2169,3 +2169,19 @@
     text-transform: uppercase;
   }
 }
+
+
+/* ==========================================================================
+   GERBANG FASE PELUNCURAN (rapat tim PERISA, 12 September 2026)
+
+   Dipasang js/ui/fase.js pada menu yang belum berlaku di fase ini.
+
+   SENGAJA DI UJUNG BERKAS. Tab bar bawah memakai
+   `.bottom-nav-item { display: flex !important }`, dan dua aturan
+   ber-!important dengan kekhususan sama diputuskan oleh URUTAN SUMBER.
+   Memindahkan blok ini ke atas akan membuat butir yang terkunci muncul
+   lagi di tab bar mobile — tanpa pesan galat apa pun.
+   ========================================================================== */
+.is-terkunci-fase {
+  display: none !important;
+}

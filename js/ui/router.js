@@ -14,6 +14,7 @@ import { bukaStudio } from './studio.js';
 import { muatDanRenderDokumen } from './dokumen-viewer.js';
 import { renderWaliDashboard } from './wali-dashboard.js';
 import { bukaPengurusPanel } from './pengurus-panel.js';
+import { fiturTerkunci } from './fase.js';
 
 const ALL_VIEWS = [
   'viewWaliDashboard',
@@ -43,8 +44,8 @@ const ROUTES = {
   'modul-pdf': {
     view: 'viewModulPdf',
     nav: 'nav-modul-pdf',
-    crumb: ['Perpustakaan Digital', 'Dokumen & Silabus', 'Arsip Modul PDF Resmi'],
-    toast: 'Membuka Arsip Modul dan Silabus PDF',
+    crumb: ['Perpustakaan Digital', 'Gambaran Materi', 'Modul & Silabus per Jenjang'],
+    toast: 'Membuka gambaran materi per jenjang',
     tone: 540
   },
   admin: {
@@ -82,7 +83,7 @@ const ROUTES = {
  * (progres, agenda, peringkat), baru memilih mau belajar apa. Dashboard
  * yang menjawab itu, bukan video yang langsung terbuka.
  */
-const DEFAULT_ROUTE = 'beranda';
+const DEFAULT_ROUTE = fiturTerkunci('kelas-online') ? 'kurikulum' : 'beranda';
 
 const setText = (id, value) => {
   const el = document.getElementById(id);

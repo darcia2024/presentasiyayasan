@@ -266,7 +266,7 @@
     // dan fungsinya dihapus 12 Sep 2026. Sekarang mengarah ke perpustakaan
     // sungguhan, tempat dokumen terbit berada.
     silabus:  { icon: 'ph-book-open',    label: 'Perpustakaan',   act: "PrototypeApp.switchMainView('modul-pdf')" },
-    evaluasi: { icon: 'ph-check-circle', label: 'Latihan Evaluasi', act: "PrototypeApp.switchSubTab('kuis')" },
+    evaluasi: { icon: 'ph-check-circle', label: 'Latihan Evaluasi', act: "PrototypeApp.switchSubTab('kuis')", kunci: 'evaluasi-digital' },
     mufrodat: { icon: 'ph-speaker-high', label: 'Pelafalan Mufrodat', act: "PrototypeApp.switchSubTab('audio')" },
     piagam:   { icon: 'ph-certificate',  label: 'Piagam Sanad',   act: 'PrototypeApp.openCertificate()', gold: true },
     arsip:    { icon: 'ph-files',        label: 'Semua Dokumen',  act: "PrototypeApp.switchMainView('modul-pdf')" },
@@ -367,6 +367,11 @@
       row.innerHTML = meta.chips.map(function (key) {
         var c = CHIPS[key];
         if (!c) return '';
+        // Chip yang menunjuk fitur terkunci tidak ikut digambar — kalau
+        // dibiarkan, ia jadi satu-satunya jalan tersisa menuju layar yang
+        // sengaja disembunyikan dari seluruh menu lain.
+        if (c.kunci && window.PrototypeApp && window.PrototypeApp.fiturTerkunci
+            && window.PrototypeApp.fiturTerkunci(c.kunci)) return '';
         var cls = 'm-chip' + (c.gold ? ' is-gold' : '');
         var body = '<i class="ph ' + c.icon + '"></i> ' + c.label;
         return c.href
@@ -960,7 +965,10 @@
     window.addEventListener('scroll', onScroll, { passive: true });
 
     // Layar awal: hormati parameter ?view= (juga dipakai shortcut manifest).
-    var startView = 'beranda';
+    // Dashboard Santri dikunci selama kelas online belum dibuka (lihat
+    // js/ui/fase.js), jadi layar awalnya ikut bergeser ke materi kurikulum.
+    var startView = (window.PrototypeApp && window.PrototypeApp.fiturTerkunci
+      && window.PrototypeApp.fiturTerkunci('kelas-online')) ? 'kurikulum' : 'beranda';
     try {
       var q = new URLSearchParams(location.search).get('view');
       if (q && VIEW_META[q]) startView = q;

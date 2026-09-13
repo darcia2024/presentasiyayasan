@@ -27,6 +27,7 @@ import { playTone, showToast } from '../core/feedback.js';
 import { terapkanSantriAktif, terapkanIdentitasSesiAktif, beriTahuPergantianSantri } from './jenjang.js';
 import { escapeHtml } from '../core/html.js';
 import { BOLEH_MODE_PENGEMBANGAN } from '../config.js';
+import { terapkanKunciFase, fiturTerkunci } from './fase.js';
 
 const NAMA_JENJANG = { sd: 'SD', smp: 'SMP', sma: 'SMA' };
 
@@ -366,8 +367,15 @@ function arahkanKeDashboard() {
   if (!sesi || !window.PrototypeApp?.switchMainView) return;
 
   const jenis = sesi.akun?.akun_jenis;
-  if (jenis === 'wali') window.PrototypeApp.switchMainView('wali-dashboard');
-  else if (jenis === 'staff') window.PrototypeApp.switchMainView('admin');
+
+  // 12 September 2026 — Dashboard Wali dan Dashboard Santri terkunci selama
+  // kelas online belum dibuka (lihat js/ui/fase.js). Mengarahkan ke sana
+  // berarti mendaratkan orang di layar kosong, jadi selama kunci itu aktif
+  // semua yang bukan staff mendarat di materi kurikulum — layar yang memang
+  // dipakai guru di kelas.
+  if (jenis === 'staff') window.PrototypeApp.switchMainView('admin');
+  else if (fiturTerkunci('kelas-online')) window.PrototypeApp.switchMainView('kurikulum');
+  else if (jenis === 'wali') window.PrototypeApp.switchMainView('wali-dashboard');
   else window.PrototypeApp.switchMainView('beranda');
 }
 
@@ -383,6 +391,9 @@ function arahkanKeDashboard() {
  * dijalankan lebih dulu, terlepas dari status Supabase.
  */
 export function terapkanAturanTampilan() {
+  // Gerbang fase lebih dulu: sebagian menu memang tidak berlaku di fase ini
+  // untuk SIAPA PUN, jadi tidak perlu diputuskan ulang per jenis akun.
+  terapkanKunciFase();
   terapkanVisibilitasStaff();
   terapkanVisibilitasWali();
   terapkanVisibilitasDemo();

@@ -112,6 +112,10 @@ const SHELL_ASSETS = [
   '/js/ui/course.js',
   '/js/ui/library.js',
   '/js/ui/shell.js',
+  /* Gerbang fase peluncuran (rapat tim PERISA 12 Sep 2026). Diimpor
+     auth.js & router.js, jadi wajib ikut precache — tanpa ini menu yang
+     seharusnya terkunci akan muncul saat aplikasi dibuka luring. */
+  '/js/ui/fase.js',
   /* Fase 1 — konfigurasi & klien Supabase. config.js dihasilkan build
      (tools/gen-config.js); kalau belum dikonfigurasi isinya string kosong,
      bukan berkas hilang, jadi tetap aman ikut precache. */

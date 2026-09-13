@@ -8,7 +8,7 @@
      • Endpoint /api/*               -> network-first + fallback cache terakhir
    ========================================================================== */
 
-const SW_VERSION   = 'perisa-v1.1.0-46ea6fc1';
+const SW_VERSION   = 'perisa-v1.1.0-be253c45';
 const SHELL_CACHE  = `${SW_VERSION}-shell`;
 const ASSET_CACHE  = `${SW_VERSION}-assets`;
 const CDN_CACHE    = `${SW_VERSION}-cdn`;
@@ -21,9 +21,9 @@ const SHELL_ASSETS = [
   '/',
   '/index.html',
   '/prototype.css?v=611fd7df',
-  '/prototype-mobile.css?v=6065c6a3',
-  '/prototype-mobile.js?v=37fe10e4',
-  '/js/app.js?v=66483bc9',
+  '/prototype-mobile.css?v=57b759aa',
+  '/prototype-mobile.js?v=aae5316e',
+  '/js/app.js?v=06eadf92',
   '/js/core/feedback.js',
   '/js/core/speech.js',
   '/js/ui/syllabus.js',
@@ -33,6 +33,7 @@ const SHELL_ASSETS = [
   '/js/ui/course.js',
   '/js/ui/library.js',
   '/js/ui/shell.js',
+  '/js/ui/fase.js',
   '/js/config.js',
   '/js/core/supabase-client.js',
   '/js/ui/auth.js',
