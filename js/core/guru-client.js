@@ -12,6 +12,7 @@
  */
 
 import { getSupabaseClient } from './supabase-client.js';
+import { jenjangAktif } from '../ui/fase.js';
 
 const TABEL_KELAS = 'kelas';
 const TABEL_SANTRI = 'santri';
@@ -67,6 +68,38 @@ export async function daftarKelasSaya() {
     .order('nama', { ascending: true });
   lemparJikaError(error, 'Gagal memuat daftar kelas');
   return data || [];
+}
+
+/**
+ * Jenjang materi yang pantas dibuka untuk sesi STAFF yang sedang login.
+ *
+ * MASALAH YANG DISELESAIKAN. Halaman Kurikulum memuat materinya dari jenjang
+ * SANTRI yang sedang aktif — cara yang benar untuk wali, tapi staff tidak
+ * punya santri. Akibatnya guru yang membuka Kurikulum selalu disambut
+ * "Belum ada modul untuk jenjang ini", padahal modulnya terbit dan santri
+ * bisa melihatnya. Di fase guru-first ini, layar itu justru yang dipakai
+ * memproyeksikan materi di depan kelas.
+ *
+ * Urutan penentuannya:
+ *   1. Jenjang kelas yang diampu — paling tepat, itu yang ia ajar.
+ *   2. Kalau tidak mengampu kelas apa pun (mis. pengurus), jenjang pertama
+ *      yang berlaku di fase ini.
+ *
+ * Jenjang dari kelas tetap disaring terhadap jenjangAktif(): kelas SMP yang
+ * terlanjur dibuat saat SMP masih terkunci tidak boleh menarik guru ke materi
+ * yang sengaja disembunyikan.
+ */
+export async function jenjangUntukSesiStaff() {
+  const aktif = jenjangAktif();
+  try {
+    const kelas = await daftarKelasSaya();
+    const cocok = kelas.map((k) => k.jenjang).find((j) => aktif.includes(j));
+    if (cocok) return cocok;
+  } catch (_) {
+    // Gagal memuat kelas bukan alasan membiarkan halaman materi kosong —
+    // jatuh ke jenjang baku di bawah.
+  }
+  return aktif[0];
 }
 
 /** Santri aktif di satu kelas, urut nama — urutan absen yang dipakai guru. */

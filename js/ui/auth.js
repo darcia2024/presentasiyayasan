@@ -24,7 +24,13 @@ import {
   SUPABASE_TERKONFIGURASI,
 } from '../core/supabase-client.js';
 import { playTone, showToast } from '../core/feedback.js';
-import { terapkanSantriAktif, terapkanIdentitasSesiAktif, beriTahuPergantianSantri } from './jenjang.js';
+import {
+  terapkanSantriAktif,
+  terapkanIdentitasSesiAktif,
+  beriTahuPergantianSantri,
+  muatKontenJenjang,
+} from './jenjang.js';
+import { jenjangUntukSesiStaff } from '../core/guru-client.js';
 import { escapeHtml } from '../core/html.js';
 import { BOLEH_MODE_PENGEMBANGAN } from '../config.js';
 import { terapkanKunciFase, fiturTerkunci } from './fase.js';
@@ -212,9 +218,20 @@ function terapkanProfil(santri) {
   terapkanSantriAktif(santri);
 }
 
-/** Identitas untuk sesi STAFF — staff tidak punya "jenjang santri". */
+/**
+ * Identitas untuk sesi STAFF — staff tidak punya "jenjang santri".
+ *
+ * Sekaligus memuat materi kurikulum untuk staff. Tanpa ini halaman Kurikulum
+ * tetap kosong sepanjang sesi guru: muatKontenJenjang() hanya pernah
+ * dipanggil dari terapkanSantriAktif(), jalur yang tidak pernah dilewati
+ * staff. Sengaja tidak ditunggu (await) — identitas di sidebar tidak boleh
+ * menunggu jaringan, dan halaman materinya mengisi dirinya sendiri.
+ */
 function terapkanIdentitasStaff() {
   terapkanIdentitasSesiAktif();
+  jenjangUntukSesiStaff()
+    .then((jenjang) => muatKontenJenjang(jenjang))
+    .catch(() => { /* halaman materi tetap menampilkan keadaan kosongnya */ });
 }
 
 /**

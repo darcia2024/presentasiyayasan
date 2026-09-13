@@ -16,6 +16,7 @@
  */
 
 import { bacaSesi } from '../core/supabase-client.js';
+import { muatKontenJenjang } from './jenjang.js';
 import { playTone, showToast } from '../core/feedback.js';
 import {
   daftarKelasSaya,
@@ -139,7 +140,20 @@ async function renderDaftarKelas(wadah) {
       STATE.layar = 'detail';
       await render();
     }, 'Gagal membuka kelas.'));
-    kontrol.appendChild(buka);
+
+    // Materi dibuka dari kartu kelasnya, bukan cuma dari menu Kurikulum.
+    // Guru yang memegang beberapa kelas perlu menyatakan kelas MANA yang
+    // materinya hendak dibuka — menu Kurikulum sendiri tidak punya cara
+    // menanyakan itu, dan diam-diam memilihkan satu jenjang untuk guru yang
+    // mengampu dua adalah cara termudah menampilkan materi yang salah di
+    // depan kelas.
+    const materi = buatEl('button', 'studio-btn-secondary', 'Buka Materi');
+    materi.addEventListener('click', () => jalankan(async () => {
+      await muatKontenJenjang(k.jenjang);
+      window.PrototypeApp?.switchMainView?.('kurikulum');
+    }, 'Gagal membuka materi kelas.'));
+
+    kontrol.append(buka, materi);
     kartu.appendChild(kontrol);
 
     daftar.appendChild(kartu);

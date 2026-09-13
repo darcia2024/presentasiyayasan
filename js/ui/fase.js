@@ -58,6 +58,28 @@ export function fiturTerkunci(nama) {
   return KUNCI_AKTIF.has(nama);
 }
 
+const SEMUA_JENJANG = ['sd', 'smp', 'sma'];
+
+/** Jenjang yang dicakup kunci 'jenjang-lanjut'. */
+const JENJANG_LANJUT = ['smp', 'sma'];
+
+/**
+ * Jenjang yang benar-benar berlaku di fase ini.
+ *
+ * Dipakai untuk memilih materi apa yang dibuka sesi STAFF — staff tidak
+ * punya "jenjang santri" seperti wali, jadi harus ada penentu lain. Diturunkan
+ * dari kunci fase, bukan ditulis sebagai daftar tetap: begitu 'jenjang-lanjut'
+ * dicabut, SMP dan SMA otomatis ikut terpilih tanpa ada yang perlu ingat
+ * menyunting berkas kedua.
+ *
+ * @returns {string[]} selalu berisi minimal satu jenjang.
+ */
+export function jenjangAktif() {
+  return fiturTerkunci('jenjang-lanjut')
+    ? SEMUA_JENJANG.filter((j) => !JENJANG_LANJUT.includes(j))
+    : SEMUA_JENJANG.slice();
+}
+
 /**
  * Sembunyikan setiap elemen bertanda `data-terkunci` yang kuncinya sedang
  * aktif.
