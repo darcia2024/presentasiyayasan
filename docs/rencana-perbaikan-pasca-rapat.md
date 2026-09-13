@@ -187,15 +187,50 @@ diganti penamaannya dan diisi:
 |---|---|
 | Buku 1–12 (satu per semester, kelas 1–6 SD) | `modul` (12 baris, jenjang `sd`) |
 | 5 bab per buku | `pelajaran` (5 per modul) |
-| 1 PPT per bab → total 60 PPT | berkas PPT yang menempel ke `pelajaran` |
+| 1 PPT per bab → total 60 PPT | `pelajaran.ppt_path` — **sudah ada sejak 13 Sep** |
 
 Tidak perlu bongkar skema, cukup penyesuaian label di antarmuka dan pengisian data.
 
-**Ukuran:** kecil–sedang.
+**KEPUTUSAN 13 Sep — isinya bukan pekerjaan kita.** Umi Elly mengunggah materinya
+sendiri; yang disiapkan adalah platformnya. Konsekuensinya untuk B3: **tidak ada
+kerangka 12 modul × 5 bab yang dibuat lebih dulu.** Kerangka berisi judul tebakan
+adalah data sampah yang harus dibongkar begitu buku aslinya masuk, dan selama
+belum dibongkar ia tidak bisa dibedakan dari materi sungguhan. Modul dan bab
+dibuat Umi lewat Studio Kurikulum, satu per satu, seiring materinya siap.
+
+Yang tersisa untuk B3 karena itu tinggal **penamaan di antarmuka** (Modul → Buku,
+Pelajaran → Bab), dan itu baru layak dikerjakan setelah terlihat bagaimana Umi
+sungguhan menamai bukunya.
+
+**Ukuran:** kecil.
 
 ---
 
 ## 4. Fase C — Pipeline PPT (menggantikan PDF)
+
+> **Tahap 1 SELESAI 13 Sep 2026 — jalur unggahnya hidup.**
+>
+> `supabase/migrations/20260913000004_ppt_pelajaran.sql` + Edge Function
+> `ppt-signed-url` + bidang unggah di Studio Kurikulum + tombol **PPT** di
+> silabus. Umi sudah bisa mengunggah, guru sudah bisa membuka.
+>
+> **Bucket PRIVAT, bukan publik — dan itu keputusan pentingnya.** Butir 10.2
+> (guru eksternal boleh mengunduh atau tidak?) belum dijawab. Bucket privat
+> membuat kedua jawaban tetap terbuka: kalau boleh, URL bertanda tangan itu
+> sendiri sudah jadi tautan unduhnya; kalau tidak boleh, penyimpanan privat
+> adalah syarat untuk pemutar sisi-server mana pun, dan pemutarnya ditambahkan
+> tanpa memindahkan satu berkas pun. Kalau PPT ditaruh di bucket publik seperti
+> PDF, jawaban "tidak boleh" berarti memindahkan 60 berkas sekaligus mengubah
+> setiap URL yang sudah tersimpan.
+>
+> **Siapa yang boleh:** seluruh staff, **termasuk guru mitra** — itu seluruh
+> alasan akun mereka ada. Wali dan santri **tidak**: PPT adalah bahan yang
+> diproyeksikan guru, santri memegang buku cetak. Dibuktikan di uji asap, bukan
+> diasumsikan (sembilan pemeriksaan; 59 → 68 lulus).
+>
+> Yang **belum** dikerjakan dari Fase C: konversi/pemutar dalam aplikasi. Itu
+> baru bisa dirancang setelah 10.2 dijawab dan setelah PPT asli buku 1 bab 1
+> diterima (penghalang #1 di bagian 9).
 
 Bagian paling berisiko di seluruh rencana ini, karena ada dua permintaan yang
 saling menarik:

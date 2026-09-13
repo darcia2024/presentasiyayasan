@@ -40,7 +40,7 @@ export async function muatSilabusTerbit(jenjang) {
     const client = getSupabaseClient();
     const { data, error } = await client
       .from('modul')
-      .select('id, tahap, kode, judul, urutan, pelajaran(id, judul, urutan, durasi_menit, tipe)')
+      .select('id, tahap, kode, judul, urutan, pelajaran(id, judul, urutan, durasi_menit, tipe, ppt_path, ppt_nama)')
       .eq('jenjang', jenjang)
       .eq('status', 'terbit')
       .order('tahap', { ascending: true })
@@ -65,10 +65,16 @@ export async function muatSilabusTerbit(jenjang) {
         duration: totalMenit(daftarPelajaran),
         open: iModul === 0,
         lessons: daftarPelajaran.map((p, iPelajaran) => ({
+          id: p.id,
           name: p.judul,
           time: p.durasi_menit ? `${p.durasi_menit} Menit` : '',
           status: STATUS_PELAJARAN[p.tipe] || 'siap',
           active: iModul === 0 && iPelajaran === 0,
+          // Hanya PENANDA "ada/tidak", bukan path-nya. Path objek storage
+          // tidak ada gunanya di klien — bucketnya privat, dan URL-nya harus
+          // diminta ke Edge Function tiap kali dibuka.
+          pptAda: !!p.ppt_path,
+          pptNama: p.ppt_nama || null,
         })),
       };
     });

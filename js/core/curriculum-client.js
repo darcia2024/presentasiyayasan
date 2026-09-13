@@ -16,6 +16,7 @@ const TABEL_MUFRODAT = 'mufrodat';
 const TABEL_DOKUMEN = 'dokumen';
 const BUCKET_MEDIA = 'kurikulum-media';
 const BUCKET_VIDEO = 'kurikulum-video';
+const BUCKET_PPT = 'kurikulum-ppt';
 
 function lemparJikaError(error, konteks) {
   if (error) throw new Error(`${konteks}: ${error.message}`);
@@ -109,7 +110,7 @@ export async function daftarPelajaran(modulId) {
   const client = getSupabaseClient();
   const { data, error } = await client
     .from(TABEL_PELAJARAN)
-    .select('id, modul_id, judul, urutan, durasi_menit, tipe')
+    .select('id, modul_id, judul, urutan, durasi_menit, tipe, video_path, ppt_path, ppt_nama, ppt_ukuran_bytes')
     .eq('modul_id', modulId)
     .order('urutan', { ascending: true });
   lemparJikaError(error, 'Gagal memuat daftar pelajaran');
@@ -262,6 +263,101 @@ export async function unggahVideoPelajaran(file, pelajaranId) {
   lemparJikaError(errUpdate, 'Video terunggah, tapi gagal menyimpan tautannya ke pelajaran');
 
   return path;
+}
+
+/* ------------------------------------------------------------------- PPT */
+
+/**
+ * Unggah PPT satu bab ke bucket PRIVAT kurikulum-ppt, lalu simpan PATH-nya
+ * ke pelajaran.ppt_path.
+ *
+ * Sama polanya dengan unggahVideoPelajaran(): tersimpan langsung begitu
+ * berkas dipilih, karena path storage-nya butuh pelajaran.id yang sudah ada.
+ *
+ * Nama ASLINYA ikut disimpan. Path-nya sengaja acak supaya dua unggahan
+ * bernama "Bab 1.pptx" tidak saling menimpa — tapi berkas yang mendarat di
+ * komputer guru harus bernama seperti yang Umi beri, bukan UUID.
+ */
+export async function unggahPptPelajaran(file, pelajaranId) {
+  const client = getSupabaseClient();
+  const ekstensi = file.name.split('.').pop();
+  const path = `${pelajaranId}/${crypto.randomUUID()}.${ekstensi}`;
+
+  const { error: errUpload } = await client.storage.from(BUCKET_PPT).upload(path, file, {
+    cacheControl: '3600',
+    upsert: false,
+  });
+  lemparJikaError(errUpload, 'Gagal mengunggah PPT');
+
+  const { data, error: errUpdate } = await client
+    .from(TABEL_PELAJARAN)
+    .update({
+      ppt_path: path,
+      ppt_nama: file.name,
+      ppt_ukuran_bytes: file.size,
+      ppt_diunggah_pada: new Date().toISOString(),
+    })
+    .eq('id', pelajaranId)
+    .select('id');
+  lemparJikaError(errUpdate, 'PPT terunggah, tapi gagal menyimpan tautannya ke bab');
+  // RLS yang menolak UPDATE menjawab 200 dengan NOL baris. Tanpa ini,
+  // berkasnya terlanjur ada di storage sementara babnya tetap kosong — dan
+  // layarnya berkata "berhasil".
+  if (!Array.isArray(data) || data.length === 0) {
+    throw new Error('PPT terunggah, tapi tidak tersimpan ke bab (kemungkinan izin ditolak).');
+  }
+
+  return path;
+}
+
+/**
+ * Lepas PPT dari satu bab. Berkasnya ikut dihapus dari storage.
+ *
+ * Urutannya sengaja: baris dulu, berkas belakangan. Kalau penghapusan berkas
+ * gagal, yang tertinggal hanyalah berkas yatim yang tidak bisa dijangkau
+ * siapa pun. Urutan sebaliknya meninggalkan bab yang menunjuk ke berkas yang
+ * sudah tidak ada — dan itu tampil sebagai galat di depan guru saat mengajar.
+ */
+export async function hapusPptPelajaran(pelajaranId, path) {
+  const client = getSupabaseClient();
+  const { data, error } = await client
+    .from(TABEL_PELAJARAN)
+    .update({ ppt_path: null, ppt_nama: null, ppt_ukuran_bytes: null, ppt_diunggah_pada: null })
+    .eq('id', pelajaranId)
+    .select('id');
+  lemparJikaError(error, 'Gagal melepas PPT dari bab');
+  if (!Array.isArray(data) || data.length === 0) {
+    throw new Error('Gagal melepas PPT (kemungkinan izin ditolak).');
+  }
+
+  if (path) {
+    const { error: errHapus } = await client.storage.from(BUCKET_PPT).remove([path]);
+    if (errHapus) console.error('[curriculum-client] berkas PPT yatim tertinggal:', path, errHapus.message);
+  }
+}
+
+/**
+ * Minta URL sekali pakai untuk membuka PPT satu bab.
+ *
+ * Lewat Edge Function, bukan createSignedUrl dari klien: bucket-nya privat
+ * dan keputusan "siapa boleh membuka ini" harus diambil server. Lihat
+ * supabase/functions/ppt-signed-url/index.ts.
+ */
+export async function ambilUrlPpt(pelajaranId) {
+  const client = getSupabaseClient();
+  const { data, error } = await client.functions.invoke('ppt-signed-url', {
+    body: { pelajaran_id: pelajaranId },
+  });
+  if (error || !data?.ok) {
+    let pesan = data?.error;
+    if (!pesan && error?.context) {
+      try {
+        pesan = (await error.context.clone().json())?.error;
+      } catch (_) { /* body bukan JSON */ }
+    }
+    throw new Error(pesan || 'Gagal membuka materi PPT.');
+  }
+  return data;
 }
 
 /* --------------------------------------------------------------- DOKUMEN */

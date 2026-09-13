@@ -16,6 +16,8 @@
  */
 
 import { playTone, showToast } from '../core/feedback.js';
+import { bacaSesi } from '../core/supabase-client.js';
+import { ambilUrlPpt } from '../core/curriculum-client.js';
 
 /** Ikon dan perilaku klik untuk tiap status pelajaran. */
 const LESSON_STATUS = {
@@ -71,7 +73,61 @@ function buildLessonRow(lesson) {
   row.append(left, time);
   row.addEventListener('click', () => spec.onClick(lesson));
 
+  const ppt = tombolPpt(lesson);
+  if (ppt) row.insertBefore(ppt, time);
+
   return row;
+}
+
+/**
+ * Tombol "PPT" pada satu baris bab — HANYA untuk staff.
+ *
+ * PPT adalah bahan yang diproyeksikan guru di depan kelas; santri memegang
+ * buku cetak (rapat 12 September). Batasnya sungguhan ditegakkan server
+ * (Edge Function ppt-signed-url menolak sesi non-staff), jadi pemeriksaan di
+ * sini semata-mata supaya wali tidak melihat tombol yang pasti gagal —
+ * bukan sebagai pengaman.
+ *
+ * Guru MITRA ikut mendapatkannya: gerbang internal/eksternal menjaga data
+ * santri, bukan materi.
+ */
+function tombolPpt(lesson) {
+  if (!lesson.pptAda) return null;
+  if (bacaSesi()?.akun?.akun_jenis !== 'staff') return null;
+
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'lesson-ppt-btn';
+  btn.title = lesson.pptNama ? `Buka ${lesson.pptNama}` : 'Buka materi PPT bab ini';
+
+  const isiNormal = () => {
+    btn.replaceChildren();
+    const ikon = document.createElement('i');
+    ikon.className = 'ph ph-projector-screen';
+    btn.append(ikon, document.createTextNode(' PPT'));
+  };
+  isiNormal();
+
+  btn.addEventListener('click', async (e) => {
+    // Tanpa ini, klik tombol ikut membuka/menutup barisnya.
+    e.stopPropagation();
+    btn.disabled = true;
+    btn.replaceChildren(document.createTextNode('Menyiapkan…'));
+    try {
+      const hasil = await ambilUrlPpt(lesson.id);
+      // Tautannya berumur 15 menit dan sekali pakai — dibuka di tab baru,
+      // bukan menggantikan halaman kurikulum yang sedang dipakai guru
+      // mengajar.
+      window.open(hasil.url, '_blank', 'noopener');
+    } catch (err) {
+      showToast(err.message || 'Gagal membuka materi PPT.');
+    } finally {
+      btn.disabled = false;
+      isiNormal();
+    }
+  });
+
+  return btn;
 }
 
 function buildSection(section) {

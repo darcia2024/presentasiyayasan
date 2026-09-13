@@ -27,6 +27,8 @@ import {
   importMufrodatMassal,
   unggahMedia,
   unggahVideoPelajaran,
+  unggahPptPelajaran,
+  hapusPptPelajaran,
   daftarDokumen,
   simpanDokumen,
   hapusDokumen,
@@ -36,6 +38,7 @@ import {
 } from '../core/curriculum-client.js';
 import { uraikanCsvMufrodat, templatCsvMufrodat } from '../core/csv.js';
 import { playTone, showToast } from '../core/feedback.js';
+import { jenjangAktif } from './fase.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -50,7 +53,7 @@ const NAMA_STATUS = { draft: 'Draf', ditinjau: 'Ditinjau', terbit: 'Terbit' };
 const NAMA_TIPE_PELAJARAN = { materi: 'Materi', evaluasi: 'Evaluasi', sertifikat: 'Sertifikat' };
 
 const STATE = {
-  jenjang: 'sd',
+  jenjang: jenjangAktif()[0],
   modulList: [],
   modulAktif: null,
   pelajaranList: [],
@@ -241,7 +244,10 @@ function renderBreadcrumb(el) {
 
 function renderDaftarModul(body) {
   const tabs = buatEl('div', 'studio-tabs');
-  Object.keys(NAMA_JENJANG).forEach((j) => {
+  // Jenjang mengikuti fase yang sedang berjalan. Tab SMP/SMA yang bisa
+  // diklik selagi jenjangnya terkunci mengundang Umi menyusun materi yang
+  // tidak akan tampil di mana pun — dan tidak ada yang memberitahunya.
+  jenjangAktif().forEach((j) => {
     const btn = buatEl('button', `studio-tab${j === STATE.jenjang ? ' studio-tab--active' : ''}`, NAMA_JENJANG[j]);
     btn.type = 'button';
     btn.addEventListener('click', () => pindahJenjang(j));
@@ -507,9 +513,10 @@ function renderFormPelajaran(body) {
   groupTipe.appendChild(selTipe);
   form.appendChild(groupTipe);
 
-  // Video butuh ID pelajaran untuk path storage-nya — cuma tersedia saat
-  // mengubah pelajaran yang sudah tersimpan, bukan saat membuat baru.
+  // Video dan PPT butuh ID pelajaran untuk path storage-nya — cuma tersedia
+  // saat mengubah pelajaran yang sudah tersimpan, bukan saat membuat baru.
   if (f.id) {
+    form.appendChild(bidangPpt(f));
     form.appendChild(bidangVideo(f));
   }
 
@@ -736,6 +743,110 @@ function bidangMedia(label, id, urlAwal, jenis, accept) {
   kotak.appendChild(input);
 
   wrap.appendChild(kotak);
+  return wrap;
+}
+
+/** "1048576" -> "1 MB". Untuk memberi tahu Umi berkasnya sebesar apa. */
+function ukuranTerbaca(bytes) {
+  if (!bytes) return '';
+  const mb = bytes / (1024 * 1024);
+  return mb >= 1 ? `${mb.toFixed(1)} MB` : `${Math.round(bytes / 1024)} KB`;
+}
+
+/**
+ * Unggah PPT satu bab — inti Fase C, dan layar tempat Umi Elly bekerja.
+ *
+ * Rapat 12 September: PDF diganti PPT, satu PPT per bab, ~60 PPT untuk 12
+ * buku. Isinya diunggah Umi sendiri; yang dibangun di sini jalurnya.
+ *
+ * Tersimpan LANGSUNG begitu berkas dipilih, sama seperti bidangVideo() —
+ * path storage-nya butuh pelajaran.id yang sudah ada.
+ *
+ * Nama berkas dan ukurannya ditampilkan setelah terunggah. Saat mengisi 60
+ * bab, pertanyaan yang terus muncul adalah "bab ini sudah atau belum, dan
+ * yang tadi kekirim yang mana" — status "Sudah ada" saja tidak menjawabnya.
+ */
+function bidangPpt(pelajaran) {
+  const wrap = buatEl('div', 'studio-field');
+  wrap.appendChild(buatEl('label', 'studio-label', 'Materi PPT Bab Ini'));
+
+  const kotak = buatEl('div', 'studio-media-box');
+  const pratinjau = buatEl('div', 'studio-media-preview');
+  const statusTeks = buatEl('span', 'studio-media-status', '');
+  pratinjau.appendChild(statusTeks);
+  kotak.appendChild(pratinjau);
+
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.pptx,.ppt,.odp,.pdf';
+  input.className = 'studio-media-input';
+  kotak.appendChild(input);
+
+  const btnHapus = buatEl('button', 'studio-btn-text', 'Lepas PPT');
+  btnHapus.type = 'button';
+  kotak.appendChild(btnHapus);
+
+  const perbaruiTampilan = () => {
+    if (pelajaran.ppt_path) {
+      const ukuran = ukuranTerbaca(pelajaran.ppt_ukuran_bytes);
+      statusTeks.textContent = pelajaran.ppt_nama
+        ? `${pelajaran.ppt_nama}${ukuran ? ` — ${ukuran}` : ''}`
+        : 'Sudah ada PPT';
+      btnHapus.hidden = false;
+    } else {
+      statusTeks.textContent = 'Belum ada PPT';
+      btnHapus.hidden = true;
+    }
+  };
+  perbaruiTampilan();
+
+  input.addEventListener('change', () =>
+    jalankan(async () => {
+      const file = input.files[0];
+      if (!file) return;
+      statusTeks.textContent = `Mengunggah ${file.name}… (berkas besar bisa beberapa menit)`;
+      input.disabled = true;
+      try {
+        const path = await unggahPptPelajaran(file, pelajaran.id);
+        pelajaran.ppt_path = path;
+        pelajaran.ppt_nama = file.name;
+        pelajaran.ppt_ukuran_bytes = file.size;
+        perbaruiTampilan();
+        showToast('PPT berhasil diunggah.');
+      } catch (e) {
+        perbaruiTampilan();
+        throw e;
+      } finally {
+        input.disabled = false;
+        input.value = '';
+      }
+    }, 'Gagal mengunggah PPT.'),
+  );
+
+  btnHapus.addEventListener('click', () =>
+    jalankan(async () => {
+      // Melepas PPT menghapus berkasnya dari storage dan tidak bisa
+      // dibatalkan — pertanyaan yang pantas ditanyakan sekali.
+      if (!window.confirm(`Lepas "${pelajaran.ppt_nama || 'PPT ini'}" dari bab ini? Berkasnya ikut terhapus.`)) return;
+      await hapusPptPelajaran(pelajaran.id, pelajaran.ppt_path);
+      pelajaran.ppt_path = null;
+      pelajaran.ppt_nama = null;
+      pelajaran.ppt_ukuran_bytes = null;
+      perbaruiTampilan();
+      showToast('PPT dilepas dari bab ini.');
+    }, 'Gagal melepas PPT.'),
+  );
+
+  wrap.appendChild(kotak);
+  wrap.appendChild(
+    buatEl(
+      'p',
+      'studio-note',
+      'Format .pptx, .ppt, .odp, atau .pdf — maksimal 200 MB. Disimpan di bucket privat: '
+      + 'guru membukanya lewat tautan sekali pakai yang berlaku 15 menit, bukan tautan tetap '
+      + 'yang bisa disalin ke mana-mana. Wali dan santri tidak bisa membukanya.',
+    ),
+  );
   return wrap;
 }
 

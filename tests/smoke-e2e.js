@@ -731,6 +731,94 @@ async function fungsiAda(nama) {
         { balik: balikInternal.data, kelas: kelasPulihFn.data });
     }
 
+    /* ==================================================================
+     * FASE C — JALUR PPT (bucket privat + URL bertanda tangan)
+     *
+     * Rapat 12 September: PDF diganti PPT, satu per bab. Isinya diunggah
+     * Umi sendiri; yang diuji di sini jalurnya.
+     *
+     * Dua baris yang paling penting: WALI DITOLAK dan GURU MITRA BOLEH.
+     * Kalau yang pertama bocor, bahan ajar yayasan terbuka ke seluruh orang
+     * tua. Kalau yang kedua tertutup, akun guru mitra kehilangan
+     * satu-satunya alasannya ada.
+     * ================================================================== */
+    console.log('\n=== Jalur PPT per bab (Fase C) ===');
+
+    const adaFnPpt = await fungsiAda('ppt-signed-url');
+    if (!adaFnPpt) {
+      lewati('ppt-signed-url', 'fungsi belum ter-deploy');
+    } else {
+      const ISI_PPT = 'PPT UJI ASAP PERISA';
+      const pathPpt = `${ids.pelajaran}/uji-asap-${Date.now()}.pptx`;
+      ids.pptPath = pathPpt;
+
+      const unggah = await fetch(`${env.SUPABASE_URL}/storage/v1/object/kurikulum-ppt/${pathPpt}`, {
+        method: 'POST',
+        headers: {
+          apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+          Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+          'Content-Type': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        },
+        body: ISI_PPT,
+      });
+      cek('PPT terunggah ke bucket privat kurikulum-ppt', unggah.status === 200, unggah.status);
+
+      await admin('PATCH', 'pelajaran', {
+        query: `?id=eq.${ids.pelajaran}`,
+        body: {
+          ppt_path: pathPpt, ppt_nama: 'Buku 1 Bab 1.pptx',
+          ppt_ukuran_bytes: ISI_PPT.length, ppt_diunggah_pada: new Date().toISOString(),
+        },
+      });
+
+      const pptTanpaSesi = await panggilFungsi('ppt-signed-url', null, { pelajaran_id: ids.pelajaran });
+      cek('ppt-signed-url: tanpa sesi ditolak 401', pptTanpaSesi.status === 401, pptTanpaSesi.status);
+
+      const pptOlehWali = await panggilFungsi('ppt-signed-url', tokenWali, { pelajaran_id: ids.pelajaran });
+      cek('ppt-signed-url: WALI DITOLAK — bahan ajar bukan untuk orang tua',
+        pptOlehWali.status === 403, pptOlehWali);
+
+      const pptOlehPengajar = await panggilFungsi('ppt-signed-url', tokenPengajar, { pelajaran_id: ids.pelajaran });
+      cek('ppt-signed-url: guru boleh, dan nama berkas aslinya dikembalikan',
+        pptOlehPengajar.status === 200 && pptOlehPengajar.data?.nama === 'Buku 1 Bab 1.pptx',
+        pptOlehPengajar.data);
+
+      /* Guru MITRA: gerbang internal/eksternal menjaga data SANTRI, bukan
+         materi. Kalau ini gagal, artinya penjagaan kategori bocor ke
+         tempat yang salah. */
+      await admin('PATCH', 'staff', { query: `?id=eq.${ids.pengajar}`, body: { kategori: 'eksternal' } });
+      const pptOlehMitra = await panggilFungsi('ppt-signed-url', tokenPengajar, { pelajaran_id: ids.pelajaran });
+      const santriOlehMitra = await restSebagai('GET', 'santri', tokenPengajar, '?select=id&limit=5');
+      cek('ppt-signed-url: GURU MITRA tetap dapat PPT, tapi tetap buta terhadap santri',
+        pptOlehMitra.status === 200 && (santriOlehMitra.data?.length ?? 0) === 0,
+        { ppt: pptOlehMitra.status, santri: santriOlehMitra.data });
+      await admin('PATCH', 'staff', { query: `?id=eq.${ids.pengajar}`, body: { kategori: 'internal' } });
+
+      /* Tautannya harus benar-benar mengembalikan berkasnya — signed URL
+         yang terbit tapi tidak bisa dibuka adalah kegagalan yang baru
+         ketahuan saat guru sudah berdiri di depan kelas. */
+      const unduh = await fetch(pptOlehPengajar.data.url);
+      const isiKembali = await unduh.text();
+      cek('ppt-signed-url: tautannya mengembalikan isi berkas yang sama',
+        unduh.status === 200 && isiKembali === ISI_PPT, { status: unduh.status });
+
+      const publikPpt = await fetch(`${env.SUPABASE_URL}/storage/v1/object/public/kurikulum-ppt/${pathPpt}`);
+      cek('bucket PPT tidak bisa dibuka lewat URL publik', publikPpt.status >= 400, publikPpt.status);
+
+      const langsungWaliPpt = await fetch(`${env.SUPABASE_URL}/storage/v1/object/kurikulum-ppt/${pathPpt}`, {
+        headers: { apikey: env.SUPABASE_ANON_KEY, Authorization: `Bearer ${tokenWali}` },
+      });
+      cek('wali membaca objek PPT langsung ditolak', langsungWaliPpt.status >= 400, langsungWaliPpt.status);
+
+      await admin('PATCH', 'pelajaran', {
+        query: `?id=eq.${ids.pelajaran}`,
+        body: { ppt_path: null, ppt_nama: null, ppt_ukuran_bytes: null, ppt_diunggah_pada: null },
+      });
+      const pptKosong = await panggilFungsi('ppt-signed-url', tokenPengajar, { pelajaran_id: ids.pelajaran });
+      cek('ppt-signed-url: bab tanpa PPT dijawab 404, bukan galat server',
+        pptKosong.status === 404, pptKosong.status);
+    }
+
     console.log(`\n=== HASIL: ${lulus} lulus, ${gagal} gagal, ${dilewati} dilewati ===\n`);
   } finally {
     console.log('=== Membersihkan data uji ===');
@@ -742,6 +830,12 @@ async function fungsiAda(nama) {
     if (ids.pengajar) await admin('DELETE', 'staff', { query: `?id=eq.${ids.pengajar}` }).catch(() => {});
     if (ids.santri) await admin('DELETE', 'santri', { query: `?id=eq.${ids.santri}` }).catch(() => {});
     if (ids.santriPemakaiNisn) await admin('DELETE', 'santri', { query: `?id=eq.${ids.santriPemakaiNisn}` }).catch(() => {});
+    if (ids.pptPath) {
+      await fetch(`${env.SUPABASE_URL}/storage/v1/object/kurikulum-ppt/${ids.pptPath}`, {
+        method: 'DELETE',
+        headers: { apikey: env.SUPABASE_SERVICE_ROLE_KEY, Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}` },
+      }).catch(() => {});
+    }
     if (ids.kelasB) {
       await admin('DELETE', 'santri', { query: `?kelas_id=eq.${ids.kelasB}` }).catch(() => {});
       await admin('DELETE', 'pertemuan', { query: `?kelas_id=eq.${ids.kelasB}` }).catch(() => {});
