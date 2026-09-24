@@ -149,21 +149,6 @@ export async function cariWaliIdLewatNomor(nomorMentah) {
   return data?.id || null;
 }
 
-/** @returns {Promise<string|null>} id santri milik wali dengan nomor tsb, dicocokkan lewat nama persis (tanpa peduli besar/kecil huruf). */
-export async function cariSantriIdLewatNamaDanWali(nomorMentahWali, namaSantri) {
-  const waliId = await cariWaliIdLewatNomor(nomorMentahWali);
-  if (!waliId) return null;
-  const client = getSupabaseClient();
-  const { data, error } = await client.from('santri').select('id, nama').eq('wali_id', waliId);
-  if (error) {
-    console.error('[pengurus-client] gagal mencari santri:', error.message);
-    return null;
-  }
-  const target = namaSantri.trim().toLowerCase();
-  const cocok = (data || []).find((s) => s.nama.trim().toLowerCase() === target);
-  return cocok?.id || null;
-}
-
 /**
  * Hak penghapusan (UU PDP) — hapus SATU santri beserta seluruh riwayat
  * belajarnya (xp_log/progres_santri/santri_lencana/dst. ikut terhapus
@@ -322,10 +307,27 @@ export async function daftarSertifikat() {
 /* ------------------------------------------------------------ LAPORAN KELAS */
 
 /**
- * Progres tiap santri di satu kelas: total XP, jumlah pelajaran selesai.
- * Dipakai layar Laporan sekaligus ekspor CSV — satu sumber data yang sama.
+ * Laporan satu kelas: KEHADIRAN dari pertemuan yang dicatat guru, ditambah
+ * XP & pelajaran selesai dari gamifikasi.
+ *
+ * 24 Sep 2026 — sebelumnya hanya XP & pelajaran selesai. Di fase guru-first
+ * (rapat 12 Sep) santri tidak memakai aplikasi, jadi kedua angka itu SELALU
+ * nol untuk semua anak — sementara data yang benar-benar diisi setiap minggu
+ * (pertemuan & absensi dari Dashboard Guru, Fase D) tidak tampil di panel
+ * pengurus sama sekali. Laporan yang isinya nol semua terbaca sebagai "tidak
+ * ada yang belajar", padahal kelasnya berjalan.
+ *
+ * XP tetap dihitung supaya langsung terpakai begitu kelas online dibuka;
+ * layar yang memutuskan kolom mana yang ditampilkan.
+ *
+ * Persentase hadir dihitung terhadap pertemuan yang MENCATAT anak itu, bukan
+ * seluruh pertemuan kelas: anak yang baru masuk di pertengahan semester
+ * tidak boleh tampak bolos di pertemuan sebelum ia terdaftar.
+ *
+ * @returns {Promise<{jumlahPertemuan:number, pertemuanTerakhir:string|null, baris:Array}>}
  */
 export async function laporanProgresKelas(kelasId) {
+  const kosong = { jumlahPertemuan: 0, pertemuanTerakhir: null, baris: [] };
   const client = getSupabaseClient();
   const { data: santriKelas, error: errSantri } = await client
     .from('santri')
@@ -335,15 +337,28 @@ export async function laporanProgresKelas(kelasId) {
     .order('nama');
   if (errSantri) {
     console.error('[pengurus-client] gagal memuat santri kelas:', errSantri.message);
-    return [];
+    return kosong;
   }
-  if (!santriKelas?.length) return [];
+  if (!santriKelas?.length) return kosong;
 
   const idSantri = santriKelas.map((s) => s.id);
-  const [{ data: xpRows }, { data: progresRows }] = await Promise.all([
+  const [{ data: xpRows }, { data: progresRows }, { data: pertemuanRows, error: errPertemuan }] = await Promise.all([
     client.from('xp_log').select('santri_id, jumlah').in('santri_id', idSantri),
     client.from('progres_santri').select('santri_id, status').in('santri_id', idSantri).eq('status', 'selesai'),
+    client.from('pertemuan').select('id, tanggal').eq('kelas_id', kelasId).order('tanggal', { ascending: false }),
   ]);
+  if (errPertemuan) console.error('[pengurus-client] gagal memuat pertemuan:', errPertemuan.message);
+
+  const pertemuan = pertemuanRows || [];
+  let absensiRows = [];
+  if (pertemuan.length) {
+    const { data, error } = await client
+      .from('absensi')
+      .select('santri_id, status')
+      .in('pertemuan_id', pertemuan.map((p) => p.id));
+    if (error) console.error('[pengurus-client] gagal memuat absensi:', error.message);
+    absensiRows = data || [];
+  }
 
   const xpPerSantri = new Map();
   (xpRows || []).forEach((r) => xpPerSantri.set(r.santri_id, (xpPerSantri.get(r.santri_id) || 0) + r.jumlah));
@@ -351,10 +366,27 @@ export async function laporanProgresKelas(kelasId) {
   const selesaiPerSantri = new Map();
   (progresRows || []).forEach((r) => selesaiPerSantri.set(r.santri_id, (selesaiPerSantri.get(r.santri_id) || 0) + 1));
 
-  return santriKelas.map((s) => ({
-    nama: s.nama,
-    nisn: s.nisn || '-',
-    totalXp: xpPerSantri.get(s.id) || 0,
-    pelajaranSelesai: selesaiPerSantri.get(s.id) || 0,
-  }));
+  const hadirPerSantri = new Map();
+  absensiRows.forEach((r) => {
+    const h = hadirPerSantri.get(r.santri_id) || { hadir: 0, izin: 0, sakit: 0, alfa: 0 };
+    if (r.status in h) h[r.status] += 1;
+    hadirPerSantri.set(r.santri_id, h);
+  });
+
+  return {
+    jumlahPertemuan: pertemuan.length,
+    pertemuanTerakhir: pertemuan[0]?.tanggal || null,
+    baris: santriKelas.map((s) => {
+      const h = hadirPerSantri.get(s.id) || { hadir: 0, izin: 0, sakit: 0, alfa: 0 };
+      const tercatat = h.hadir + h.izin + h.sakit + h.alfa;
+      return {
+        nama: s.nama,
+        nisn: s.nisn || '-',
+        ...h,
+        persenHadir: tercatat ? Math.round((h.hadir / tercatat) * 100) : null,
+        totalXp: xpPerSantri.get(s.id) || 0,
+        pelajaranSelesai: selesaiPerSantri.get(s.id) || 0,
+      };
+    }),
+  };
 }

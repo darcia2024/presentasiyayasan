@@ -58,8 +58,8 @@ Menu **Panel Otoritas Yayasan** → tab **Santri & Wali** → **+ Daftarkan Wali
 
 Tab **Sertifikat** di Panel Pengurus.
 
-1. Isi nomor WhatsApp wali dan nama santri **persis** seperti yang terdaftar.
-2. Isi judul sertifikat, misal "Kelulusan Jenjang SMP Tahap 1".
+1. **Pilih santri** dari daftar — dikelompokkan per kelas, jadi tidak perlu mengetik nama atau nomor WA wali. Santri yang didaftarkan per kelas tanpa wali juga ada di sini.
+2. Isi judul sertifikat, misal "Kelulusan Buku 1", dan pilih **Level** (1–12) kalau sertifikatnya untuk salah satu dari 12 buku.
 3. Tekan **Terbitkan** — proses beberapa detik (PDF sedang dirangkai di peramban Anda), **jangan tutup halaman** sampai selesai.
 4. PDF akan otomatis terunduh ke perangkat Anda, dan tautan verifikasi publiknya (yang berisi kode QR) juga tersedia di daftar sertifikat.
 
@@ -71,7 +71,9 @@ Tab **Infaq**: catat pembayaran (nomor WA wali + jumlah), status awal **Menunggu
 
 ## 6. Laporan
 
-Tab **Laporan**: pilih kelas, lihat total XP dan jumlah pelajaran selesai tiap santri di kelas itu. Tombol **Ekspor CSV** mengunduh tabel yang sama sebagai berkas yang bisa dibuka di Excel.
+Tab **Laporan**: pilih kelas, lihat **kehadiran** tiap santri — jumlah hadir, izin, sakit, alfa, dan persentase hadir — dari pertemuan yang dicatat guru lewat Dashboard Guru. Di atas tabel tertulis berapa pertemuan yang sudah dicatat dan kapan terakhir. Tombol **Ekspor CSV** mengunduh tabel yang sama sebagai berkas yang bisa dibuka di Excel.
+
+(Kolom XP dan pelajaran selesai muncul lagi sendiri begitu kelas online untuk santri dibuka.)
 
 ## 7. Menghapus Data Santri (Permintaan Wali)
 

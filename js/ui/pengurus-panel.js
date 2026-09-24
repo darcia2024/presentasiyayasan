@@ -16,7 +16,7 @@
 
 import { bacaSesi } from '../core/supabase-client.js';
 import { playTone, showToast } from '../core/feedback.js';
-import { jenjangAktif } from './fase.js';
+import { jenjangAktif, fiturTerkunci } from './fase.js';
 import { buatCsv } from '../core/csv.js';
 import {
   ambilRingkasanPengurus,
@@ -30,7 +30,6 @@ import {
   aturPinAkun,
   hapusSantri,
   cariWaliIdLewatNomor,
-  cariSantriIdLewatNamaDanWali,
   daftarKelas,
   buatKelas,
   daftarInfaq,
@@ -1000,15 +999,52 @@ async function renderInfaq(body) {
 
 /* =========================================================== SERTIFIKAT */
 
+/**
+ * Isi <select> santri, dikelompokkan per kelas (<optgroup>) dan urut nama.
+ * Satu kelas ~25 anak, satu yayasan beberapa kelas — daftar datar ratusan
+ * nama tanpa kelompok membuat dua "Ahmad" di kelas berbeda tak bisa
+ * dibedakan. NISN ikut di label kalau ada, untuk nama kembar di kelas yang
+ * sama.
+ */
+function isiPilihanSantri(select, santri) {
+  const perKelas = new Map();
+  santri.forEach((x) => {
+    const kunci = x.kelas?.nama || 'Belum ditempatkan di kelas';
+    if (!perKelas.has(kunci)) perKelas.set(kunci, []);
+    perKelas.get(kunci).push(x);
+  });
+  [...perKelas.keys()].sort((a, b) => a.localeCompare(b, 'id')).forEach((namaKelas) => {
+    const grup = document.createElement('optgroup');
+    grup.label = namaKelas;
+    perKelas.get(namaKelas)
+      .sort((a, b) => a.nama.localeCompare(b.nama, 'id'))
+      .forEach((x) => {
+        const opt = document.createElement('option');
+        opt.value = x.id;
+        opt.textContent = x.nisn ? `${x.nama} (NISN ${x.nisn})` : x.nama;
+        grup.appendChild(opt);
+      });
+    select.appendChild(grup);
+  });
+}
+
 async function renderSertifikatTab(body) {
   const rowHeader = buatEl('div', 'studio-row-header');
   rowHeader.appendChild(buatEl('h3', 'studio-h3', 'Sertifikat'));
   body.appendChild(rowHeader);
 
+  // 24 Sep 2026 — santri DIPILIH, bukan dicari lewat nomor WA wali + nama
+  // yang diketik persis. Sejak Fase B1 santri didaftarkan per kelas TANPA
+  // wali, jadi formulir lama tidak bisa menerbitkan sertifikat untuk
+  // sebagian besar santri sama sekali — padahal Edge Function
+  // terbitkan-sertifikat sejak awal hanya butuh santri_id.
+  const santriAktif = (await daftarSantriAdmin()).filter((x) => x.status === 'aktif');
+
   const form = buatEl('div', 'studio-form');
   form.style.cssText = 'max-width:none; display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; margin-bottom:20px;';
-  const fWaWali = fieldTeks('Nomor WhatsApp Wali Santri', 'tel', '0812xxxxxxxx');
-  const fNamaSantri = fieldTeks('Nama Santri (persis)', 'text', 'mis. Ahmad Fauzan');
+  const fSantri = fieldSelect('Santri', [{ value: '', label: santriAktif.length ? 'Pilih santri…' : 'Belum ada santri aktif' }]);
+  isiPilihanSantri(fSantri.select, santriAktif);
+  fSantri.wrap.style.minWidth = '260px';
   const fJudul = fieldTeks('Judul Sertifikat', 'text', 'mis. Kelulusan Buku 1');
   // 12 level, satu per buku (rapat 12 Sep: berjenjang seperti IELTS).
   // Boleh dikosongkan — sertifikat kelulusan yang bukan bagian dari 12 buku
@@ -1018,10 +1054,10 @@ async function renderSertifikatTab(body) {
     { value: '', label: 'Tanpa level' },
     ...Array.from({ length: 12 }, (_, i) => ({ value: String(i + 1), label: `Level ${i + 1}` })),
   ]);
-  [fWaWali.wrap, fNamaSantri.wrap, fJudul.wrap, fLevel.wrap].forEach((w) => (w.style.marginBottom = '0'));
+  [fSantri.wrap, fJudul.wrap, fLevel.wrap].forEach((w) => (w.style.marginBottom = '0'));
   const btnTerbit = buatEl('button', 'studio-btn-primary', 'Terbitkan');
   btnTerbit.type = 'button';
-  form.append(fWaWali.wrap, fNamaSantri.wrap, fJudul.wrap, fLevel.wrap, btnTerbit);
+  form.append(fSantri.wrap, fJudul.wrap, fLevel.wrap, btnTerbit);
   body.appendChild(form);
 
   const catatan = buatEl('p', 'studio-note',
@@ -1031,13 +1067,9 @@ async function renderSertifikatTab(body) {
 
   btnTerbit.addEventListener('click', () =>
     jalankan(async () => {
-      if (!fWaWali.input.value.trim() || !fNamaSantri.input.value.trim() || !fJudul.input.value.trim()) {
-        showToast('Nomor WA wali, nama santri, dan judul wajib diisi.');
-        return;
-      }
-      const santriId = await cariSantriIdLewatNamaDanWali(fWaWali.input.value, fNamaSantri.input.value);
-      if (!santriId) {
-        showToast('Santri tidak ditemukan untuk kombinasi nomor WA wali & nama tersebut.');
+      const santriId = fSantri.select.value;
+      if (!santriId || !fJudul.input.value.trim()) {
+        showToast('Pilih santri dan isi judul sertifikat.');
         return;
       }
       btnTerbit.disabled = true;
@@ -1107,7 +1139,7 @@ async function renderSertifikatTab(body) {
 
 async function renderLaporan(body) {
   const rowHeader = buatEl('div', 'studio-row-header');
-  rowHeader.appendChild(buatEl('h3', 'studio-h3', 'Laporan Progres per Kelas'));
+  rowHeader.appendChild(buatEl('h3', 'studio-h3', 'Laporan Kehadiran & Progres per Kelas'));
   body.appendChild(rowHeader);
 
   if (!STATE.kelasList.length) {
@@ -1138,33 +1170,68 @@ async function renderLaporan(body) {
   const hasilWrap = document.createElement('div');
   body.appendChild(hasilWrap);
 
+  // Kolom XP & pelajaran selesai hanya berarti kalau santri memakai
+  // aplikasinya sendiri. Selama kelas online dikunci (fase guru-first),
+  // keduanya selalu nol — ditampilkan hanya akan terbaca "tidak ada yang
+  // belajar". Kolomnya kembali sendiri begitu kunci 'kelas-online' dibuka.
+  const tampilkanXp = !fiturTerkunci('kelas-online');
+  const KOLOM = [
+    { judul: 'Nama', nilai: (b) => b.nama },
+    { judul: 'NISN', nilai: (b) => b.nisn },
+    { judul: 'Hadir', nilai: (b) => b.hadir },
+    { judul: 'Izin', nilai: (b) => b.izin },
+    { judul: 'Sakit', nilai: (b) => b.sakit },
+    { judul: 'Alfa', nilai: (b) => b.alfa },
+    { judul: '% Hadir', nilai: (b) => (b.persenHadir === null ? '-' : `${b.persenHadir}%`) },
+    ...(tampilkanXp
+      ? [
+        { judul: 'Total XP', nilai: (b) => b.totalXp },
+        { judul: 'Pelajaran Selesai', nilai: (b) => b.pelajaranSelesai },
+      ]
+      : []),
+  ];
+
   async function muatLaporan() {
     kosongkan(hasilWrap);
     hasilWrap.appendChild(pesanMemuat());
-    const baris = await laporanProgresKelas(fKelas.select.value);
-    STATE.laporanBaris = baris;
+    const laporan = await laporanProgresKelas(fKelas.select.value);
+    STATE.laporanBaris = laporan.baris;
     kosongkan(hasilWrap);
 
-    if (!baris.length) {
+    if (!laporan.baris.length) {
       hasilWrap.appendChild(pesanKosong('Belum ada santri aktif di kelas ini.'));
       return;
     }
+
+    const ringkas = laporan.jumlahPertemuan
+      ? `${laporan.jumlahPertemuan} pertemuan tercatat • terakhir ${new Date(`${laporan.pertemuanTerakhir}T00:00:00`)
+        .toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}`
+      : 'Belum ada pertemuan dicatat untuk kelas ini. Guru mencatatnya lewat Dashboard Guru → Catat Pertemuan.';
+    const catatanRingkas = buatEl('p', 'studio-note', ringkas);
+    catatanRingkas.style.marginBottom = '12px';
+    hasilWrap.appendChild(catatanRingkas);
 
     const wrap = document.createElement('div');
     wrap.style.cssText = 'background:#FFFFFF; border:1px solid var(--border-color); border-radius:var(--radius-lg); overflow-x:auto; padding:6px;';
     const table = document.createElement('table');
     table.style.cssText = 'width:100%; border-collapse:collapse; font-size:12.5px; text-align:left;';
-    table.innerHTML = `<thead><tr style="border-bottom:1px solid var(--border-color); color:var(--text-muted);">
-      <th style="padding:10px;">Nama</th><th style="padding:10px;">NISN</th>
-      <th style="padding:10px;">Total XP</th><th style="padding:10px;">Pelajaran Selesai</th></tr></thead>`;
+    const thead = document.createElement('thead');
+    const trKepala = document.createElement('tr');
+    trKepala.style.cssText = 'border-bottom:1px solid var(--border-color); color:var(--text-muted);';
+    KOLOM.forEach((k) => {
+      const th = buatEl('th', null, k.judul);
+      th.style.padding = '10px';
+      th.style.whiteSpace = 'nowrap';
+      trKepala.appendChild(th);
+    });
+    thead.appendChild(trKepala);
+    table.appendChild(thead);
+
     const tbody = document.createElement('tbody');
-    baris.forEach((b) => {
+    laporan.baris.forEach((b) => {
       const tr = document.createElement('tr');
       tr.style.borderBottom = '1px solid var(--border-subtle)';
-      tr.appendChild(sel(b.nama));
-      tr.appendChild(sel(b.nisn));
-      tr.appendChild(sel(String(b.totalXp)));
-      tr.appendChild(sel(String(b.pelajaranSelesai)));
+      KOLOM.forEach((k) => tr.appendChild(sel(String(k.nilai(b)))));
       tbody.appendChild(tr);
     });
     table.appendChild(tbody);
@@ -1179,12 +1246,12 @@ async function renderLaporan(body) {
       return;
     }
     const csv = buatCsv(
-      ['Nama', 'NISN', 'Total XP', 'Pelajaran Selesai'],
-      STATE.laporanBaris.map((b) => [b.nama, b.nisn, b.totalXp, b.pelajaranSelesai]),
+      KOLOM.map((k) => k.judul),
+      STATE.laporanBaris.map((b) => KOLOM.map((k) => k.nilai(b))),
     );
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
     const namaKelas = STATE.kelasList.find((k) => k.id === fKelas.select.value)?.nama || 'kelas';
-    unduhBlob(blob, `laporan-progres-${namaKelas}.csv`);
+    unduhBlob(blob, `laporan-${namaKelas}.csv`);
   });
 
   await jalankan(muatLaporan, 'Gagal memuat laporan.');
