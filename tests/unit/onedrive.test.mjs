@@ -37,10 +37,23 @@ test('kode <iframe> utuh diterima dan hanya src-nya yang disimpan, &amp; dibuka'
   assert.ok(!h.url.includes('&amp;'));
 });
 
-test('link berbagi biasa diterima tapi diberi peringatan', () => {
-  const h = normalkanLinkEmbed('https://1drv.ms/p/c/abc123/EXYZ?e=q1w2e3');
+// Sepasang link SUNGGUHAN dari satu berkas di akun yang sama (24 Sep 2026):
+// yang kedua dari PowerPoint web → File → Bagikan → Sematkan. Format embed
+// baru ini tidak punya penanda embed apa pun di URL-nya.
+const BERBAGI_ASLI = 'https://1drv.ms/p/c/64250d28c848ee88/IQBcXDkzMwtZSIzyPSZzUHfwAev1Cw8KPKREkp-P9bPT6Kg?e=2Qh8jC';
+const EMBED_ASLI = '<iframe src="https://1drv.ms/p/c/64250d28c848ee88/IQRcXDkzMwtZSIzyPSZzUHfwAQMdVpuevxJff9ejZVdFqC0" width="402" height="327" frameborder="0" scrolling="no"></iframe>';
+
+test('link berbagi biasa (?e=…) diterima tapi diberi peringatan', () => {
+  const h = normalkanLinkEmbed(BERBAGI_ASLI);
   assert.equal(h.ok, true);
   assert.match(h.peringatan, /embed/i);
+});
+
+test('kode embed format baru 1drv.ms/p/c/…/IQR… diterima TANPA peringatan', () => {
+  const h = normalkanLinkEmbed(EMBED_ASLI);
+  assert.equal(h.ok, true);
+  assert.equal(h.peringatan, null);
+  assert.equal(h.url, 'https://1drv.ms/p/c/64250d28c848ee88/IQRcXDkzMwtZSIzyPSZzUHfwAQMdVpuevxJff9ejZVdFqC0');
 });
 
 test('huruf besar di host dinormalkan (check constraint DB peka huruf)', () => {

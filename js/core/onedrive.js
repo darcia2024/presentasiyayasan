@@ -77,17 +77,24 @@ export function normalkanLinkEmbed(masukan) {
     };
   }
 
-  const bentukEmbed = url.pathname.startsWith('/embed')
+  const penandaEmbed = url.pathname.startsWith('/embed')
     || url.searchParams.get('action') === 'embedview'
     || url.searchParams.has('embed')
     || url.searchParams.has('em');
 
+  // Link BERBAGI membawa token `?e=…`; link EMBED tidak. Format embed
+  // OneDrive yang baru (1drv.ms/p/c/<cid>/IQR…, dari PowerPoint web →
+  // File → Bagikan → Sematkan) tidak punya penanda embed apa pun, jadi yang
+  // dicari adalah ciri link berbagi — bukan ketiadaan ciri embed. Dipastikan
+  // dengan sepasang link sungguhan dari akun yang sama, 24 Sep 2026.
+  const bentukBerbagi = url.searchParams.has('e') && !penandaEmbed;
+
   return {
     ok: true,
     url: url.toString(),
-    peringatan: bentukEmbed
-      ? null
-      : 'Link ini tampaknya link berbagi biasa, bukan link embed — kemungkinan tidak mau tampil '
-        + 'di pemutar. Kalau pratinjaunya kosong, ambil ulang lewat OneDrive → Embed (Sematkan).',
+    peringatan: bentukBerbagi
+      ? 'Link ini tampaknya link berbagi biasa, bukan link embed — kemungkinan tidak mau tampil '
+        + 'di pemutar. Kalau pratinjaunya kosong, ambil ulang lewat OneDrive → Embed (Sematkan).'
+      : null,
   };
 }
