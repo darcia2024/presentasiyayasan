@@ -10,6 +10,7 @@
 
 import { getSupabaseClient, bacaSesi } from './supabase-client.js';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from '../config.js';
+import { normalkanLinkEmbed, kolomEmbedBelumAda } from './onedrive.js';
 
 const TABEL_MODUL = 'modul';
 const TABEL_PELAJARAN = 'pelajaran';
@@ -432,13 +433,21 @@ export async function hapusPptPelajaran(pelajaranId) {
  */
 export async function daftarSemuaBabPpt(jenjang) {
   const client = getSupabaseClient();
-  const { data, error } = await client
+  const muat = (kolomPelajaran) => client
     .from(TABEL_MODUL)
-    .select('id, kode, judul, tahap, urutan, status, pelajaran(id, judul, urutan, tipe, ppt_path, ppt_nama, ppt_ukuran_bytes, ppt_diunggah_pada)')
+    .select(`id, kode, judul, tahap, urutan, status, pelajaran(${kolomPelajaran})`)
     .eq('jenjang', jenjang)
     .order('tahap', { ascending: true })
     .order('urutan', { ascending: true });
+
+  const KOLOM_PELAJARAN = 'id, judul, urutan, tipe, ppt_path, ppt_nama, ppt_ukuran_bytes, ppt_diunggah_pada';
+  let { data, error } = await muat(`${KOLOM_PELAJARAN}, ppt_embed_url`);
+  // Migrasi 20260924000001 belum dijalankan: layar tetap bisa dipakai
+  // mengunggah berkas, hanya kolom link embed-nya yang dimatikan.
+  const embedTersedia = !kolomEmbedBelumAda(error);
+  if (!embedTersedia) ({ data, error } = await muat(KOLOM_PELAJARAN));
   lemparJikaError(error, 'Gagal memuat daftar bab');
+  STATUS_EMBED.tersedia = embedTersedia;
 
   return (data || []).map((m) => ({
     ...m,
@@ -446,6 +455,48 @@ export async function daftarSemuaBabPpt(jenjang) {
     // supaya nomor bab yang dilihat Umi sama dengan urutan di silabus.
     pelajaran: [...(m.pelajaran || [])].sort((a, b) => (a.urutan ?? 0) - (b.urutan ?? 0)),
   }));
+}
+
+/**
+ * Apakah kolom ppt_embed_url sudah ada di basis data. Diperbarui setiap
+ * daftarSemuaBabPpt() dipanggil; dibaca layar Materi PPT untuk memutuskan
+ * menampilkan kolom link embed atau pesan "migrasi belum dijalankan".
+ */
+export const STATUS_EMBED = { tersedia: true };
+
+/**
+ * Simpan (atau hapus, dengan `masukan` kosong) link embed OneDrive satu bab.
+ *
+ * Link dinormalkan & domainnya diperiksa di sini supaya owner mendapat pesan
+ * yang bisa ia tindak lanjuti; batas yang sungguhan adalah check constraint
+ * di basis data (migrasi 20260924000001).
+ *
+ * @returns {Promise<{url: string|null, peringatan: string|null}>}
+ */
+export async function simpanEmbedPpt(pelajaranId, masukan) {
+  const client = getSupabaseClient();
+  let url = null;
+  let peringatan = null;
+  if (String(masukan || '').trim()) {
+    const hasil = normalkanLinkEmbed(masukan);
+    if (!hasil.ok) throw new Error(hasil.error);
+    url = hasil.url;
+    peringatan = hasil.peringatan;
+  }
+
+  const { data, error } = await client
+    .from(TABEL_PELAJARAN)
+    .update({ ppt_embed_url: url })
+    .eq('id', pelajaranId)
+    .select('id');
+  if (kolomEmbedBelumAda(error)) {
+    throw new Error('Kolom link embed belum ada di basis data — migrasi 20260924000001 perlu dijalankan dulu.');
+  }
+  lemparJikaError(error, 'Gagal menyimpan link embed');
+  if (!Array.isArray(data) || data.length === 0) {
+    throw new Error('Link tidak tersimpan (kemungkinan izin ditolak).');
+  }
+  return { url, peringatan };
 }
 
 /**

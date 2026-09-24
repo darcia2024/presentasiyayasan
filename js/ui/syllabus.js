@@ -18,6 +18,7 @@
 import { playTone, showToast } from '../core/feedback.js';
 import { bacaSesi } from '../core/supabase-client.js';
 import { ambilUrlPpt } from '../core/curriculum-client.js';
+import { bukaPemutarPpt } from './ppt-player.js';
 
 /** Ikon dan perilaku klik untuk tiap status pelajaran. */
 const LESSON_STATUS = {
@@ -92,12 +93,29 @@ function buildLessonRow(lesson) {
  * santri, bukan materi.
  */
 function tombolPpt(lesson) {
-  if (!lesson.pptAda) return null;
+  if (!lesson.pptAda && !lesson.pptEmbed) return null;
   if (bacaSesi()?.akun?.akun_jenis !== 'staff') return null;
 
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'lesson-ppt-btn';
+
+  // Fase C3: bab yang punya link embed OneDrive DITAYANGKAN di pemutar dalam
+  // aplikasi — untuk seluruh staff, termasuk guru mitra. Tanpa link embed,
+  // jalur unduh lama dipakai (guru mitra tetap ditolak server di sana).
+  if (lesson.pptEmbed) {
+    btn.title = 'Tayangkan materi PPT bab ini';
+    const ikon = document.createElement('i');
+    ikon.className = 'ph ph-play-circle';
+    btn.append(ikon, document.createTextNode(' PPT'));
+    btn.addEventListener('click', (e) => {
+      // Tanpa ini, klik tombol ikut membuka/menutup barisnya.
+      e.stopPropagation();
+      bukaPemutarPpt({ judul: lesson.name, url: lesson.pptEmbed });
+    });
+    return btn;
+  }
+
   btn.title = lesson.pptNama ? `Buka ${lesson.pptNama}` : 'Buka materi PPT bab ini';
 
   const isiNormal = () => {

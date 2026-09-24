@@ -30,6 +30,8 @@ import {
   unggahPptPelajaran,
   hapusPptPelajaran,
   daftarSemuaBabPpt,
+  simpanEmbedPpt,
+  STATUS_EMBED,
   daftarDokumen,
   simpanDokumen,
   hapusDokumen,
@@ -40,6 +42,7 @@ import {
 import { uraikanCsvMufrodat, templatCsvMufrodat } from '../core/csv.js';
 import { playTone, showToast } from '../core/feedback.js';
 import { jenjangAktif } from './fase.js';
+import { bukaPemutarPpt } from './ppt-player.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -810,11 +813,24 @@ function renderMateriPpt(body) {
 
   const buku = STATE.bukuPpt || [];
   const semuaBab = buku.flatMap((m) => m.pelajaran);
-  const terisi = semuaBab.filter((p) => p.ppt_path).length;
+  // Bab dihitung "sudah ada materinya" kalau punya berkas ATAU link embed —
+  // bab yang hanya punya link OneDrive sudah bisa ditayangkan guru.
+  const terisi = semuaBab.filter((p) => p.ppt_path || p.ppt_embed_url).length;
 
   const headerRow = buatEl('div', 'studio-row-header');
   headerRow.appendChild(buatEl('h3', 'studio-h3', `Materi PPT — Jenjang ${NAMA_JENJANG[STATE.jenjang]}`));
   body.appendChild(headerRow);
+
+  // Cara mengambil link embed, di tempat link itu dibutuhkan — bukan di
+  // dokumen yang harus dicari dulu.
+  const panduan = buatEl('div', 'studio-note',
+    STATUS_EMBED.tersedia
+      ? 'Untuk menayangkan PPT ke guru (animasi utuh seperti PowerPoint): buka berkasnya di OneDrive → '
+        + 'klik kanan / titik tiga → Embed (Sematkan) → Generate → salin, lalu klik "Tempel link" di bab yang sesuai.'
+      : 'Kolom link embed OneDrive belum aktif: migrasi basis data 20260924000001 belum dijalankan. '
+        + 'Unggah berkas tetap bisa dipakai seperti biasa.');
+  panduan.style.marginBottom = '10px';
+  body.appendChild(panduan);
 
   // Angka kemajuan di paling atas: satu-satunya pertanyaan yang Umi punya
   // tiap kali membuka layar ini adalah "tinggal berapa lagi".
@@ -964,7 +980,95 @@ function barisBabPpt(bab, nomor) {
     if (file) kirim(file);
   });
 
+  if (STATUS_EMBED.tersedia) baris.appendChild(bidangEmbedBab(bab));
+
   return baris;
+}
+
+/**
+ * Link embed OneDrive satu bab (Fase C3) — yang ditayangkan guru di pemutar.
+ *
+ * Baris sempit sengaja: kebanyakan waktu isinya cuma "Terpasang" dan dua
+ * tombol. Kotak isian baru muncul saat owner menekan "Tempel link", supaya
+ * 60 baris bab tidak berubah jadi 60 formulir terbuka.
+ */
+function bidangEmbedBab(bab) {
+  const wadah = buatEl('div', 'studio-ppt-embed');
+
+  const gambar = (modeSunting = false) => {
+    wadah.replaceChildren();
+    const label = buatEl('span', 'studio-ppt-embed-label');
+    const ikon = document.createElement('i');
+    ikon.className = 'ph ph-microsoft-powerpoint-logo';
+    label.append(ikon, document.createTextNode(' Link OneDrive'));
+    wadah.appendChild(label);
+
+    if (modeSunting) {
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'studio-input studio-ppt-embed-input';
+      input.placeholder = 'Tempel link atau kode <iframe> dari OneDrive → Embed';
+      input.value = bab.ppt_embed_url || '';
+      const simpan = buatEl('button', 'studio-btn-primary', 'Simpan');
+      simpan.type = 'button';
+      const batal = buatEl('button', 'studio-btn-text', 'Batal');
+      batal.type = 'button';
+
+      const kirim = () => jalankan(async () => {
+        simpan.disabled = true;
+        try {
+          const hasil = await simpanEmbedPpt(bab.id, input.value);
+          bab.ppt_embed_url = hasil.url;
+          showToast(hasil.peringatan || (hasil.url ? 'Link tersimpan — guru sudah bisa menayangkannya.' : 'Link dihapus.'));
+          // Digambar ulang seluruh layar supaya penghitung "x dari y bab" ikut maju.
+          render();
+        } finally {
+          simpan.disabled = false;
+        }
+      }, 'Gagal menyimpan link.');
+
+      simpan.addEventListener('click', kirim);
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') kirim();
+        if (e.key === 'Escape') gambar();
+      });
+      batal.addEventListener('click', () => gambar());
+      wadah.append(input, simpan, batal);
+      input.focus();
+      return;
+    }
+
+    wadah.appendChild(buatEl('span', `studio-ppt-embed-status${bab.ppt_embed_url ? ' is-terpasang' : ''}`,
+      bab.ppt_embed_url ? 'Terpasang — bisa ditayangkan guru' : 'Belum ada link'));
+
+    const aksi = buatEl('div', 'studio-ppt-embed-aksi');
+    if (bab.ppt_embed_url) {
+      const pratinjau = buatEl('button', 'studio-btn-secondary', 'Pratinjau');
+      pratinjau.type = 'button';
+      pratinjau.addEventListener('click', () => bukaPemutarPpt({ judul: bab.judul, url: bab.ppt_embed_url }));
+      aksi.appendChild(pratinjau);
+    }
+    const ganti = buatEl('button', 'studio-btn-text', bab.ppt_embed_url ? 'Ganti link' : 'Tempel link');
+    ganti.type = 'button';
+    ganti.addEventListener('click', () => gambar(true));
+    aksi.appendChild(ganti);
+    if (bab.ppt_embed_url) {
+      const hapus = buatEl('button', 'studio-btn-text', 'Hapus link');
+      hapus.type = 'button';
+      hapus.addEventListener('click', () => jalankan(async () => {
+        if (!window.confirm(`Hapus link OneDrive dari bab "${bab.judul}"? Berkas di OneDrive tidak ikut terhapus.`)) return;
+        await simpanEmbedPpt(bab.id, '');
+        bab.ppt_embed_url = null;
+        showToast('Link dihapus.');
+        render();
+      }, 'Gagal menghapus link.'));
+      aksi.appendChild(hapus);
+    }
+    wadah.appendChild(aksi);
+  };
+
+  gambar();
+  return wadah;
 }
 
 /** "1048576" -> "1 MB". Untuk memberi tahu Umi berkasnya sebesar apa. */

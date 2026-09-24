@@ -155,6 +155,11 @@ const SHELL_ASSETS = [
   '/js/ui/pengurus-panel.js',
   '/js/ui/sertifikat-admin.js',
   '/js/ui/sertifikat-santri.js',
+  /* Fase C3 — Pemutar PPT (link embed OneDrive). Diimpor syllabus.js,
+     content-loader.js, dan studio.js — tanpa precache, silabus gagal dimuat
+     saat luring. Presentasinya sendiri tetap butuh internet. */
+  '/js/core/onedrive.js',
+  '/js/ui/ppt-player.js',
   /* Font & ikon lokal. Sengaja tidak semua bobot font ikut di-precache —
      hanya yang dibutuhkan tampilan pertama. Sisanya (bobot 500/800, subset
      latin-ext, dan Amiri tebal) menyusul lewat cache-first saat benar-benar

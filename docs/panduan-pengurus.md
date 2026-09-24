@@ -4,7 +4,7 @@ Fase 8. Ditulis untuk yang akan memakai sehari-hari, bukan untuk yang menulis ko
 
 ## 1. Masuk ke Aplikasi
 
-Buka alamat situs PERISA di peramban (Chrome/Safari). Masukkan nomor WhatsApp Anda yang sudah didaftarkan pengurus lain sebagai staff, lalu masukkan kode 6 digit yang dikirim ke WhatsApp itu. Kalau nomor Anda belum terdaftar, minta pengurus lain mendaftarkan Anda dulu lewat langkah 3 di bawah (staff didaftarkan langsung di basis data oleh pengurus teknis — sistem belum punya tombol "daftarkan staff baru" di panel, beri tahu pengurus teknis kalau perlu menambah staff baru).
+Buka alamat situs PERISA di peramban (Chrome/Safari). Masukkan nomor WhatsApp Anda yang sudah didaftarkan sebagai staff, lalu masukkan **PIN** (6–12 angka) yang ditetapkan untuk akun Anda. Lupa PIN? Minta pengurus lain mengaturkan PIN baru. Kalau nomor Anda belum terdaftar, minta pengurus lain mendaftarkan Anda dulu lewat langkah 3 di bawah (staff didaftarkan langsung di basis data oleh pengurus teknis — sistem belum punya tombol "daftarkan staff baru" di panel, beri tahu pengurus teknis kalau perlu menambah staff baru).
 
 ## 2. Menerbitkan Materi Belajar (Studio Kurikulum)
 
@@ -18,6 +18,28 @@ Menu **Studio Kurikulum** di sidebar (hanya terlihat untuk akun staff).
 6. Kalau ada video pengantar pelajaran, unggah lewat bagian **Video** di pelajaran itu.
 7. Kalau ada dokumen silabus resmi (PDF), unggah lewat menu **Dokumen**.
 8. Ubah status modul dari **Draf** → **Ditinjau** → **Terbit**. **Santri baru bisa melihat begitu berstatus Terbit** — draf dan ditinjau hanya terlihat staff, aman untuk disiapkan pelan-pelan tanpa terburu-buru.
+
+## 2a. Menayangkan PPT ke Guru (lewat OneDrive)
+
+Guru menayangkan PPT langsung di dalam aplikasi, dengan animasi dan klik-per-langkah yang **sama persis seperti di PowerPoint** — karena yang menampilkannya memang PowerPoint milik Microsoft. Berkas PPT-nya disimpan di **OneDrive yayasan**; aplikasi hanya menyimpan *link embed*-nya.
+
+**Sekali untuk setiap bab:**
+
+1. Taruh berkas PPT di OneDrive yayasan (seret ke folder OneDrive seperti biasa).
+2. Di OneDrive, klik kanan berkasnya (atau tombol titik tiga **⋯**) → **Embed** / **Sematkan** → **Generate** / **Buat**.
+   - Kalau memakai Microsoft 365 kantor: buka PPT-nya di PowerPoint versi web → **File** → **Share** / **Bagikan** → **Embed** / **Sematkan**.
+3. **Salin** kode yang muncul. Boleh kodenya utuh (`<iframe src="…">`), boleh link-nya saja — aplikasi mengambil bagian yang dibutuhkan sendiri.
+4. Di aplikasi: **Studio Kurikulum** → **Materi PPT** → di baris bab yang sesuai klik **Tempel link** → tempel → **Simpan**.
+5. Klik **Pratinjau** untuk memastikan presentasinya tampil. Selesai — guru sekarang melihat tombol **▶ PPT** di bab itu.
+
+**Mengganti isi PPT:** cukup perbarui berkasnya di OneDrive (unggah versi baru dengan nama yang sama, atau sunting langsung). Link-nya tetap sama, jadi tidak perlu menempel ulang.
+
+**Yang perlu diingat:**
+
+- **Jangan pindahkan atau hapus berkasnya di OneDrive** — link-nya ikut mati dan pemutar di bab itu akan kosong. Kalau terpaksa dipindah, ambil link embed baru dan tempel ulang.
+- Link embed bisa dibuka **siapa pun yang memegangnya**, termasuk di luar aplikasi. Jangan bagikan link-nya di grup atau media sosial.
+- Yang ditolak aplikasi: link dari selain OneDrive/Microsoft 365, dan link yang tidak lengkap. Pesan di layar akan menjelaskan apa yang salah.
+- Pemutar butuh internet — tidak bisa dipakai saat luring.
 
 ## 3. Mendaftarkan Keluarga Baru (Panel Pengurus)
 
@@ -57,6 +79,7 @@ Kalau ada wali yang secara resmi meminta data anaknya dihapus (hak yang dijelask
 
 ## 8. Kalau Ada yang Tidak Beres
 
-- **Wali tidak bisa masuk / tidak dapat kode**: pastikan nomornya benar-benar terdaftar (cek tab Santri & Wali). Kalau masih gagal, hubungi pengurus teknis.
+- **Wali tidak bisa masuk**: pastikan nomornya benar-benar terdaftar (cek tab Santri & Wali) dan PIN-nya sudah diatur. Kalau masih gagal, hubungi pengurus teknis.
+- **PPT tidak tampil di pemutar (kotak hitam/kosong)**: buka Studio → Materi PPT → **Pratinjau** di bab itu. Kalau kosong juga, berkasnya kemungkinan sudah dipindah/dihapus di OneDrive atau link yang ditempel bukan link *Embed* — ambil ulang lewat langkah 2a.
 - **Konten yang saya terbitkan tidak muncul di akun santri**: pastikan status modul benar-benar **Terbit**, bukan "Ditinjau".
 - **Halaman terasa aneh/rusak**: minta wali/santri memuat ulang halaman (refresh). Kalau masih terjadi, catat langkah persis yang dilakukan sebelum masalah muncul, lalu sampaikan ke pengurus teknis.

@@ -8,7 +8,7 @@ presentasi ke Umi Elly).
 |---|---|
 | A — Amankan demo | **SELESAI 13 Sep** (kecuali A1b, menunggu jawaban 10.1) |
 | B — Fondasi guru-first | B1 & B2 **SELESAI 13 Sep**; B3 (penamaan Buku/Bab) belum |
-| C — Pipeline PPT | C1 & C2 **SELESAI**; C3 (pemutar) terhalang PPT asli; C4 belum |
+| C — Pipeline PPT | C1 & C2 **SELESAI**; C3 **dibangun 24 Sep** lewat link embed OneDrive (lihat di bawah); C4 belum |
 | D — Dashboard guru | **SELESAI 13 Sep** (kolom formulir menunggu contoh catatan manual) |
 | E — Game kelas | Belum — terhalang foto buku |
 | F — Sertifikat per level | **SELESAI 14 Sep** |
@@ -296,6 +296,18 @@ dan arsitekturnya harus dipilih ulang. Uji ini murah dan harus dilakukan duluan.
   bukan lagi "boleh unduh atau tidak", melainkan "apakah animasi Umi selamat
   melewati konversi" — kalau tidak, seluruh pendekatan render server-side gugur
   dan arsitekturnya harus dipilih ulang. Uji itu murah dan harus duluan.
+- **C3 — DIBANGUN 24 Sep 2026, lewat link embed OneDrive.** Keputusan
+  pemilik: berkas PPT disimpan di OneDrive yayasan, owner menempel link
+  *Embed* per bab di Studio → Materi PPT, dan guru menayangkannya di pemutar
+  dalam aplikasi. Slidenya dirender PowerPoint milik Microsoft sendiri, jadi
+  animasinya utuh — pertanyaan "apakah animasi Umi selamat melewati
+  konversi" gugur karena tidak ada konversi. Harga yang disadari pemilik:
+  link embed bisa dibuka siapa pun yang memegangnya, jadi butir 10.2 ("guru
+  mitra hanya bisa melihat") tidak lagi mutlak untuk materi di jalur ini.
+  Domain link dibatasi ke Microsoft di tiga lapis (klien, check constraint,
+  CSP). Migrasi `20260924000001_ppt_embed_onedrive.sql` **harus dijalankan**
+  sebelum kolomnya bisa dipakai; sebelum itu Studio menampilkan pesan dan
+  silabus tetap berjalan tanpa kolom tersebut.
 - **C4 — BELUM.** Hapus jalur input dan tampilan PDF lama (tabel `dokumen`,
   menu "Modul & Silabus PDF"). Ditunda sampai terlihat Umi benar-benar memakai
   jalur PPT; membuang jalur lama sebelum penggantinya terbukti dipakai berarti
