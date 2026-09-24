@@ -70,10 +70,16 @@ export function remahKurikulum() {
 }
 
 function setBreadcrumb(root, category, active) {
+  if (root === 'Kurikulum') remahKurikulumTerkini = [root, category, active];
+  // Konten kurikulum dimuat di latar belakang sesudah login — sering saat
+  // layar lain (Panel Pengurus, Dashboard Guru) sudah terbuka. Remah roti
+  // hanya ditulis ke layar kalau pemutar materi memang yang sedang tampil;
+  // kalau tidak, router membacanya lewat remahKurikulum() saat dibuka.
+  const kurikulum = document.getElementById('viewCoursePlayer');
+  if (kurikulum && kurikulum.style.display === 'none') return;
   setText('breadcrumbRoot', root);
   setText('breadcrumbCategory', category);
   setText('breadcrumbActiveTitle', active);
-  if (root === 'Kurikulum') remahKurikulumTerkini = [root, category, active];
 }
 
 /* ==========================================================================
@@ -218,6 +224,13 @@ export async function muatKontenJenjang(jenjang) {
     setText('courseJenjangText', `Jenjang ${label}`);
     setText('courseJumlahModul', `${m.jumlahModul} Modul Pembelajaran`);
     if (m.pelajaranJudul) setText('currentVideoSubtitle', m.pelajaranJudul);
+    const bab = m.daftarPelajaran || [];
+    setText(
+      'aboutCourseDesc',
+      bab.length
+        ? `${m.judul} terdiri dari ${bab.length} pelajaran: ${bab.join(', ')}.`
+        : `${m.judul} belum punya pelajaran. Pengurus menambahkannya lewat Studio Kurikulum.`,
+    );
     setBreadcrumb('Kurikulum', `Bahasa Arab Jenjang ${label}`, m.judul);
   }
 

@@ -112,9 +112,11 @@ export async function bukaPengurusPanel() {
   if (!root) return;
   if (!isAdminLogin()) {
     root.innerHTML = '';
-    root.appendChild(
-      pesanKosong('Panel ini khusus staff berperan pengurus/superadmin. Masuk dengan akun yang sesuai untuk membukanya.'),
-    );
+    const pesan = pesanKosong('Panel ini khusus staff berperan pengurus/superadmin. Masuk dengan akun yang sesuai untuk membukanya.');
+    // Jarak tepi disamakan dengan kepala panel di render() (24px 32px) —
+    // tanpa ini pesannya menempel ke garis sidebar.
+    pesan.style.margin = '24px 32px';
+    root.appendChild(pesan);
     return;
   }
   STATE.tab = 'ringkasan';

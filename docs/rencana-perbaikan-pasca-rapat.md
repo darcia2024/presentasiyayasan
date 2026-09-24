@@ -2,7 +2,16 @@
 
 **Sumber:** rapat AIGYPT 5 × Rahmadi Prima, 12 September 2026 (demo LMS sebelum
 presentasi ke Umi Elly).
-**Status dokumen:** rencana kerja, belum dieksekusi.
+**Status dokumen (diperbarui 24 Sep 2026):** sebagian besar sudah dieksekusi.
+
+| Fase | Status |
+|---|---|
+| A — Amankan demo | **SELESAI 13 Sep** (kecuali A1b, menunggu jawaban 10.1) |
+| B — Fondasi guru-first | B1 & B2 **SELESAI 13 Sep**; B3 (penamaan Buku/Bab) belum |
+| C — Pipeline PPT | C1 & C2 **SELESAI**; C3 (pemutar) terhalang PPT asli; C4 belum |
+| D — Dashboard guru | **SELESAI 13 Sep** (kolom formulir menunggu contoh catatan manual) |
+| E — Game kelas | Belum — terhalang foto buku |
+| F — Sertifikat per level | **SELESAI 14 Sep** |
 
 ---
 
@@ -25,7 +34,7 @@ justru kebalikannya.
 
 ---
 
-## 2. Fase A — Amankan demo sebelum Zoom dengan Umi Elly
+## 2. Fase A — Amankan demo sebelum Zoom dengan Umi Elly — **SELESAI 13 Sep 2026**
 
 Tujuan fase ini sempit dan spesifik: **tidak ada satu pun hal janggal yang
 terlihat Umi saat demo.** Semuanya perubahan kecil, tidak ada yang menyentuh

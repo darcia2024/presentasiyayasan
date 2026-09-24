@@ -20,6 +20,16 @@
   max-width: 980px;
 }
 
+/* Tombol, kotak isian, dan pemilih TIDAK mewarisi font dari induknya —
+   itu perilaku bawaan peramban. Tanpa baris ini seluruh tombol dan
+   pemilih di tiga layar kerja staff tampil dengan Arial, berdampingan
+   dengan teks Plus Jakarta Sans di sekitarnya (audit 24 Sep 2026). */
+#viewStudioKurikulum :is(button, input, select, textarea),
+#viewGuruDashboard :is(button, input, select, textarea),
+#viewAdminPanel :is(button, input, select, textarea) {
+  font-family: inherit;
+}
+
 .studio-header-row {
   margin-bottom: 18px;
 }
@@ -107,6 +117,14 @@
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+/* Di Dashboard Guru deretan aksi ditaruh DI BAWAH judul (.studio-header-row
+   bukan flex), dan sampai audit 24 Sep 2026 menempel langsung ke baris
+   subjudul tanpa jarak. */
+.studio-header-row > .studio-header-actions {
+  margin-top: 14px;
+  flex-wrap: wrap;
 }
 
 .studio-h3 {
@@ -241,6 +259,9 @@
 .studio-chip--draft {
   background: var(--bg-subtle);
   color: var(--text-muted);
+  /* --bg-subtle nyaris sama dengan kartu putih; tanpa garis tepi chip ini
+     terbaca sebagai teks lepas, bukan badge seperti "Terbit". */
+  box-shadow: inset 0 0 0 1px var(--border-color);
 }
 
 .studio-chip--ditinjau {

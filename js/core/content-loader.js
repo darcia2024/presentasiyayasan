@@ -93,6 +93,9 @@ export async function muatSilabusTerbit(jenjang) {
       modulAktif: {
         judul: modulPertama.judul,
         kode: modulPertama.kode,
+        // Tabel modul tidak punya kolom deskripsi — ringkasannya disusun
+        // dari daftar pelajaran yang memang ada, bukan dikarang.
+        daftarPelajaran: urutkan(modulPertama.pelajaran, 'urutan').map((p) => p.judul),
         pelajaranJudul: pelajaranPertama?.judul || '',
         jumlahModul: data.length,
       },

@@ -23,8 +23,8 @@
 3. **Sistem Akses Terproteksi Berizin Umi Elly**:
    - Materi video eksklusif dilengkapi *Dynamic Floating Watermark* nama santri dan enkripsi anti-download.
    - Hak akses dibuka langsung oleh Umi Elly / yayasan, termasuk jalur khusus beasiswa gratis bagi santri dhuafa.
-4. **Login WhatsApp Ramah Santri & Wali Murid**:
-   - Akses instan tanpa perlu hafalan password yang rumit.
+4. **Login Nomor WhatsApp + PIN**:
+   - Masuk memakai nomor WhatsApp dan PIN angka yang ditetapkan pengurus yayasan — tanpa password rumit dan tanpa kode OTP.
 5. **Dashboard Pengurus Yayasan & Sertifikat Digital**:
    - Panel admin untuk memantau progres belajar santri, rekapitulasi infaq, dan penerbitan sertifikat resmi ber-QR Code.
 
@@ -200,9 +200,10 @@ Lalu buka:
 - `http://localhost:3020/game2d.html` — simulasi percakapan suara
 - `http://localhost:3020/proposal.html` — dek penawaran, hanya lokal (tidak terbit)
 
-Alur aplikasinya: **masuk (OTP WhatsApp) → dashboard → pilih menu di sidebar
-→ buka materi**. Wali mendarat di Dashboard Wali, pengurus di Panel Otoritas
-Yayasan, sisanya di Dashboard Santri.
+Alur aplikasinya: **masuk (nomor WhatsApp + PIN) → dashboard → pilih menu di
+sidebar → buka materi**. Pengajar mendarat di Dashboard Guru, pengurus di Panel
+Otoritas Yayasan. Selama fase guru-first (lihat `js/ui/fase.js`), wali dan
+santri mendarat di halaman Kurikulum karena Dashboard Wali & Santri dikunci.
 
 > Gunakan `server.js`, bukan `python -m http.server`. Server Node menyajikan
 > `manifest.webmanifest` dengan tipe MIME yang benar dan mengirim header

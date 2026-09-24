@@ -1,7 +1,7 @@
 {
   "name": "presentasi-yayasan-umi-ely",
   "version": "1.1.0",
-  "description": "Website pitch deck presentasi interaktif dan proposal resmi penawaran **Platform Pembelajaran Bahasa Arab Interaktif Berbasis Game (Tingkat SD, SMP, & SMA)** asuhan **Umi Elly & Yayasan Peradaban Islam Azhariyah**.",
+  "description": "LMS Bahasa Arab interaktif PERISA Azhariyah (PWA) — kurikulum, materi PPT, dashboard guru, dan panel pengurus yayasan, dengan backend Supabase.",
   "main": "server.js",
   "scripts": {
     "lint": "node tools/periksa-sintaks.js",

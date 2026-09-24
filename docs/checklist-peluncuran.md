@@ -1,6 +1,8 @@
 # Checklist Sebelum Uji Coba Terbatas
 
-**Status per 10 September 2026**, setelah audit menyeluruh.
+**Status per 10 September 2026**, setelah audit menyeluruh. Urutan di bagian
+paling bawah diperbarui 24 September 2026 (gateway WhatsApp tidak lagi
+menghalangi — login sudah memakai PIN sejak 12 September).
 
 > ### Kenapa checklist ini ditulis ulang
 >
@@ -136,13 +138,15 @@ Arab berharakat benar-benar terbaca.
 
 ## 🚀 Urutan yang disarankan untuk uji coba terbatas
 
-1. **Gateway WhatsApp** (BLOCKED #1) — semuanya menunggu ini.
-2. Deploy Edge Function + push frontend (BLOCKED #2), lalu `npm run test:smoke`
-   sampai **0 gagal, 0 dilewati**.
-3. Isi secret & variable GitHub Actions (BLOCKED #3), jalankan cadangan
-   sekali manual untuk memastikan berjalan.
-4. Putuskan NEEDS OWNER INPUT #1–#5 (retensi, batas AI, hak terbit, papan
-   peringkat, tombol) — empat pertama cukup lewat pesan, saya yang kerjakan.
+1. Setel secret `APP_ENV=production` di Edge Function (lihat bagian BLOCKED
+   di atas). Gateway WhatsApp **tidak lagi** menjadi syarat — login memakai
+   nomor WhatsApp + PIN sejak 12 September 2026.
+2. Pastikan seluruh Edge Function ter-deploy dan frontend terbaru sudah
+   terbit, lalu `npm run test:smoke` sampai **0 gagal, 0 dilewati**.
+3. Isi secret & variable GitHub Actions, jalankan cadangan sekali manual
+   untuk memastikan berjalan.
+4. Putuskan NEEDS OWNER INPUT #1 dan #3–#5 (retensi, hak terbit, papan
+   peringkat, tombol) — cukup lewat pesan, saya yang kerjakan.
 5. Umi Elly menerbitkan **satu modul lengkap** (minimal beberapa mufrodat +
    gambar/audio) untuk SATU jenjang.
 6. Pengurus mendaftarkan **3–5 keluarga** yang sudah diberi tahu dan setuju
