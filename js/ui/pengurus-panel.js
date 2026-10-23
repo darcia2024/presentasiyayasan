@@ -1198,6 +1198,10 @@ async function renderLaporan(body) {
     STATE.laporanBaris = laporan.baris;
     kosongkan(hasilWrap);
 
+    if (laporan.galat) {
+      hasilWrap.appendChild(pesanKosong(laporan.galat));
+      return;
+    }
     if (!laporan.baris.length) {
       hasilWrap.appendChild(pesanKosong('Belum ada santri aktif di kelas ini.'));
       return;

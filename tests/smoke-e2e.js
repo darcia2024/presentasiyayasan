@@ -662,6 +662,38 @@ async function fungsiAda(nama) {
     cek('dikembalikan ke internal, aksesnya pulih (gerbangnya memang kategori)',
       kelasPulih.data?.length === 1, kelasPulih.data);
 
+    /* --- Laporan kelas dihitung di basis data (audit 24 Okt 2026, #4) ---
+       Dulu absensi diambil mentah lalu dijumlahkan di peramban, dan
+       PostgREST diam-diam memotongnya di 1000 baris. RPC-nya SECURITY
+       INVOKER: wali harus tetap mendapat nol, guru pengampu angka penuh. */
+    const rpcSebagai = async (token, nama, args) => {
+      const res = await fetch(`${env.SUPABASE_URL}/rest/v1/rpc/${nama}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', apikey: env.SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` },
+        body: JSON.stringify(args),
+      });
+      return { status: res.status, data: await res.json().catch(() => null) };
+    };
+    const laporanGuru = await rpcSebagai(tokenPengajarB, 'laporan_kelas', { p_kelas_id: ids.kelasB });
+    if (laporanGuru.status === 404) {
+      lewati('laporan_kelas', 'migrasi 20261024000003 belum dijalankan');
+    } else {
+      const [pertemuanLap] = await admin('POST', 'pertemuan', {
+        body: { kelas_id: ids.kelasB, tanggal: '2026-10-24', dicatat_oleh: ids.pengajar },
+      });
+      await admin('POST', 'absensi', {
+        body: barisB.map((s, i) => ({ pertemuan_id: pertemuanLap.id, santri_id: s.id, status: i === 0 ? 'hadir' : 'alfa' })),
+      });
+      const lapGuru = await rpcSebagai(tokenPengajarB, 'laporan_kelas', { p_kelas_id: ids.kelasB });
+      const jumlah = (lapGuru.data || []).reduce((t, r) => ({ hadir: t.hadir + r.hadir, alfa: t.alfa + r.alfa }), { hadir: 0, alfa: 0 });
+      cek('laporan_kelas: guru pengampu mendapat jumlah kehadiran yang benar',
+        lapGuru.data?.length === 2 && jumlah.hadir === 1 && jumlah.alfa === 1, lapGuru.data);
+      const lapWali = await rpcSebagai(tokenWali, 'laporan_kelas', { p_kelas_id: ids.kelasB });
+      cek('laporan_kelas: wali tidak melihat apa pun (RLS pemanggil berlaku)',
+        (lapWali.data || []).every((r) => r.hadir === 0 && r.alfa === 0), lapWali.data);
+      await admin('DELETE', 'pertemuan', { query: `?id=eq.${pertemuanLap.id}` });
+    }
+
     /* ==================================================================
      * B2 — EDGE FUNCTION atur-kategori-guru
      *

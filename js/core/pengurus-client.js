@@ -324,7 +324,12 @@ export async function daftarSertifikat() {
  * seluruh pertemuan kelas: anak yang baru masuk di pertengahan semester
  * tidak boleh tampak bolos di pertemuan sebelum ia terdaftar.
  *
- * @returns {Promise<{jumlahPertemuan:number, pertemuanTerakhir:string|null, baris:Array}>}
+ * 24 Okt 2026 — jumlahnya dihitung RPC laporan_kelas() di basis data. Dulu
+ * seluruh baris absensi & xp_log diambil lalu dijumlahkan di sini, dan
+ * PostgREST diam-diam memotong respons di 1000 baris: sesudah kira-kira satu
+ * semester, persen hadir setiap anak salah tanpa tanda apa pun.
+ *
+ * @returns {Promise<{jumlahPertemuan:number, pertemuanTerakhir:string|null, baris:Array, galat?:string}>}
  */
 export async function laporanProgresKelas(kelasId) {
   const kosong = { jumlahPertemuan: 0, pertemuanTerakhir: null, baris: [] };
@@ -341,51 +346,41 @@ export async function laporanProgresKelas(kelasId) {
   }
   if (!santriKelas?.length) return kosong;
 
-  const idSantri = santriKelas.map((s) => s.id);
-  const [{ data: xpRows }, { data: progresRows }, { data: pertemuanRows, error: errPertemuan }] = await Promise.all([
-    client.from('xp_log').select('santri_id, jumlah').in('santri_id', idSantri),
-    client.from('progres_santri').select('santri_id, status').in('santri_id', idSantri).eq('status', 'selesai'),
-    client.from('pertemuan').select('id, tanggal').eq('kelas_id', kelasId).order('tanggal', { ascending: false }),
+  const [{ data: agregat, error: errAgregat }, { data: terakhir, count, error: errPertemuan }] = await Promise.all([
+    client.rpc('laporan_kelas', { p_kelas_id: kelasId }),
+    // Satu baris + hitungan, bukan seluruh daftar pertemuan.
+    client.from('pertemuan').select('tanggal', { count: 'exact' })
+      .eq('kelas_id', kelasId).order('tanggal', { ascending: false }).limit(1),
   ]);
   if (errPertemuan) console.error('[pengurus-client] gagal memuat pertemuan:', errPertemuan.message);
-
-  const pertemuan = pertemuanRows || [];
-  let absensiRows = [];
-  if (pertemuan.length) {
-    const { data, error } = await client
-      .from('absensi')
-      .select('santri_id, status')
-      .in('pertemuan_id', pertemuan.map((p) => p.id));
-    if (error) console.error('[pengurus-client] gagal memuat absensi:', error.message);
-    absensiRows = data || [];
+  if (errAgregat) {
+    // Termasuk migrasi 20261024000003 yang belum dijalankan. Tabel berisi
+    // nol semua akan terbaca "tidak ada yang hadir" — jadi tidak ada tabel.
+    console.error('[pengurus-client] gagal memuat laporan kelas:', errAgregat.message);
+    return {
+      ...kosong,
+      galat: errAgregat.code === 'PGRST202'
+        ? 'Laporan belum bisa dihitung: migrasi basis data 20261024000003 belum dijalankan.'
+        : 'Laporan gagal dimuat. Coba lagi sebentar lagi.',
+    };
   }
 
-  const xpPerSantri = new Map();
-  (xpRows || []).forEach((r) => xpPerSantri.set(r.santri_id, (xpPerSantri.get(r.santri_id) || 0) + r.jumlah));
-
-  const selesaiPerSantri = new Map();
-  (progresRows || []).forEach((r) => selesaiPerSantri.set(r.santri_id, (selesaiPerSantri.get(r.santri_id) || 0) + 1));
-
-  const hadirPerSantri = new Map();
-  absensiRows.forEach((r) => {
-    const h = hadirPerSantri.get(r.santri_id) || { hadir: 0, izin: 0, sakit: 0, alfa: 0 };
-    if (r.status in h) h[r.status] += 1;
-    hadirPerSantri.set(r.santri_id, h);
-  });
+  const perSantri = new Map((agregat || []).map((r) => [r.santri_id, r]));
 
   return {
-    jumlahPertemuan: pertemuan.length,
-    pertemuanTerakhir: pertemuan[0]?.tanggal || null,
+    jumlahPertemuan: count ?? 0,
+    pertemuanTerakhir: terakhir?.[0]?.tanggal || null,
     baris: santriKelas.map((s) => {
-      const h = hadirPerSantri.get(s.id) || { hadir: 0, izin: 0, sakit: 0, alfa: 0 };
+      const r = perSantri.get(s.id);
+      const h = { hadir: r?.hadir || 0, izin: r?.izin || 0, sakit: r?.sakit || 0, alfa: r?.alfa || 0 };
       const tercatat = h.hadir + h.izin + h.sakit + h.alfa;
       return {
         nama: s.nama,
         nisn: s.nisn || '-',
         ...h,
         persenHadir: tercatat ? Math.round((h.hadir / tercatat) * 100) : null,
-        totalXp: xpPerSantri.get(s.id) || 0,
-        pelajaranSelesai: selesaiPerSantri.get(s.id) || 0,
+        totalXp: Number(r?.total_xp || 0),
+        pelajaranSelesai: r?.pelajaran_selesai || 0,
       };
     }),
   };
