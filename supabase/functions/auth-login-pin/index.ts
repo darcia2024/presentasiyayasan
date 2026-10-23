@@ -28,11 +28,11 @@ import { normalizeNomorWa } from '../_shared/phone.ts';
 import {
   cocokkanPin,
   periksaKunci,
-  setelahGagal,
   turunkanHashPin,
   buatSalt,
   PIN_ITERASI,
   PIN_KUNCI_MENIT,
+  PIN_MAKS_PERCOBAAN,
 } from '../_shared/pin.ts';
 import { terbitkanSessionJwt } from '../_shared/session-jwt.ts';
 
@@ -75,8 +75,6 @@ interface BarisKredensial {
   pin_hash: string;
   pin_salt: string;
   pin_iterasi: number;
-  percobaan: number;
-  terkunci_sampai: string | null;
 }
 
 Deno.serve(async (req) => {
@@ -126,7 +124,7 @@ Deno.serve(async (req) => {
     /* ------------------------------------------- kredensial & kunci --- */
     const { data: kred } = await supabase
       .from(tabelKredensial)
-      .select('pin_hash, pin_salt, pin_iterasi, percobaan, terkunci_sampai')
+      .select('pin_hash, pin_salt, pin_iterasi')
       .eq(kolomId, akunId)
       .maybeSingle<BarisKredensial>();
 
@@ -136,8 +134,23 @@ Deno.serve(async (req) => {
       return balasJson(hCors, { ok: false, error: PESAN_GAGAL }, 401);
     }
 
-    const kunci = periksaKunci(kred.terkunci_sampai);
-    if (kunci.terkunci) {
+    // Jatah percobaan diambil SEBELUM PIN diperiksa, dalam satu UPDATE
+    // atomik di basis data. Dulu hitungannya dibaca di sini lalu ditulis
+    // ulang sesudah PBKDF2 — ratusan permintaan paralel semuanya membaca
+    // percobaan = 0 dan batas lima kali salah tidak berlaku sama sekali
+    // (audit 24 Okt 2026, migrasi 20261024000001).
+    const { data: jatah, error: errJatah } = await supabase
+      .rpc('pin_ambil_percobaan', {
+        p_jenis: jenisAkun,
+        p_akun: akunId,
+        p_maks: PIN_MAKS_PERCOBAAN,
+        p_kunci_menit: PIN_KUNCI_MENIT,
+      })
+      .single<{ boleh: boolean; percobaan: number; terkunci_sampai: string | null }>();
+    if (errJatah || !jatah) throw errJatah ?? new Error('pin_ambil_percobaan tidak mengembalikan baris');
+
+    if (!jatah.boleh) {
+      const kunci = periksaKunci(jatah.terkunci_sampai);
       return balasJson(
         hCors,
         {
@@ -152,18 +165,18 @@ Deno.serve(async (req) => {
     const cocok = await cocokkanPin(pinInput, kred);
 
     if (!cocok) {
-      const berikutnya = setelahGagal(kred.percobaan);
-      await supabase.from(tabelKredensial).update(berikutnya).eq(kolomId, akunId);
+      // Percobaan inilah yang memasang kunci kalau jatahnya yang terakhir.
+      const baruDikunci = periksaKunci(jatah.terkunci_sampai).terkunci;
 
       await supabase.from('audit_log').insert({
         actor_type: jenisAkun,
         actor_id: akunId,
-        aksi: berikutnya.terkunci_sampai ? 'login_akun_dikunci' : 'login_pin_salah',
+        aksi: baruDikunci ? 'login_akun_dikunci' : 'login_pin_salah',
         target_type: jenisAkun,
         target_id: akunId,
       });
 
-      if (berikutnya.terkunci_sampai) {
+      if (baruDikunci) {
         return balasJson(
           hCors,
           {

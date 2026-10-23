@@ -10,7 +10,6 @@ import {
   periksaKunci,
   periksaPinBaru,
   samaAman,
-  setelahGagal,
   PIN_MAKS_PERCOBAAN,
   PIN_KUNCI_MENIT,
 } from '../_shared/pin.ts';
@@ -121,21 +120,12 @@ Deno.test('samaAman menolak panjang berbeda dan isi berbeda', () => {
 
 /* ============================================================ PENGUNCIAN === */
 
-Deno.test('percobaan salah menumpuk tanpa mengunci sampai batasnya', () => {
-  for (let i = 0; i < PIN_MAKS_PERCOBAAN - 1; i++) {
-    const hasil = setelahGagal(i);
-    assertEquals(hasil.percobaan, i + 1);
-    assertEquals(hasil.terkunci_sampai, null, `percobaan ke-${i + 1} tidak boleh mengunci`);
-  }
-});
+// Penghitungan percobaan pindah ke SQL (pin_ambil_percobaan, migrasi
+// 20261024000001) supaya atomik; yang tersisa di sini hanya pembacaan kunci.
 
-Deno.test('percobaan salah ke-N mengunci akun', () => {
-  const hasil = setelahGagal(PIN_MAKS_PERCOBAAN - 1);
-  assertEquals(hasil.percobaan, PIN_MAKS_PERCOBAAN);
-  assert(hasil.terkunci_sampai !== null);
-
-  const sisaMenit = (new Date(hasil.terkunci_sampai!).getTime() - Date.now()) / 60_000;
-  assert(sisaMenit > PIN_KUNCI_MENIT - 1 && sisaMenit <= PIN_KUNCI_MENIT);
+Deno.test('batas percobaan & lama kunci masuk akal', () => {
+  assert(PIN_MAKS_PERCOBAAN >= 3 && PIN_MAKS_PERCOBAAN <= 10);
+  assert(PIN_KUNCI_MENIT >= 5);
 });
 
 Deno.test('kunci yang sudah lewat tidak dianggap terkunci', () => {

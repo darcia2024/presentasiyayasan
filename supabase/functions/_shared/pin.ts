@@ -159,15 +159,7 @@ export function periksaKunci(terkunciSampai: string | null | undefined): StatusK
   return { terkunci: true, sisaMenit: Math.ceil(sisaMs / 60_000) };
 }
 
-/** Nilai kolom sesudah satu percobaan salah. */
-export function setelahGagal(percobaanSekarang: number): {
-  percobaan: number;
-  terkunci_sampai: string | null;
-} {
-  const percobaan = percobaanSekarang + 1;
-  if (percobaan < PIN_MAKS_PERCOBAAN) return { percobaan, terkunci_sampai: null };
-  return {
-    percobaan,
-    terkunci_sampai: new Date(Date.now() + PIN_KUNCI_MENIT * 60_000).toISOString(),
-  };
-}
+// Penghitungan percobaan & pemasangan kunci tidak lagi di sini, melainkan di
+// fungsi SQL pin_ambil_percobaan() (migrasi 20261024000001). Menghitungnya di
+// Edge Function berarti baca-lalu-tulis yang bisa disalip permintaan paralel;
+// hanya UPDATE atomik di basis data yang benar-benar menahan batasnya.
