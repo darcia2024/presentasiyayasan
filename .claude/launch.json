@@ -10,7 +10,7 @@
     {
       "name": "deck",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "8931"],
+      "runtimeArgs": ["-m", "http.server", "8931", "--bind", "127.0.0.1"],
       "port": 8931
     }
   ]

@@ -7,8 +7,54 @@ const path = require('path');
 require('./tools/env').load();
 
 const PORT     = process.env.PORT || 3020;
+// Hanya mesin ini, kecuali sengaja dibuka (mis. HOST=0.0.0.0 untuk mencoba
+// dari HP di WiFi yang sama). Server ini tidak pernah dimaksudkan publik.
+const HOST     = process.env.HOST || '127.0.0.1';
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const BASE_URL = process.env.PUBLIC_BASE_URL || `http://localhost:${PORT}`;
+
+const ROOT = __dirname;
+
+/*
+ * YANG BOLEH DISAJIKAN — audit 24 Okt 2026.
+ *
+ * Dulu server ini menyajikan berkas APA PUN di akar repo, dengan CORS `*`,
+ * di semua antarmuka jaringan. `GET /.env` mengembalikan seluruh isinya —
+ * service role key, APP_JWT_SECRET, URL basis data — ke siapa pun di WiFi
+ * yang sama. `/.git/config` dan `supabase/` juga terbuka.
+ *
+ * Polanya sekarang sama dengan tools/build-dist.js: hanya yang DISEBUT yang
+ * tersaji. Bedanya cuma proposal.html, yang memang sengaja dibuka lokal.
+ */
+const AKHIRAN_AKAR = new Set(['.html', '.css', '.js', '.png', '.svg', '.ico', '.webmanifest']);
+const KECUALI_AKAR = new Set(['server.js']);
+const BERKAS_AKAR_TAMBAHAN = new Set(['robots.txt']);
+const FOLDER = new Set(['js', 'icons', 'vendor']);
+
+/** @returns {string|null} path absolut berkas yang boleh disajikan, atau null. */
+function berkasYangBoleh(pathname) {
+  let rel;
+  try {
+    rel = decodeURIComponent(pathname === '/' ? '/index.html' : pathname);
+  } catch (_) {
+    return null;
+  }
+  const segmen = rel.split(/[\\/]+/).filter(Boolean);
+  if (!segmen.length) return null;
+  // .env, .git, .claude, ".." — semuanya berawalan titik.
+  if (segmen.some((s) => s.startsWith('.'))) return null;
+
+  if (segmen.length === 1) {
+    const nama = segmen[0];
+    if (KECUALI_AKAR.has(nama)) return null;
+    if (!AKHIRAN_AKAR.has(path.extname(nama).toLowerCase()) && !BERKAS_AKAR_TAMBAHAN.has(nama)) return null;
+  } else if (!FOLDER.has(segmen[0])) {
+    return null;
+  }
+
+  const penuh = path.join(ROOT, ...segmen);
+  return penuh.startsWith(ROOT + path.sep) ? penuh : null;
+}
 
 // MIME types
 const MIME_TYPES = {
@@ -49,22 +95,19 @@ const server = http.createServer((req, res) => {
   const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
   const pathname = parsedUrl.pathname;
 
-  // Enable CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') {
-    res.writeHead(204);
-    res.end();
+  // Tanpa CORS: halaman ini hanya dibuka dari origin-nya sendiri, dan `*`
+  // membuat situs mana pun yang dibuka di peramban yang sama bisa membaca
+  // berkas lokal lewat fetch().
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    res.writeHead(405, { 'Content-Type': 'text/plain; charset=utf-8', Allow: 'GET, HEAD' });
+    res.end('405 Method Not Allowed');
     return;
   }
 
-  // Static File Serving
-  let filePath = path.join(__dirname, pathname === '/' ? 'index.html' : pathname);
+  const filePath = berkasYangBoleh(pathname);
 
-  fs.stat(filePath, (err, stats) => {
-    if (err || !stats.isFile()) {
+  fs.stat(filePath || ROOT, (err, stats) => {
+    if (!filePath || err || !stats.isFile()) {
       res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
       res.end('404 Not Found');
       return;
@@ -90,7 +133,7 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, HOST, () => {
   console.log(`=======================================================`);
   console.log(`PERISA Arabic Learning Node.js Server & 2D Game Engine`);
   console.log(`Lingkungan:               ${NODE_ENV}`);
