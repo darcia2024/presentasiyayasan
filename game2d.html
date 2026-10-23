@@ -56,10 +56,10 @@
           </span>
         </div>
         <div class="response-mode-toggle">
-          <button class="mode-toggle-btn active" id="modeVoiceBtn" onclick="HiwarApp.setResponseMode('voice')">
+          <button class="mode-toggle-btn active" id="modeVoiceBtn" data-onclick="HiwarApp.setResponseMode('voice')">
             <i class="ph ph-microphone"></i> Mode Suara
           </button>
-          <button class="mode-toggle-btn" id="modeChoiceBtn" onclick="HiwarApp.setResponseMode('choice')">
+          <button class="mode-toggle-btn" id="modeChoiceBtn" data-onclick="HiwarApp.setResponseMode('choice')">
             <i class="ph ph-list-checks"></i> Pilihan Ganda
           </button>
         </div>
@@ -75,7 +75,7 @@
             <div class="bubble-speaker-name">Umi Elly (Pengasuh Yayasan)</div>
             <div class="bubble-arabic-text" id="teacherArabicText">السَّلَامُ عَلَيْكُمْ يَا أَحْمَد ، كَيْفَ حَالُكَ اليَوْمَ ؟</div>
             <div class="bubble-latin-sub" id="teacherLatinSub">"Assalamu'alaikum ya Ahmad, kaifa halukal yaum?" (Bagaimana kabarmu hari ini?)</div>
-            <button class="btn-replay-audio" onclick="HiwarApp.speakTeacherArabic()">
+            <button class="btn-replay-audio" data-onclick="HiwarApp.speakTeacherArabic()">
               <i class="ph ph-speaker-high"></i> Dengarkan Suara Umi Elly
             </button>
           </div>
@@ -110,7 +110,7 @@
           </div>
 
           <div class="mic-action-row">
-            <button class="btn-record-mic" id="recordMicBtn" onclick="HiwarApp.toggleVoiceRecording()">
+            <button class="btn-record-mic" id="recordMicBtn" data-onclick="HiwarApp.toggleVoiceRecording()">
               <i class="ph ph-microphone" id="micIcon"></i>
               <span id="micLabel">Mulai Merekam Suara</span>
             </button>
@@ -120,7 +120,7 @@
               <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
             </div>
 
-            <button class="btn-direct-submit" style="background: var(--bg-subtle); border: 1px solid var(--border-color); color: var(--teal-primary);" title="Uji Coba Suara Otomatis" onclick="HiwarApp.simulateCorrectSpokenAnswer()">
+            <button class="btn-direct-submit" style="background: var(--bg-subtle); border: 1px solid var(--border-color); color: var(--teal-primary);" title="Uji Coba Suara Otomatis" data-onclick="HiwarApp.simulateCorrectSpokenAnswer()">
               <i class="ph ph-check"></i> Uji Suara Target
             </button>
           </div>
@@ -182,7 +182,7 @@
         </p>
       </div>
 
-      <button class="btn-enroll-primary" style="width: 100%; justify-content: center; padding: 12px;" onclick="HiwarApp.resetSimulator()">
+      <button class="btn-enroll-primary" style="width: 100%; justify-content: center; padding: 12px;" data-onclick="HiwarApp.resetSimulator()">
         <i class="ph ph-arrows-counter-clockwise"></i> Ulangi Simulasi dari Awal
       </button>
 
@@ -193,5 +193,6 @@
   <div class="toast-bar" id="hiwarToast">Pemberitahuan</div>
 
   <script src="game2d.js"></script>
+  <script src="js/aksi-klik.js"></script>
 </body>
 </html>

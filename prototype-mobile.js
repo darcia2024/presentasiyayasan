@@ -383,7 +383,7 @@
         var body = '<i class="ph ' + c.icon + '"></i> ' + c.label;
         return c.href
           ? '<a class="' + cls + '" href="' + c.href + '">' + body + '</a>'
-          : '<span class="' + cls + '" onclick="' + c.act + '">' + body + '</span>';
+          : '<span class="' + cls + '" data-onclick="' + c.act + '">' + body + '</span>';
       }).join('');
       row.scrollLeft = 0;
     }

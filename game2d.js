@@ -430,3 +430,8 @@ const HiwarApp = (() => {
     resetSimulator
   };
 })();
+
+// `const` di tingkat atas tidak menjadi properti window, padahal
+// js/aksi-klik.js mencari namespace lewat window — tombol data-onclick
+// di game2d.html mati tanpa baris ini.
+window.HiwarApp = HiwarApp;

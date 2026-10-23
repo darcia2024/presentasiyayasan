@@ -155,8 +155,8 @@
       <div class="m-install-sub">Buka dari layar utama, bisa diakses luring.</div>
     </div>
     <div class="m-install-actions">
-      <button class="m-install-yes" onclick="PerisaMobile.install()">Pasang</button>
-      <button class="m-install-no" onclick="PerisaMobile.dismissInstall()" aria-label="Tutup">
+      <button class="m-install-yes" data-onclick="PerisaMobile.install()">Pasang</button>
+      <button class="m-install-no" data-onclick="PerisaMobile.dismissInstall()" aria-label="Tutup">
         <i class="ph ph-x"></i>
       </button>
     </div>
@@ -185,12 +185,12 @@
 
     <div class="mobile-top-left">
       <!-- Animated Hamburger Button on the Left -->
-      <button class="mobile-hamburger-btn" onclick="PrototypeApp.toggleMobileDrawer()" title="Buka Menu">
+      <button class="mobile-hamburger-btn" data-onclick="PrototypeApp.toggleMobileDrawer()" title="Buka Menu">
         <i class="ph ph-list" id="mobileDrawerIcon"></i>
       </button>
 
       <!-- Prominent Brand Title -->
-      <div class="mobile-brand-wrap" onclick="PrototypeApp.switchMainView('beranda')" style="cursor: pointer;">
+      <div class="mobile-brand-wrap" data-onclick="PrototypeApp.switchMainView('beranda')" style="cursor: pointer;">
         <img src="logo-perisa-emblem.png?v=d184a56f" alt="PERISA">
         <div>
           <div class="mobile-brand-text">PERISA Azhariyah</div>
@@ -204,7 +204,7 @@
       <a href="game2d.html" class="mobile-action-icon" title="Simulasi Percakapan Suara">
         <i class="ph ph-microphone"></i>
       </a>
-      <div class="mobile-user-avatar-tag" id="mobileUserAvatarTag" onclick="PrototypeApp.toggleMobileDrawer()" title="Profil Santri">
+      <div class="mobile-user-avatar-tag" id="mobileUserAvatarTag" data-onclick="PrototypeApp.toggleMobileDrawer()" title="Profil Santri">
         —
       </div>
     </div>
@@ -213,7 +213,7 @@
   <!-- ============================================================
        3. ANIMATED MOBILE SLIDING DRAWER MENU (LEFT-TO-RIGHT)
        ============================================================ -->
-  <div class="mobile-drawer-overlay" id="mobileDrawerOverlay" onclick="if(event.target===this) PrototypeApp.toggleMobileDrawer()">
+  <div class="mobile-drawer-overlay" id="mobileDrawerOverlay" data-onclick="if(event.target===this) PrototypeApp.toggleMobileDrawer()">
     <div class="mobile-drawer-menu">
       
       <!-- Drawer Header -->
@@ -221,7 +221,7 @@
         <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
           <img src="logo-perisa-horizontal.png?v=03e061d2" alt="PERISA Azhariyah" style="width: 100%; max-width: 195px; height: auto; object-fit: contain;">
         </div>
-        <i class="ph ph-x" style="cursor: pointer; font-size: 22px; color: var(--text-muted); padding: 4px;" onclick="PrototypeApp.toggleMobileDrawer()"></i>
+        <i class="ph ph-x" style="cursor: pointer; font-size: 22px; color: var(--text-muted); padding: 4px;" data-onclick="PrototypeApp.toggleMobileDrawer()"></i>
       </div>
 
       <!-- Identitas Santri Aktif -->
@@ -244,13 +244,13 @@
         <li class="nav-group-label">Portal</li>
         <!-- Hanya terlihat saat sesi login WALI aktif — lihat js/ui/auth.js -->
         <li id="navWaliDashboardItemMobile" data-terkunci="kelas-online" style="display: none;">
-          <a class="ref-nav-item" data-view="wali-dashboard" onclick="PrototypeApp.switchMainView('wali-dashboard'); PrototypeApp.toggleMobileDrawer();">
+          <a class="ref-nav-item" data-view="wali-dashboard" data-onclick="PrototypeApp.switchMainView('wali-dashboard'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-users-three"></i>
             <span>Dashboard Wali</span>
           </a>
         </li>
         <li>
-          <a class="ref-nav-item" data-terkunci="kelas-online" data-view="beranda" onclick="PrototypeApp.switchMainView('beranda'); PrototypeApp.toggleMobileDrawer();">
+          <a class="ref-nav-item" data-terkunci="kelas-online" data-view="beranda" data-onclick="PrototypeApp.switchMainView('beranda'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-squares-four"></i>
             <span>Dashboard Santri</span>
           </a>
@@ -258,7 +258,7 @@
 
         <li class="nav-group-label">Belajar</li>
         <li>
-          <a class="ref-nav-item" data-view="kurikulum" onclick="PrototypeApp.switchMainView('kurikulum'); PrototypeApp.toggleMobileDrawer();">
+          <a class="ref-nav-item" data-view="kurikulum" data-onclick="PrototypeApp.switchMainView('kurikulum'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-graduation-cap"></i>
             <span>Kurikulum Bahasa Arab</span>
           </a>
@@ -267,13 +267,13 @@
           <ul class="ref-nav-sub is-open" id="drawerModulList"></ul>
         </li>
         <li>
-          <a class="ref-nav-item" data-terkunci="evaluasi-digital" onclick="PrototypeApp.bukaSubTab('kuis'); PrototypeApp.toggleMobileDrawer();">
+          <a class="ref-nav-item" data-terkunci="evaluasi-digital" data-onclick="PrototypeApp.bukaSubTab('kuis'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-check-circle"></i>
             <span>Latihan &amp; Evaluasi</span>
           </a>
         </li>
         <li>
-          <a class="ref-nav-item" onclick="PrototypeApp.bukaSubTab('audio'); PrototypeApp.toggleMobileDrawer();">
+          <a class="ref-nav-item" data-onclick="PrototypeApp.bukaSubTab('audio'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-speaker-high"></i>
             <span>Mufrodat &amp; Pelafalan</span>
           </a>
@@ -287,13 +287,13 @@
 
         <li class="nav-group-label">Perpustakaan &amp; Sanad</li>
         <li>
-          <a class="ref-nav-item" data-view="modul-pdf" onclick="PrototypeApp.switchMainView('modul-pdf'); PrototypeApp.toggleMobileDrawer();">
+          <a class="ref-nav-item" data-view="modul-pdf" data-onclick="PrototypeApp.switchMainView('modul-pdf'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-book-open-text"></i>
             <span>Modul &amp; Silabus PDF</span>
           </a>
         </li>
         <li>
-          <a class="ref-nav-item" onclick="PrototypeApp.toggleMobileDrawer(); PrototypeApp.openCertificate();">
+          <a class="ref-nav-item" data-onclick="PrototypeApp.toggleMobileDrawer(); PrototypeApp.openCertificate();">
             <i class="ph ph-certificate" style="color: var(--gold-dark);"></i>
             <span>Piagam Kelulusan Sanad</span>
           </a>
@@ -302,20 +302,20 @@
         <!-- Kelompok pengurus: dibuka js/ui/auth.js hanya untuk sesi staff. -->
         <li class="nav-group-label" id="navGroupGuruMobile" style="display: none;">Portal Guru</li>
         <li id="navGuruDashboardItemMobile" style="display: none;">
-          <a class="ref-nav-item" data-view="guru-dashboard" onclick="PrototypeApp.switchMainView('guru-dashboard'); PrototypeApp.toggleMobileDrawer();">
+          <a class="ref-nav-item" data-view="guru-dashboard" data-onclick="PrototypeApp.switchMainView('guru-dashboard'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-clipboard-text"></i>
             <span>Dashboard Guru</span>
           </a>
         </li>
         <li class="nav-group-label" id="navGroupPengurusMobile" style="display: none;">Pengurus Yayasan</li>
         <li id="navAdminPanelItemMobile" style="display: none;">
-          <a class="ref-nav-item" data-view="admin" onclick="PrototypeApp.switchMainView('admin'); PrototypeApp.toggleMobileDrawer();">
+          <a class="ref-nav-item" data-view="admin" data-onclick="PrototypeApp.switchMainView('admin'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-shield-check"></i>
             <span>Panel Otoritas Yayasan</span>
           </a>
         </li>
         <li id="navStudioKurikulumItemMobile" style="display: none;">
-          <a class="ref-nav-item" data-view="studio-kurikulum" onclick="PrototypeApp.switchMainView('studio-kurikulum'); PrototypeApp.toggleMobileDrawer();">
+          <a class="ref-nav-item" data-view="studio-kurikulum" data-onclick="PrototypeApp.switchMainView('studio-kurikulum'); PrototypeApp.toggleMobileDrawer();">
             <i class="ph ph-pencil-simple-line"></i>
             <span>Studio Kurikulum</span>
           </a>
@@ -324,7 +324,7 @@
 
       <div style="margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 8px;">
         <!-- Disembunyikan di mode peraga oleh js/ui/auth.js — lihat sidebarLogout. -->
-        <button class="btn-enroll-primary" id="drawerLogout" style="display: none; width: 100%; justify-content: center; font-size: 12px; padding: 10px; background: var(--teal-dark); border: none;" onclick="PrototypeApp.logout()">
+        <button class="btn-enroll-primary" id="drawerLogout" style="display: none; width: 100%; justify-content: center; font-size: 12px; padding: 10px; background: var(--teal-dark); border: none;" data-onclick="PrototypeApp.logout()">
           <i class="ph ph-sign-out"></i> Keluar dari Akun
         </button>
       </div>
@@ -343,13 +343,13 @@
     <div class="m-lt-sub" id="mLtSub">Lanjutkan pembelajaran Bahasa Arab terstruktur asuhan Umi Elly.</div>
 
     <div class="m-chip-row" id="mChipRow">
-      <span class="m-chip" onclick="PrototypeApp.switchMainView('kurikulum')">
+      <span class="m-chip" data-onclick="PrototypeApp.switchMainView('kurikulum')">
         <i class="ph ph-play-circle"></i> Lanjut Belajar
       </span>
       <a href="game2d.html" class="m-chip">
         <i class="ph ph-microphone"></i> Latihan Suara
       </a>
-      <span class="m-chip is-gold" onclick="PrototypeApp.openCertificate()">
+      <span class="m-chip is-gold" data-onclick="PrototypeApp.openCertificate()">
         <i class="ph ph-certificate"></i> Piagam Sanad
       </span>
     </div>
@@ -367,7 +367,7 @@
 
       <!-- User Profile Card (Interactive Profile Switcher Dropdown) -->
       <div style="position: relative;">
-        <div class="sidebar-user-card" id="sidebarUserCard" onclick="PrototypeApp.toggleProfileDropdown(event)">
+        <div class="sidebar-user-card" id="sidebarUserCard" data-onclick="PrototypeApp.toggleProfileDropdown(event)">
           <div class="user-left-info">
             <div class="user-avatar-small" id="sidebarUserAvatar">—</div>
             <div>
@@ -379,7 +379,7 @@
         </div>
 
         <!-- Dropdown Menu -->
-        <div class="profile-dropdown-menu" id="profileDropdownMenu" onclick="event.stopPropagation()">
+        <div class="profile-dropdown-menu" id="profileDropdownMenu" data-onclick="event.stopPropagation()">
           <div class="dropdown-user-header">
             <div class="dropdown-avatar-large" id="dropdownAvatarLarge">—</div>
             <div>
@@ -403,11 +403,11 @@
           </div>
 
           <div class="dropdown-quick-actions">
-            <button class="dropdown-action-btn" onclick="PrototypeApp.toggleProfileDropdown(); PrototypeApp.openCertificate();">
+            <button class="dropdown-action-btn" data-onclick="PrototypeApp.toggleProfileDropdown(); PrototypeApp.openCertificate();">
               <i class="ph ph-certificate" style="color: var(--gold-dark);"></i>
               <span>Lihat Piagam Kelulusan Santri</span>
             </button>
-            <button class="dropdown-action-btn" onclick="PrototypeApp.toggleProfileDropdown(); PrototypeApp.belumTersedia('Status infaq', event);">
+            <button class="dropdown-action-btn" data-onclick="PrototypeApp.toggleProfileDropdown(); PrototypeApp.belumTersedia('Status infaq', event);">
               <i class="ph ph-shield-check" style="color: var(--teal-primary);"></i>
               <span>Status Infaq & Verifikasi</span>
             </button>
@@ -437,13 +437,13 @@
         <li class="nav-group-label">Portal</li>
         <!-- Hanya terlihat saat sesi login WALI aktif — lihat js/ui/auth.js -->
         <li id="navWaliDashboardItem" data-terkunci="kelas-online" style="display: none;">
-          <a class="ref-nav-item" id="nav-wali-dashboard" onclick="PrototypeApp.switchMainView('wali-dashboard')">
+          <a class="ref-nav-item" id="nav-wali-dashboard" data-onclick="PrototypeApp.switchMainView('wali-dashboard')">
             <i class="ph ph-users-three"></i>
             <span>Dashboard Wali</span>
           </a>
         </li>
         <li>
-          <a class="ref-nav-item active" id="nav-beranda" data-terkunci="kelas-online" onclick="PrototypeApp.switchMainView('beranda')">
+          <a class="ref-nav-item active" id="nav-beranda" data-terkunci="kelas-online" data-onclick="PrototypeApp.switchMainView('beranda')">
             <i class="ph ph-squares-four"></i>
             <span>Dashboard Santri</span>
           </a>
@@ -451,13 +451,13 @@
 
         <li class="nav-group-label">Belajar</li>
         <li>
-          <a class="ref-nav-item" id="nav-kurikulum" onclick="PrototypeApp.switchMainView('kurikulum')">
+          <a class="ref-nav-item" id="nav-kurikulum" data-onclick="PrototypeApp.switchMainView('kurikulum')">
             <i class="ph ph-graduation-cap"></i>
             <span>Kurikulum Bahasa Arab</span>
           </a>
         </li>
         <li id="navMateriGroup">
-          <a class="ref-nav-item" id="nav-materi-toggle" onclick="PrototypeApp.toggleMateriNav(event)" aria-expanded="true" aria-controls="sidebarModulList">
+          <a class="ref-nav-item" id="nav-materi-toggle" data-onclick="PrototypeApp.toggleMateriNav(event)" aria-expanded="true" aria-controls="sidebarModulList">
             <i class="ph ph-list-bullets"></i>
             <span>Materi Saya</span>
             <i class="ph ph-caret-up nav-caret" id="navMateriCaret"></i>
@@ -466,13 +466,13 @@
           <ul class="ref-nav-sub" id="sidebarModulList"></ul>
         </li>
         <li>
-          <a class="ref-nav-item" id="nav-evaluasi" data-terkunci="evaluasi-digital" onclick="PrototypeApp.bukaSubTab('kuis')">
+          <a class="ref-nav-item" id="nav-evaluasi" data-terkunci="evaluasi-digital" data-onclick="PrototypeApp.bukaSubTab('kuis')">
             <i class="ph ph-check-circle"></i>
             <span>Latihan &amp; Evaluasi</span>
           </a>
         </li>
         <li>
-          <a class="ref-nav-item" id="nav-mufrodat" onclick="PrototypeApp.bukaSubTab('audio')">
+          <a class="ref-nav-item" id="nav-mufrodat" data-onclick="PrototypeApp.bukaSubTab('audio')">
             <i class="ph ph-speaker-high"></i>
             <span>Mufrodat &amp; Pelafalan</span>
           </a>
@@ -486,13 +486,13 @@
 
         <li class="nav-group-label">Perpustakaan &amp; Sanad</li>
         <li>
-          <a class="ref-nav-item" id="nav-modul-pdf" onclick="PrototypeApp.switchMainView('modul-pdf')">
+          <a class="ref-nav-item" id="nav-modul-pdf" data-onclick="PrototypeApp.switchMainView('modul-pdf')">
             <i class="ph ph-book-open-text"></i>
             <span>Modul &amp; Silabus PDF</span>
           </a>
         </li>
         <li>
-          <a class="ref-nav-item" id="nav-piagam" onclick="PrototypeApp.openCertificate()">
+          <a class="ref-nav-item" id="nav-piagam" data-onclick="PrototypeApp.openCertificate()">
             <i class="ph ph-certificate" style="color: var(--gold-dark);"></i>
             <span>Piagam Kelulusan Sanad</span>
           </a>
@@ -501,20 +501,20 @@
         <!-- Kelompok pengurus: dibuka js/ui/auth.js hanya untuk sesi staff. -->
         <li class="nav-group-label" id="navGroupGuru" style="display: none;">Portal Guru</li>
         <li id="navGuruDashboardItem" style="display: none;">
-          <a class="ref-nav-item" id="nav-guru-dashboard" onclick="PrototypeApp.switchMainView('guru-dashboard')">
+          <a class="ref-nav-item" id="nav-guru-dashboard" data-onclick="PrototypeApp.switchMainView('guru-dashboard')">
             <i class="ph ph-clipboard-text"></i>
             <span>Dashboard Guru</span>
           </a>
         </li>
         <li class="nav-group-label" id="navGroupPengurus" style="display: none;">Pengurus Yayasan</li>
         <li id="navAdminPanelItem" style="display: none;">
-          <a class="ref-nav-item" id="nav-admin-panel" onclick="PrototypeApp.switchMainView('admin')">
+          <a class="ref-nav-item" id="nav-admin-panel" data-onclick="PrototypeApp.switchMainView('admin')">
             <i class="ph ph-shield-check"></i>
             <span>Panel Otoritas Yayasan</span>
           </a>
         </li>
         <li id="navStudioKurikulumItem" style="display: none;">
-          <a class="ref-nav-item" id="nav-studio-kurikulum" onclick="PrototypeApp.switchMainView('studio-kurikulum')">
+          <a class="ref-nav-item" id="nav-studio-kurikulum" data-onclick="PrototypeApp.switchMainView('studio-kurikulum')">
             <i class="ph ph-pencil-simple-line"></i>
             <span>Studio Kurikulum</span>
           </a>
@@ -523,17 +523,17 @@
 
       <!-- Bottom Sidebar Links -->
       <div class="sidebar-bottom-links">
-        <a class="ref-nav-item" onclick="PrototypeApp.bukaGantiPin()">
+        <a class="ref-nav-item" data-onclick="PrototypeApp.bukaGantiPin()">
           <i class="ph ph-gear-six"></i>
           <span>Ganti PIN</span>
         </a>
-        <a class="ref-nav-item" onclick="PrototypeApp.belumTersedia('Bantuan & komunikasi', event)">
+        <a class="ref-nav-item" data-onclick="PrototypeApp.belumTersedia('Bantuan & komunikasi', event)">
           <i class="ph ph-info"></i>
           <span>Bantuan &amp; Layanan</span>
         </a>
         <!-- Hanya berguna kalau memang ada sesi; disembunyikan di mode peraga
              oleh js/ui/auth.js supaya tidak ada tombol yang tidak berbuat apa-apa. -->
-        <a class="ref-nav-item is-danger" id="sidebarLogout" style="display: none;" onclick="PrototypeApp.logout()">
+        <a class="ref-nav-item is-danger" id="sidebarLogout" style="display: none;" data-onclick="PrototypeApp.logout()">
           <i class="ph ph-sign-out"></i>
           <span>Keluar</span>
         </a>
@@ -555,10 +555,10 @@
         </div>
 
         <div class="top-header-right-actions">
-          <button class="icon-circle-btn" title="Simpan Arsip" onclick="PrototypeApp.belumTersedia('Simpan ke arsip', event)" aria-label="Simpan ke arsip">
+          <button class="icon-circle-btn" title="Simpan Arsip" data-onclick="PrototypeApp.belumTersedia('Simpan ke arsip', event)" aria-label="Simpan ke arsip">
             <i class="ph ph-bookmark-simple"></i>
           </button>
-          <button class="icon-circle-btn" title="Pemberitahuan" onclick="PrototypeApp.belumTersedia('Pemberitahuan', event)" aria-label="Pemberitahuan">
+          <button class="icon-circle-btn" title="Pemberitahuan" data-onclick="PrototypeApp.belumTersedia('Pemberitahuan', event)" aria-label="Pemberitahuan">
             <i class="ph ph-bell"></i>
           </button>
         </div>
@@ -618,7 +618,7 @@
               <div class="m-progress-title" id="mProgressTitle">Belum ada</div>
               <div class="m-progress-meta" id="mProgressMeta">Mulai dari menu Kurikulum</div>
             </div>
-            <button class="m-progress-go" onclick="PrototypeApp.switchMainView('kurikulum')" aria-label="Buka kurikulum">
+            <button class="m-progress-go" data-onclick="PrototypeApp.switchMainView('kurikulum')" aria-label="Buka kurikulum">
               <i class="ph ph-play"></i>
             </button>
           </div>
@@ -631,7 +631,7 @@
                 Selamat melanjutkan pembelajaran Bahasa Arab terstruktur asuhan <strong>Umi Elly</strong>.
               </div>
             </div>
-            <button class="btn-enroll-primary" style="background: #FFFFFF; color: var(--teal-dark); border: none; font-weight: 800;" onclick="PrototypeApp.switchMainView('kurikulum')">
+            <button class="btn-enroll-primary" style="background: #FFFFFF; color: var(--teal-dark); border: none; font-weight: 800;" data-onclick="PrototypeApp.switchMainView('kurikulum')">
               <i class="ph ph-play-circle" style="color: var(--teal-primary); font-size: 18px;"></i> Buka Kurikulum
             </button>
           </div>
@@ -681,7 +681,7 @@
                     <div style="font-size: 11.5px; color: var(--text-muted);" id="berandaModulSub">Pelajaran yang sedang dikerjakan muncul di sini.</div>
                   </div>
                 </div>
-                <button class="btn-enroll-primary" onclick="PrototypeApp.switchMainView('kurikulum')">
+                <button class="btn-enroll-primary" data-onclick="PrototypeApp.switchMainView('kurikulum')">
                   Buka <i class="ph ph-arrow-right"></i>
                 </button>
               </div>
@@ -735,10 +735,10 @@
               </div>
 
               <div class="header-cta-buttons">
-                <button class="btn-share-text" onclick="PrototypeApp.salinTautanMateri()">
+                <button class="btn-share-text" data-onclick="PrototypeApp.salinTautanMateri()">
                   <i class="ph ph-share-network"></i> Bagikan
                 </button>
-                <button class="btn-enroll-primary" data-terkunci="evaluasi-digital" onclick="PrototypeApp.switchSubTab('kuis')">
+                <button class="btn-enroll-primary" data-terkunci="evaluasi-digital" data-onclick="PrototypeApp.switchSubTab('kuis')">
                   <i class="ph ph-check-circle"></i>
                   <span>Latihan Evaluasi</span>
                 </button>
@@ -761,7 +761,7 @@
                 <div style="font-size: 24px; font-weight: 700; font-family: 'Amiri', 'Traditional Arabic', Arial; margin-bottom: 4px;" id="currentVideoArabic"></div>
                 <div style="font-size: 12px; color: #A7F3EC; margin-bottom: 16px;" id="currentVideoSubtitle">Memuat pelajaran…</div>
 
-                <button class="center-glass-play" onclick="PrototypeApp.togglePlayVideo()">
+                <button class="center-glass-play" data-onclick="PrototypeApp.togglePlayVideo()">
                   <i class="ph ph-play" id="playIcon"></i>
                 </button>
 
@@ -770,21 +770,21 @@
 
             <!-- Aksi Modul (mobile native) -->
             <div class="m-course-actions m-only">
-              <button class="btn-share-text" onclick="PrototypeApp.salinTautanMateri()">
+              <button class="btn-share-text" data-onclick="PrototypeApp.salinTautanMateri()">
                 <i class="ph ph-share-network"></i> Bagikan
               </button>
-              <button class="btn-enroll-primary" data-terkunci="evaluasi-digital" onclick="PrototypeApp.switchSubTab('kuis')">
+              <button class="btn-enroll-primary" data-terkunci="evaluasi-digital" data-onclick="PrototypeApp.switchSubTab('kuis')">
                 <i class="ph ph-check-circle"></i> Latihan Evaluasi
               </button>
             </div>
 
             <!-- Horizontal Sub-Tabs -->
             <div class="ref-sub-tabs-bar">
-              <button class="sub-tab-btn active" data-subtab="ringkasan" onclick="PrototypeApp.switchSubTab('ringkasan')">Ringkasan Materi</button>
-              <button class="sub-tab-btn" data-subtab="audio" onclick="PrototypeApp.switchSubTab('audio')">Pelafalan Mufrodat</button>
-              <button class="sub-tab-btn" data-terkunci="evaluasi-digital" data-subtab="kuis" onclick="PrototypeApp.switchSubTab('kuis')">Evaluasi Pemahaman</button>
-              <button class="sub-tab-btn" data-subtab="pengumuman" onclick="PrototypeApp.switchSubTab('pengumuman')">Pemberitahuan Yayasan</button>
-              <button class="sub-tab-btn" data-subtab="ulasan" onclick="PrototypeApp.switchSubTab('ulasan')">Catatan & Ulasan</button>
+              <button class="sub-tab-btn active" data-subtab="ringkasan" data-onclick="PrototypeApp.switchSubTab('ringkasan')">Ringkasan Materi</button>
+              <button class="sub-tab-btn" data-subtab="audio" data-onclick="PrototypeApp.switchSubTab('audio')">Pelafalan Mufrodat</button>
+              <button class="sub-tab-btn" data-terkunci="evaluasi-digital" data-subtab="kuis" data-onclick="PrototypeApp.switchSubTab('kuis')">Evaluasi Pemahaman</button>
+              <button class="sub-tab-btn" data-subtab="pengumuman" data-onclick="PrototypeApp.switchSubTab('pengumuman')">Pemberitahuan Yayasan</button>
+              <button class="sub-tab-btn" data-subtab="ulasan" data-onclick="PrototypeApp.switchSubTab('ulasan')">Catatan & Ulasan</button>
             </div>
 
             <!-- SUB-TAB CONTENT CONTAINER -->
@@ -818,7 +818,7 @@
                         Klik pada kartu mufrodat untuk mendengarkan pelafalan penutur bahasa Arab standar sanad secara langsung.
                       </p>
                     </div>
-                    <button class="btn-enroll-primary" style="padding: 6px 14px; font-size: 11.5px;" onclick="PrototypeApp.playAllMufrodatSequence()">
+                    <button class="btn-enroll-primary" style="padding: 6px 14px; font-size: 11.5px;" data-onclick="PrototypeApp.playAllMufrodatSequence()">
                       <i class="ph ph-speaker-high"></i> Putar Keseluruhan
                     </button>
                   </div>
@@ -930,10 +930,10 @@
             </div>
 
             <div class="pdf-filter-bar">
-              <button class="pdf-filter-btn active" onclick="PrototypeApp.filterPdfLibrary('all', this)">Semua Dokumen</button>
-              <button class="pdf-filter-btn" onclick="PrototypeApp.filterPdfLibrary('sd', this)">Jenjang SD</button>
-              <button class="pdf-filter-btn" data-terkunci="jenjang-lanjut" onclick="PrototypeApp.filterPdfLibrary('smp', this)">Jenjang SMP</button>
-              <button class="pdf-filter-btn" data-terkunci="jenjang-lanjut" onclick="PrototypeApp.filterPdfLibrary('sma', this)">Jenjang SMA</button>
+              <button class="pdf-filter-btn active" data-onclick="PrototypeApp.filterPdfLibrary('all', this)">Semua Dokumen</button>
+              <button class="pdf-filter-btn" data-onclick="PrototypeApp.filterPdfLibrary('sd', this)">Jenjang SD</button>
+              <button class="pdf-filter-btn" data-terkunci="jenjang-lanjut" data-onclick="PrototypeApp.filterPdfLibrary('smp', this)">Jenjang SMP</button>
+              <button class="pdf-filter-btn" data-terkunci="jenjang-lanjut" data-onclick="PrototypeApp.filterPdfLibrary('sma', this)">Jenjang SMA</button>
             </div>
           </div>
 
@@ -987,15 +987,15 @@
        5. NATIVE MOBILE BOTTOM NAVIGATION BAR
        ============================================================ -->
   <nav class="mobile-bottom-nav" id="mobileBottomNav">
-    <a class="bottom-nav-item active" id="bnav-beranda" data-terkunci="kelas-online" onclick="PrototypeApp.switchMainView('beranda'); PrototypeApp.updateBottomNav('beranda');">
+    <a class="bottom-nav-item active" id="bnav-beranda" data-terkunci="kelas-online" data-onclick="PrototypeApp.switchMainView('beranda'); PrototypeApp.updateBottomNav('beranda');">
       <i class="ph ph-squares-four"></i>
       <span>Beranda</span>
     </a>
-    <a class="bottom-nav-item" id="bnav-modul-pdf" onclick="PrototypeApp.switchMainView('modul-pdf'); PrototypeApp.updateBottomNav('modul-pdf');">
+    <a class="bottom-nav-item" id="bnav-modul-pdf" data-onclick="PrototypeApp.switchMainView('modul-pdf'); PrototypeApp.updateBottomNav('modul-pdf');">
       <i class="ph ph-book-open-text"></i>
       <span>Silabus</span>
     </a>
-    <a class="bottom-nav-item m-tab-center" id="bnav-kurikulum" onclick="PrototypeApp.switchMainView('kurikulum'); PrototypeApp.updateBottomNav('kurikulum');">
+    <a class="bottom-nav-item m-tab-center" id="bnav-kurikulum" data-onclick="PrototypeApp.switchMainView('kurikulum'); PrototypeApp.updateBottomNav('kurikulum');">
       <i class="ph ph-graduation-cap"></i>
       <span>Belajar</span>
     </a>
@@ -1005,7 +1005,7 @@
     </a>
     <!-- Tab kelima menjaga tombol Belajar tetap di tengah. Dulu "AI Asisten",
          dihapus 11 September 2026 bersama fiturnya. -->
-    <a class="bottom-nav-item" id="bnav-piagam" onclick="PrototypeApp.openCertificate()">
+    <a class="bottom-nav-item" id="bnav-piagam" data-onclick="PrototypeApp.openCertificate()">
       <i class="ph ph-certificate"></i>
       <span>Piagam</span>
     </a>
@@ -1029,8 +1029,8 @@
           </div>
         </div>
         <div class="pdf-topbar-actions">
-          <button class="icon-circle-btn" onclick="PrototypeApp.belumTersedia('Perbesar dokumen', event)" aria-label="Perbesar tampilan dokumen"><i class="ph ph-magnifying-glass-plus"></i></button>
-          <button class="icon-circle-btn close-btn" onclick="PrototypeApp.closeDocReader()" aria-label="Tutup pembaca dokumen"><i class="ph ph-x"></i></button>
+          <button class="icon-circle-btn" data-onclick="PrototypeApp.belumTersedia('Perbesar dokumen', event)" aria-label="Perbesar tampilan dokumen"><i class="ph ph-magnifying-glass-plus"></i></button>
+          <button class="icon-circle-btn close-btn" data-onclick="PrototypeApp.closeDocReader()" aria-label="Tutup pembaca dokumen"><i class="ph ph-x"></i></button>
         </div>
       </div>
 
@@ -1100,7 +1100,7 @@
         <p id="certPeragaNote" style="display: none;"></p>
       </div>
 
-            <button class="btn-enroll-primary" style="margin-top: 16px; width: 100%; justify-content: center;" onclick="PrototypeApp.closeCertModal()">Tutup Pratinjau</button>
+            <button class="btn-enroll-primary" style="margin-top: 16px; width: 100%; justify-content: center;" data-onclick="PrototypeApp.closeCertModal()">Tutup Pratinjau</button>
       </div>
     </div>
   </div>
@@ -1147,10 +1147,14 @@
        dipakai js/core/supabase-client.js. -->
   <script src="vendor/supabase/supabase-js.2.114.0.min.js"></script>
 
+  <!-- Pengikat data-onclick (pengganti onclick sebaris, supaya CSP tidak
+       butuh 'unsafe-inline'). Harus sebelum modul aplikasi. -->
+  <script defer src="js/aksi-klik.js?v=c3dbd164"></script>
+
   <!-- Modul ES otomatis ditunda (defer), jadi selesai dieksekusi sebelum
        DOMContentLoaded — tepat saat prototype-mobile.js membungkus ulang
        metode PrototypeApp. Urutan kedua baris ini jangan ditukar. -->
   <script type="module" src="js/app.js?v=06eadf92"></script>
-  <script defer src="prototype-mobile.js?v=05bfa650"></script>
+  <script defer src="prototype-mobile.js?v=c46dc5e0"></script>
 </body>
 </html>

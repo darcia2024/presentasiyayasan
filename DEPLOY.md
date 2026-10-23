@@ -106,8 +106,15 @@ catatan di kepala dokumen ini.)
 Content-Security-Policy ditambahkan pada audit 10 September 2026. Isinya
 memuat origin Supabase, dan `npm run build` akan **menolak berjalan** kalau
 origin di `vercel.json` tidak lagi cocok dengan `SUPABASE_URL` — lihat
-`tools/periksa-csp.js`. Alasan `'unsafe-inline'` masih ada di sana juga
-dijelaskan di berkas itu.
+`tools/periksa-csp.js`.
+
+Sejak 24 Oktober 2026 `script-src` **tidak** lagi memuat `'unsafe-inline'`.
+Akibatnya `onclick="…"` dan `<script>` sebaris diam-diam mati di produksi:
+pakai `data-onclick="Namespace.metode('arg')"` (diikat `js/aksi-klik.js`)
+atau `addEventListener`. `npm run build` menolak halaman yang terbit kalau
+masih memuat skrip sebaris, dan `npm start` mengirim CSP yang sama dengan
+produksi, jadi tombol yang rusak sudah ketahuan di lokal. `style-src` masih
+memuat `'unsafe-inline'`; alasannya ada di `tools/periksa-csp.js`.
 
 Yang paling mudah terlewat kalau header diedit: `Service-Worker-Allowed: /`
 — tanpa itu service worker tidak boleh mengendalikan seluruh situs, dan

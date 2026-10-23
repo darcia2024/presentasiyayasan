@@ -17,31 +17,20 @@
  * riwayat git), jadi penjelasan CSP-nya ada di sini dan di DEPLOY.md.
  *
  * ---------------------------------------------------------------------
- * KENAPA MASIH ADA 'unsafe-inline'
+ * script-src TANPA 'unsafe-inline' (sejak audit 24 Okt 2026)
  *
- * script-src: index.html memuat 96 penangan kejadian sebaris
- * (onclick="PrototypeApp...."), proposal.html 27, game2d.html 6. Tanpa
- * 'unsafe-inline' seluruh antarmuka berhenti bekerja. Memindahkannya ke
- * addEventListener adalah pekerjaan besar yang menyentuh hampir setiap
- * tombol di aplikasi — layak dilakukan, tapi bukan sebagai bagian dari
- * perbaikan keamanan yang tidak bisa diuji manual satu per satu.
+ * Seluruh onclick="…" sebaris (71 di halaman yang terbit) diganti
+ * data-onclick="…" yang diikat js/aksi-klik.js tanpa eval, dan skrip
+ * sebaris di offline.html/verifikasi.html dipindah ke js/. Dengan begitu
+ * satu celah XSS tidak lagi otomatis berarti eksekusi skrip.
  *
- * style-src: 213 atribut style= sebaris di index.html saja.
+ * Supaya tidak diam-diam kembali, berkas ini juga MEMINDAI halaman yang
+ * terbit: atribut on*= atau <script> sebaris = build gagal. proposal.html
+ * dikecualikan — tidak pernah terbit (tools/build-dist.js).
  *
- * YANG TETAP DITUTUP CSP INI meski 'unsafe-inline' ada:
- *   - <script src="https://penyerang/"> ditolak (script-src 'self').
- *   - Pencurian data ke domain luar ditolak (connect-src dibatasi).
- *   - <object>/<embed> ditolak sepenuhnya (object-src 'none').
- *   - Pembajakan <base href> ditolak (base-uri 'self').
- *   - Pengiriman formulir ke domain luar ditolak (form-action 'self').
- *   - Penyematan situs ini di iframe orang lain ditolak (frame-ancestors).
- *
- * JALAN MENUJU CSP TANPA 'unsafe-inline' (kalau nanti dikerjakan):
- *   1. Ganti seluruh on*= di HTML dengan addEventListener di modul js/.
- *   2. Ganti atribut style= dengan kelas CSS.
- *   3. Baru setelah itu 'unsafe-inline' bisa dicabut. Nonce tidak membantu
- *      di sini: nonce tidak pernah mengizinkan atribut on*=, jadi langkah 1
- *      tetap wajib lebih dulu.
+ * style-src MASIH 'unsafe-inline': ratusan atribut style= sebaris di
+ * index.html dan .style di JS. Risikonya jauh lebih kecil (CSS tidak bisa
+ * menjalankan skrip); mencabutnya butuh memindah semua itu ke kelas CSS.
  */
 
 'use strict';
@@ -85,6 +74,59 @@ function uraikanCsp(nilai) {
   return peta;
 }
 
+/** Halaman di akar yang TIDAK terbit, jadi tidak tunduk pada CSP Vercel. */
+const HALAMAN_TIDAK_TERBIT = new Set(['proposal.html']);
+
+/** Nama kejadian DOM yang dicari di string JS — sengaja daftar tertutup,
+ *  supaya variabel bernama onSelesai = '…' tidak salah tangkap. */
+const KEJADIAN = 'click|dblclick|change|input|submit|load|error|keydown|keyup|keypress|mouse\\w+|focus|blur|touch\\w+|pointer\\w+';
+
+/**
+ * Tanpa 'unsafe-inline' di script-src, atribut on*= dan <script> sebaris
+ * DIAM-DIAM tidak jalan di produksi (peramban cuma mencatat di konsol),
+ * padahal di server lokal — yang tidak mengirim CSP — semuanya tampak
+ * normal. Jadi ketahuan di sini, bukan saat guru menekan tombol mati.
+ */
+function periksaSkripSebaris() {
+  const temuan = [];
+  const html = fs.readdirSync(ROOT).filter((n) => n.endsWith('.html') && !HALAMAN_TIDAK_TERBIT.has(n));
+  for (const nama of html) {
+    const isi = fs.readFileSync(path.join(ROOT, nama), 'utf8');
+    const baris = (i) => isi.slice(0, i).split('\n').length;
+    for (const m of isi.matchAll(/\son[a-z]+\s*=\s*["']/gi)) temuan.push(`${nama}:${baris(m.index)} atribut ${m[0].trim()}`);
+    for (const m of isi.matchAll(/<script\b(?![^>]*\bsrc\s*=)[^>]*>/gi)) temuan.push(`${nama}:${baris(m.index)} <script> sebaris`);
+    for (const m of isi.matchAll(/href\s*=\s*["']\s*javascript:/gi)) temuan.push(`${nama}:${baris(m.index)} href="javascript:"`);
+  }
+
+  const reJs = new RegExp(`[\\s"'](on(?:${KEJADIAN}))=\\\\?["']`, 'gi');
+  // app.js di akar SENGAJA tidak ikut: itu mesin dek proposal.html, tidak
+  // dimuat halaman mana pun yang terbit.
+  const daftarJs = ['prototype-mobile.js', 'game2d.js'];
+  (function kumpulkan(dir) {
+    for (const e of fs.readdirSync(path.join(ROOT, dir), { withFileTypes: true })) {
+      const rel = path.join(dir, e.name);
+      if (e.isDirectory()) kumpulkan(rel);
+      else if (e.name.endsWith('.js')) daftarJs.push(rel);
+    }
+  })('js');
+  for (const rel of daftarJs) {
+    const isi = fs.readFileSync(path.join(ROOT, rel), 'utf8');
+    for (const m of isi.matchAll(reJs)) {
+      const awalBaris = isi.lastIndexOf('\n', m.index) + 1;
+      if (/^\s*(\*|\/\/|\/\*)/.test(isi.slice(awalBaris, m.index))) continue; // komentar
+      temuan.push(`${rel}:${isi.slice(0, m.index).split('\n').length} ${m[1]}= di dalam string HTML`);
+    }
+  }
+
+  if (temuan.length) {
+    gagal(
+      `skrip sebaris akan DIBLOKIR CSP di produksi (${temuan.length}):\n` +
+        temuan.map((t) => `      ${t}`).join('\n') +
+        "\n    Pakai data-onclick (js/aksi-klik.js) atau addEventListener; pindahkan <script> sebaris ke berkas di js/.",
+    );
+  }
+}
+
 function main() {
   const cfg = JSON.parse(fs.readFileSync(VERCEL, 'utf8'));
   const entriGlobal = (cfg.headers || []).find((h) => h.source === '/(.*)');
@@ -106,12 +148,13 @@ function main() {
   }
 
   // Kalau suatu saat script-src dilonggarkan ke '*' atau data:, itu
-  // membatalkan hampir seluruh gunanya. 'unsafe-inline' masih diterima
-  // (lihat catatan panjang di kepala berkas) tapi 'unsafe-eval' tidak.
+  // membatalkan hampir seluruh gunanya.
   const scriptSrc = csp.get('script-src') || [];
-  for (const terlarang of ["'unsafe-eval'", '*', 'data:', 'http:']) {
+  for (const terlarang of ["'unsafe-inline'", "'unsafe-eval'", '*', 'data:', 'http:']) {
     if (scriptSrc.includes(terlarang)) gagal(`script-src memuat ${terlarang} — tidak boleh`);
   }
+
+  periksaSkripSebaris();
 
   const supabaseUrl = (process.env.SUPABASE_URL || '').trim().replace(/\/+$/, '');
   if (!supabaseUrl) {

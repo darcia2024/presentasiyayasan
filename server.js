@@ -16,6 +16,26 @@ const BASE_URL = process.env.PUBLIC_BASE_URL || `http://localhost:${PORT}`;
 const ROOT = __dirname;
 
 /*
+ * CSP YANG SAMA DENGAN PRODUKSI, dibaca dari vercel.json (audit 24 Okt 2026).
+ *
+ * Sejak script-src tidak lagi memuat 'unsafe-inline', onclick sebaris atau
+ * <script> sebaris diam-diam MATI di produksi. Tanpa header ini server lokal
+ * tidak mengirim CSP sama sekali, jadi tombol yang rusak tetap tampak sehat
+ * sampai sudah terbit. upgrade-insecure-requests dibuang: di sini http.
+ */
+const CSP = (() => {
+  try {
+    const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, 'vercel.json'), 'utf8'));
+    const global = (cfg.headers || []).find((h) => h.source === '/(.*)');
+    const nilai = (global?.headers || []).find((h) => h.key === 'Content-Security-Policy')?.value || '';
+    return nilai.split(';').map((s) => s.trim()).filter((s) => s && s !== 'upgrade-insecure-requests').join('; ');
+  } catch (e) {
+    console.warn('[server] CSP vercel.json tidak terbaca, dikirim tanpa CSP:', e.message);
+    return '';
+  }
+})();
+
+/*
  * YANG BOLEH DISAJIKAN — audit 24 Okt 2026.
  *
  * Dulu server ini menyajikan berkas APA PUN di akar repo, dengan CORS `*`,
@@ -117,6 +137,7 @@ const server = http.createServer((req, res) => {
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
     const headers = { 'Content-Type': contentType };
+    if (CSP) headers['Content-Security-Policy'] = CSP;
 
     if (path.basename(filePath) === 'sw.js') {
       headers['Service-Worker-Allowed'] = '/';
