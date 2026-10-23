@@ -7,7 +7,7 @@
  * persis dengan PowerPoint — aplikasi ini tidak menafsirkan PPT sama sekali.
  *
  * Link-nya sudah dinormalkan dan domainnya dibatasi ke Microsoft di tiga
- * lapis (js/core/onedrive.js, check constraint migrasi 20260924000001, CSP
+ * lapis (js/core/onedrive.js, check constraint migrasi 20261024000002, CSP
  * frame-src di vercel.json). Berkas ini tetap memeriksa ulang sebelum
  * memasang iframe: baris lama atau data yang disunting langsung di basis
  * data tidak boleh menjadi jalan menyematkan halaman lain.

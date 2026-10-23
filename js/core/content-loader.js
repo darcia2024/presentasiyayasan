@@ -14,7 +14,7 @@
  */
 
 import { getSupabaseClient, SUPABASE_TERKONFIGURASI } from './supabase-client.js';
-import { kolomEmbedBelumAda } from './onedrive.js';
+import { SEMATAN_EMBED, embedBelumTersedia } from './onedrive.js';
 
 const STATUS_PELAJARAN = { materi: 'siap', evaluasi: 'evaluasi', sertifikat: 'sertifikat' };
 
@@ -48,8 +48,8 @@ export async function muatSilabusTerbit(jenjang) {
       .order('urutan', { ascending: true });
 
     const KOLOM_PELAJARAN = 'id, judul, urutan, durasi_menit, tipe, ppt_path, ppt_nama';
-    let { data, error } = await muat(`${KOLOM_PELAJARAN}, ppt_embed_url`);
-    if (kolomEmbedBelumAda(error)) ({ data, error } = await muat(KOLOM_PELAJARAN));
+    let { data, error } = await muat(`${KOLOM_PELAJARAN}, ${SEMATAN_EMBED}`);
+    if (embedBelumTersedia(error)) ({ data, error } = await muat(KOLOM_PELAJARAN));
 
     if (error) {
       console.error('[content-loader] gagal memuat modul terbit:', error.message);
@@ -80,9 +80,9 @@ export async function muatSilabusTerbit(jenjang) {
           // diminta ke Edge Function tiap kali dibuka.
           pptAda: !!p.ppt_path,
           pptNama: p.ppt_nama || null,
-          // Link embed OneDrive (Fase C3) — BUKAN rahasia seperti path
-          // storage: memang link tayang yang dibuka langsung oleh pemutar.
-          pptEmbed: p.ppt_embed_url || null,
+          // Link embed OneDrive (Fase C3) — link tayang yang dibuka langsung
+          // oleh pemutar. Hanya staff yang menerimanya; bagi wali null (RLS).
+          pptEmbed: p.ppt_embed?.url || null,
         })),
       };
     });

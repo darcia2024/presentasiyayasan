@@ -824,6 +824,28 @@ async function fungsiAda(nama) {
       cek('ppt-signed-url: bab tanpa PPT dijawab 404, bukan galat server',
         pptKosong.status === 404, pptKosong.status);
 
+      /* LINK EMBED ONEDRIVE (audit 24 Okt 2026, temuan #3). Link embed bisa
+         dibuka siapa pun yang memegangnya, jadi tabelnya harus tertutup bagi
+         wali — dulu ia kolom pelajaran, dan setiap wali bisa membacanya. */
+      const linkUji = 'https://onedrive.live.com/embed?resid=UJI-ASAP';
+      const embedSiap = await admin('POST', 'pelajaran_ppt_embed', {
+        body: { pelajaran_id: ids.pelajaran, url: linkUji },
+      }).then(() => true, () => false);
+      if (!embedSiap) {
+        lewati('link embed PPT khusus staff', 'migrasi 20261024000002 belum dijalankan');
+      } else {
+        const embedWali = await restSebagai('GET', 'pelajaran_ppt_embed', tokenWali, '?select=url');
+        cek('link embed PPT: WALI tidak membaca satu baris pun', (embedWali.data?.length ?? 0) === 0, embedWali.data);
+        const sematanWali = await restSebagai('GET', 'pelajaran', tokenWali,
+          `?id=eq.${ids.pelajaran}&select=id,ppt_embed:pelajaran_ppt_embed(url)`);
+        cek('link embed PPT: sematan di query pelajaran wali kosong',
+          (sematanWali.data || []).every((p) => !p.ppt_embed), sematanWali.data);
+        const embedGuru = await restSebagai('GET', 'pelajaran_ppt_embed', tokenPengajar,
+          `?pelajaran_id=eq.${ids.pelajaran}&select=url`);
+        cek('link embed PPT: guru membacanya', embedGuru.data?.[0]?.url === linkUji, embedGuru.data);
+        await admin('DELETE', 'pelajaran_ppt_embed', { query: `?pelajaran_id=eq.${ids.pelajaran}` });
+      }
+
       /* Berkas uji dibereskan DULU. Pemeriksaan yatim di bawah adalah
          invarian atas seluruh bucket, dan berkas milik uji ini sendiri —
          yang barusan sengaja dilepas dari babnya untuk menguji kasus 404 —

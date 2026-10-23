@@ -6,8 +6,8 @@
  * duanya diterima; yang disimpan selalu URL-nya saja.
  *
  * Domain yang boleh HARUS sama dengan check constraint di migrasi
- * 20260924000001_ppt_embed_onedrive.sql dan frame-src di vercel.json. Kolom
- * ini dirender sebagai <iframe> di layar setiap guru — lihat alasan
+ * 20261024000002_ppt_embed_khusus_staff.sql dan frame-src di vercel.json.
+ * Link ini dirender sebagai <iframe> di layar setiap guru — lihat alasan
  * lengkapnya di migrasi itu.
  *
  * Tanpa DOM dan tanpa jaringan, supaya teruji di Node
@@ -15,17 +15,25 @@
  */
 
 /**
- * true kalau galat PostgREST berarti kolom ppt_embed_url BELUM ADA di basis
- * data — migrasi 20260924000001 belum dijalankan.
+ * Sematan PostgREST untuk link embed satu bab. Link-nya tinggal di tabel
+ * sendiri yang RLS-nya khusus staff (migrasi 20261024000002) — bagi wali
+ * sematan ini selalu null.
+ */
+export const SEMATAN_EMBED = 'ppt_embed:pelajaran_ppt_embed(url)';
+
+/**
+ * true kalau galat PostgREST berarti tabel pelajaran_ppt_embed BELUM ADA di
+ * basis data — migrasi 20261024000002 belum dijalankan.
  *
  * Migrasi di proyek ini dijalankan manual, sedangkan frontend terbit otomatis
  * begitu masuk main. Tanpa jalan mundur ini, urutan yang terbalik membuat
  * query silabus gagal dan SELURUH kurikulum tampil kosong di depan guru —
- * demi satu kolom yang belum dipakai siapa pun.
+ * demi satu sematan yang belum dipakai siapa pun.
  */
-export function kolomEmbedBelumAda(error) {
+export function embedBelumTersedia(error) {
   if (!error) return false;
-  return error.code === '42703' || /ppt_embed_url/.test(String(error.message || ''));
+  return ['PGRST200', 'PGRST205', '42P01'].includes(error.code)
+    || /pelajaran_ppt_embed/.test(String(error.message || ''));
 }
 
 /** Host OneDrive pribadi. Microsoft 365 (*.sharepoint.com) diperiksa terpisah. */

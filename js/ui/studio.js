@@ -827,7 +827,7 @@ function renderMateriPpt(body) {
     STATUS_EMBED.tersedia
       ? 'Untuk menayangkan PPT ke guru (animasi utuh seperti PowerPoint): buka berkasnya di OneDrive → '
         + 'klik kanan / titik tiga → Embed (Sematkan) → Generate → salin, lalu klik "Tempel link" di bab yang sesuai.'
-      : 'Kolom link embed OneDrive belum aktif: migrasi basis data 20260924000001 belum dijalankan. '
+      : 'Kolom link embed OneDrive belum aktif: migrasi basis data 20261024000002 belum dijalankan.'
         + 'Unggah berkas tetap bisa dipakai seperti biasa.');
   panduan.style.marginBottom = '10px';
   body.appendChild(panduan);

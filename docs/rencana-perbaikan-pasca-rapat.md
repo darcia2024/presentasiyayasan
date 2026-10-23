@@ -305,9 +305,15 @@ dan arsitekturnya harus dipilih ulang. Uji ini murah dan harus dilakukan duluan.
   link embed bisa dibuka siapa pun yang memegangnya, jadi butir 10.2 ("guru
   mitra hanya bisa melihat") tidak lagi mutlak untuk materi di jalur ini.
   Domain link dibatasi ke Microsoft di tiga lapis (klien, check constraint,
-  CSP). Migrasi `20260924000001_ppt_embed_onedrive.sql` **harus dijalankan**
-  sebelum kolomnya bisa dipakai; sebelum itu Studio menampilkan pesan dan
-  silabus tetap berjalan tanpa kolom tersebut.
+  CSP). Migrasi `20260924000001_ppt_embed_onedrive.sql` lalu
+  `20261024000002_ppt_embed_khusus_staff.sql` **harus dijalankan** sebelum
+  link-nya bisa dipakai; sebelum itu Studio menampilkan pesan dan silabus
+  tetap berjalan tanpanya.
+
+  **Diperbaiki 24 Okt 2026:** link-nya dulu kolom `pelajaran.ppt_embed_url`,
+  dan RLS pelajaran membuka bab terbit ke SEMUA akun — termasuk wali. Sejak
+  migrasi 20261024000002 link tinggal di tabel `pelajaran_ppt_embed` yang
+  RLS-nya khusus staff.
 - **C4 — BELUM.** Hapus jalur input dan tampilan PDF lama (tabel `dokumen`,
   menu "Modul & Silabus PDF"). Ditunda sampai terlihat Umi benar-benar memakai
   jalur PPT; membuang jalur lama sebelum penggantinya terbukti dipakai berarti

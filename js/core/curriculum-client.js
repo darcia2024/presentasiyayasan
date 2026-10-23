@@ -10,7 +10,7 @@
 
 import { getSupabaseClient, bacaSesi } from './supabase-client.js';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from '../config.js';
-import { normalkanLinkEmbed, kolomEmbedBelumAda } from './onedrive.js';
+import { normalkanLinkEmbed, SEMATAN_EMBED, embedBelumTersedia } from './onedrive.js';
 
 const TABEL_MODUL = 'modul';
 const TABEL_PELAJARAN = 'pelajaran';
@@ -441,10 +441,10 @@ export async function daftarSemuaBabPpt(jenjang) {
     .order('urutan', { ascending: true });
 
   const KOLOM_PELAJARAN = 'id, judul, urutan, tipe, ppt_path, ppt_nama, ppt_ukuran_bytes, ppt_diunggah_pada';
-  let { data, error } = await muat(`${KOLOM_PELAJARAN}, ppt_embed_url`);
-  // Migrasi 20260924000001 belum dijalankan: layar tetap bisa dipakai
+  let { data, error } = await muat(`${KOLOM_PELAJARAN}, ${SEMATAN_EMBED}`);
+  // Migrasi 20261024000002 belum dijalankan: layar tetap bisa dipakai
   // mengunggah berkas, hanya kolom link embed-nya yang dimatikan.
-  const embedTersedia = !kolomEmbedBelumAda(error);
+  const embedTersedia = !embedBelumTersedia(error);
   if (!embedTersedia) ({ data, error } = await muat(KOLOM_PELAJARAN));
   lemparJikaError(error, 'Gagal memuat daftar bab');
   STATUS_EMBED.tersedia = embedTersedia;
@@ -453,12 +453,16 @@ export async function daftarSemuaBabPpt(jenjang) {
     ...m,
     // PostgREST tidak menjamin urutan baris bersarang — diurutkan di sini
     // supaya nomor bab yang dilihat Umi sama dengan urutan di silabus.
-    pelajaran: [...(m.pelajaran || [])].sort((a, b) => (a.urutan ?? 0) - (b.urutan ?? 0)),
+    // Sematan diratakan jadi ppt_embed_url supaya layar tidak perlu tahu
+    // link-nya tinggal di tabel lain.
+    pelajaran: [...(m.pelajaran || [])]
+      .sort((a, b) => (a.urutan ?? 0) - (b.urutan ?? 0))
+      .map(({ ppt_embed: sematan, ...p }) => ({ ...p, ppt_embed_url: sematan?.url || null })),
   }));
 }
 
 /**
- * Apakah kolom ppt_embed_url sudah ada di basis data. Diperbarui setiap
+ * Apakah tabel pelajaran_ppt_embed sudah ada di basis data. Diperbarui setiap
  * daftarSemuaBabPpt() dipanggil; dibaca layar Materi PPT untuk memutuskan
  * menampilkan kolom link embed atau pesan "migrasi belum dijalankan".
  */
@@ -469,7 +473,7 @@ export const STATUS_EMBED = { tersedia: true };
  *
  * Link dinormalkan & domainnya diperiksa di sini supaya owner mendapat pesan
  * yang bisa ia tindak lanjuti; batas yang sungguhan adalah check constraint
- * di basis data (migrasi 20260924000001).
+ * di tabel pelajaran_ppt_embed (migrasi 20261024000002).
  *
  * @returns {Promise<{url: string|null, peringatan: string|null}>}
  */
@@ -484,16 +488,18 @@ export async function simpanEmbedPpt(pelajaranId, masukan) {
     peringatan = hasil.peringatan;
   }
 
-  const { data, error } = await client
-    .from(TABEL_PELAJARAN)
-    .update({ ppt_embed_url: url })
-    .eq('id', pelajaranId)
-    .select('id');
-  if (kolomEmbedBelumAda(error)) {
-    throw new Error('Kolom link embed belum ada di basis data — migrasi 20260924000001 perlu dijalankan dulu.');
+  const tabel = client.from('pelajaran_ppt_embed');
+  const { data, error } = url
+    ? await tabel
+      .upsert({ pelajaran_id: pelajaranId, url, diperbarui_pada: new Date().toISOString() })
+      .select('pelajaran_id')
+    : await tabel.delete().eq('pelajaran_id', pelajaranId).select('pelajaran_id');
+  if (embedBelumTersedia(error)) {
+    throw new Error('Tabel link embed belum ada di basis data — migrasi 20261024000002 perlu dijalankan dulu.');
   }
   lemparJikaError(error, 'Gagal menyimpan link embed');
-  if (!Array.isArray(data) || data.length === 0) {
+  // Menghapus link yang memang sudah tidak ada bukan kegagalan.
+  if (url && (!Array.isArray(data) || data.length === 0)) {
     throw new Error('Link tidak tersimpan (kemungkinan izin ditolak).');
   }
   return { url, peringatan };
