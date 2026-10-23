@@ -48,17 +48,29 @@ const DIKECUALIKAN = new Set([
 const BINER = /\.(png|jpg|jpeg|gif|webp|ico|pdf|woff2?|ttf|eot|mp3|mp4|zip|dump)$/i;
 
 function berkasTerlacak() {
-  const keluaran = execFileSync('git', ['ls-files', '-z'], { cwd: ROOT, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
+  const keluaran = execFileSync('git', ['ls-files', '-z'], {
+    cwd: ROOT, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024, stdio: ['ignore', 'pipe', 'pipe'],
+  });
   return keluaran.split('\0').filter(Boolean);
 }
 
 function main() {
+  // Gagal, bukan dilewati (audit 24 Okt 2026). Dulu galat git apa pun —
+  // termasuk "dubious ownership" di Windows — dicetak sebagai peringatan lalu
+  // keluar 0, jadi `npm test` lulus HIJAU tanpa satu berkas pun dipindai.
+  // Penjaga yang diam-diam tidak berjaga lebih buruk daripada tidak ada:
+  // ia membuat orang berhenti waspada.
   let berkas;
   try {
     berkas = berkasTerlacak();
-  } catch {
-    console.warn('  ⚠ Bukan repo git (atau git tidak tersedia) — pemindaian rahasia dilewati.');
-    return;
+  } catch (e) {
+    const pesanGit = String(e.stderr || e.message || '').trim().split('\n')[0];
+    console.error('  ✗ Pemindaian rahasia TIDAK bisa dijalankan — git gagal mendaftar berkas.');
+    if (pesanGit) console.error(`     ${pesanGit}`);
+    if (/dubious ownership/i.test(String(e.stderr || ''))) {
+      console.error(`     Perbaiki dengan: git config --global --add safe.directory "${ROOT.replace(/\\/g, '/')}"`);
+    }
+    process.exit(1);
   }
 
   const temuan = [];
