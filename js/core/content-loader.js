@@ -47,7 +47,7 @@ export async function muatSilabusTerbit(jenjang) {
       .order('tahap', { ascending: true })
       .order('urutan', { ascending: true });
 
-    const KOLOM_PELAJARAN = 'id, judul, urutan, durasi_menit, tipe, ppt_path, ppt_nama';
+    const KOLOM_PELAJARAN = 'id, judul, urutan, durasi_menit, tipe, video_path, ppt_path, ppt_nama';
     let { data, error } = await muat(`${KOLOM_PELAJARAN}, ${SEMATAN_EMBED}`);
     if (embedBelumTersedia(error)) ({ data, error } = await muat(KOLOM_PELAJARAN));
 
@@ -58,11 +58,13 @@ export async function muatSilabusTerbit(jenjang) {
     if (!data || !data.length) return null;
 
     let pelajaranAktifId = null;
+    let pelajaranAktifPunyaVideo = false;
 
     const syllabus = data.map((modul, iModul) => {
       const daftarPelajaran = urutkan(modul.pelajaran, 'urutan');
       if (iModul === 0 && daftarPelajaran.length) {
         pelajaranAktifId = daftarPelajaran[0].id;
+        pelajaranAktifPunyaVideo = !!daftarPelajaran[0].video_path;
       }
       return {
         code: `${String(modul.tahap).padStart(2, '0')}`,
@@ -98,6 +100,10 @@ export async function muatSilabusTerbit(jenjang) {
     return {
       syllabus,
       pelajaranAktifId,
+      // AUDIT 24 Okt 2026: tanpa penanda ini video-signed-url diminta untuk
+      // setiap bab, termasuk yang belum punya video — 404 di konsol tiap
+      // kali Kurikulum dibuka, dan satu panggilan Edge Function sia-sia.
+      pelajaranAktifPunyaVideo,
       modulAktif: {
         judul: modulPertama.judul,
         kode: modulPertama.kode,

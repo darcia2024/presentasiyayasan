@@ -94,12 +94,30 @@ const ROUTES = {
  */
 const DEFAULT_ROUTE = fiturTerkunci('kelas-online') ? 'kurikulum' : 'beranda';
 
+/*
+ * AUDIT 24 Okt 2026: rute yang dikunci fase tetap bisa dibuka. Menu
+ * sidebarnya memang tersembunyi, tapi logo di app bar mobile memanggil
+ * switchMainView('beranda'), dan ?view=beranda di URL juga sampai ke sini —
+ * akun pengurus mendarat di layar "Portal Santri" berisi XP kosong yang
+ * seharusnya terkunci. Kuncinya ditegakkan di router, satu tempat yang
+ * dilewati semua jalan masuk, bukan di setiap tombol.
+ */
+const KUNCI_RUTE = { beranda: 'kelas-online', 'wali-dashboard': 'kelas-online' };
+
+/** Nama rute yang benar-benar akan dibuka untuk `viewName`. */
+export function ruteBerlaku(viewName) {
+  const nama = ROUTES[viewName] ? viewName : DEFAULT_ROUTE;
+  const kunci = KUNCI_RUTE[nama];
+  return kunci && fiturTerkunci(kunci) ? DEFAULT_ROUTE : nama;
+}
+
 const setText = (id, value) => {
   const el = document.getElementById(id);
   if (el) el.textContent = value;
 };
 
 export function switchMainView(viewName) {
+  viewName = ruteBerlaku(viewName);
   const workspace = document.getElementById('refMainWorkspace');
   if (workspace) workspace.scrollTop = 0;
 
@@ -109,7 +127,7 @@ export function switchMainView(viewName) {
   });
   document.querySelectorAll('.ref-nav-item').forEach((item) => item.classList.remove('active'));
 
-  const route = ROUTES[viewName] || ROUTES[DEFAULT_ROUTE];
+  const route = ROUTES[viewName];
 
   const view = document.getElementById(route.view);
   if (view) view.style.display = 'block';

@@ -57,13 +57,13 @@
   <link rel="stylesheet" href="vendor/phosphor/phosphor.css">
 
   <!-- Core App Stylesheet -->
-  <link rel="stylesheet" href="prototype.css?v=a97949e9">
+  <link rel="stylesheet" href="prototype.css?v=e4c5d6e0">
   <!-- Fase 1: Gerbang Login -->
   <link rel="stylesheet" href="js/ui/auth.css?v=27452c6a">
   <!-- Fase 2: Studio Kurikulum -->
   <link rel="stylesheet" href="js/ui/studio.css?v=7322aae6">
   <!-- Native Mobile / PWA Layer -->
-  <link rel="stylesheet" href="prototype-mobile.css?v=dcb12f23">
+  <link rel="stylesheet" href="prototype-mobile.css?v=1d193582">
 </head>
 <body class="tanpa-bar-demo">
 
@@ -221,7 +221,7 @@
         <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
           <img src="logo-perisa-horizontal.png?v=03e061d2" alt="PERISA Azhariyah" style="width: 100%; max-width: 195px; height: auto; object-fit: contain;">
         </div>
-        <i class="ph ph-x" style="cursor: pointer; font-size: 22px; color: var(--text-muted); padding: 4px;" data-onclick="PrototypeApp.toggleMobileDrawer()"></i>
+        <button type="button" aria-label="Tutup menu" style="background: none; border: 0; cursor: pointer; font-size: 22px; color: var(--text-muted); padding: 9px; line-height: 1;" data-onclick="PrototypeApp.toggleMobileDrawer()"><i class="ph ph-x"></i></button>
       </div>
 
       <!-- Identitas Santri Aktif -->
@@ -761,7 +761,7 @@
                 <div style="font-size: 24px; font-weight: 700; font-family: 'Amiri', 'Traditional Arabic', Arial; margin-bottom: 4px;" id="currentVideoArabic"></div>
                 <div style="font-size: 12px; color: #A7F3EC; margin-bottom: 16px;" id="currentVideoSubtitle">Memuat pelajaran…</div>
 
-                <button class="center-glass-play" data-onclick="PrototypeApp.togglePlayVideo()">
+                <button class="center-glass-play" type="button" aria-label="Putar video" data-onclick="PrototypeApp.togglePlayVideo()">
                   <i class="ph ph-play" id="playIcon"></i>
                 </button>
 
@@ -1154,7 +1154,7 @@
   <!-- Modul ES otomatis ditunda (defer), jadi selesai dieksekusi sebelum
        DOMContentLoaded — tepat saat prototype-mobile.js membungkus ulang
        metode PrototypeApp. Urutan kedua baris ini jangan ditukar. -->
-  <script type="module" src="js/app.js?v=06eadf92"></script>
-  <script defer src="prototype-mobile.js?v=c46dc5e0"></script>
+  <script type="module" src="js/app.js?v=ac922521"></script>
+  <script defer src="prototype-mobile.js?v=d1584b80"></script>
 </body>
 </html>

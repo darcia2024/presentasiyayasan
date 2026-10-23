@@ -83,6 +83,16 @@
   .nilai { font-size: 14.5px; font-weight: 700; color: var(--teal-dark); margin-top: 2px; }
   .pesan-kosong { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
   .footer { margin-top: 20px; font-size: 10.5px; color: var(--text-muted); }
+  .form-kode input {
+    width: 100%; margin: 14px 0 10px; padding: 12px 14px;
+    border: 1.5px solid var(--border-color); border-radius: 12px;
+    font: inherit; font-size: 15px; text-align: center; letter-spacing: .04em;
+  }
+  .form-kode button {
+    width: 100%; padding: 12px; border: 0; border-radius: 12px;
+    background: var(--teal-primary); color: #FFFFFF;
+    font: inherit; font-size: 14px; font-weight: 800; cursor: pointer;
+  }
   [hidden] { display: none !important; }
 </style>
 </head>
@@ -105,6 +115,16 @@
     <div id="hasilKosong" class="pesan-kosong" hidden>
       Kode verifikasi tidak ditemukan, atau sertifikatnya belum/tidak pernah diterbitkan oleh yayasan. Kalau menurut Anda ini keliru, hubungi pengurus Yayasan Peradaban Islam Azhariyah.
     </div>
+
+    <div id="hasilGagal" class="pesan-kosong" hidden>
+      Pemeriksaan tidak bisa diselesaikan — kemungkinan koneksi internet terputus. Ini <strong>bukan</strong> berarti sertifikatnya palsu. Muat ulang halaman ini untuk mencoba lagi.
+    </div>
+
+    <form id="formKode" class="form-kode" method="get" action="verifikasi.html" hidden>
+      <p class="pesan-kosong">Pindai kode QR pada sertifikat, atau ketik kode verifikasi yang tercetak di bawahnya.</p>
+      <input name="kode" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Kode verifikasi" aria-label="Kode verifikasi" required>
+      <button type="submit">Periksa</button>
+    </form>
 
     <p class="footer">Halaman ini murni pembaca publik — tidak memerlukan dan tidak meminta Anda masuk (login).</p>
   </div>

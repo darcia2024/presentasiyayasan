@@ -541,7 +541,9 @@ html, body {
 /* Horizontal Course Sub-Tabs */
 .ref-sub-tabs-bar {
   display: flex;
-  gap: 24px;
+  /* 24px dulu: di laptop 1366px tab keempat ("Catatan & …") terpotong 40px
+     di bawah masker pudar. Tombolnya sudah ber-padding 12px tiap sisi. */
+  gap: 12px;
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 12px;
   margin-top: 6px;

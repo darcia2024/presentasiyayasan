@@ -411,6 +411,9 @@ const HiwarApp = (() => {
 
   function resetSimulator() {
     currentStepIdx = 0;
+    // Skor akhir dari putaran sebelumnya tidak boleh tertinggal di kepala
+    // halaman saat santri mulai lagi dari langkah 1.
+    document.getElementById('scoreDisplay').textContent = 'Belum ada';
     renderCurrentStep();
     showToast('Simulasi percakapan diatur ulang ke langkah 1.');
     playTone(520, 'sine', 0.1, 0.06);

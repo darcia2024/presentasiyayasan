@@ -1,6 +1,6 @@
 // PERISA AZHARIYAH — Halaman verifikasi publik sertifikat (verifikasi.html).
 // Dipindah dari skrip sebaris supaya CSP tidak butuh script-src
-// 'unsafe-inline' (audit 24 Okt 2026). Isinya tidak berubah.
+// 'unsafe-inline' (audit 24 Okt 2026).
 
 import { SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_TERKONFIGURASI } from './config.js';
 
@@ -14,10 +14,31 @@ function tampilkanTidakValid() {
   elKosong.hidden = false;
 }
 
+/*
+ * AUDIT 24 Okt 2026: dua keadaan di bawah dulu sama-sama jatuh ke
+ * "Tidak Ditemukan". Membuka halaman tanpa ?kode= memberi cap merah
+ * padahal belum ada yang diperiksa, dan sinyal putus saat memindai QR
+ * membuat sertifikat ASLI tampak palsu di depan orang tua.
+ */
+function tampilkanFormKode() {
+  elStatus.hidden = true;
+  document.getElementById('formKode').hidden = false;
+}
+
+function tampilkanGagalPeriksa() {
+  elStatus.className = 'status-badge loading';
+  elStatus.textContent = 'Belum Bisa Diperiksa';
+  document.getElementById('hasilGagal').hidden = false;
+}
+
 async function verifikasi() {
-  const kode = new URLSearchParams(window.location.search).get('kode');
-  if (!kode || !SUPABASE_TERKONFIGURASI) {
-    tampilkanTidakValid();
+  const kode = (new URLSearchParams(window.location.search).get('kode') || '').trim();
+  if (!kode) {
+    tampilkanFormKode();
+    return;
+  }
+  if (!SUPABASE_TERKONFIGURASI) {
+    tampilkanGagalPeriksa();
     return;
   }
 
@@ -26,7 +47,12 @@ async function verifikasi() {
     const { data, error } = await client.rpc('verifikasi_sertifikat', { p_kode: kode });
     const baris = Array.isArray(data) ? data[0] : data;
 
-    if (error || !baris) {
+    if (error) {
+      console.error('[verifikasi] RPC gagal:', error.message);
+      tampilkanGagalPeriksa();
+      return;
+    }
+    if (!baris) {
       tampilkanTidakValid();
       return;
     }
@@ -45,7 +71,7 @@ async function verifikasi() {
     elValid.hidden = false;
   } catch (e) {
     console.error('[verifikasi] gagal:', e);
-    tampilkanTidakValid();
+    tampilkanGagalPeriksa();
   }
 }
 

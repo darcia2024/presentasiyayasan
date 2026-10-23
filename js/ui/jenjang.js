@@ -241,9 +241,10 @@ export async function muatKontenJenjang(jenjang) {
     return;
   }
 
+  if (!hasil.pelajaranAktifPunyaVideo) sembunyikanVideoPelajaran();
   const [mufrodat] = await Promise.all([
     muatMufrodatPelajaran(hasil.pelajaranAktifId),
-    tampilkanVideoPelajaran(hasil.pelajaranAktifId),
+    hasil.pelajaranAktifPunyaVideo ? tampilkanVideoPelajaran(hasil.pelajaranAktifId) : null,
   ]);
   if (giliranSaya !== giliranTerakhir) return;
 

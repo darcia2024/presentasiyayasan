@@ -22,7 +22,7 @@ import { playTone, showToast } from './core/feedback.js';
 import { speakArabic, playAllMufrodatSequence } from './core/speech.js';
 import { toggleAccordion, bukaModul, tampilkanSilabusKosong } from './ui/syllabus.js';
 import { muatKontenJenjang } from './ui/jenjang.js';
-import { switchMainView, updateBottomNav } from './ui/router.js';
+import { switchMainView, updateBottomNav, ruteBerlaku } from './ui/router.js';
 import { togglePlayVideo, switchSubTab, bukaSubTab, claimGameXp } from './ui/course.js';
 import { filterPdfLibrary, closeDocReader } from './ui/library.js';
 import {
@@ -44,6 +44,9 @@ const PrototypeApp = {
   // Navigasi
   switchMainView,
   updateBottomNav,
+  // Dipakai prototype-mobile.js supaya judul besar & ?view= mengikuti layar
+  // yang benar-benar terbuka, bukan rute terkunci yang diminta.
+  ruteBerlaku,
 
   // Gerbang fase peluncuran. Diekspos karena prototype-mobile.js adalah
   // skrip biasa (bukan modul ES) sehingga tidak bisa mengimpor fase.js

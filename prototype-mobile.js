@@ -805,8 +805,8 @@
     /* --- switchMainView: judul besar, tab bar, animasi masuk ----------- */
     var baseSwitch = PrototypeApp.switchMainView;
     PrototypeApp.switchMainView = function (viewName) {
-      var key = viewName || 'beranda';
-      baseSwitch.apply(null, arguments);
+      var key = PrototypeApp.ruteBerlaku ? PrototypeApp.ruteBerlaku(viewName) : (viewName || 'beranda');
+      baseSwitch.call(null, key);
       currentView = key;
 
       if (isMobile()) {
