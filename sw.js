@@ -8,7 +8,7 @@
      • Endpoint /api/*               -> network-first + fallback cache terakhir
    ========================================================================== */
 
-const SW_VERSION   = 'perisa-v1.1.0-3b63c605';
+const SW_VERSION   = 'perisa-v1.1.0-74524aef';
 const SHELL_CACHE  = `${SW_VERSION}-shell`;
 const ASSET_CACHE  = `${SW_VERSION}-assets`;
 const CDN_CACHE    = `${SW_VERSION}-cdn`;
@@ -22,7 +22,7 @@ const SHELL_ASSETS = [
   '/index.html',
   '/prototype.css?v=e4c5d6e0',
   '/prototype-mobile.css?v=7605894a',
-  '/prototype-mobile.js?v=4b2ea651',
+  '/prototype-mobile.js?v=706bf587',
   '/js/aksi-klik.js?v=c3dbd164',
   '/js/app.js?v=c722eb51',
   '/js/core/feedback.js',

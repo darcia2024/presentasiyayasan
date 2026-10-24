@@ -997,14 +997,20 @@
     // js/ui/fase.js), jadi layar awalnya ikut bergeser ke materi kurikulum.
     var startView = (window.PrototypeApp && window.PrototypeApp.fiturTerkunci
       && window.PrototypeApp.fiturTerkunci('kelas-online')) ? 'kurikulum' : 'beranda';
+    var dariUrl = false;
     try {
       var q = new URLSearchParams(location.search).get('view');
-      if (q && VIEW_META[q]) startView = q;
+      if (q && VIEW_META[q]) { startView = q; dariUrl = true; }
     } catch (_) {}
 
     syncGreeting();
     if (typeof PrototypeApp !== 'undefined') {
-      PrototypeApp.switchMainView(startView);
+      // AUDIT 24 Okt 2026: tanpa ?view= layar awal dulu SELALU startView di
+      // atas, dan karena boot ini berjalan sesudah js/ui/auth.js, ia
+      // menimpa layar pendaratan per peran — di ponsel pengurus tidak pernah
+      // tiba di Dashboard Yayasan dan pengajar tidak di Dashboard Guru.
+      if (!dariUrl && PrototypeApp.keBeranda) PrototypeApp.keBeranda();
+      else PrototypeApp.switchMainView(startView);
     } else {
       paintLargeTitle(startView);
       syncTabBar(startView);
