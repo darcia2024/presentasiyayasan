@@ -105,6 +105,17 @@ function isAdminLogin() {
   return !!(sesi && sesi.akun?.akun_jenis === 'staff' && ['pengurus', 'superadmin'].includes(sesi.akun?.staff_peran));
 }
 
+/*
+ * Tab yang dibuka berikutnya. Diisi setelTabPanelBerikutnya() sebelum router
+ * membuka panel — tombol "Verifikasi Infaq" di Dashboard Yayasan harus
+ * mendarat di tab Infaq, bukan di Ringkasan lalu menyuruh pengurus mencari.
+ */
+let tabBerikutnya = null;
+
+export function setelTabPanelBerikutnya(tab) {
+  tabBerikutnya = TABS.some((t) => t.key === tab) ? tab : null;
+}
+
 /** Panggil sekali saat viewAdminPanel dibuka lewat router. */
 export async function bukaPengurusPanel() {
   const root = $('viewAdminPanel');
@@ -118,7 +129,8 @@ export async function bukaPengurusPanel() {
     root.appendChild(pesan);
     return;
   }
-  STATE.tab = 'ringkasan';
+  STATE.tab = tabBerikutnya || 'ringkasan';
+  tabBerikutnya = null;
   STATE.subLayar = null;
   STATE.kelasUntukRombongan = null;
   await render();

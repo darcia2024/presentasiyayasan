@@ -12,6 +12,7 @@
 
 import { getSupabaseClient } from './supabase-client.js';
 import { normalizeNomorWa } from './phone.js';
+import { SEMATAN_EMBED, embedBelumTersedia } from './onedrive.js';
 
 /**
  * Tetapkan / atur ulang PIN login sebuah akun.
@@ -68,6 +69,143 @@ export async function ambilRingkasanPengurus() {
     sertifikatDiterbitkan: sertifikat.count || 0,
     infaqPending: infaqPending.count || 0,
     waliTerdaftar: wali.count || 0,
+  };
+}
+
+/* -------------------------------------------------------- DASHBOARD YAYASAN */
+
+/** Tanggal "hari ini" menurut WIB, YYYY-MM-DD — sama dengan _shared/waktu.ts. */
+function tanggalWib(geserHari = 0) {
+  const d = new Date(Date.now() + geserHari * 86400000);
+  return d.toLocaleDateString('en-CA', { timeZone: 'Asia/Jakarta' });
+}
+
+/**
+ * Seluruh angka Dashboard Yayasan dalam SATU pemanggilan (24 Okt 2026).
+ *
+ * Satu fungsi, bukan tiap kartu memanggil sendiri-sendiri: kartu-kartu itu
+ * harus menceritakan keadaan yang SAMA. Kalau "Kelas" dimuat pukul 10.00 dan
+ * "Perlu Perhatian" pukul 10.01, pengurus bisa melihat "semua kelas punya
+ * pengajar" di satu kartu dan "1 kelas tanpa pengajar" di kartu sebelahnya.
+ *
+ * Setiap kueri berdiri sendiri: satu tabel yang gagal (mis. migrasi belum
+ * dijalankan) mengosongkan bagiannya saja dan dicatat di `galat`, bukan
+ * menjatuhkan seluruh dashboard.
+ *
+ * Yang dihitung di sini hanya yang memang dibaca RLS admin (auth_is_admin):
+ * staff, kelas, pertemuan, infaq, sertifikat, dan modul/pelajaran berstatus
+ * apa pun. Volume yayasan ini ratusan baris — di bawah batas 1000 baris
+ * PostgREST — kecuali santri, yang karena itu hanya dihitung (head: true).
+ */
+export async function ambilDashboardYayasan(jenjangDicakup) {
+  const client = getSupabaseClient();
+  const galat = [];
+  const hasil = (nama, { data, count, error }) => {
+    if (error) {
+      console.error(`[pengurus-client] dashboard: ${nama} gagal:`, error.message);
+      galat.push(nama);
+      return { data: null, count: null };
+    }
+    return { data, count };
+  };
+  const hitung = (q) => q.select('id', { count: 'exact', head: true });
+
+  const muatModul = (kolomPelajaran) => client
+    .from('modul')
+    .select(`id, status, jenjang, pelajaran(${kolomPelajaran})`)
+    .in('jenjang', jenjangDicakup);
+
+  const [
+    santriAktif, santriTanpaKelas, santriBeasiswa, wali,
+    staff, kelas, pertemuan30, pertemuanTotal,
+    infaqPending, infaqTerverifikasi, sertifikatTotal, sertifikatTerakhir, modulAwal,
+  ] = await Promise.all([
+    hitung(client.from('santri')).eq('status', 'aktif'),
+    hitung(client.from('santri')).eq('status', 'aktif').is('kelas_id', null),
+    hitung(client.from('santri')).eq('status', 'aktif').eq('beasiswa', true),
+    hitung(client.from('wali')),
+    client.from('staff').select('id, nama, peran, kategori, aktif'),
+    client.from('kelas').select('id, nama, jenjang, pengajar_id').order('nama'),
+    client.from('pertemuan').select('id, kelas_id, tanggal')
+      .gte('tanggal', tanggalWib(-30)).order('tanggal', { ascending: false }),
+    hitung(client.from('pertemuan')),
+    client.from('infaq').select('id, jumlah').eq('status', 'pending'),
+    hitung(client.from('infaq')).eq('status', 'terverifikasi'),
+    hitung(client.from('sertifikat')),
+    client.from('sertifikat').select('diterbitkan_at, level, santri:santri_id(nama)')
+      .order('diterbitkan_at', { ascending: false }).limit(1),
+    muatModul(`id, ppt_path, ${SEMATAN_EMBED}`),
+  ]);
+
+  // Migrasi link embed belum dijalankan: hitung cakupan dari berkas saja.
+  const modul = embedBelumTersedia(modulAwal.error) ? await muatModul('id, ppt_path') : modulAwal;
+
+  const daftarStaffRow = hasil('guru', staff).data || [];
+  const daftarKelasRow = hasil('kelas', kelas).data || [];
+  const daftarPertemuan = hasil('pertemuan', pertemuan30).data || [];
+  const daftarInfaq = hasil('infaq', infaqPending).data || [];
+  const daftarModul = hasil('kurikulum', modul).data || [];
+
+  const pengajarAktif = daftarStaffRow.filter((s) => s.aktif && s.peran === 'pengajar');
+  const namaStaff = new Map(daftarStaffRow.map((s) => [s.id, s.nama]));
+  const namaKelas = new Map(daftarKelasRow.map((k) => [k.id, k.nama]));
+
+  const batas7 = tanggalWib(-7);
+  const batas14 = tanggalWib(-14);
+  const kelasAktif14 = new Set(daftarPertemuan.filter((p) => p.tanggal >= batas14).map((p) => p.kelas_id));
+
+  const semuaBab = daftarModul.flatMap((m) => m.pelajaran || []);
+  const babBerPpt = semuaBab.filter((p) => p.ppt_path || p.ppt_embed?.url).length;
+
+  const sertTerakhir = hasil('sertifikat', sertifikatTerakhir).data?.[0] || null;
+
+  return {
+    galat,
+    santri: {
+      aktif: hasil('santri', santriAktif).count ?? 0,
+      tanpaKelas: hasil('santri', santriTanpaKelas).count ?? 0,
+      beasiswa: hasil('santri', santriBeasiswa).count ?? 0,
+      wali: hasil('wali', wali).count ?? 0,
+    },
+    guru: {
+      aktif: pengajarAktif.length,
+      internal: pengajarAktif.filter((s) => s.kategori !== 'eksternal').length,
+      mitra: pengajarAktif.filter((s) => s.kategori === 'eksternal').length,
+    },
+    kelas: {
+      total: daftarKelasRow.length,
+      tanpaPengajar: daftarKelasRow.filter((k) => !k.pengajar_id).map((k) => k.nama),
+      // Hanya kelas yang SUDAH punya pengajar: kelas tanpa pengajar sudah
+      // muncul sebagai butirnya sendiri, dan menyebutnya dua kali cuma
+      // memperpanjang daftar tanpa menambah apa pun yang bisa dikerjakan.
+      senyap14: daftarKelasRow.filter((k) => k.pengajar_id && !kelasAktif14.has(k.id)).map((k) => k.nama),
+    },
+    pertemuan: {
+      total: hasil('pertemuan', pertemuanTotal).count ?? 0,
+      pekanIni: daftarPertemuan.filter((p) => p.tanggal >= batas7).length,
+      terbaru: daftarPertemuan.slice(0, 5).map((p) => ({
+        tanggal: p.tanggal,
+        kelas: namaKelas.get(p.kelas_id) || 'Kelas terhapus',
+        pengajar: namaStaff.get(daftarKelasRow.find((k) => k.id === p.kelas_id)?.pengajar_id) || null,
+      })),
+    },
+    infaq: {
+      pending: daftarInfaq.length,
+      totalPending: daftarInfaq.reduce((t, i) => t + Number(i.jumlah || 0), 0),
+      terverifikasi: hasil('infaq', infaqTerverifikasi).count ?? 0,
+    },
+    sertifikat: {
+      total: hasil('sertifikat', sertifikatTotal).count ?? 0,
+      terakhir: sertTerakhir
+        ? { nama: sertTerakhir.santri?.nama || '—', level: sertTerakhir.level, tanggal: sertTerakhir.diterbitkan_at }
+        : null,
+    },
+    kurikulum: {
+      modulTerbit: daftarModul.filter((m) => m.status === 'terbit').length,
+      modulDraf: daftarModul.filter((m) => m.status !== 'terbit').length,
+      bab: semuaBab.length,
+      babBerPpt,
+    },
   };
 }
 

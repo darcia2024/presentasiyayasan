@@ -22,7 +22,7 @@ import { playTone, showToast } from './core/feedback.js';
 import { speakArabic, playAllMufrodatSequence } from './core/speech.js';
 import { toggleAccordion, bukaModul, tampilkanSilabusKosong } from './ui/syllabus.js';
 import { muatKontenJenjang } from './ui/jenjang.js';
-import { switchMainView, updateBottomNav, ruteBerlaku } from './ui/router.js';
+import { switchMainView, updateBottomNav, ruteBerlaku, bukaPanel, bukaStudioDi } from './ui/router.js';
 import { togglePlayVideo, switchSubTab, bukaSubTab, claimGameXp } from './ui/course.js';
 import { filterPdfLibrary, closeDocReader } from './ui/library.js';
 import {
@@ -37,7 +37,7 @@ import {
   belumTersedia,
   salinTautanMateri
 } from './ui/shell.js';
-import { initAuthGate, logout, terapkanAturanTampilan } from './ui/auth.js';
+import { initAuthGate, logout, terapkanAturanTampilan, arahkanKeDashboard } from './ui/auth.js';
 import { fiturTerkunci } from './ui/fase.js';
 
 const PrototypeApp = {
@@ -47,6 +47,11 @@ const PrototypeApp = {
   // Dipakai prototype-mobile.js supaya judul besar & ?view= mengikuti layar
   // yang benar-benar terbuka, bukan rute terkunci yang diminta.
   ruteBerlaku,
+  // Tindak lanjut Dashboard Yayasan: buka tab panel / layar Studio tertentu.
+  bukaPanel,
+  bukaStudioDi,
+  // Logo & tombol "Beranda": layar pertama sesuai peran, bukan satu rute tetap.
+  keBeranda: arahkanKeDashboard,
 
   // Gerbang fase peluncuran. Diekspos karena prototype-mobile.js adalah
   // skrip biasa (bukan modul ES) sehingga tidak bisa mengimpor fase.js

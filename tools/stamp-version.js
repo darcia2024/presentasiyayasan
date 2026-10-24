@@ -157,6 +157,7 @@ const SHELL_ASSETS = [
   '/js/core/guru-client.js',
   '/js/ui/guru-dashboard.js',
   '/js/ui/pengurus-panel.js',
+  '/js/ui/dashboard-yayasan.js',
   '/js/ui/sertifikat-admin.js',
   '/js/ui/sertifikat-santri.js',
   /* Fase C3 — Pemutar PPT (link embed OneDrive). Diimpor syllabus.js,

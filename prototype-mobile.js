@@ -271,7 +271,10 @@
     piagam:   { icon: 'ph-certificate',  label: 'Piagam Sanad',   act: 'PrototypeApp.openCertificate()', gold: true },
     arsip:    { icon: 'ph-files',        label: 'Semua Dokumen',  act: "PrototypeApp.switchMainView('modul-pdf')" },
     sinkron:  { icon: 'ph-arrows-clockwise', label: 'Segarkan Data', act: 'PerisaMobile.refresh()' },
-    santri:   { icon: 'ph-users-three',  label: 'Daftar Santri',  act: "PrototypeApp.switchMainView('admin')" }
+    santri:   { icon: 'ph-users-three',  label: 'Daftar Santri',  act: "PrototypeApp.bukaPanel('santri')" },
+    infaq:    { icon: 'ph-hand-coins',   label: 'Infaq',          act: "PrototypeApp.bukaPanel('infaq')" },
+    laporan:  { icon: 'ph-chart-bar',    label: 'Laporan Kelas',  act: "PrototypeApp.bukaPanel('laporan')" },
+    ppt:      { icon: 'ph-presentation-chart', label: 'Materi PPT', act: "PrototypeApp.bukaStudioDi('materi-ppt')" }
   };
 
   var VIEW_META = {
@@ -312,7 +315,7 @@
       title: 'Panel Pengurus',
       sub: 'Tata kelola santri, verifikasi infaq, dan sertifikat sanad.',
       bar: 'Pengurus',
-      chips: ['santri', 'sinkron', 'piagam', 'arsip']
+      chips: ['santri', 'infaq', 'laporan', 'ppt']
     },
     /* Dua layar di bawah dulu tidak punya entri sama sekali, jadi judul
        besarnya jatuh ke cadangan VIEW_META.kurikulum: wali yang membuka
@@ -330,7 +333,15 @@
       title: 'Susun Modul',
       sub: 'Menyusun modul, pelajaran, dan mufrodat untuk santri.',
       bar: 'Studio',
-      chips: ['arsip', 'sinkron', 'lanjut']
+      chips: ['ppt', 'arsip', 'lanjut']
+    },
+    /* Judulnya ditimpa syncGreeting() dengan nama pengurus yang login. */
+    'dashboard-yayasan': {
+      eyebrow: 'Dashboard Yayasan',
+      title: 'Assalamu\'alaikum!',
+      sub: 'Yang perlu ditindaklanjuti hari ini dan ringkasan setiap fitur.',
+      bar: 'Dashboard',
+      chips: ['infaq', 'ppt', 'santri', 'laporan']
     }
   };
 
@@ -403,7 +414,8 @@
 
     var first = teks.split(' ')[0] || 'Santri';
     VIEW_META.beranda.title = 'Ahlan wa Sahlan, ' + first + '!';
-    if (currentView === 'beranda') paintLargeTitle('beranda');
+    VIEW_META['dashboard-yayasan'].title = 'Assalamu\'alaikum, ' + first + '!';
+    if (currentView === 'beranda' || currentView === 'dashboard-yayasan') paintLargeTitle(currentView);
   }
 
   var lastScrollY = 0;
@@ -817,11 +829,12 @@
 
         var viewEl = document.querySelector(
           '#viewBerandaUtama, #viewCoursePlayer, #viewModulPdf, #viewAdminPanel,' +
-          '#viewWaliDashboard, #viewStudioKurikulum'
+          '#viewWaliDashboard, #viewStudioKurikulum, #viewGuruDashboard, #viewDashboardYayasan'
         );
         var visible = [
           $('viewBerandaUtama'), $('viewCoursePlayer'), $('viewModulPdf'),
-          $('viewAdminPanel'), $('viewWaliDashboard'), $('viewStudioKurikulum')
+          $('viewAdminPanel'), $('viewWaliDashboard'), $('viewStudioKurikulum'),
+          $('viewGuruDashboard'), $('viewDashboardYayasan')
         ].filter(function (el) { return el && el.style.display !== 'none'; })[0] || viewEl;
 
         if (visible) {

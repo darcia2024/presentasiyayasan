@@ -8,7 +8,7 @@
      • Endpoint /api/*               -> network-first + fallback cache terakhir
    ========================================================================== */
 
-const SW_VERSION   = 'perisa-v1.1.0-16acbd3f';
+const SW_VERSION   = 'perisa-v1.1.0-3b63c605';
 const SHELL_CACHE  = `${SW_VERSION}-shell`;
 const ASSET_CACHE  = `${SW_VERSION}-assets`;
 const CDN_CACHE    = `${SW_VERSION}-cdn`;
@@ -21,10 +21,10 @@ const SHELL_ASSETS = [
   '/',
   '/index.html',
   '/prototype.css?v=e4c5d6e0',
-  '/prototype-mobile.css?v=1d193582',
-  '/prototype-mobile.js?v=d1584b80',
+  '/prototype-mobile.css?v=7605894a',
+  '/prototype-mobile.js?v=4b2ea651',
   '/js/aksi-klik.js?v=c3dbd164',
-  '/js/app.js?v=ac922521',
+  '/js/app.js?v=c722eb51',
   '/js/core/feedback.js',
   '/js/core/speech.js',
   '/js/ui/syllabus.js',
@@ -44,7 +44,7 @@ const SHELL_ASSETS = [
   '/js/core/csv.js',
   '/js/core/content-loader.js',
   '/js/ui/studio.js',
-  '/js/ui/studio.css?v=7322aae6',
+  '/js/ui/studio.css?v=2cf2ba59',
   '/js/ui/mufrodat-cards.js',
   '/js/core/video-client.js',
   '/js/ui/video-player.js',
@@ -61,6 +61,7 @@ const SHELL_ASSETS = [
   '/js/core/guru-client.js',
   '/js/ui/guru-dashboard.js',
   '/js/ui/pengurus-panel.js',
+  '/js/ui/dashboard-yayasan.js',
   '/js/ui/sertifikat-admin.js',
   '/js/ui/sertifikat-santri.js',
   '/js/core/onedrive.js',
@@ -169,6 +170,20 @@ async function cacheFirst(request, cacheName) {
   }
 }
 
+/* Untuk berkas aplikasi: jaringan dulu, cache hanya saat luring. Beda
+   dengan networkFirst() di bawah: kegagalan berarti galat jaringan biasa,
+   bukan balasan JSON milik API. */
+async function networkFirstAset(request, cacheName) {
+  const cache = await caches.open(cacheName);
+  try {
+    const res = await fetch(request);
+    if (res && res.ok) cache.put(request, res.clone());
+    return res;
+  } catch (_) {
+    return (await cache.match(request)) || Response.error();
+  }
+}
+
 async function networkFirst(request, cacheName) {
   const cache = await caches.open(cacheName);
   try {
@@ -241,9 +256,21 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  /* 5. CSS / JS / manifest -> stale-while-revalidate */
+  /* 5. CSS / JS / manifest.
+        AUDIT 24 Okt 2026: dulu SEMUANYA stale-while-revalidate. Modul ES di
+        js/ dimuat TANPA ?v=, jadi pada muatan pertama sesudah rilis app.js
+        yang baru (ber-?v=, belum ada di cache) dipasangkan dengan, mis.,
+        js/ui/auth.js LAMA dari cache. Begitu rilis itu menambah satu export,
+        impornya gagal — SyntaxError, seluruh aplikasi mati sampai halaman
+        dimuat ulang.
+        - URL ber-?v= (hash isi, dicap tools/stamp-version.js) tidak pernah
+          berubah isinya -> cache-first.
+        - Sisanya -> jaringan dulu supaya satu muatan selalu memakai satu
+          versi; cache tetap jadi cadangan saat luring. */
   if (isShellAsset(url)) {
-    event.respondWith(staleWhileRevalidate(request, SHELL_CACHE));
+    event.respondWith(url.searchParams.has('v')
+      ? cacheFirst(request, SHELL_CACHE)
+      : networkFirstAset(request, SHELL_CACHE));
     return;
   }
 

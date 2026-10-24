@@ -10,14 +10,16 @@ import { playTone, showToast } from '../core/feedback.js';
 import { sorotModulAktif } from './syllabus.js';
 import { muatBeranda } from './beranda.js';
 import { remahKurikulum } from './jenjang.js';
-import { bukaStudio } from './studio.js';
+import { bukaStudio, setelLayarStudioBerikutnya } from './studio.js';
 import { muatDanRenderDokumen } from './dokumen-viewer.js';
 import { renderWaliDashboard } from './wali-dashboard.js';
-import { bukaPengurusPanel } from './pengurus-panel.js';
+import { bukaPengurusPanel, setelTabPanelBerikutnya } from './pengurus-panel.js';
 import { bukaGuruDashboard } from './guru-dashboard.js';
+import { bukaDashboardYayasan } from './dashboard-yayasan.js';
 import { fiturTerkunci } from './fase.js';
 
 const ALL_VIEWS = [
+  'viewDashboardYayasan',
   'viewGuruDashboard',
   'viewWaliDashboard',
   'viewBerandaUtama',
@@ -29,6 +31,13 @@ const ALL_VIEWS = [
 
 /** Peta rute: id tampilan, id menu sidebar, remah roti, pesan, dan nada. */
 const ROUTES = {
+  'dashboard-yayasan': {
+    view: 'viewDashboardYayasan',
+    nav: 'nav-dashboard-yayasan',
+    crumb: ['Yayasan PERISA', 'Dashboard', 'Ringkasan & Tindak Lanjut'],
+    toast: 'Membuka Dashboard Yayasan',
+    tone: 560
+  },
   'wali-dashboard': {
     view: 'viewWaliDashboard',
     nav: 'nav-wali-dashboard',
@@ -149,6 +158,10 @@ export function switchMainView(viewName) {
   showToast(route.toast);
   playTone(route.tone, 'sine', 0.1, 0.06);
 
+  if (viewName === 'dashboard-yayasan') {
+    // Async, tidak ditunggu — kerangkanya digambar seketika, angkanya menyusul.
+    bukaDashboardYayasan();
+  }
   if (viewName === 'admin') {
     // Sama seperti wali-dashboard/studio-kurikulum: async, tidak ditunggu.
     bukaPengurusPanel();
@@ -179,6 +192,21 @@ export function switchMainView(viewName) {
     // terbit, tidak menunda switchMainView menunggu jaringan.
     muatDanRenderDokumen();
   }
+}
+
+/*
+ * Buka Panel Pengurus / Studio langsung di bagian tertentu — dipakai tombol
+ * tindak lanjut Dashboard Yayasan. Lewat window.PrototypeApp supaya
+ * pembungkus versi mobile (judul besar, tab bar) ikut berjalan.
+ */
+export function bukaPanel(tab) {
+  setelTabPanelBerikutnya(tab);
+  window.PrototypeApp.switchMainView('admin');
+}
+
+export function bukaStudioDi(layar) {
+  setelLayarStudioBerikutnya(layar);
+  window.PrototypeApp.switchMainView('studio-kurikulum');
 }
 
 /** Sorot tab yang aktif pada bilah navigasi bawah versi mobile. */

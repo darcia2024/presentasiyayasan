@@ -61,9 +61,9 @@
   <!-- Fase 1: Gerbang Login -->
   <link rel="stylesheet" href="js/ui/auth.css?v=27452c6a">
   <!-- Fase 2: Studio Kurikulum -->
-  <link rel="stylesheet" href="js/ui/studio.css?v=7322aae6">
+  <link rel="stylesheet" href="js/ui/studio.css?v=2cf2ba59">
   <!-- Native Mobile / PWA Layer -->
-  <link rel="stylesheet" href="prototype-mobile.css?v=1d193582">
+  <link rel="stylesheet" href="prototype-mobile.css?v=7605894a">
 </head>
 <body class="tanpa-bar-demo">
 
@@ -190,7 +190,7 @@
       </button>
 
       <!-- Prominent Brand Title -->
-      <div class="mobile-brand-wrap" data-onclick="PrototypeApp.switchMainView('beranda')" style="cursor: pointer;">
+      <div class="mobile-brand-wrap" data-onclick="PrototypeApp.keBeranda()" style="cursor: pointer;">
         <img src="logo-perisa-emblem.png?v=d184a56f" alt="PERISA">
         <div>
           <div class="mobile-brand-text">PERISA Azhariyah</div>
@@ -240,6 +240,35 @@
       <!-- Navigasi drawer — cerminan sidebar desktop, kelompok yang sama.
            "Materi Saya" (#drawerModulList) diisi js/ui/syllabus.js. -->
       <ul class="ref-nav-list" style="margin-top: 4px;">
+
+        <!-- Kelompok staff: dibuka js/ui/auth.js hanya untuk sesi staff —
+             di atas, sama seperti sidebar desktop. -->
+        <li class="nav-group-label" id="navGroupPengurusMobile" style="display: none;">Pengurus Yayasan</li>
+        <li id="navDashboardYayasanItemMobile" style="display: none;">
+          <a class="ref-nav-item" data-view="dashboard-yayasan" data-onclick="PrototypeApp.switchMainView('dashboard-yayasan'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-gauge"></i>
+            <span>Dashboard Yayasan</span>
+          </a>
+        </li>
+        <li id="navAdminPanelItemMobile" style="display: none;">
+          <a class="ref-nav-item" data-view="admin" data-onclick="PrototypeApp.switchMainView('admin'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-shield-check"></i>
+            <span>Panel Otoritas Yayasan</span>
+          </a>
+        </li>
+        <li id="navStudioKurikulumItemMobile" style="display: none;">
+          <a class="ref-nav-item" data-view="studio-kurikulum" data-onclick="PrototypeApp.switchMainView('studio-kurikulum'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-pencil-simple-line"></i>
+            <span>Studio Kurikulum</span>
+          </a>
+        </li>
+        <li class="nav-group-label" id="navGroupGuruMobile" style="display: none;">Portal Guru</li>
+        <li id="navGuruDashboardItemMobile" style="display: none;">
+          <a class="ref-nav-item" data-view="guru-dashboard" data-onclick="PrototypeApp.switchMainView('guru-dashboard'); PrototypeApp.toggleMobileDrawer();">
+            <i class="ph ph-clipboard-text"></i>
+            <span>Dashboard Guru</span>
+          </a>
+        </li>
 
         <li class="nav-group-label">Portal</li>
         <!-- Hanya terlihat saat sesi login WALI aktif — lihat js/ui/auth.js -->
@@ -292,32 +321,10 @@
             <span>Modul &amp; Silabus PDF</span>
           </a>
         </li>
-        <li>
+        <li class="khusus-santri">
           <a class="ref-nav-item" data-onclick="PrototypeApp.toggleMobileDrawer(); PrototypeApp.openCertificate();">
             <i class="ph ph-certificate" style="color: var(--gold-dark);"></i>
             <span>Piagam Kelulusan Sanad</span>
-          </a>
-        </li>
-
-        <!-- Kelompok pengurus: dibuka js/ui/auth.js hanya untuk sesi staff. -->
-        <li class="nav-group-label" id="navGroupGuruMobile" style="display: none;">Portal Guru</li>
-        <li id="navGuruDashboardItemMobile" style="display: none;">
-          <a class="ref-nav-item" data-view="guru-dashboard" data-onclick="PrototypeApp.switchMainView('guru-dashboard'); PrototypeApp.toggleMobileDrawer();">
-            <i class="ph ph-clipboard-text"></i>
-            <span>Dashboard Guru</span>
-          </a>
-        </li>
-        <li class="nav-group-label" id="navGroupPengurusMobile" style="display: none;">Pengurus Yayasan</li>
-        <li id="navAdminPanelItemMobile" style="display: none;">
-          <a class="ref-nav-item" data-view="admin" data-onclick="PrototypeApp.switchMainView('admin'); PrototypeApp.toggleMobileDrawer();">
-            <i class="ph ph-shield-check"></i>
-            <span>Panel Otoritas Yayasan</span>
-          </a>
-        </li>
-        <li id="navStudioKurikulumItemMobile" style="display: none;">
-          <a class="ref-nav-item" data-view="studio-kurikulum" data-onclick="PrototypeApp.switchMainView('studio-kurikulum'); PrototypeApp.toggleMobileDrawer();">
-            <i class="ph ph-pencil-simple-line"></i>
-            <span>Studio Kurikulum</span>
           </a>
         </li>
       </ul>
@@ -434,6 +441,36 @@
            ============================================================ -->
       <ul class="ref-nav-list">
 
+        <!-- Kelompok staff: dibuka js/ui/auth.js hanya untuk sesi staff.
+             Di ATAS menu belajar sejak 24 Okt 2026 — bagi pengurus, Dashboard
+             Yayasan adalah layar utamanya, bukan butir terakhir di bawah. -->
+        <li class="nav-group-label" id="navGroupPengurus" style="display: none;">Pengurus Yayasan</li>
+        <li id="navDashboardYayasanItem" style="display: none;">
+          <a class="ref-nav-item" id="nav-dashboard-yayasan" data-onclick="PrototypeApp.switchMainView('dashboard-yayasan')">
+            <i class="ph ph-gauge"></i>
+            <span>Dashboard Yayasan</span>
+          </a>
+        </li>
+        <li id="navAdminPanelItem" style="display: none;">
+          <a class="ref-nav-item" id="nav-admin-panel" data-onclick="PrototypeApp.switchMainView('admin')">
+            <i class="ph ph-shield-check"></i>
+            <span>Panel Otoritas Yayasan</span>
+          </a>
+        </li>
+        <li id="navStudioKurikulumItem" style="display: none;">
+          <a class="ref-nav-item" id="nav-studio-kurikulum" data-onclick="PrototypeApp.switchMainView('studio-kurikulum')">
+            <i class="ph ph-pencil-simple-line"></i>
+            <span>Studio Kurikulum</span>
+          </a>
+        </li>
+        <li class="nav-group-label" id="navGroupGuru" style="display: none;">Portal Guru</li>
+        <li id="navGuruDashboardItem" style="display: none;">
+          <a class="ref-nav-item" id="nav-guru-dashboard" data-onclick="PrototypeApp.switchMainView('guru-dashboard')">
+            <i class="ph ph-clipboard-text"></i>
+            <span>Dashboard Guru</span>
+          </a>
+        </li>
+
         <li class="nav-group-label">Portal</li>
         <!-- Hanya terlihat saat sesi login WALI aktif — lihat js/ui/auth.js -->
         <li id="navWaliDashboardItem" data-terkunci="kelas-online" style="display: none;">
@@ -491,34 +528,13 @@
             <span>Modul &amp; Silabus PDF</span>
           </a>
         </li>
-        <li>
+        <li class="khusus-santri">
           <a class="ref-nav-item" id="nav-piagam" data-onclick="PrototypeApp.openCertificate()">
             <i class="ph ph-certificate" style="color: var(--gold-dark);"></i>
             <span>Piagam Kelulusan Sanad</span>
           </a>
         </li>
 
-        <!-- Kelompok pengurus: dibuka js/ui/auth.js hanya untuk sesi staff. -->
-        <li class="nav-group-label" id="navGroupGuru" style="display: none;">Portal Guru</li>
-        <li id="navGuruDashboardItem" style="display: none;">
-          <a class="ref-nav-item" id="nav-guru-dashboard" data-onclick="PrototypeApp.switchMainView('guru-dashboard')">
-            <i class="ph ph-clipboard-text"></i>
-            <span>Dashboard Guru</span>
-          </a>
-        </li>
-        <li class="nav-group-label" id="navGroupPengurus" style="display: none;">Pengurus Yayasan</li>
-        <li id="navAdminPanelItem" style="display: none;">
-          <a class="ref-nav-item" id="nav-admin-panel" data-onclick="PrototypeApp.switchMainView('admin')">
-            <i class="ph ph-shield-check"></i>
-            <span>Panel Otoritas Yayasan</span>
-          </a>
-        </li>
-        <li id="navStudioKurikulumItem" style="display: none;">
-          <a class="ref-nav-item" id="nav-studio-kurikulum" data-onclick="PrototypeApp.switchMainView('studio-kurikulum')">
-            <i class="ph ph-pencil-simple-line"></i>
-            <span>Studio Kurikulum</span>
-          </a>
-        </li>
       </ul>
 
       <!-- Bottom Sidebar Links -->
@@ -959,6 +975,10 @@
            berkas itu untuk struktur data, bukan di sini. -->
       <div id="viewAdminPanel" style="display: none; width: 100%;"></div>
 
+      <!-- 24 Okt 2026: layar pertama pengurus & superadmin. Dirender
+           sepenuhnya oleh js/ui/dashboard-yayasan.js. -->
+      <div id="viewDashboardYayasan" style="display: none; width: 100%;"></div>
+
       <!-- Fase D: dirender sepenuhnya oleh js/ui/guru-dashboard.js — lihat
            berkas itu untuk struktur layarnya, bukan di sini. -->
       <div id="viewGuruDashboard" style="display: none; width: 100%;">
@@ -987,27 +1007,47 @@
        5. NATIVE MOBILE BOTTOM NAVIGATION BAR
        ============================================================ -->
   <nav class="mobile-bottom-nav" id="mobileBottomNav">
-    <a class="bottom-nav-item active" id="bnav-beranda" data-terkunci="kelas-online" data-onclick="PrototypeApp.switchMainView('beranda'); PrototypeApp.updateBottomNav('beranda');">
+    <!-- 24 Okt 2026: tab bar per peran. .khusus-santri tampil untuk semua
+         KECUALI staff; .khusus-admin hanya untuk pengurus/superadmin
+         (body[data-peran], disetel js/ui/auth.js). Tetap lima tab supaya
+         tombol tengah tetap di tengah untuk kedua peran. -->
+    <a class="bottom-nav-item active khusus-santri" id="bnav-beranda" data-terkunci="kelas-online" data-onclick="PrototypeApp.switchMainView('beranda'); PrototypeApp.updateBottomNav('beranda');">
       <i class="ph ph-squares-four"></i>
       <span>Beranda</span>
     </a>
-    <a class="bottom-nav-item" id="bnav-modul-pdf" data-onclick="PrototypeApp.switchMainView('modul-pdf'); PrototypeApp.updateBottomNav('modul-pdf');">
+    <a class="bottom-nav-item khusus-admin" id="bnav-dashboard-yayasan" data-onclick="PrototypeApp.switchMainView('dashboard-yayasan');">
+      <i class="ph ph-gauge"></i>
+      <span>Dashboard</span>
+    </a>
+    <a class="bottom-nav-item khusus-santri" id="bnav-modul-pdf" data-onclick="PrototypeApp.switchMainView('modul-pdf'); PrototypeApp.updateBottomNav('modul-pdf');">
       <i class="ph ph-book-open-text"></i>
       <span>Silabus</span>
+    </a>
+    <a class="bottom-nav-item khusus-admin" id="bnav-admin" data-onclick="PrototypeApp.switchMainView('admin');">
+      <i class="ph ph-shield-check"></i>
+      <span>Panel</span>
     </a>
     <a class="bottom-nav-item m-tab-center" id="bnav-kurikulum" data-onclick="PrototypeApp.switchMainView('kurikulum'); PrototypeApp.updateBottomNav('kurikulum');">
       <i class="ph ph-graduation-cap"></i>
       <span>Belajar</span>
     </a>
-    <a href="game2d.html" class="bottom-nav-item" id="bnav-suara">
+    <a href="game2d.html" class="bottom-nav-item khusus-santri" id="bnav-suara">
       <i class="ph ph-microphone"></i>
       <span>Suara</span>
     </a>
+    <a class="bottom-nav-item khusus-admin" id="bnav-studio-kurikulum" data-onclick="PrototypeApp.switchMainView('studio-kurikulum');">
+      <i class="ph ph-pencil-simple-line"></i>
+      <span>Studio</span>
+    </a>
     <!-- Tab kelima menjaga tombol Belajar tetap di tengah. Dulu "AI Asisten",
          dihapus 11 September 2026 bersama fiturnya. -->
-    <a class="bottom-nav-item" id="bnav-piagam" data-onclick="PrototypeApp.openCertificate()">
+    <a class="bottom-nav-item khusus-santri" id="bnav-piagam" data-onclick="PrototypeApp.openCertificate()">
       <i class="ph ph-certificate"></i>
       <span>Piagam</span>
+    </a>
+    <a class="bottom-nav-item khusus-admin" id="bnav-laporan" data-onclick="PrototypeApp.bukaPanel('laporan');">
+      <i class="ph ph-chart-bar"></i>
+      <span>Laporan</span>
     </a>
   </nav>
 
@@ -1154,7 +1194,7 @@
   <!-- Modul ES otomatis ditunda (defer), jadi selesai dieksekusi sebelum
        DOMContentLoaded — tepat saat prototype-mobile.js membungkus ulang
        metode PrototypeApp. Urutan kedua baris ini jangan ditukar. -->
-  <script type="module" src="js/app.js?v=ac922521"></script>
-  <script defer src="prototype-mobile.js?v=d1584b80"></script>
+  <script type="module" src="js/app.js?v=c722eb51"></script>
+  <script defer src="prototype-mobile.js?v=4b2ea651"></script>
 </body>
 </html>

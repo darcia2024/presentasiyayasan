@@ -367,8 +367,22 @@ function terapkanVisibilitasStaff() {
   pasang(['navGroupGuru', 'navGuruDashboardItem',
           'navGroupGuruMobile', 'navGuruDashboardItemMobile'], guru);
 
-  pasang(['navGroupPengurus', 'navAdminPanelItem', 'navStudioKurikulumItem',
-          'navGroupPengurusMobile', 'navAdminPanelItemMobile', 'navStudioKurikulumItemMobile'], admin);
+  pasang(['navGroupPengurus', 'navDashboardYayasanItem', 'navAdminPanelItem', 'navStudioKurikulumItem',
+          'navGroupPengurusMobile', 'navDashboardYayasanItemMobile', 'navAdminPanelItemMobile',
+          'navStudioKurikulumItemMobile'], admin);
+
+  /*
+   * Peran di <body> (24 Okt 2026) — dibaca CSS untuk memisahkan menu per
+   * peran: tab bar bawah mobile pengurus berisi Dashboard/Panel/Studio,
+   * bukan Silabus/Suara/Piagam milik santri, dan menu yang hanya bermakna
+   * bagi santri (Piagam Kelulusan "milik saya") tidak tampil untuk staff.
+   * Mode peraga tidak menyetel apa pun: tampilannya tetap seperti dulu.
+   */
+  let peranTampilan = '';
+  if (staff) peranTampilan = peran === 'pengurus' || peran === 'superadmin' ? 'admin' : 'guru';
+  else if (sesi?.akun?.akun_jenis === 'wali') peranTampilan = 'wali';
+  if (peranTampilan) document.body.dataset.peran = peranTampilan;
+  else delete document.body.dataset.peran;
 }
 
 /**
@@ -398,9 +412,13 @@ function terapkanVisibilitasSesi() {
  * tempat yang sama — kalau tidak, layar pertama yang dilihat wali berbeda
  * tergantung apakah dia baru login atau sekadar menyegarkan halaman.
  */
-function arahkanKeDashboard() {
+export function arahkanKeDashboard() {
   const sesi = bacaSesi();
-  if (!sesi || !window.PrototypeApp?.switchMainView) return;
+  if (!sesi || !window.PrototypeApp?.switchMainView) {
+    // Tanpa sesi (mode peraga): perilaku lama logo — rute bawaan router.
+    window.PrototypeApp?.switchMainView?.('beranda');
+    return;
+  }
 
   const jenis = sesi.akun?.akun_jenis;
 
@@ -412,9 +430,12 @@ function arahkanKeDashboard() {
   // Pengajar mendarat di Dashboard Guru, bukan Panel Pengurus — panel itu
   // memang digerbang ke pengurus/superadmin, jadi mengarahkan pengajar ke
   // sana berarti mendaratkannya di layar yang menolaknya sendiri.
+  // Pengurus & superadmin mendarat di Dashboard Yayasan (24 Okt 2026), bukan
+  // langsung di Panel Pengurus: yang pertama mereka butuhkan adalah "apa yang
+  // menunggu saya", baru kemudian alat untuk mengerjakannya.
   if (jenis === 'staff') {
     const peran = sesi.akun?.staff_peran;
-    window.PrototypeApp.switchMainView(peran === 'pengajar' ? 'guru-dashboard' : 'admin');
+    window.PrototypeApp.switchMainView(peran === 'pengajar' ? 'guru-dashboard' : 'dashboard-yayasan');
   }
   else if (fiturTerkunci('kelas-online')) window.PrototypeApp.switchMainView('kurikulum');
   else if (jenis === 'wali') window.PrototypeApp.switchMainView('wali-dashboard');

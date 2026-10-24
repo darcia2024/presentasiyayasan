@@ -127,6 +127,16 @@ export function isStaffLogin() {
   return !!(sesi && sesi.akun?.akun_jenis === 'staff');
 }
 
+/*
+ * Layar yang dibuka berikutnya — dipakai Dashboard Yayasan supaya "Lengkapi
+ * Materi PPT" mendarat langsung di daftar bab, bukan di daftar modul.
+ */
+let layarBerikutnya = null;
+
+export function setelLayarStudioBerikutnya(layar) {
+  layarBerikutnya = ['modul-list', 'materi-ppt'].includes(layar) ? layar : null;
+}
+
 export async function bukaStudio() {
   const root = $('viewStudioKurikulum');
   if (!root) return;
@@ -134,10 +144,18 @@ export async function bukaStudio() {
     showToast('Studio Kurikulum khusus staff yayasan.');
     return;
   }
+  const tujuan = layarBerikutnya;
+  layarBerikutnya = null;
   STATE.layar = 'modul-list';
   STATE.modulAktif = null;
   STATE.pelajaranAktif = null;
   await muatModul();
+  if (tujuan === 'materi-ppt') {
+    await jalankan(async () => {
+      STATE.bukuPpt = await daftarSemuaBabPpt(STATE.jenjang);
+      STATE.layar = 'materi-ppt';
+    }, 'Gagal memuat daftar bab.');
+  }
   render();
 }
 

@@ -1189,3 +1189,146 @@ body.ppt-player-terbuka { overflow: hidden; }
     width: 100%;
   }
 }
+
+
+/* ==========================================================================
+   DASHBOARD YAYASAN (24 Okt 2026) — js/ui/dashboard-yayasan.js
+   "Perlu Perhatian" sengaja paling mencolok: berwarna, berikon besar, dan
+   bertombol tegas. Ringkasan di bawahnya tenang — angka untuk dibaca,
+   bukan untuk dikejar.
+   ========================================================================== */
+#viewDashboardYayasan { padding: 24px 32px 40px; }
+
+.dy-kepala {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap; margin-bottom: 22px;
+}
+.dy-eyebrow {
+  font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--teal-primary);
+}
+.dy-judul { font-size: 22px; font-weight: 800; color: var(--teal-dark); margin: 2px 0 2px; }
+.dy-sub { font-size: 12.5px; color: var(--text-muted); margin: 0; }
+.dy-kepala-kanan { display: flex; align-items: center; gap: 10px; }
+.dy-stempel { font-size: 11.5px; color: var(--text-muted); }
+.dy-segarkan { display: inline-flex; align-items: center; gap: 6px; }
+.dy-pesan { margin: 24px 0; }
+
+.dy-bagian { margin-bottom: 26px; }
+.dy-h3 {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 800; color: var(--teal-dark); margin: 0 0 12px;
+}
+.dy-h3-baris { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.dy-h3-baris .dy-h3 { margin-bottom: 12px; }
+.dy-hitung {
+  min-width: 22px; height: 22px; padding: 0 7px; border-radius: 999px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #B4232A; color: #FFFFFF; font-size: 11.5px; font-weight: 800;
+}
+.dy-hitung.is-nol { background: var(--teal-light); color: var(--teal-primary); }
+
+/* --- Perlu Perhatian --------------------------------------------------- */
+.dy-perhatian { display: grid; gap: 10px; }
+.dy-butir {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px;
+  padding: 14px 16px; border-radius: var(--radius-md);
+  border: 1px solid var(--border-color); border-left-width: 5px; background: #FFFFFF;
+  box-shadow: var(--shadow-sm);
+}
+.dy-butir.is-mendesak { border-left-color: #B4232A; background: #FFF7F7; }
+.dy-butir.is-perlu { border-left-color: var(--gold-primary); background: var(--gold-light); }
+.dy-butir.is-info { border-left-color: var(--teal-primary); }
+.dy-butir-ikon {
+  width: 42px; height: 42px; border-radius: 12px; font-size: 22px;
+  display: flex; align-items: center; justify-content: center;
+  background: #FFFFFF; color: var(--teal-primary);
+}
+.is-mendesak .dy-butir-ikon { color: #B4232A; }
+.is-perlu .dy-butir-ikon { color: var(--gold-dark); }
+.dy-butir-teks { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.dy-butir-teks strong { font-size: 14px; color: var(--text-main); }
+.dy-butir-teks span { font-size: 12.5px; color: var(--text-body); line-height: 1.45; }
+.dy-aksi {
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  padding: 10px 14px; min-height: 40px; border: 0; border-radius: var(--radius-sm);
+  background: var(--teal-dark); color: #FFFFFF;
+  font-family: var(--font-family); font-size: 12.5px; font-weight: 700; cursor: pointer;
+}
+.dy-aksi:hover { background: var(--teal-primary); }
+.is-mendesak .dy-aksi { background: #B4232A; }
+.is-mendesak .dy-aksi:hover { background: #8F1B21; }
+
+.dy-beres {
+  display: flex; align-items: center; gap: 14px; padding: 16px 18px;
+  border-radius: var(--radius-md); background: var(--teal-light); color: var(--teal-dark);
+  font-size: 12.5px;
+}
+.dy-beres > i { font-size: 28px; color: var(--teal-primary); }
+.dy-beres strong { display: block; font-size: 14px; margin-bottom: 2px; }
+
+/* --- Ringkasan Fitur --------------------------------------------------- */
+/* Enam kartu: 3 × 2 rapat, bukan 4 + 2 yang meninggalkan lubang. */
+.dy-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 1100px) { .dy-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.dy-kartu {
+  display: flex; flex-direction: column; gap: 10px; text-align: left;
+  padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);
+  background: #FFFFFF; box-shadow: var(--shadow-sm); cursor: pointer;
+  font-family: var(--font-family); color: var(--text-main);
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.dy-kartu:hover { border-color: var(--teal-border); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.dy-kartu-kepala { display: flex; align-items: center; gap: 8px; color: var(--text-muted); }
+.dy-kartu-kepala > .ph:last-child { margin-left: auto; font-size: 14px; }
+.dy-kartu-ikon {
+  width: 30px; height: 30px; border-radius: 9px; font-size: 16px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--teal-light); color: var(--teal-primary);
+}
+.dy-kartu-judul { font-size: 12.5px; font-weight: 700; color: var(--text-body); }
+.dy-kartu-angka { display: flex; align-items: baseline; gap: 6px; }
+.dy-kartu-angka strong { font-size: 26px; font-weight: 800; color: var(--teal-dark); line-height: 1; }
+.dy-kartu-angka span { font-size: 12px; color: var(--text-muted); }
+.dy-kartu-baris { font-size: 11.5px; color: var(--text-muted); line-height: 1.45; }
+.dy-progres { height: 6px; border-radius: 999px; background: var(--border-subtle); overflow: hidden; }
+.dy-progres > span { display: block; height: 100%; border-radius: inherit; background: var(--teal-primary); }
+
+/* --- Pertemuan Terbaru ------------------------------------------------- */
+.dy-tautan {
+  display: inline-flex; align-items: center; gap: 4px; margin-bottom: 12px;
+  background: none; border: 0; padding: 6px 0; cursor: pointer;
+  font-family: var(--font-family); font-size: 12.5px; font-weight: 700; color: var(--teal-primary);
+}
+.dy-pertemuan {
+  list-style: none; margin: 0; padding: 0; border: 1px solid var(--border-color);
+  border-radius: var(--radius-md); background: #FFFFFF; overflow: hidden;
+}
+.dy-pertemuan li {
+  display: grid; grid-template-columns: 70px 1fr auto; gap: 12px; align-items: center;
+  padding: 11px 16px; font-size: 12.5px; border-top: 1px solid var(--border-subtle);
+}
+.dy-pertemuan li:first-child { border-top: 0; }
+.dy-tgl { font-weight: 800; color: var(--teal-primary); }
+.dy-kelas { font-weight: 700; color: var(--text-main); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dy-guru { color: var(--text-muted); white-space: nowrap; }
+.dy-catatan { font-size: 11.5px; color: var(--text-muted); }
+
+@media (max-width: 768px) {
+  #viewDashboardYayasan { padding: 4px 16px 28px; }
+  /* Judul besar app bar mobile sudah menyapa — kepala desktop jadi
+     baris stempel + tombol Segarkan saja. */
+  .dy-kepala > div:first-child { display: none; }
+  .dy-kepala { margin-bottom: 14px; justify-content: space-between; width: 100%; }
+  .dy-kepala-kanan { width: 100%; justify-content: space-between; }
+  .dy-butir { grid-template-columns: auto 1fr; padding: 13px 14px; }
+  /* Di bawah teks, sejajar dengannya — tombol selebar layar membuat enam
+     butir memakan tiga layar gulir. */
+  .dy-aksi { grid-column: 2; justify-self: start; min-height: 40px; padding: 9px 13px; }
+  .dy-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .dy-kartu { padding: 13px; gap: 8px; }
+  .dy-kartu-angka { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .dy-kartu-angka strong { font-size: 22px; }
+  .dy-pertemuan li { grid-template-columns: 56px 1fr; padding: 11px 14px; }
+  .dy-guru { grid-column: 2; margin-top: -8px; font-size: 11.5px; }
+}

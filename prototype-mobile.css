@@ -2239,3 +2239,13 @@
 .is-terkunci-fase {
   display: none !important;
 }
+
+/* ==========================================================================
+   MENU PER PERAN (24 Okt 2026) — body[data-peran] disetel js/ui/auth.js.
+   Di ujung berkas karena alasan yang sama dengan blok di atas.
+   ========================================================================== */
+body:not([data-peran="admin"]) .khusus-admin,
+body[data-peran="admin"] .khusus-santri,
+body[data-peran="guru"] .khusus-santri {
+  display: none !important;
+}
