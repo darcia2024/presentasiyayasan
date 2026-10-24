@@ -1376,3 +1376,57 @@ body.ppt-player-terbuka { overflow: hidden; }
   .dg-materi-baris { grid-template-columns: 1fr; }
   .dg-materi-baris button { justify-content: center; min-height: 42px; }
 }
+
+/* ==========================================================================
+   DASHBOARD WALI (24 Okt 2026) — js/ui/wali-dashboard.js. Kerangka .dy-*
+   dipakai bersama; ini tambahan khusus wali.
+   ========================================================================== */
+#viewWaliDashboard { padding: 24px 32px 40px; max-width: 980px; }
+.dy-hitung.is-emas { background: var(--gold-primary); }
+.dw-tenang { background: var(--bg-subtle); color: var(--text-body); }
+.dw-tenang > i { color: var(--text-muted); }
+
+.dw-anak {
+  border: 1px solid var(--border-color); border-radius: var(--radius-md);
+  background: #FFFFFF; box-shadow: var(--shadow-sm); overflow: hidden;
+}
+.dw-anak-kepala { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px; padding: 16px; }
+.dw-anak-kepala .pengurus-avatar { width: 44px; height: 44px; font-size: 15px; }
+.dw-anak-kepala .studio-btn-primary { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+
+.dw-sertifikat { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--border-subtle); }
+.dw-sertifikat li {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px;
+  padding: 11px 16px; border-top: 1px solid var(--border-subtle); background: var(--gold-light);
+}
+.dw-sertifikat li:first-child { border-top: 0; }
+.dw-sertifikat li > .ph { font-size: 20px; color: var(--gold-dark); }
+.dw-sertifikat-teks { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dw-sertifikat-teks strong { font-size: 13px; color: var(--text-main); }
+.dw-sertifikat-teks span { font-size: 11.5px; color: var(--text-muted); }
+
+.dw-tautan {
+  display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
+  font-size: 12.5px; font-weight: 700; color: var(--teal-primary); text-decoration: none;
+}
+.dw-tautan:hover { text-decoration: underline; }
+a.dy-aksi { text-decoration: none; }
+.is-perlu a.dy-aksi { background: var(--gold-dark); }
+.is-perlu a.dy-aksi:hover { background: #6B4B02; }
+
+.dw-xp {
+  display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 10px 16px;
+  border-top: 1px solid var(--border-subtle); font-size: 12px; color: var(--text-muted);
+}
+
+.dw-modul { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 6px; }
+.dw-modul li { display: flex; justify-content: space-between; gap: 12px; font-size: 12.5px; color: var(--text-body); }
+.dw-modul em { font-style: normal; color: var(--text-muted); white-space: nowrap; }
+
+@media (max-width: 768px) {
+  #viewWaliDashboard { padding: 4px 16px 28px; }
+  .dw-anak-kepala { grid-template-columns: auto 1fr; }
+  .dw-anak-kepala .studio-btn-primary { grid-column: 1 / -1; justify-content: center; min-height: 46px; }
+  .dw-sertifikat li { grid-template-columns: auto 1fr; padding: 12px 14px; }
+  .dw-sertifikat li .dw-tautan { grid-column: 2; }
+}

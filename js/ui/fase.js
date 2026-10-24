@@ -32,9 +32,16 @@
 const KUNCI_AKTIF = new Set([
   /*
    * Kelas online belum dibuka. Yang memakai platform di fase ini hanya
-   * guru: membuka materi di depan kelas. Dashboard Wali dan Dashboard
-   * Santri (beserta XP, lencana, dan papan peringkat di dalamnya) menunggu
-   * pembelajaran online benar-benar dirancang.
+   * guru: membuka materi di depan kelas. Dashboard Santri (beserta XP,
+   * lencana, dan papan peringkat di dalamnya) menunggu pembelajaran online
+   * benar-benar dirancang.
+   *
+   * 24 Okt 2026: Dashboard Wali TIDAK lagi ikut kunci ini — ia punya kunci
+   * sendiri, 'dashboard-wali', yang sedang TIDAK aktif (tidak ada di daftar
+   * ini). Isinya disusun ulang dari data yang memang hidup di fase ini
+   * (sertifikat, materi jenjang), bukan angka XP yang selalu nol. Angka
+   * gamifikasi di dalamnya tetap ikut kunci 'kelas-online'. Untuk
+   * menyembunyikan Dashboard Wali lagi: tambahkan 'dashboard-wali' di sini.
    */
   'kelas-online',
 

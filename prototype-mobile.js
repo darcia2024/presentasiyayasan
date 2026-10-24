@@ -324,11 +324,11 @@
        Dashboard Wali di ponsel melihat judul "Kaidah Jumlah Ismiyyah".
        Ketahuan begitu Dashboard Wali jadi layar PENDARATAN wali. */
     'wali-dashboard': {
-      eyebrow: 'Portal Wali',
-      title: 'Progres Ananda',
-      sub: 'Ringkasan pembelajaran seluruh santri dalam tanggungan Anda.',
+      eyebrow: 'Dashboard Wali',
+      title: 'Assalamu\'alaikum!',
+      sub: 'Kabar terbaru, sertifikat, dan materi yang dipelajari ananda.',
       bar: 'Dashboard Wali',
-      chips: ['lanjut', 'arsip', 'piagam', 'sinkron']
+      chips: ['lanjut', 'piagam', 'silabus', 'suara']
     },
     'studio-kurikulum': {
       eyebrow: 'Studio Kurikulum',
@@ -418,7 +418,9 @@
     VIEW_META.beranda.title = 'Ahlan wa Sahlan, ' + first + '!';
     VIEW_META['dashboard-yayasan'].title = 'Assalamu\'alaikum, ' + first + '!';
     VIEW_META['guru-dashboard'].title = 'Assalamu\'alaikum, ' + first + '!';
-    if (currentView === 'beranda' || currentView === 'dashboard-yayasan' || currentView === 'guru-dashboard') {
+    // Dashboard Wali sengaja tidak ikut: bagi wali, nama di sidebar adalah
+    // nama ANAK yang sedang aktif, bukan nama walinya.
+    if (['beranda', 'dashboard-yayasan', 'guru-dashboard'].indexOf(currentView) !== -1) {
       paintLargeTitle(currentView);
     }
   }

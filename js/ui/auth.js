@@ -437,8 +437,10 @@ export function arahkanKeDashboard() {
     const peran = sesi.akun?.staff_peran;
     window.PrototypeApp.switchMainView(peran === 'pengajar' ? 'guru-dashboard' : 'dashboard-yayasan');
   }
+  // Wali punya kuncinya sendiri sejak 24 Okt 2026 — Dashboard Wali tidak
+  // lagi ikut tertutup kunci kelas-online (lihat js/ui/fase.js).
+  else if (jenis === 'wali' && !fiturTerkunci('dashboard-wali')) window.PrototypeApp.switchMainView('wali-dashboard');
   else if (fiturTerkunci('kelas-online')) window.PrototypeApp.switchMainView('kurikulum');
-  else if (jenis === 'wali') window.PrototypeApp.switchMainView('wali-dashboard');
   else window.PrototypeApp.switchMainView('beranda');
 }
 

@@ -2246,6 +2246,7 @@
    ========================================================================== */
 body:not([data-peran="admin"]) .khusus-admin,
 body:not([data-peran="guru"]) .khusus-guru,
+body:not([data-peran="wali"]) .khusus-wali,
 body[data-peran="admin"] .bukan-admin,
 body[data-peran="admin"] .khusus-santri,
 body[data-peran="guru"] .khusus-santri {

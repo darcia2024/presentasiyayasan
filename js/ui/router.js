@@ -41,7 +41,7 @@ const ROUTES = {
   'wali-dashboard': {
     view: 'viewWaliDashboard',
     nav: 'nav-wali-dashboard',
-    crumb: ['Portal Wali', 'Ringkasan Keluarga', 'Dashboard Progres Ananda'],
+    crumb: ['Portal Wali', 'Dashboard Wali', 'Kabar & Sertifikat Ananda'],
     toast: 'Membuka Dashboard Wali',
     tone: 520
   },
@@ -111,7 +111,7 @@ const DEFAULT_ROUTE = fiturTerkunci('kelas-online') ? 'kurikulum' : 'beranda';
  * seharusnya terkunci. Kuncinya ditegakkan di router, satu tempat yang
  * dilewati semua jalan masuk, bukan di setiap tombol.
  */
-const KUNCI_RUTE = { beranda: 'kelas-online', 'wali-dashboard': 'kelas-online' };
+const KUNCI_RUTE = { beranda: 'kelas-online', 'wali-dashboard': 'dashboard-wali' };
 
 /** Nama rute yang benar-benar akan dibuka untuk `viewName`. */
 export function ruteBerlaku(viewName) {

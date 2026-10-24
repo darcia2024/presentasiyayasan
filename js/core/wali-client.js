@@ -15,6 +15,64 @@ import { getSupabaseClient } from './supabase-client.js';
 const TUJUH_HARI_MS = 7 * 24 * 60 * 60 * 1000;
 
 /**
+ * Data Dashboard Wali di fase guru-first (24 Okt 2026).
+ *
+ * HANYA yang sudah boleh dibaca wali lewat RLS yang ada — tidak ada
+ * kebijakan baru yang dibuka untuk fitur ini:
+ *   - sertifikat anaknya sendiri (sertifikat_select_wali)
+ *   - modul TERBIT & babnya untuk jenjang anak (modul_select_terbit,
+ *     pelajaran_select)
+ *
+ * Yang SENGAJA tidak ada: kehadiran, catatan guru, nama kelas & guru.
+ * Kebijakan pertemuan/absensi menutupnya untuk wali ("catatan internal
+ * guru, bukan rapor"), dan membukanya adalah keputusan yayasan.
+ *
+ * @param {Array<{id:string, jenjang:string}>} daftarSantri
+ * @returns {Promise<{sertifikat: Map<string, Array>, materi: Map<string, {modul:number, bab:number, daftarModul:Array<{judul:string, bab:number}>}>, galat: string[]}>}
+ */
+export async function ambilDashboardWali(daftarSantri) {
+  const idSantri = (daftarSantri || []).map((s) => s.id);
+  const jenjang = [...new Set((daftarSantri || []).map((s) => s.jenjang))];
+  const sertifikat = new Map(idSantri.map((id) => [id, []]));
+  const materi = new Map();
+  const galat = [];
+  if (!idSantri.length) return { sertifikat, materi, galat };
+
+  const client = getSupabaseClient();
+  const [sertRes, modulRes] = await Promise.all([
+    client.from('sertifikat')
+      .select('id, santri_id, judul, level, nomor_seri, kode_verifikasi, diterbitkan_at')
+      .in('santri_id', idSantri).order('diterbitkan_at', { ascending: false }),
+    client.from('modul')
+      .select('jenjang, judul, tahap, urutan, pelajaran(id)')
+      .in('jenjang', jenjang).eq('status', 'terbit')
+      .order('tahap', { ascending: true }).order('urutan', { ascending: true }),
+  ]);
+
+  if (sertRes.error) {
+    console.error('[wali-client] gagal memuat sertifikat:', sertRes.error.message);
+    galat.push('sertifikat');
+  }
+  (sertRes.data || []).forEach((s) => sertifikat.get(s.santri_id)?.push(s));
+
+  if (modulRes.error) {
+    console.error('[wali-client] gagal memuat materi:', modulRes.error.message);
+    galat.push('materi');
+  }
+  jenjang.forEach((j) => {
+    const daftarModul = (modulRes.data || []).filter((m) => m.jenjang === j)
+      .map((m) => ({ judul: m.judul, bab: (m.pelajaran || []).length }));
+    materi.set(j, {
+      modul: daftarModul.length,
+      bab: daftarModul.reduce((t, m) => t + m.bab, 0),
+      daftarModul,
+    });
+  });
+
+  return { sertifikat, materi, galat };
+}
+
+/**
  * @param {Array<{id: string}>} daftarSantri profil anak dari sesi wali.
  * @returns {Promise<Map<string, object>>} ringkasan per santri_id:
  *   { totalXp, mufrodatDikuasai, pelajaranSelesai, lencana: [{nama, ikon}],
