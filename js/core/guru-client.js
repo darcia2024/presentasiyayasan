@@ -13,6 +13,7 @@
 
 import { getSupabaseClient, bacaSesi } from './supabase-client.js';
 import { jenjangAktif } from '../ui/fase.js';
+import { SEMATAN_EMBED, embedBelumTersedia } from './onedrive.js';
 
 const TABEL_KELAS = 'kelas';
 const TABEL_SANTRI = 'santri';
@@ -276,6 +277,81 @@ export async function simpanAbsensi(pertemuanId, baris) {
     .select('santri_id');
   lemparJikaError(error, 'Gagal menyimpan absensi');
   lemparJikaTakAdaBaris(data, 'Gagal menyimpan absensi');
+}
+
+/* ----------------------------------------------------- DASHBOARD GURU --- */
+
+/** Tanggal WIB `geser` hari dari hari ini, YYYY-MM-DD. */
+function tanggalWibGeser(geser) {
+  const wib = new Date(Date.now() + 7 * 60 * 60 * 1000 + geser * 86400000);
+  return wib.toISOString().slice(0, 10);
+}
+
+/**
+ * Seluruh angka Dashboard Guru dalam satu pemanggilan (24 Okt 2026).
+ *
+ * Polanya sama dengan ambilDashboardYayasan() di pengurus-client.js: satu
+ * pemuatan supaya "Perlu Perhatian", ringkasan, dan kartu kelas
+ * menceritakan keadaan yang sama. Empat kueri untuk SEMUA kelas sekaligus
+ * — bukan empat kueri per kelas — karena satu guru bisa memegang tiga
+ * kelas (≈75 anak) dan layar ini dibuka setiap hari.
+ *
+ * Batas baris aman: pertemuan satu guru ≈20 per kelas per semester, absensi
+ * hanya 30 hari terakhir (≈25 anak × 8 pertemuan × 3 kelas = 600 baris).
+ *
+ * RLS-lah yang membatasi ke kelas ampuan (kelas_select_staff,
+ * pertemuan_select_staff, absensi_select_staff) — kode ini tidak menyaring.
+ */
+export async function ambilDashboardGuru() {
+  const client = getSupabaseClient();
+  const [kelas, kategori] = await Promise.all([daftarKelasSaya(), kategoriStaffSaya()]);
+  const idKelas = kelas.map((k) => k.id);
+
+  const batas30 = tanggalWibGeser(-30);
+  if (!idKelas.length) return { kategori, kelas: [], santri: [], pertemuan: [], absensi: [], batas30 };
+
+  const [santri, pertemuan] = await Promise.all([
+    client.from(TABEL_SANTRI).select('id, nama, kelas_id')
+      .in('kelas_id', idKelas).eq('status', 'aktif').order('nama'),
+    client.from(TABEL_PERTEMUAN).select('id, kelas_id, tanggal, materi_dari, materi_sampai, evaluasi')
+      .in('kelas_id', idKelas).order('tanggal', { ascending: false }).limit(500),
+  ]);
+  lemparJikaError(santri.error, 'Gagal memuat santri');
+  lemparJikaError(pertemuan.error, 'Gagal memuat pertemuan');
+
+  const idBaru = (pertemuan.data || []).filter((p) => p.tanggal >= batas30).map((p) => p.id);
+  let absensi = [];
+  if (idBaru.length) {
+    const hasil = await client.from(TABEL_ABSENSI)
+      .select('pertemuan_id, santri_id, status').in('pertemuan_id', idBaru);
+    lemparJikaError(hasil.error, 'Gagal memuat absensi');
+    absensi = hasil.data || [];
+  }
+
+  return { kategori, kelas, santri: santri.data || [], pertemuan: pertemuan.data || [], absensi, batas30 };
+}
+
+/**
+ * Kesiapan materi tayang per jenjang: berapa bab di modul TERBIT yang sudah
+ * punya PPT (berkas atau link embed). Untuk guru — terutama guru mitra, yang
+ * aksesnya memang hanya materi — angka ini menjawab "apa yang bisa saya
+ * tayangkan hari ini" sebelum membuka Kurikulum.
+ *
+ * @returns {Promise<Array<{jenjang:string, bab:number, babBerPpt:number}>>}
+ */
+export async function kesiapanMateri(daftarJenjang) {
+  const client = getSupabaseClient();
+  const muat = (kolom) => client.from('modul')
+    .select(`jenjang, pelajaran(${kolom})`)
+    .in('jenjang', daftarJenjang).eq('status', 'terbit');
+  let { data, error } = await muat(`id, ppt_path, ${SEMATAN_EMBED}`);
+  if (embedBelumTersedia(error)) ({ data, error } = await muat('id, ppt_path'));
+  lemparJikaError(error, 'Gagal memuat kesiapan materi');
+
+  return daftarJenjang.map((j) => {
+    const bab = (data || []).filter((m) => m.jenjang === j).flatMap((m) => m.pelajaran || []);
+    return { jenjang: j, bab: bab.length, babBerPpt: bab.filter((p) => p.ppt_path || p.ppt_embed?.url).length };
+  });
 }
 
 /* ----------------------------------------------------------- RINGKASAN --- */

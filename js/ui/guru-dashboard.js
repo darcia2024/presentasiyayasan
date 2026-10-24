@@ -18,8 +18,9 @@
 import { bacaSesi } from '../core/supabase-client.js';
 import { muatKontenJenjang } from './jenjang.js';
 import { playTone, showToast } from '../core/feedback.js';
+import { elemen, ikon } from '../core/html.js';
+import { jenjangAktif } from './fase.js';
 import {
-  daftarKelasSaya,
   daftarSantriKelas,
   daftarPertemuan,
   ambilPertemuan,
@@ -28,8 +29,8 @@ import {
   hapusPertemuan,
   ambilAbsensi,
   simpanAbsensi,
-  ringkasanKelas,
-  kategoriStaffSaya,
+  ambilDashboardGuru,
+  kesiapanMateri,
   tanggalHariIniWib,
 } from '../core/guru-client.js';
 
@@ -54,6 +55,10 @@ const STATE = {
   absen: new Map(),
   /** 'internal' | 'eksternal' — menentukan kalimat, bukan izin. */
   kategori: 'internal',
+  /** Hasil ambilDashboardGuru() — sumber tunggal layar beranda guru. */
+  dasbor: null,
+  /** Hasil kesiapanMateri() per jenjang aktif. */
+  materi: [],
 };
 
 function buatEl(tag, kelas, teks) {
@@ -89,94 +94,355 @@ function kosongkan(el) {
 }
 
 /* ========================================================================= */
-/* LAYAR 1 — DAFTAR KELAS                                                    */
+/* LAYAR 1 — BERANDA GURU (24 Okt 2026)                                      */
+/*                                                                           */
+/* Dulu layar ini hanya daftar kartu kelas. Guru harus membuka setiap kelas  */
+/* untuk tahu absensi mana yang belum diisi atau kapan terakhir mencatat.    */
+/* Sekarang polanya sama dengan Dashboard Yayasan: yang menunggu tindakan    */
+/* di atas, masing-masing bertombol yang langsung membuka lembarnya; lalu    */
+/* ringkasan, kelas, dan materi siap tayang.                                 */
 /* ========================================================================= */
 
-async function renderDaftarKelas(wadah) {
-  // Subjudulnya ikut menyesuaikan. Menjanjikan "pilih satu kelas untuk
-  // mencatat absensi" tepat di atas kalimat yang menerangkan bahwa guru
-  // mitra tidak memegang kelas membuat layarnya membantah dirinya sendiri.
-  wadah.appendChild(buatEl('div', 'studio-subtitle',
-    STATE.kategori === 'eksternal' && !STATE.kelasList.length
-      ? 'Portal guru mitra PERISA.'
-      : 'Kelas yang Anda ampu. Pilih satu kelas untuk mencatat pertemuan dan absensi.'));
+const tanggalPendek = (iso) => new Date(`${iso}T00:00:00`)
+  .toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short' });
 
-  if (!STATE.kelasList.length) {
-    // Guru eksternal TIDAK akan pernah melihat kelas, sebanyak apa pun ia
-    // ditugaskan — batasnya kategori, bukan penugasan (20260913000003).
-    // Menyuruhnya "hubungi pengurus untuk ditugaskan" mengirimnya mengejar
-    // sesuatu yang tidak akan mengubah apa pun, dan membuat pengurus
-    // menugaskan kelas berulang kali sambil menyangka sistemnya rusak.
-    const kosong = buatEl('div', 'studio-empty',
-      STATE.kategori === 'eksternal'
-        ? 'Akun Anda terdaftar sebagai guru mitra. Akses Anda adalah materi ajar — '
-          + 'buka menu Kurikulum untuk memproyeksikan materi di kelas. '
-          + 'Data santri dan absensi dikelola guru internal yayasan.'
-        : 'Belum ada kelas yang diampu. Hubungi pengurus yayasan untuk ditugaskan ke sebuah kelas.');
-    wadah.appendChild(kosong);
+/** Buka riwayat satu kelas. */
+function bukaKelas(k) {
+  return jalankan(async () => {
+    STATE.kelasTerpilih = k;
+    STATE.layar = 'detail';
+    await render();
+  }, 'Gagal membuka kelas.');
+}
+
+/** Buka (atau buat) lembar pertemuan satu kelas pada satu tanggal. */
+function bukaLembarKelas(k, tanggal) {
+  return jalankan(async () => {
+    STATE.kelasTerpilih = k;
+    await bukaLembar(tanggal);
+  }, 'Gagal membuka lembar pertemuan.');
+}
+
+function bukaMateri(jenjang) {
+  return jalankan(async () => {
+    await muatKontenJenjang(jenjang);
+    window.PrototypeApp?.switchMainView?.('kurikulum');
+  }, 'Gagal membuka materi.');
+}
+
+/**
+ * Olah hasil ambilDashboardGuru() jadi angka & butir tindak lanjut. Murni —
+ * tanpa DOM dan jaringan — supaya aturannya bisa dibaca di satu tempat.
+ */
+export function olahDashboardGuru(d, hariIni) {
+  const batas7 = new Date(`${hariIni}T00:00:00`);
+  batas7.setDate(batas7.getDate() - 7);
+  const batas7Iso = batas7.toLocaleDateString('en-CA');
+
+  const santriKelas = new Map(d.kelas.map((k) => [k.id, d.santri.filter((s) => s.kelas_id === k.id)]));
+  const pertemuanKelas = new Map(d.kelas.map((k) => [k.id, d.pertemuan.filter((p) => p.kelas_id === k.id)]));
+  const absenPertemuan = new Map();
+  d.absensi.forEach((a) => {
+    if (!absenPertemuan.has(a.pertemuan_id)) absenPertemuan.set(a.pertemuan_id, []);
+    absenPertemuan.get(a.pertemuan_id).push(a);
+  });
+  const namaSantri = new Map(d.santri.map((s) => [s.id, s.nama]));
+  const kelasById = new Map(d.kelas.map((k) => [k.id, k]));
+
+  const butir = [];
+
+  // 1. Lembar 30 hari terakhir yang belum lengkap — terbaru dulu, maksimal
+  //    lima supaya satu kelas yang lama terbengkalai tidak menenggelamkan
+  //    butir lain.
+  const lembarBolong = [];
+  d.pertemuan.filter((p) => p.tanggal >= d.batas30).forEach((p) => {
+    const k = kelasById.get(p.kelas_id);
+    const jumlahSantri = santriKelas.get(p.kelas_id)?.length || 0;
+    if (jumlahSantri && !absenPertemuan.has(p.id)) {
+      lembarBolong.push({
+        tingkat: 'mendesak', ikon: 'ph-user-list',
+        judul: `Absensi ${tanggalPendek(p.tanggal)} belum diisi`,
+        detail: `${k.nama} · ${jumlahSantri} santri belum ditandai.`,
+        aksi: 'Isi Absensi', jalan: () => bukaLembarKelas(k, p.tanggal),
+      });
+    } else if (!p.materi_dari && !p.materi_sampai && !p.evaluasi) {
+      lembarBolong.push({
+        tingkat: 'perlu', ikon: 'ph-note-pencil',
+        judul: `Lembar ${tanggalPendek(p.tanggal)} belum ada cakupan & evaluasi`,
+        detail: `${k.nama}. Pengurus membaca bagian ini di laporan kelas.`,
+        aksi: 'Lengkapi Lembar', jalan: () => bukaLembarKelas(k, p.tanggal),
+      });
+    }
+  });
+  butir.push(...lembarBolong.slice(0, 5));
+
+  d.kelas.forEach((k) => {
+    const santri = santriKelas.get(k.id) || [];
+    const riwayat = pertemuanKelas.get(k.id) || [];
+
+    // 2. Kelas tanpa santri: tidak ada yang bisa dicatat sampai pengurus
+    //    mendaftarkan anaknya — dikatakan, bukan dibiarkan jadi kartu kosong.
+    if (!santri.length) {
+      butir.push({
+        tingkat: 'info', ikon: 'ph-users-three',
+        judul: `${k.nama} belum punya santri`,
+        detail: 'Pengurus yayasan yang mendaftarkan santri ke kelas. Absensi bisa diisi setelahnya.',
+      });
+      return;
+    }
+
+    // 3. Tidak ada pertemuan tercatat seminggu terakhir.
+    const terakhir = riwayat[0]?.tanggal || null;
+    if (!terakhir || terakhir < batas7Iso) {
+      butir.push({
+        tingkat: 'perlu', ikon: 'ph-calendar-plus',
+        judul: `${k.nama}: belum ada pertemuan 7 hari terakhir`,
+        detail: terakhir ? `Terakhir dicatat ${formatTanggal(terakhir)}.` : 'Belum pernah ada pertemuan yang dicatat.',
+        aksi: 'Catat Hari Ini', jalan: () => bukaLembarKelas(k, hariIni),
+      });
+    }
+
+    // 4. Santri alfa dua kali atau lebih dalam 30 hari.
+    const idPertemuan = new Set(riwayat.filter((p) => p.tanggal >= d.batas30).map((p) => p.id));
+    const alfa = new Map();
+    d.absensi.filter((a) => idPertemuan.has(a.pertemuan_id) && a.status === 'alfa')
+      .forEach((a) => alfa.set(a.santri_id, (alfa.get(a.santri_id) || 0) + 1));
+    const sering = [...alfa].filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1]);
+    if (sering.length) {
+      const nama = sering.slice(0, 3).map(([id, n]) => `${namaSantri.get(id) || 'Santri'} (${n}×)`);
+      butir.push({
+        tingkat: 'perlu', ikon: 'ph-warning-circle',
+        judul: `${sering.length} santri ${k.nama} alfa 2× atau lebih`,
+        detail: `${nama.join(', ')}${sering.length > 3 ? `, dan ${sering.length - 3} lainnya` : ''} — 30 hari terakhir.`,
+        aksi: 'Lihat Riwayat Kelas', jalan: () => bukaKelas(k),
+      });
+    }
+  });
+
+  const urutan = { mendesak: 0, perlu: 1, info: 2 };
+  butir.sort((a, b) => urutan[a.tingkat] - urutan[b.tingkat]);
+
+  const rekap = { hadir: 0, izin: 0, sakit: 0, alfa: 0 };
+  d.absensi.forEach((a) => { if (a.status in rekap) rekap[a.status] += 1; });
+  const totalAbsen = rekap.hadir + rekap.izin + rekap.sakit + rekap.alfa;
+
+  const perKelas = d.kelas.map((k) => {
+    const riwayat = pertemuanKelas.get(k.id) || [];
+    const id30 = new Set(riwayat.filter((p) => p.tanggal >= d.batas30).map((p) => p.id));
+    const baris = d.absensi.filter((a) => id30.has(a.pertemuan_id));
+    const hadir = baris.filter((a) => a.status === 'hadir').length;
+    return {
+      kelas: k,
+      santri: santriKelas.get(k.id)?.length || 0,
+      pertemuan: riwayat.length,
+      terakhir: riwayat[0]?.tanggal || null,
+      hariIniAda: riwayat.some((p) => p.tanggal === hariIni),
+      persenHadir: baris.length ? Math.round((hadir / baris.length) * 100) : null,
+    };
+  });
+
+  return {
+    butir,
+    perKelas,
+    ringkasan: {
+      kelas: d.kelas.length,
+      santri: d.santri.length,
+      pertemuan30: d.pertemuan.filter((p) => p.tanggal >= d.batas30).length,
+      terakhir: d.pertemuan[0]?.tanggal || null,
+      persenHadir: totalAbsen ? Math.round((rekap.hadir / totalAbsen) * 100) : null,
+      rekap,
+    },
+  };
+}
+
+function kepalaBeranda() {
+  const sesi = bacaSesi();
+  const nama = (sesi?.akun?.nama || 'Ustadz/Ustadzah').split(' ')[0];
+  const segarkan = elemen('button', { kelas: 'studio-btn-secondary dy-segarkan', atribut: { type: 'button' } },
+    [ikon('ph-arrows-clockwise'), ' Segarkan']);
+  segarkan.addEventListener('click', () => bukaGuruDashboard());
+  const waktu = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  return elemen('div', { kelas: 'dy-kepala' }, [
+    elemen('div', {}, [
+      elemen('div', { kelas: 'dy-eyebrow', teks: STATE.kategori === 'eksternal' ? 'Guru Mitra' : 'Guru Internal' }),
+      elemen('h2', { kelas: 'dy-judul', teks: `Assalamu'alaikum, ${nama}` }),
+      elemen('p', { kelas: 'dy-sub', teks: formatTanggal(tanggalHariIniWib()) }),
+    ]),
+    elemen('div', { kelas: 'dy-kepala-kanan' }, [
+      elemen('span', { kelas: 'dy-stempel', teks: `Diperbarui pukul ${waktu}` }),
+      segarkan,
+    ]),
+  ]);
+}
+
+function bagianPerhatian(butir) {
+  const bagian = elemen('section', { kelas: 'dy-bagian' }, [
+    elemen('h3', { kelas: 'dy-h3' }, [
+      'Perlu Perhatian',
+      elemen('span', { kelas: `dy-hitung${butir.length ? '' : ' is-nol'}`, teks: String(butir.length) }),
+    ]),
+  ]);
+  if (!butir.length) {
+    bagian.appendChild(elemen('div', { kelas: 'dy-beres' }, [
+      ikon('ph-check-circle'),
+      elemen('div', {}, [
+        elemen('strong', { teks: 'Semua lembar pertemuan sudah lengkap.' }),
+        elemen('div', { teks: 'Absensi, cakupan materi, dan evaluasi 30 hari terakhir sudah terisi.' }),
+      ]),
+    ]));
+    return bagian;
+  }
+  const daftar = elemen('div', { kelas: 'dy-perhatian' });
+  butir.forEach((b) => {
+    const isi = [
+      elemen('div', { kelas: 'dy-butir-ikon' }, [ikon(b.ikon)]),
+      elemen('div', { kelas: 'dy-butir-teks' }, [elemen('strong', { teks: b.judul }), elemen('span', { teks: b.detail })]),
+    ];
+    if (b.aksi) {
+      const tombol = elemen('button', { kelas: 'dy-aksi', atribut: { type: 'button' } }, [b.aksi, ' ', ikon('ph-arrow-right')]);
+      tombol.addEventListener('click', b.jalan);
+      isi.push(tombol);
+    }
+    daftar.appendChild(elemen('div', { kelas: `dy-butir is-${b.tingkat}` }, isi));
+  });
+  bagian.appendChild(daftar);
+  return bagian;
+}
+
+function kartuAngka(namaIkon, judul, angka, label, baris, progres) {
+  const kartu = elemen('div', { kelas: 'dy-kartu is-statis' }, [
+    elemen('div', { kelas: 'dy-kartu-kepala' }, [
+      elemen('span', { kelas: 'dy-kartu-ikon' }, [ikon(namaIkon)]),
+      elemen('span', { kelas: 'dy-kartu-judul', teks: judul }),
+    ]),
+    elemen('div', { kelas: 'dy-kartu-angka' }, [elemen('strong', { teks: String(angka) }), elemen('span', { teks: label })]),
+  ]);
+  if (progres !== undefined) {
+    const bar = elemen('div', { kelas: 'dy-progres' }, [elemen('span')]);
+    bar.firstChild.style.width = `${progres}%`;
+    kartu.appendChild(bar);
+  }
+  kartu.appendChild(elemen('div', { kelas: 'dy-kartu-baris', teks: baris }));
+  return kartu;
+}
+
+function bagianRingkasan(r) {
+  return elemen('section', { kelas: 'dy-bagian' }, [
+    elemen('h3', { kelas: 'dy-h3', teks: 'Ringkasan 30 Hari' }),
+    elemen('div', { kelas: 'dy-grid dy-grid--4' }, [
+      kartuAngka('ph-chalkboard-teacher', 'Kelas', r.kelas, 'diampu', `${r.santri} santri aktif`),
+      kartuAngka('ph-calendar-check', 'Pertemuan', r.pertemuan30, 'tercatat',
+        r.terakhir ? `Terakhir ${formatTanggal(r.terakhir)}` : 'Belum ada pertemuan'),
+      kartuAngka('ph-user-check', 'Kehadiran', r.persenHadir === null ? '—' : `${r.persenHadir}%`, 'hadir',
+        `${r.rekap.izin + r.rekap.sakit} izin/sakit · ${r.rekap.alfa} alfa`,
+        r.persenHadir === null ? undefined : r.persenHadir),
+      kartuAngka('ph-users-three', 'Santri', r.santri, 'di semua kelas', `${r.kelas} kelas`),
+    ]),
+  ]);
+}
+
+function bagianKelas(perKelas, hariIni) {
+  const bagian = elemen('section', { kelas: 'dy-bagian' }, [elemen('h3', { kelas: 'dy-h3', teks: 'Kelas Saya' })]);
+  const daftar = elemen('div', { kelas: 'dg-kelas-daftar' });
+  perKelas.forEach((x) => {
+    const k = x.kelas;
+    const catat = elemen('button', { kelas: 'studio-btn-primary', atribut: { type: 'button' } },
+      [ikon(x.hariIniAda ? 'ph-note-pencil' : 'ph-plus'), x.hariIniAda ? ' Lanjutkan Lembar Hari Ini' : ' Catat Hari Ini']);
+    catat.addEventListener('click', () => bukaLembarKelas(k, hariIni));
+    const riwayat = elemen('button', { kelas: 'studio-btn-secondary', atribut: { type: 'button' }, teks: 'Riwayat' });
+    riwayat.addEventListener('click', () => bukaKelas(k));
+    // Materi dibuka dari kartu kelasnya: guru yang memegang beberapa kelas
+    // harus bisa menyatakan kelas MANA yang materinya hendak ditayangkan.
+    const materi = elemen('button', { kelas: 'studio-btn-secondary', atribut: { type: 'button' } },
+      [ikon('ph-presentation-chart'), ' Buka Materi']);
+    materi.addEventListener('click', () => bukaMateri(k.jenjang));
+
+    const fakta = [
+      `${x.santri} santri`,
+      x.persenHadir === null ? null : `${x.persenHadir}% hadir`,
+      x.terakhir ? `terakhir ${tanggalPendek(x.terakhir)}` : 'belum ada pertemuan',
+    ].filter(Boolean).join(' · ');
+
+    daftar.appendChild(elemen('div', { kelas: 'dg-kelas' }, [
+      elemen('div', { kelas: 'pengurus-avatar', teks: (NAMA_JENJANG[k.jenjang] || k.jenjang || '?').slice(0, 2).toUpperCase() }),
+      elemen('div', { kelas: 'dg-kelas-teks' }, [
+        elemen('strong', { teks: k.nama }),
+        elemen('span', { teks: `Jenjang ${NAMA_JENJANG[k.jenjang] || k.jenjang} · ${k.tahun_ajaran}` }),
+        elemen('span', { teks: fakta }),
+      ]),
+      elemen('div', { kelas: 'dg-kelas-aksi' }, [catat, riwayat, materi]),
+    ]));
+  });
+  bagian.appendChild(daftar);
+  return bagian;
+}
+
+function bagianMateri(materi, menonjol) {
+  const bagian = elemen('section', { kelas: `dy-bagian${menonjol ? ' dg-materi-utama' : ''}` }, [
+    elemen('h3', { kelas: 'dy-h3', teks: 'Materi Siap Tayang' }),
+  ]);
+  if (menonjol) {
+    bagian.appendChild(elemen('p', { kelas: 'dy-sub dg-materi-catatan',
+      teks: 'Akun Anda terdaftar sebagai guru mitra: akses Anda adalah materi ajar untuk diproyeksikan di kelas. '
+        + 'Data santri dan absensi dikelola guru internal yayasan.' }));
+  }
+  const daftar = elemen('div', { kelas: 'dg-materi' });
+  materi.forEach((m) => {
+    const persen = m.bab ? Math.round((m.babBerPpt / m.bab) * 100) : 0;
+    const tombol = elemen('button', { kelas: menonjol ? 'studio-btn-primary' : 'studio-btn-secondary', atribut: { type: 'button' } },
+      [ikon('ph-presentation-chart'), ' Buka Materi']);
+    tombol.addEventListener('click', () => bukaMateri(m.jenjang));
+    const bar = elemen('div', { kelas: 'dy-progres' }, [elemen('span')]);
+    bar.firstChild.style.width = `${persen}%`;
+    daftar.appendChild(elemen('div', { kelas: 'dg-materi-baris' }, [
+      elemen('div', { kelas: 'dg-materi-teks' }, [
+        elemen('strong', { teks: `Jenjang ${NAMA_JENJANG[m.jenjang] || m.jenjang}` }),
+        elemen('span', { teks: m.bab ? `${m.babBerPpt} dari ${m.bab} bab terbit sudah punya PPT` : 'Belum ada bab yang terbit' }),
+        bar,
+      ]),
+      tombol,
+    ]));
+  });
+  bagian.appendChild(daftar);
+  return bagian;
+}
+
+/** Gambar beranda guru dari STATE.dasbor. Diekspor untuk uji tata letak lokal. */
+export function gambarBeranda(wadah, dasbor = STATE.dasbor, materi = STATE.materi) {
+  STATE.dasbor = dasbor;
+  STATE.materi = materi;
+  STATE.kategori = dasbor?.kategori || STATE.kategori;
+  STATE.kelasList = dasbor?.kelas || [];
+  kosongkan(wadah);
+  wadah.appendChild(kepalaBeranda());
+
+  // Guru mitra TIDAK akan pernah melihat kelas, sebanyak apa pun ia
+  // ditugaskan — batasnya kategori, bukan penugasan (20260913000003).
+  // Jadi berandanya adalah materi, dan tidak menyuruhnya "minta ditugaskan".
+  if (!dasbor) {
+    wadah.appendChild(elemen('div', { kelas: 'studio-empty', teks: 'Dashboard guru gagal dimuat. Tekan Segarkan untuk mencoba lagi.' }));
     return;
   }
 
-  const daftar = buatEl('div', 'pengurus-daftar');
+  if (!STATE.kelasList.length) {
+    if (STATE.kategori === 'eksternal') {
+      wadah.appendChild(bagianMateri(materi, true));
+    } else {
+      wadah.appendChild(elemen('div', { kelas: 'studio-empty',
+        teks: 'Belum ada kelas yang diampu. Hubungi pengurus yayasan untuk ditugaskan ke sebuah kelas.' }));
+      if (materi.length) wadah.appendChild(bagianMateri(materi, false));
+    }
+    return;
+  }
 
-  // Ringkasan tiap kelas diambil BERBARENGAN, bukan berurutan. Seorang guru
-  // bisa memegang tiga kelas; berurutan berarti tiga kali waktu tunggu
-  // jaringan untuk layar yang sama.
-  const ringkasan = await Promise.all(
-    STATE.kelasList.map((k) => ringkasanKelas(k.id).catch(() => null)),
+  const hariIni = tanggalHariIniWib();
+  const olah = olahDashboardGuru(dasbor, hariIni);
+  wadah.append(
+    bagianPerhatian(olah.butir),
+    bagianKelas(olah.perKelas, hariIni),
+    bagianRingkasan(olah.ringkasan),
   );
-
-  STATE.kelasList.forEach((k, i) => {
-    const r = ringkasan[i];
-    const kartu = buatEl('div', 'pengurus-kartu');
-
-    const identitas = buatEl('div', 'pengurus-identitas');
-    identitas.appendChild(buatEl('div', 'pengurus-avatar',
-      (NAMA_JENJANG[k.jenjang] || k.jenjang || '?').slice(0, 2).toUpperCase()));
-    const teks = document.createElement('div');
-    teks.style.minWidth = '0';
-    const nama = buatEl('div', 'pengurus-nama', k.nama);
-    nama.title = k.nama;
-    teks.append(nama, buatEl('div', 'pengurus-meta',
-      `Jenjang ${NAMA_JENJANG[k.jenjang] || k.jenjang} • ${k.tahun_ajaran}`));
-    identitas.appendChild(teks);
-    kartu.appendChild(identitas);
-
-    const sekunder = buatEl('div', 'pengurus-sekunder');
-    sekunder.appendChild(buatEl('div', 'pengurus-label-kecil', 'Ringkasan'));
-    sekunder.appendChild(buatEl('div', 'pengurus-meta',
-      r ? `${r.jumlahSantri} santri • ${r.jumlahPertemuan} pertemuan tercatat` : 'Gagal memuat ringkasan'));
-    sekunder.appendChild(buatEl('div', 'pengurus-meta',
-      r?.pertemuanTerakhir ? `Terakhir: ${formatTanggal(r.pertemuanTerakhir)}` : 'Belum ada pertemuan tercatat'));
-    kartu.appendChild(sekunder);
-
-    const kontrol = buatEl('div', 'pengurus-kontrol');
-    const buka = buatEl('button', 'studio-btn-primary', 'Buka Kelas');
-    buka.addEventListener('click', () => jalankan(async () => {
-      STATE.kelasTerpilih = k;
-      STATE.layar = 'detail';
-      await render();
-    }, 'Gagal membuka kelas.'));
-
-    // Materi dibuka dari kartu kelasnya, bukan cuma dari menu Kurikulum.
-    // Guru yang memegang beberapa kelas perlu menyatakan kelas MANA yang
-    // materinya hendak dibuka — menu Kurikulum sendiri tidak punya cara
-    // menanyakan itu, dan diam-diam memilihkan satu jenjang untuk guru yang
-    // mengampu dua adalah cara termudah menampilkan materi yang salah di
-    // depan kelas.
-    const materi = buatEl('button', 'studio-btn-secondary', 'Buka Materi');
-    materi.addEventListener('click', () => jalankan(async () => {
-      await muatKontenJenjang(k.jenjang);
-      window.PrototypeApp?.switchMainView?.('kurikulum');
-    }, 'Gagal membuka materi kelas.'));
-
-    kontrol.append(buka, materi);
-    kartu.appendChild(kontrol);
-
-    daftar.appendChild(kartu);
-  });
-
-  wadah.appendChild(daftar);
+  if (materi.length) wadah.appendChild(bagianMateri(materi, false));
 }
 
 /* ========================================================================= */
@@ -194,12 +460,10 @@ async function renderDetailKelas(wadah) {
   kepala.appendChild(kiri);
 
   const aksi = buatEl('div', 'studio-header-actions');
-  const kembali = buatEl('button', 'studio-btn-text', '← Semua Kelas');
-  kembali.addEventListener('click', () => jalankan(async () => {
-    STATE.layar = 'kelas';
-    STATE.kelasTerpilih = null;
-    await render();
-  }));
+  // Kembali lewat bukaGuruDashboard(), bukan render() saja: angka beranda
+  // harus dimuat ulang sesudah guru mengisi lembar di kelas ini.
+  const kembali = buatEl('button', 'studio-btn-text', '← Dashboard Guru');
+  kembali.addEventListener('click', () => bukaGuruDashboard());
   const catat = buatEl('button', 'studio-btn-primary', 'Catat Pertemuan Hari Ini');
   catat.addEventListener('click', () => jalankan(
     () => bukaLembar(tanggalHariIniWib()),
@@ -471,7 +735,7 @@ async function render() {
   kosongkan(wadah);
 
   if (STATE.layar === 'kelas') {
-    await renderDaftarKelas(wadah);
+    gambarBeranda(wadah);
     return;
   }
 
@@ -501,22 +765,29 @@ export async function bukaGuruDashboard() {
   if (!wadah) return;
 
   kosongkan(wadah);
-  wadah.appendChild(buatEl('div', 'studio-empty', 'Memuat kelas…'));
+  wadah.appendChild(buatEl('div', 'studio-empty', 'Memuat dashboard guru…'));
 
   await jalankan(async () => {
-    // Berbarengan: kategori tidak bergantung pada daftar kelas, dan dua
-    // perjalanan berurutan hanya menambah waktu tunggu layar pertama.
-    const [kelas, kategori] = await Promise.all([
-      daftarKelasSaya(),
-      kategoriStaffSaya(),
+    // Berbarengan: kesiapan materi tidak bergantung pada data kelas. Materi
+    // yang gagal dimuat cukup menghilangkan bagiannya, bukan seluruh layar.
+    const [dasbor, materi] = await Promise.all([
+      ambilDashboardGuru(),
+      kesiapanMateri(jenjangAktif()).catch((e) => {
+        console.error('[guru-dashboard] kesiapan materi gagal:', e.message);
+        return [];
+      }),
     ]);
-    STATE.kelasList = kelas;
-    STATE.kategori = kategori;
-    // Selalu kembali ke daftar kelas saat menu dibuka lagi dari sidebar —
+    STATE.dasbor = dasbor;
+    STATE.materi = materi;
+    STATE.kategori = dasbor.kategori;
+    STATE.kelasList = dasbor.kelas;
+    // Selalu kembali ke beranda saat menu dibuka lagi dari sidebar —
     // membuka menu seharusnya berarti "mulai dari awal", bukan melanjutkan
-    // lembar yang entah kapan terakhir dibuka.
+    // lembar yang entah kapan terakhir dibuka. Angkanya dimuat ulang juga:
+    // guru yang baru menyimpan absensi lalu kembali ke sini harus melihat
+    // butir "absensi belum diisi" itu sudah hilang.
     STATE.layar = 'kelas';
     STATE.kelasTerpilih = null;
     await render();
-  }, 'Gagal memuat daftar kelas.');
+  }, 'Gagal memuat dashboard guru.');
 }

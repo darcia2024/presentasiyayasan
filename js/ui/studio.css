@@ -1332,3 +1332,47 @@ body.ppt-player-terbuka { overflow: hidden; }
   .dy-pertemuan li { grid-template-columns: 56px 1fr; padding: 11px 14px; }
   .dy-guru { grid-column: 2; margin-top: -8px; font-size: 11.5px; }
 }
+
+/* ==========================================================================
+   DASHBOARD GURU (24 Okt 2026) — js/ui/guru-dashboard.js, layar beranda.
+   Memakai kerangka .dy-* Dashboard Yayasan; di bawah ini hanya tambahannya.
+   ========================================================================== */
+.dy-grid.dy-grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 1100px) { .dy-grid.dy-grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.dy-kartu.is-statis { cursor: default; }
+.dy-kartu.is-statis:hover { transform: none; box-shadow: var(--shadow-sm); border-color: var(--border-color); }
+
+.dg-kelas-daftar { display: grid; gap: 10px; }
+.dg-kelas {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px;
+  padding: 14px 16px; border: 1px solid var(--border-color); border-radius: var(--radius-md);
+  background: #FFFFFF; box-shadow: var(--shadow-sm);
+}
+.dg-kelas-teks { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dg-kelas-teks strong { font-size: 14px; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dg-kelas-teks span { font-size: 12px; color: var(--text-muted); }
+.dg-kelas-aksi { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.dg-kelas-aksi button { display: inline-flex; align-items: center; gap: 6px; }
+
+.dg-materi { display: grid; gap: 10px; }
+.dg-materi-baris {
+  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 14px;
+  padding: 14px 16px; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: #FFFFFF;
+}
+.dg-materi-teks { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.dg-materi-teks strong { font-size: 13.5px; color: var(--text-main); }
+.dg-materi-teks span { font-size: 12px; color: var(--text-muted); }
+.dg-materi-teks .dy-progres { max-width: 260px; margin-top: 4px; }
+.dg-materi-baris button { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+/* Guru mitra: materi adalah seluruh berandanya — dibuat menonjol. */
+.dg-materi-utama .dg-materi-baris { border-color: var(--teal-border); background: var(--teal-light); padding: 18px; }
+.dg-materi-catatan { margin: -4px 0 12px; max-width: 620px; line-height: 1.5; }
+
+@media (max-width: 768px) {
+  .dg-kelas { grid-template-columns: auto 1fr; }
+  .dg-kelas-aksi { grid-column: 1 / -1; justify-content: stretch; }
+  .dg-kelas-aksi button:first-child { flex: 1 1 100%; justify-content: center; min-height: 44px; }
+  .dg-kelas-aksi button:not(:first-child) { flex: 1 1 0; justify-content: center; min-height: 40px; }
+  .dg-materi-baris { grid-template-columns: 1fr; }
+  .dg-materi-baris button { justify-content: center; min-height: 42px; }
+}

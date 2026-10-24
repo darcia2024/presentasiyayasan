@@ -274,7 +274,8 @@
     santri:   { icon: 'ph-users-three',  label: 'Daftar Santri',  act: "PrototypeApp.bukaPanel('santri')" },
     infaq:    { icon: 'ph-hand-coins',   label: 'Infaq',          act: "PrototypeApp.bukaPanel('infaq')" },
     laporan:  { icon: 'ph-chart-bar',    label: 'Laporan Kelas',  act: "PrototypeApp.bukaPanel('laporan')" },
-    ppt:      { icon: 'ph-presentation-chart', label: 'Materi PPT', act: "PrototypeApp.bukaStudioDi('materi-ppt')" }
+    ppt:      { icon: 'ph-presentation-chart', label: 'Materi PPT', act: "PrototypeApp.bukaStudioDi('materi-ppt')" },
+    materi:   { icon: 'ph-presentation-chart', label: 'Buka Materi',  act: "PrototypeApp.switchMainView('kurikulum')" }
   };
 
   var VIEW_META = {
@@ -303,12 +304,13 @@
       bar: 'Silabus',
       chips: ['silabus', 'lanjut', 'suara', 'piagam']
     },
+    /* Judulnya ditimpa syncGreeting() dengan nama guru yang login. */
     'guru-dashboard': {
-      eyebrow: 'Portal Guru',
-      title: 'Dashboard Guru',
-      sub: 'Kelas yang diampu, laporan pertemuan, dan absensi santri.',
+      eyebrow: 'Dashboard Guru',
+      title: 'Assalamu\'alaikum!',
+      sub: 'Lembar pertemuan yang perlu dilengkapi, kelas, dan materi siap tayang.',
       bar: 'Dashboard Guru',
-      chips: ['lanjut', 'mufrodat', 'silabus', 'suara']
+      chips: ['materi', 'mufrodat', 'suara', 'silabus']
     },
     'admin': {
       eyebrow: 'Otoritas Yayasan',
@@ -415,7 +417,10 @@
     var first = teks.split(' ')[0] || 'Santri';
     VIEW_META.beranda.title = 'Ahlan wa Sahlan, ' + first + '!';
     VIEW_META['dashboard-yayasan'].title = 'Assalamu\'alaikum, ' + first + '!';
-    if (currentView === 'beranda' || currentView === 'dashboard-yayasan') paintLargeTitle(currentView);
+    VIEW_META['guru-dashboard'].title = 'Assalamu\'alaikum, ' + first + '!';
+    if (currentView === 'beranda' || currentView === 'dashboard-yayasan' || currentView === 'guru-dashboard') {
+      paintLargeTitle(currentView);
+    }
   }
 
   var lastScrollY = 0;

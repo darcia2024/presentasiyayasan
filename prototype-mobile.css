@@ -2245,6 +2245,8 @@
    Di ujung berkas karena alasan yang sama dengan blok di atas.
    ========================================================================== */
 body:not([data-peran="admin"]) .khusus-admin,
+body:not([data-peran="guru"]) .khusus-guru,
+body[data-peran="admin"] .bukan-admin,
 body[data-peran="admin"] .khusus-santri,
 body[data-peran="guru"] .khusus-santri {
   display: none !important;
