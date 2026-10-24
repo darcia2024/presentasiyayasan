@@ -21,7 +21,10 @@
  *   node tools/daftarkan-akun-awal.js wali  <nomor_wa> "<nama wali>" --pin <PIN> \
  *        --santri "<nama santri>" --jenjang sd [--kelas "SD — Bahasa Arab Dasar"]
  *
- *   peran staff: pengurus (baku) | superadmin | pengajar
+ *   peran staff: superadmin (baku) | pengajar
+ *                (peran 'pengurus' dilebur ke superadmin — migrasi 20261024000004)
+ *   Guru sebaiknya didaftarkan Super Admin dari Panel → tab Guru; skrip ini
+ *   terutama untuk akun SUPER ADMIN, yang sengaja tidak bisa dibuat dari Panel.
  *   kategori   : internal (baku) | eksternal — eksternal HANYA melihat materi,
  *                tidak pernah melihat data santri walau ditugaskan ke kelas
  *                (Fase B2, lihat migrasi 20260913000003_kategori_guru.sql)
@@ -160,7 +163,7 @@ async function simpanPin(jenis, akunId, pin) {
 
 async function buatStaff(nomorMentah, nama, peran, pin, kategori) {
   const nomor = normalkanNomor(nomorMentah);
-  const PERAN_SAH = ['pengajar', 'pengurus', 'superadmin'];
+  const PERAN_SAH = ['pengajar', 'superadmin'];
   if (!PERAN_SAH.includes(peran)) throw new Error(`peran harus salah satu dari: ${PERAN_SAH.join(', ')}`);
   const KATEGORI_SAH = ['internal', 'eksternal'];
   if (!KATEGORI_SAH.includes(kategori)) throw new Error(`kategori harus salah satu dari: ${KATEGORI_SAH.join(', ')}`);
@@ -243,7 +246,7 @@ async function buatWaliSantri(nomorMentah, namaWali, namaSantri, jenjang, namaKe
   if (!jenis || !nomor || !nama) {
     console.error(`
   PEMAKAIAN
-    node tools/daftarkan-akun-awal.js staff <nomor_wa> "<nama>" --pin <PIN> [pengurus|superadmin|pengajar]
+    node tools/daftarkan-akun-awal.js staff <nomor_wa> "<nama>" --pin <PIN> [superadmin|pengajar]
     node tools/daftarkan-akun-awal.js wali  <nomor_wa> "<nama wali>" --pin <PIN> --santri "<nama santri>" --jenjang sd [--kelas "<nama kelas>"]
 
   PIN: 6-12 angka, tidak berurutan, tidak berulang. Dipakai bersama nomor
@@ -259,8 +262,8 @@ async function buatWaliSantri(nomorMentah, namaWali, namaSantri, jenjang, namaKe
   console.log(`\n  Project: ${URL}\n`);
 
   if (jenis === 'staff') {
-    const peranArg = argv.slice(3).find((a) => ['pengurus', 'superadmin', 'pengajar'].includes(a));
-    await buatStaff(nomor, nama, peranArg || 'pengurus', pin, (ambilOpsi('kategori', argv) || 'internal').toLowerCase());
+    const peranArg = argv.slice(3).find((a) => ['superadmin', 'pengajar'].includes(a));
+    await buatStaff(nomor, nama, peranArg || 'superadmin', pin, (ambilOpsi('kategori', argv) || 'internal').toLowerCase());
   } else if (jenis === 'wali') {
     await buatWaliSantri(
       nomor,

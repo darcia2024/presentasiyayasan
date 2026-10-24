@@ -314,9 +314,9 @@
     },
     'admin': {
       eyebrow: 'Otoritas Yayasan',
-      title: 'Panel Pengurus',
+      title: 'Panel Super Admin',
       sub: 'Tata kelola santri, verifikasi infaq, dan sertifikat sanad.',
-      bar: 'Pengurus',
+      bar: 'Panel Super Admin',
       chips: ['santri', 'infaq', 'laporan', 'ppt']
     },
     /* Dua layar di bawah dulu tidak punya entri sama sekali, jadi judul

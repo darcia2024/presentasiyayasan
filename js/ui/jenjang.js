@@ -39,7 +39,7 @@ import { bacaSesi } from '../core/supabase-client.js';
 import { ikon, kosongkan } from '../core/html.js';
 
 const NAMA_JENJANG = { sd: 'SD', smp: 'SMP', sma: 'SMA' };
-const NAMA_PERAN_STAFF = { pengajar: 'Pengajar', pengurus: 'Pengurus Yayasan', superadmin: 'Pengurus Yayasan' };
+const NAMA_PERAN_STAFF = { pengajar: 'Pengajar', pengurus: 'Super Admin', superadmin: 'Super Admin' };
 
 /** Tampilan lain yang harus disembunyikan agar tidak bertumpuk. */
 const TAMPILAN_LAIN = ['viewBerandaUtama', 'viewModulPdf'];
@@ -173,7 +173,7 @@ function tampilkanKurikulumKosong(jenjang) {
   setText('currentVideoSubtitle', 'Materi untuk jenjang ini belum diterbitkan');
   setText(
     'aboutCourseDesc',
-    'Modul untuk jenjang ini belum diterbitkan. Pengurus menyusunnya lewat Studio Kurikulum; ' +
+    'Modul untuk jenjang ini belum diterbitkan. Super Admin menyusunnya lewat Studio Kurikulum; ' +
       'begitu satu modul berstatus terbit, isinya langsung muncul di halaman ini.',
   );
 
@@ -229,7 +229,7 @@ export async function muatKontenJenjang(jenjang) {
       'aboutCourseDesc',
       bab.length
         ? `${m.judul} terdiri dari ${bab.length} pelajaran: ${bab.join(', ')}.`
-        : `${m.judul} belum punya pelajaran. Pengurus menambahkannya lewat Studio Kurikulum.`,
+        : `${m.judul} belum punya pelajaran. Super Admin menambahkannya lewat Studio Kurikulum.`,
     );
     setBreadcrumb('Kurikulum', `Bahasa Arab Jenjang ${label}`, m.judul);
   }

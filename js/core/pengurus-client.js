@@ -395,6 +395,23 @@ export async function ubahKategoriGuru(staffId, kategori) {
   return panggilFungsi('atur-kategori-guru', { staff_id: staffId, kategori });
 }
 
+/**
+ * Super Admin mendaftarkan akun guru baru (24 Okt 2026). Peran selalu
+ * 'pengajar' — ditulis mati di Edge Function daftarkan-guru, bukan dikirim
+ * dari sini. Alasannya sama dengan ubahKategoriGuru(): tabel staff tidak
+ * punya kebijakan tulis.
+ *
+ * @param {{nama:string, nomorWa:string, pin:string, kategori:'internal'|'eksternal'}} p
+ */
+export async function daftarkanGuru(p) {
+  return panggilFungsi('daftarkan-guru', {
+    nama: p.nama,
+    nomor_wa: p.nomorWa,
+    pin: p.pin,
+    kategori: p.kategori,
+  });
+}
+
 /* ------------------------------------------------------------------- INFAQ */
 
 export async function daftarInfaq() {

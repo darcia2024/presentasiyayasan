@@ -273,7 +273,7 @@ export async function renderWaliDashboard() {
   if (!daftarSantri.length) {
     const isi = document.getElementById('dwIsi');
     kosongkan(isi);
-    isi.appendChild(elemen('div', { kelas: 'studio-empty', teks: 'Belum ada profil anak terdaftar pada akun ini. Hubungi pengurus yayasan untuk mendaftarkan santri.' }));
+    isi.appendChild(elemen('div', { kelas: 'studio-empty', teks: 'Belum ada profil anak terdaftar pada akun ini. Hubungi Super Admin yayasan untuk mendaftarkan santri.' }));
     return;
   }
 

@@ -341,7 +341,7 @@ export function tampilkanSilabusKosong(
 
     const sub = document.createElement('div');
     sub.className = 'kosong-sub';
-    sub.textContent = 'Modul yang diterbitkan pengurus lewat Studio Kurikulum akan muncul di sini.';
+    sub.textContent = 'Modul yang diterbitkan Super Admin lewat Studio Kurikulum akan muncul di sini.';
 
     kosong.append(judul, sub);
     card.appendChild(kosong);

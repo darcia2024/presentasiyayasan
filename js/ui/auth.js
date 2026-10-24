@@ -122,7 +122,7 @@ async function masuk() {
     return;
   }
   if (!pin) {
-    setError('authMasukError', 'Masukkan PIN dari pengurus yayasan.');
+    setError('authMasukError', 'Masukkan PIN dari Super Admin yayasan.');
     inputPin.focus();
     return;
   }

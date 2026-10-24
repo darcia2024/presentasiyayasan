@@ -63,7 +63,7 @@ export async function bukaDashboardYayasan() {
     kosongkan(root);
     root.appendChild(elemen('div', {
       kelas: 'studio-empty dy-pesan',
-      teks: 'Dashboard ini khusus pengurus dan superadmin yayasan.',
+      teks: 'Dashboard ini khusus Super Admin yayasan.',
     }));
     return;
   }
@@ -114,8 +114,8 @@ export function gambarIsi(data) {
 export function gambarKerangka(root) {
   kosongkan(root);
   const sesi = bacaSesi();
-  const nama = sesi?.akun?.nama || 'Pengurus';
-  const peran = sesi?.akun?.staff_peran === 'superadmin' ? 'Superadmin' : 'Pengurus Yayasan';
+  const nama = sesi?.akun?.nama || 'Super Admin';
+  const peran = 'Super Admin';
 
   const tombolSegarkan = elemen('button', { kelas: 'studio-btn-secondary dy-segarkan', atribut: { type: 'button' } },
     [ikon('ph-arrows-clockwise'), ' Segarkan']);

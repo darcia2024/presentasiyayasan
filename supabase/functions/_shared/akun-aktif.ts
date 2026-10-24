@@ -79,8 +79,11 @@ export function periksaStaffAktif(
   }
 
   const peran = String(staff.peran);
+  // 'pengurus' masih diterima SAMPAI migrasi 20261024000004 dijalankan — ia
+  // meleburkan semua pengurus jadi superadmin. Fungsi ini terbit lebih dulu
+  // daripada migrasinya, dan akun pengurus tidak boleh terkunci di sela itu.
   if (perluAdmin && peran !== 'pengurus' && peran !== 'superadmin') {
-    return { boleh: false, alasan: 'Hanya pengurus yayasan yang boleh melakukan ini.', peran };
+    return { boleh: false, alasan: 'Hanya Super Admin yayasan yang boleh melakukan ini.', peran };
   }
   return { boleh: true, peran };
 }

@@ -105,7 +105,7 @@ function tampilkanDokumenKosong(grid) {
 
   const sub = document.createElement('div');
   sub.className = 'kosong-sub';
-  sub.textContent = 'Silabus dan modul PDF yang diunggah pengurus akan muncul di sini.';
+  sub.textContent = 'Silabus dan modul PDF yang diunggah Super Admin akan muncul di sini.';
 
   kosong.append(judul, sub);
   grid.appendChild(kosong);

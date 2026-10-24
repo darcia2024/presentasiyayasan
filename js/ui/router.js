@@ -69,7 +69,7 @@ const ROUTES = {
   admin: {
     view: 'viewAdminPanel',
     nav: 'nav-admin-panel',
-    crumb: ['Yayasan PERISA', 'Otoritas & Tata Kelola', 'Panel Pengurus Yayasan'],
+    crumb: ['Yayasan PERISA', 'Otoritas & Tata Kelola', 'Panel Super Admin'],
     toast: 'Beralih ke Panel Otoritas dan Tata Kelola Yayasan',
     tone: 560
   },

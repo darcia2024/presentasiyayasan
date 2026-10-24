@@ -60,7 +60,7 @@ function tombolEsc(e) {
 export function bukaPemutarPpt({ judul, url }) {
   const cek = normalkanLinkEmbed(url);
   if (!cek.ok) {
-    showToast('Link materi bab ini tidak valid. Minta pengurus menempel ulang link embed OneDrive-nya.');
+    showToast('Link materi bab ini tidak valid. Minta Super Admin menempel ulang link embed OneDrive-nya.');
     return;
   }
 

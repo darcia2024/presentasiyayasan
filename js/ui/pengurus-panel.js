@@ -27,6 +27,7 @@ import {
   daftarStaff,
   tugaskanPengajarKelas,
   ubahKategoriGuru,
+  daftarkanGuru,
   aturPinAkun,
   hapusSantri,
   cariWaliIdLewatNomor,
@@ -69,7 +70,7 @@ const TABS = [
   { key: 'laporan', label: 'Laporan' },
 ];
 
-const NAMA_PERAN = { pengajar: 'Pengajar', pengurus: 'Pengurus', superadmin: 'Super Admin' };
+const NAMA_PERAN = { pengajar: 'Pengajar', pengurus: 'Super Admin', superadmin: 'Super Admin' };
 
 const STATE = {
   tab: 'ringkasan',
@@ -122,7 +123,7 @@ export async function bukaPengurusPanel() {
   if (!root) return;
   if (!isAdminLogin()) {
     root.innerHTML = '';
-    const pesan = pesanKosong('Panel ini khusus staff berperan pengurus/superadmin. Masuk dengan akun yang sesuai untuk membukanya.');
+    const pesan = pesanKosong('Panel ini khusus Super Admin yayasan. Masuk dengan akun yang sesuai untuk membukanya.');
     // Jarak tepi disamakan dengan kepala panel di render() (24px 32px) —
     // tanpa ini pesannya menempel ke garis sidebar.
     pesan.style.margin = '24px 32px';
@@ -153,7 +154,7 @@ async function render() {
   header.append(
     (() => {
       const d = document.createElement('div');
-      d.appendChild(buatEl('h2', 'studio-h3', 'Panel Kendali Pengurus Yayasan PERISA'));
+      d.appendChild(buatEl('h2', 'studio-h3', 'Panel Super Admin PERISA'));
       const sub = buatEl('p', null, 'Tata kelola santri, kelas, infaq, dan sertifikat.');
       sub.style.cssText = 'font-size:12px; color:var(--text-muted); margin-top:2px;';
       d.appendChild(sub);
@@ -582,16 +583,29 @@ function fieldSelect(label, opsi) {
  * Daftar staff yayasan, dan satu-satunya tempat kategori guru bisa diubah
  * tanpa membuka terminal (Fase B2).
  *
- * TIDAK ADA TOMBOL BUAT AKUN di sini, dan itu disengaja. Membuat staff
- * berarti menetapkan PERAN, dan peran menentukan siapa yang boleh membaca
- * data seluruh santri yayasan — keputusan yang pantas dilakukan sadar-sadar
- * lewat `tools/daftarkan-akun-awal.js`, bukan lewat formulir yang bisa
- * terklik di sela-sela pekerjaan lain. Yang bisa diubah di layar ini hanya
- * kategori, dan hanya untuk pengajar.
+ * 24 Okt 2026 — Super Admin MENDAFTARKAN GURU dari sini (keputusan
+ * pemilik: dua Super Admin, tiga guru, wali diterbitkan Super Admin). Lewat
+ * Edge Function daftarkan-guru yang menulis peran 'pengajar' secara mati —
+ * formulir ini tidak punya pilihan peran sama sekali. Akun SUPER ADMIN
+ * tetap hanya lewat `tools/daftarkan-akun-awal.js`: memberi wewenang penuh
+ * atas data seluruh santri pantas dilakukan sadar-sadar, bukan lewat
+ * formulir yang bisa terklik di sela pekerjaan lain.
  */
 async function renderGuru(body) {
+  if (STATE.subLayar === 'guru-form') {
+    renderFormGuru(body);
+    return;
+  }
+
   const rowHeader = buatEl('div', 'studio-row-header');
-  rowHeader.appendChild(buatEl('h3', 'studio-h3', 'Guru & Staff Yayasan'));
+  rowHeader.appendChild(buatEl('h3', 'studio-h3', 'Guru & Super Admin'));
+  const btnTambah = buatEl('button', 'studio-btn-primary', '+ Daftarkan Guru');
+  btnTambah.type = 'button';
+  btnTambah.addEventListener('click', () => {
+    STATE.subLayar = 'guru-form';
+    render();
+  });
+  rowHeader.appendChild(btnTambah);
   body.appendChild(rowHeader);
 
   const ket = buatEl('div', 'studio-field-hint',
@@ -671,6 +685,73 @@ async function renderGuru(body) {
     list.appendChild(item);
   });
   body.appendChild(list);
+}
+
+function renderFormGuru(body) {
+  const form = buatEl('div', 'studio-form');
+  form.appendChild(buatEl('h3', 'studio-h3', 'Daftarkan Guru'));
+  const ket = buatEl('div', 'studio-field-hint',
+    'Akun yang dibuat di sini selalu berperan Pengajar. Akun Super Admin dibuat terpisah oleh pengembang.');
+  ket.style.marginBottom = '14px';
+  form.appendChild(ket);
+
+  const fNama = fieldTeks('Nama Guru', 'text', 'mis. Ustazah Afida');
+  const fWa = fieldTeks('Nomor WhatsApp', 'tel', '0812xxxxxxx');
+  fWa.input.inputMode = 'tel';
+  fWa.wrap.appendChild(buatEl('div', 'studio-field-hint', 'Nomor ini yang dipakai guru untuk masuk. Satu nomor hanya untuk satu akun.'));
+
+  const fPin = fieldTeks('PIN Awal (6–12 angka)', 'text', 'mis. 482913');
+  fPin.input.inputMode = 'numeric';
+  fPin.input.maxLength = 12;
+  fPin.input.autocomplete = 'off';
+  fPin.wrap.appendChild(buatEl('div', 'studio-field-hint',
+    'Sampaikan langsung ke guru, jangan lewat pesan yang bisa diteruskan. Guru bisa menggantinya sendiri lewat menu Ganti PIN.'));
+
+  const fKategori = fieldSelect('Kategori', [
+    { value: 'internal', label: 'Internal — kelas, santri, absensi & materi' },
+    { value: 'eksternal', label: 'Mitra — materi ajar saja' },
+  ]);
+
+  form.append(fNama.wrap, fWa.wrap, fPin.wrap, fKategori.wrap);
+
+  const actions = buatEl('div', 'studio-form-actions');
+  const btnSimpan = buatEl('button', 'studio-btn-primary', 'Daftarkan Guru');
+  btnSimpan.type = 'button';
+  const btnBatal = buatEl('button', 'studio-btn-text', 'Batal');
+  btnBatal.type = 'button';
+  btnBatal.addEventListener('click', () => {
+    STATE.subLayar = null;
+    render();
+  });
+  actions.append(btnSimpan, btnBatal);
+  form.appendChild(actions);
+  body.appendChild(form);
+
+  btnSimpan.addEventListener('click', () =>
+    jalankan(async () => {
+      if (!fNama.input.value.trim() || !fWa.input.value.trim() || !fPin.input.value.trim()) {
+        showToast('Nama, nomor WhatsApp, dan PIN awal wajib diisi.');
+        return;
+      }
+      btnSimpan.disabled = true;
+      btnSimpan.textContent = 'Mendaftarkan…';
+      try {
+        const hasil = await daftarkanGuru({
+          nama: fNama.input.value,
+          nomorWa: fWa.input.value,
+          pin: fPin.input.value.trim(),
+          kategori: fKategori.select.value,
+        });
+        playTone(620, 'sine', 0.12, 0.08);
+        showToast(`${hasil.staff.nama} terdaftar sebagai guru. Tugaskan ke kelasnya di tab Kelas.`);
+        STATE.subLayar = null;
+        render();
+      } finally {
+        btnSimpan.disabled = false;
+        btnSimpan.textContent = 'Daftarkan Guru';
+      }
+    }, 'Gagal mendaftarkan guru.'),
+  );
 }
 
 /* ================================================================ KELAS */

@@ -95,7 +95,7 @@ export function tampilkanMufrodatKosong(pesan = 'Pelajaran ini belum punya mufro
 
   const sub = document.createElement('div');
   sub.className = 'kosong-sub';
-  sub.textContent = 'Mufrodat beserta rekaman pelafalannya diisi pengurus lewat Studio Kurikulum.';
+  sub.textContent = 'Mufrodat beserta rekaman pelafalannya diisi Super Admin lewat Studio Kurikulum.';
 
   kosong.append(judul, sub);
   grid.appendChild(kosong);

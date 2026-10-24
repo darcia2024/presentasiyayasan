@@ -86,7 +86,7 @@ export async function muatSertifikatSantri(santriId) {
     if (!data) {
       tampilkanKosong(
         els,
-        'Belum ada piagam untuk santri ini. Piagam terbit setelah pengurus memvalidasi kelulusan sanad.',
+        'Belum ada piagam untuk santri ini. Piagam terbit setelah Super Admin memvalidasi kelulusan sanad.',
       );
       return;
     }

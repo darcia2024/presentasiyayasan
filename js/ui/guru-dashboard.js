@@ -169,7 +169,7 @@ export function olahDashboardGuru(d, hariIni) {
       lembarBolong.push({
         tingkat: 'perlu', ikon: 'ph-note-pencil',
         judul: `Lembar ${tanggalPendek(p.tanggal)} belum ada cakupan & evaluasi`,
-        detail: `${k.nama}. Pengurus membaca bagian ini di laporan kelas.`,
+        detail: `${k.nama}. Super Admin membaca bagian ini di laporan kelas.`,
         aksi: 'Lengkapi Lembar', jalan: () => bukaLembarKelas(k, p.tanggal),
       });
     }
@@ -186,7 +186,7 @@ export function olahDashboardGuru(d, hariIni) {
       butir.push({
         tingkat: 'info', ikon: 'ph-users-three',
         judul: `${k.nama} belum punya santri`,
-        detail: 'Pengurus yayasan yang mendaftarkan santri ke kelas. Absensi bisa diisi setelahnya.',
+        detail: 'Super Admin yayasan yang mendaftarkan santri ke kelas. Absensi bisa diisi setelahnya.',
       });
       return;
     }
@@ -429,7 +429,7 @@ export function gambarBeranda(wadah, dasbor = STATE.dasbor, materi = STATE.mater
       wadah.appendChild(bagianMateri(materi, true));
     } else {
       wadah.appendChild(elemen('div', { kelas: 'studio-empty',
-        teks: 'Belum ada kelas yang diampu. Hubungi pengurus yayasan untuk ditugaskan ke sebuah kelas.' }));
+        teks: 'Belum ada kelas yang diampu. Hubungi Super Admin yayasan untuk ditugaskan ke sebuah kelas.' }));
       if (materi.length) wadah.appendChild(bagianMateri(materi, false));
     }
     return;
@@ -625,7 +625,7 @@ function renderLembar(wadah) {
 
   if (!STATE.santri.length) {
     wadah.appendChild(buatEl('div', 'studio-empty',
-      'Belum ada santri aktif di kelas ini. Pengurus yayasan yang mendaftarkan santri ke kelas.'));
+      'Belum ada santri aktif di kelas ini. Super Admin yayasan yang mendaftarkan santri ke kelas.'));
   } else {
     const daftar = buatEl('div', 'pengurus-daftar');
     STATE.santri.forEach((s) => {
