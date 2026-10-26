@@ -11,8 +11,8 @@
       mata; sekarang alfa mengikuti tangga tetap di bawah.
 
    2. SEMANTIK — warna menurut PERANNYA: permukaan, teks, garis, aksen,
-      status. Mengganti palet aplikasi (rancangan desain ulang, Fase 1b:
-      kertas gading /pitch) cukup mengubah lapis ini.
+      status. Sejak Fase 1b (26 Okt 2026) nilainya mengikuti palet /pitch:
+      kertas gading, tinta hutan, teal hanya aksen, emas untuk angka.
 
    3. NAMA LAMA — --teal-primary, --text-main, --m-canvas, … dipakai ratusan
       kali di CSS dan di style="" sebaris. Dibiarkan sebagai ALIAS ke token
@@ -31,71 +31,96 @@
    menunjuk token yang tidak didefinisikan.
    ========================================================================== */
 
+/* Instrument Serif (OFL, lisensi di vendor/fonts/OFL-instrument-serif.txt),
+   disajikan dari repo sendiri karena CSP memblokir Google Fonts. Hanya satu
+   bobot (400): dipakai untuk judul halaman dan angka besar, tidak untuk
+   label, tombol, atau tabel. Di sini, bukan di tema.css, supaya halaman
+   publik yang hanya memuat tokens.css (Verifikasi, Offline) ikut bisa. */
+@font-face {
+  font-family: "Instrument Serif";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("vendor/fonts/instrument-serif-400-latin.woff2") format("woff2");
+}
+
 :root {
   /* ---------------------------------------------------- 1. PALET DASAR */
 
+  /* Palet halaman /pitch (pitch.css), 26 Okt 2026: kertas gading hangat,
+     tinta hijau hutan, teal PERISA hanya sebagai aksen, emas untuk angka.
+     pitch.css menulisnya dalam oklch(); di sini hex setaranya, karena
+     aplikasi juga dibuka di HP lama (Chrome < 111 tidak mengenal oklch dan
+     warnanya akan hilang). Nilai oklch asal ditulis di komentar. */
+
   /* hutan — tinta dan bingkai gelap */
-  --hutan-950: #08201E;
-  --hutan-900: #072826;
-  --hutan-800: #0A3835;
-  --hutan-700: #0C443F;
-  --hutan-600: #2B4846;
+  --hutan-950: #10211B;   /* oklch(23% .025 170)  tinta */
+  --hutan-900: #10271F;   /* oklch(25% .032 170)  hutan */
+  --hutan-800: #1D332B;   /* oklch(30% .032 170) */
+  --hutan-700: #273D35;   /* oklch(34% .032 170) */
+  --hutan-600: #34403C;   /* oklch(36% .018 170)  tinta-2 */
+  --hutan-500: #344740;   /* oklch(38% .028 170)  garis di atas hutan */
 
   /* teal — warna PERISA */
-  --teal-800: #007368;
-  --teal-700: #00877A;
-  --teal-600: #00A896;
-  --teal-500: #00D2BE;
-  --teal-300: #7FD6CB;
-  --teal-200: #A7F3EC;
-  --teal-100: #E6F6F4;
+  --teal-800: #005F52;    /* oklch(43% .085 180) */
+  --teal-700: #007465;    /* oklch(50% .095 180)  aksen */
+  --teal-600: #239382;    /* oklch(60% .10 180) */
+  --teal-500: #6DD3C0;    /* oklch(80% .10 180)   aksen di atas gelap */
+  --teal-300: #B3ECDF;    /* oklch(90% .06 180) */
+  --teal-200: #DEF2ED;    /* oklch(94.5% .022 178) */
 
-  /* abu kehijauan — teks redup, garis, permukaan */
-  --abu-600: #658482;
-  --abu-400: #8AA5A2;
-  --abu-300: #D3E0DE;
-  --abu-200: #E2ECEB;
-  --abu-150: #EDF3F2;
-  --abu-100: #F2F6F5;
-  --abu-50:  #F8FAFA;
+  /* abu hangat — teks redup, garis, kertas */
+  --abu-600: #56605C;     /* oklch(48% .014 170)  redup */
+  --abu-400: #7F8985;     /* oklch(62% .012 170) */
+  --abu-300: #BDB7AB;     /* oklch(78% .018 85)   garis tegas */
+  --abu-200: #D9D4C9;     /* oklch(87% .016 85)   garis */
+  --abu-150: #E7E2D9;     /* oklch(91.5% .014 85) */
+  --abu-120: #EDE8DD;     /* oklch(93.2% .016 85) kertas-2 */
+  --abu-100: #F5F1E9;     /* oklch(96% .012 85)   kertas */
+  --abu-60:  #F8F5EF;     /* oklch(97.2% .009 85) */
+  --abu-50:  #FCF9F5;     /* oklch(98.4% .006 85) kartu */
+  --abu-hutan-200: #BFBAAF; /* oklch(79% .016 85) teks redup di atas hutan */
+  --abu-hutan-50: #F2EEE6;  /* oklch(95% .012 85)  teks di atas hutan */
 
-  /* emas — sertifikat, level, sanad */
-  --emas-800: #6B4B02;
-  --emas-700: #855E03;
-  --emas-500: #C5921B;
-  --emas-300: #F0C86C;
-  --emas-50:  #FDF7E7;
+  /* emas — sertifikat, level, sanad, angka */
+  --emas-800: #5F4110;    /* oklch(40% .075 75) */
+  --emas-700: #76531B;    /* oklch(47% .085 75) */
+  --emas-600: #926929;    /* oklch(55% .095 75)   emas /pitch */
+  --emas-500: #C69E58;    /* oklch(72% .10 80) */
+  --emas-300: #E9C67D;    /* oklch(84% .10 85) */
+  --emas-50:  #F9EFDB;    /* oklch(95.5% .028 85) */
 
   /* merah — HANYA untuk status bahaya */
-  --merah-800: #8F1B21;
-  --merah-700: #B4232A;
-  --merah-300: #F0C6C6;
-  --merah-100: #FBEAEA;
-  --merah-50:  #FDF0EE;
+  --merah-800: #861D1F;   /* oklch(41% .14 25) */
+  --merah-700: #A82D2E;   /* oklch(49% .16 25) */
+  --merah-300: #EDC6C2;   /* oklch(86% .045 25) */
+  --merah-100: #FDE7E4;   /* oklch(94.5% .025 25) */
+  --merah-50:  #FEF2EE;   /* oklch(97% .014 40) */
 
-  --putih: #FFFFFF;
+  --putih: #FCFAF6;       /* oklch(98.5% .006 85) — putih kertas, bukan #FFF */
   --hitam: #000000;
 
   /* Kanal RGB untuk transparansi: rgb(var(--rgb-hutan) / 0.06). */
-  --rgb-hutan: 7 40 38;
-  --rgb-hutan-pekat: 4 24 22;
-  --rgb-putih: 255 255 255;
+  --rgb-hutan: 16 33 27;
+  --rgb-hutan-pekat: 10 24 19;
+  --rgb-putih: 252 250 246;
   --rgb-hitam: 0 0 0;
-  --rgb-teal: 0 135 122;
-  --rgb-teal-terang: 0 210 190;
-  --rgb-teal-pucat: 167 243 236;
-  --rgb-emas: 197 146 27;
-  --rgb-emas-tua: 133 94 3;
-  --rgb-emas-terang: 240 200 108;
+  --rgb-teal: 0 116 101;
+  --rgb-teal-terang: 109 211 192;
+  --rgb-teal-pucat: 179 236 223;
+  --rgb-bahaya: 168 45 46;
+  --rgb-emas: 198 158 88;
+  --rgb-emas-tua: 118 83 27;
+  --rgb-emas-terang: 233 198 125;
 
   /* -------------------------------------------------------- 2. SEMANTIK */
 
   /* Permukaan */
-  --permukaan-halaman: var(--putih);
-  --permukaan-kartu: var(--putih);
-  --permukaan-lembut: var(--abu-50);
+  --permukaan-halaman: var(--abu-100);  /* kertas gading */
+  --permukaan-kartu: var(--abu-50);     /* tabel, formulir, kartu kerja */
+  --permukaan-lembut: var(--abu-60);
   --permukaan-kanvas: var(--abu-100);   /* latar halaman di HP */
-  --permukaan-redup: var(--abu-150);
+  --permukaan-redup: var(--abu-120);
   --permukaan-gelap: var(--hutan-900);  /* bingkai, app bar, pemutar */
   --permukaan-gelap-2: var(--hutan-800);
   --permukaan-gelap-3: var(--hutan-700);
@@ -106,8 +131,8 @@
   --teks-redup: var(--abu-600);
   --teks-samar: var(--abu-400);
   --teks-terbalik: var(--putih);        /* di atas permukaan gelap */
-  --teks-terbalik-redup: var(--teal-200);
-  --teks-terbalik-aksen: var(--teal-300);
+  --teks-terbalik-redup: var(--abu-hutan-200);
+  --teks-terbalik-aksen: var(--teal-500);
 
   /* Garis */
   --garis: var(--abu-200);
@@ -119,12 +144,14 @@
   --aksen-hover: var(--teal-800);
   --aksen-cerah: var(--teal-600);
   --aksen-terang: var(--teal-500);      /* aksen di atas permukaan gelap */
-  --aksen-pucat: var(--teal-200);       /* ujung gradasi aksen di atas gelap */
-  --aksen-lembut: var(--teal-100);
+  --aksen-pucat: var(--teal-300);       /* ujung gradasi aksen di atas gelap */
+  --aksen-lembut: var(--teal-200);
   --aksen-garis: rgb(var(--rgb-teal) / 0.20);
 
-  /* Emas — level, sertifikat, angka capaian */
+  /* Emas — level, sertifikat, angka capaian. --emas untuk garis & isian,
+     --emas-angka untuk teks/angka (kontras cukup di atas kertas). */
   --emas: var(--emas-500);
+  --emas-angka: var(--emas-600);
   --emas-tua: var(--emas-700);
   --emas-gelap: var(--emas-800);
   --emas-terang: var(--emas-300);
@@ -133,7 +160,7 @@
 
   /* Status. Merah berarti ADA YANG TERHENTI sampai ini dibereskan — bukan
      "ada pekerjaan". Pekerjaan rutin memakai --status-perlu. Lihat aturan
-     tingkat di js/ui/dashboard-yayasan.js. */
+     tingkat di js/ui/perhatian.js. */
   --status-bahaya: var(--merah-700);
   --status-bahaya-tua: var(--merah-800);
   --status-bahaya-garis: var(--merah-300);
@@ -149,10 +176,16 @@
   --tindakan: var(--hutan-900);
   --tindakan-hover: var(--aksen);
 
-  /* Bayangan */
-  --bayangan-1: 0 1px 3px rgb(var(--rgb-hutan) / 0.04), 0 1px 2px rgb(var(--rgb-hutan) / 0.03);
-  --bayangan-2: 0 4px 16px rgb(var(--rgb-hutan) / 0.06), 0 1px 4px rgb(var(--rgb-hutan) / 0.03);
-  --bayangan-3: 0 14px 40px rgb(var(--rgb-hutan) / 0.08), 0 2px 8px rgb(var(--rgb-hutan) / 0.04);
+  /* Bayangan. Gaya /pitch: batas dibuat garis 1px, bayangan nyaris tak
+     ada — hanya lapisan yang benar-benar melayang (modal, menu) yang
+     memakai --bayangan-3. */
+  --bayangan-1: 0 1px 0 rgb(var(--rgb-hutan) / 0.03);
+  --bayangan-2: 0 1px 2px rgb(var(--rgb-hutan) / 0.04), 0 4px 14px rgb(var(--rgb-hutan) / 0.05);
+  --bayangan-3: 0 18px 44px rgb(var(--rgb-hutan) / 0.14), 0 2px 8px rgb(var(--rgb-hutan) / 0.06);
+
+  /* Tipografi /pitch: serif untuk judul halaman & angka besar, sans untuk
+     sisanya. */
+  --font-judul: "Instrument Serif", "Iowan Old Style", Georgia, serif;
 
   /* Warna milik pihak lain — sengaja di luar palet */
   --merek-powerpoint: #C43E1C;

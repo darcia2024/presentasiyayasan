@@ -87,6 +87,7 @@ const VERSIONED_ASSETS = [
   'tokens.css',
   'prototype.css',
   'prototype-mobile.css',
+  'tema.css',
   'prototype-mobile.js',
   'js/aksi-klik.js',
   'js/app.js',
@@ -105,6 +106,9 @@ const SHELL_ASSETS = [
   '/tokens.css',
   '/prototype.css',
   '/prototype-mobile.css',
+  /* Tema /pitch: tanpa ini aplikasi luring tampil dengan rupa lama. */
+  '/tema.css',
+  '/vendor/fonts/instrument-serif-400-latin.woff2',
   '/prototype-mobile.js',
   /* Pengganti onclick sebaris (CSP tanpa 'unsafe-inline'). Tanpa precache,
      seluruh tombol mati saat aplikasi dibuka luring. */

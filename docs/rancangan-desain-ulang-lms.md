@@ -1,12 +1,16 @@
 # Rancangan Desain Ulang Aplikasi LMS PERISA
 
-**Dibuat:** 26 Oktober 2026. **Status:** rancangan, menunggu persetujuan.
+**Dibuat:** 26 Oktober 2026. **Status:** Fase 0–3 dikerjakan 26 Okt 2026; Fase 4 belum.
 
 **Kemajuan (26 Okt 2026):**
 
 - **Fase 0 selesai.** Semua warna CSS aplikasi lewat `tokens.css`.
-- **Fase 1, bagian token: selesai.** 140 token primitif diringkas jadi palet dasar, token semantik (`--permukaan-*`, `--teks-*`, `--status-*`, …), dan nama lama sebagai alias. Penggantian **nilai** palet ke kertas gading /pitch belum dikerjakan, karena menunggu keputusan 8.1 dan 8.2.
-- **Perlu Perhatian dikerjakan lebih awal** (bagian 5, Dashboard Yayasan & Guru): kartu terang dengan garis tingkat tipis, satu gaya tombol, dan merah hanya untuk yang benar-benar mendesak. Aturan tingkatnya ada di `js/ui/perhatian.js`.
+- **Fase 1 selesai.** 140 token primitif diringkas jadi palet dasar, token semantik (`--permukaan-*`, `--teks-*`, `--status-*`, …), dan nama lama sebagai alias. **Nilainya kini palet /pitch**: kertas gading, tinta hutan, teal hanya aksen, emas untuk angka. Hex setara dari oklch (pitch.css) dipakai karena HP lama tidak mengenal `oklch()`.
+- **Fase 2 selesai: kerangka.** `tema.css` (dimuat terakhir) menimpa rupa sidebar (label grup kalimat biasa, menu aktif latar lembut), kepala atas & remah roti, kartu profil, toast, modal, dan di HP: app bar hutan polos, judul besar serif, chip bergaris tipis, tab bar kertas gading, drawer.
+- **Fase 3, sebagian besar selesai: layar.** Masuk, Verifikasi, Dashboard Yayasan/Guru/Wali, Kurikulum (silabus, kartu mufrodat), judul semua layar Studio & Panel, Simulasi Suara, Offline, dan Kebijakan Privasi. Serif **hanya** untuk judul halaman dan angka besar (keputusan 8.1 mengikuti saran); sidebar kertas gading (8.2 mengikuti saran).
+- **Perlu Perhatian** (bagian 5): kartu terang dengan garis tingkat tipis, satu gaya tombol, merah hanya untuk yang mendesak. Aturan tingkat di `js/ui/perhatian.js`.
+- **Belum:** absensi tombol segmen (keputusan 8.5, perubahan interaksi), nomor bab emas di silabus (nomornya tertulis di dalam teks judul), uji di proyektor kelas, dan seluruh Fase 4 (memindah `style=""` sebaris dan mengurangi `!important`).
+
 **Acuan visual:** halaman [/pitch](https://presentasiyayasan.vercel.app/pitch) (commit `b8f4a93`).
 
 ---

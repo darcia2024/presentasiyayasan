@@ -1,0 +1,439 @@
+/* ==========================================================================
+   PERISA AZHARIYAH — Tema /pitch untuk aplikasi LMS
+   Desain ulang Fase 2 (kerangka) & Fase 3 (layar), 26 Okt 2026.
+   Rancangan: docs/rancangan-desain-ulang-lms.md.
+
+   Dimuat TERAKHIR, sesudah prototype.css, auth.css, studio.css, dan
+   prototype-mobile.css. Berkas-berkas itu masih memuat struktur tata letak
+   dan banyak `!important`; berkas ini hanya menimpa RUPA — latar, garis,
+   sudut, huruf — ke bahasa visual halaman /pitch:
+
+     kertas gading + kartu terang · tinta hijau hutan · teal hanya aksen ·
+     emas untuk angka · serif untuk judul halaman · garis tipis, bukan
+     bayangan · tombol pil.
+
+   ATURAN YANG DIJAGA tools/token-warna.js (bagian dari npm run build):
+   tidak ada warna literal di sini, dan hanya token semantik dari
+   tokens.css yang dipakai — bukan palet dasar. Mengganti rupa aplikasi
+   berarti mengubah tokens.css, bukan berkas ini.
+
+   Serif (Instrument Serif) HANYA untuk judul halaman dan angka besar.
+   Label, tombol, tabel, dan isian tetap Plus Jakarta Sans: di layar kerja,
+   keterbacaan menang atas suasana.
+   ========================================================================== */
+
+/* Sudut: kartu 16, kontrol 10, tombol pil (rancangan bagian 3). */
+:root {
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --m-radius: 18px;
+  --m-radius-sm: 14px;
+  --m-radius-xs: 10px;
+}
+
+/* ==========================================================================
+   FASE 2 — KERANGKA DESKTOP
+   ========================================================================== */
+
+/* Kertas gading di seluruh bingkai; kartu kerja tetap lebih terang. */
+.app-window-frame,
+.ref-main-workspace,
+.ref-top-header,
+.ref-sidebar {
+  background: var(--permukaan-halaman);
+}
+
+.ref-sidebar { border-right: 1px solid var(--garis); }
+
+/* Kartu profil: bukan kotak bergaris, cukup baris inisial · nama · peran. */
+.sidebar-user-card,
+.sidebar-user-card:hover,
+.sidebar-user-card.active {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--garis);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 2px 2px 16px;
+  margin-bottom: 14px;
+}
+.sidebar-user-card:hover .user-name-small { text-decoration: underline; text-decoration-color: var(--aksen); text-underline-offset: 3px; }
+.user-avatar-small { background: var(--tindakan); color: var(--teks-terbalik); }
+.user-name-small { font-size: 13px; font-weight: 700; color: var(--teks-utama); }
+
+/* Label grup: kalimat biasa, kecil, tenang — bukan huruf kapital renggang. */
+.nav-group-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--teks-redup);
+}
+
+/* Menu: latar lembut + tinta hutan untuk yang aktif, bukan blok teal. */
+.ref-nav-item {
+  font-weight: 600;
+  color: var(--teks-isi);
+  border-radius: var(--radius-sm);
+}
+.ref-nav-item i { color: var(--teks-redup); }
+.ref-nav-item:hover { background: var(--permukaan-redup); color: var(--teks-utama); }
+.ref-nav-item.active { background: var(--permukaan-redup); color: var(--teks-utama); font-weight: 700; }
+.ref-nav-item.active i,
+.ref-nav-item:hover i { color: var(--aksen); }
+.ref-nav-item.is-danger,
+.ref-nav-item.is-danger i { color: var(--status-bahaya-tua); }
+.ref-nav-item.is-danger:hover { background: var(--status-bahaya-pucat); }
+
+/* Kepala atas & remah roti: lebih tipis, satu baris kecil. */
+.ref-top-header { padding: 12px 36px; border-bottom: 1px solid var(--garis); }
+.breadcrumb-trail { font-size: 12px; font-weight: 500; color: var(--teks-redup); }
+.breadcrumb-trail span.active { color: var(--teks-utama); font-weight: 700; }
+.icon-circle-btn {
+  width: 34px; height: 34px;
+  background: transparent;
+  border: 1px solid var(--garis-tegas);
+  color: var(--teks-isi);
+}
+.icon-circle-btn:hover { background: var(--permukaan-redup); border-color: var(--teks-utama); color: var(--teks-utama); }
+
+/* Toast: pil hutan, lebih kecil. */
+.toast-bar {
+  background: var(--permukaan-gelap);
+  border: 0;
+  padding: 9px 18px;
+  font-size: 12.5px;
+  font-weight: 600;
+  box-shadow: var(--bayangan-2);
+}
+
+/* Modal (Ganti PIN, sertifikat): kartu terang, judul serif. */
+.modal-box {
+  background: var(--permukaan-kartu) !important;
+  border: 1px solid var(--garis) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--bayangan-3) !important;
+}
+/* !important karena markup modal (index.html) menulis ukuran, bobot, dan
+   warna judulnya sebaris. */
+.modal-box :is(h2, h3) {
+  font-family: var(--font-judul) !important;
+  font-weight: 400 !important;
+  font-size: 28px !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.01em !important;
+  text-transform: none !important;
+  color: var(--teks-utama) !important;
+}
+
+/* Profil sidebar (menu pop-up). */
+.profile-dropdown-menu {
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--bayangan-3) !important;
+}
+
+/* ==========================================================================
+   FASE 2/3 — KOMPONEN BERSAMA
+   ========================================================================== */
+
+/* Judul halaman: serif. */
+.dy-judul,
+.studio-title,
+.course-main-h1,
+.auth-step-title {
+  font-family: var(--font-judul);
+  font-weight: 400;
+  letter-spacing: -0.012em;
+  line-height: 1.05;
+  color: var(--teks-utama);
+}
+.dy-judul { font-size: 36px; margin: 4px 0 4px; }
+.studio-title { font-size: 32px; margin: 0 0 6px; }
+.course-main-h1 { font-size: 34px; }
+.auth-step-title { font-size: 30px; margin: 0 0 10px; }
+
+/* Judul tiap layar Studio & Panel ("Daftar Santri", "Materi PPT — Jenjang
+   SD", …) dan judul Perpustakaan, yang ukurannya ditulis sebaris di
+   index.html. */
+.studio-h3,
+#viewModulPdf h2 {
+  font-family: var(--font-judul);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.08;
+  color: var(--teks-utama);
+}
+.studio-h3 { font-size: 26px; }
+h2.studio-h3 { font-size: 34px; }
+#viewModulPdf h2 { font-size: 34px !important; font-weight: 400 !important; color: var(--teks-utama) !important; }
+
+/* Eyebrow: emas tua, seperti nomor bab /pitch. */
+.dy-eyebrow { color: var(--emas-tua); letter-spacing: .08em; }
+
+/* Angka besar: serif. */
+.dy-kartu-angka strong {
+  font-family: var(--font-judul);
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--teks-utama);
+}
+.dy-kartu-angka span { font-size: 12.5px; }
+
+/* Judul bagian: tetap sans, sedikit lebih tenang. */
+.dy-h3 { font-size: 15px; font-weight: 700; color: var(--teks-utama); }
+
+/* Kartu: terang, garis tipis, tanpa bayangan. */
+.dy-kartu,
+.dy-butir,
+.dg-kelas,
+.dw-anak,
+.dy-pertemuan,
+.course-content-accordion-card,
+.what-learn-card,
+.pengurus-kartu {
+  box-shadow: none;
+}
+.dy-kartu:hover { box-shadow: none; border-color: var(--garis-tegas); transform: none; }
+.dy-kartu-ikon { background: var(--aksen-lembut); color: var(--aksen); border-radius: var(--radius-sm); }
+
+/* Tombol: pil, seperti /pitch. */
+.dy-aksi,
+.studio-btn-primary,
+.studio-btn-secondary,
+.btn-enroll-primary,
+.auth-btn-primary {
+  border-radius: var(--radius-full);
+}
+.dy-aksi { padding: 10px 18px; }
+.studio-btn-primary { background: var(--aksen); color: var(--teks-terbalik); }
+.studio-btn-primary:hover { background: var(--aksen-hover); }
+.studio-btn-secondary {
+  background: transparent;
+  border: 1px solid var(--garis-tegas);
+  color: var(--teks-utama);
+}
+.studio-btn-secondary:hover { background: var(--permukaan-kartu); border-color: var(--teks-utama); }
+
+/* Isian: sudut 10, garis tegas, fokus aksen. */
+.studio-input,
+.auth-input {
+  border-radius: var(--radius-sm);
+  background: var(--permukaan-kartu);
+  border-width: 1px;
+  border-color: var(--garis-tegas);
+  color: var(--teks-utama);
+}
+.studio-input:focus,
+.auth-input:focus {
+  border-color: var(--aksen);
+  box-shadow: 0 0 0 3px var(--aksen-garis);
+}
+
+/* Tab: garis bawah tipis, aktifnya tinta + garis aksen. */
+.studio-tabs { border-bottom-width: 1px; }
+.studio-tab { font-weight: 600; color: var(--teks-redup); }
+.studio-tab--active { color: var(--teks-utama); border-bottom-color: var(--aksen); }
+.sub-tab-btn { font-weight: 600; }
+.sub-tab-btn:hover,
+.sub-tab-btn.active { color: var(--teks-utama); }
+.sub-tab-btn.active::after { background: var(--aksen); }
+
+/* ==========================================================================
+   FASE 3 — KURIKULUM & KARTU MUFRODAT
+   ========================================================================== */
+
+/* Silabus: daftar bergaris; baris aktif = latar lembut + garis aksen di kiri. */
+.accordion-main-title {
+  font-family: var(--font-judul);
+  font-weight: 400;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  color: var(--teks-utama);
+}
+.section-head { background: var(--permukaan-lembut); }
+.section-head:hover { background: var(--permukaan-redup); }
+.lesson-sub-row { font-weight: 500; }
+.lesson-sub-row:hover { background: var(--permukaan-lembut); color: var(--teks-utama); }
+.lesson-sub-row.active {
+  background: var(--permukaan-redup);
+  color: var(--teks-utama);
+  font-weight: 700;
+  box-shadow: inset 3px 0 0 var(--aksen);
+}
+.lesson-ppt-btn { background: transparent; border-color: var(--garis-tegas); color: var(--teks-isi); }
+.lesson-ppt-btn:hover:not(:disabled) { background: var(--aksen-lembut); border-color: var(--aksen); }
+
+/* Kartu mufrodat: huruf Arab Amiri lebih besar, tinta (bukan teal), tombol
+   suara lingkaran bergaris. */
+.arabic-word-card {
+  border-width: 1px;
+  padding: 18px 20px;
+}
+.arabic-word-card:hover { background: var(--permukaan-lembut); border-color: var(--garis-tegas); transform: none; }
+/* Amiri punya tanduk atas dan ekor bawah yang tinggi: line-height rapat
+   membuat huruf Arab menimpa baris Latin di bawahnya. */
+.arabic-text-large { font-size: 34px; color: var(--teks-utama); line-height: 1.6; }
+.latin-meaning-text { font-size: 12.5px; font-weight: 500; margin-top: 2px; }
+.speaker-play-btn {
+  background: transparent;
+  color: var(--teks-isi);
+  border: 1px solid var(--garis-tegas);
+  border-radius: 50%;
+}
+.arabic-word-card.speaking-active {
+  border-color: var(--aksen) !important;
+  background: var(--aksen-lembut) !important;
+  box-shadow: none !important;
+  transform: none;
+}
+.arabic-word-card.speaking-active .speaker-play-btn { background: var(--aksen); border-color: var(--aksen); }
+
+/* ==========================================================================
+   FASE 3 — MASUK (gerbang login)
+   Latar kertas gading, kartu terang, judul serif, tombol pil teal.
+   ========================================================================== */
+.auth-gate { background: var(--permukaan-halaman); }
+.auth-card {
+  background: var(--permukaan-kartu);
+  border: 1px solid var(--garis);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--bayangan-2);
+  padding: 32px 28px 28px;
+}
+.auth-brand-title { font-weight: 700; }
+.auth-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--teks-isi);
+}
+.auth-btn-primary {
+  min-height: 48px;
+  font-weight: 700;
+  background: var(--aksen);
+}
+.auth-btn-primary:hover { background: var(--aksen-hover); }
+.auth-pin-lihat:hover { background: var(--permukaan-redup); color: var(--teks-utama); }
+
+/* ==========================================================================
+   FASE 2 — KERANGKA HP (≤ 768 px)
+   prototype-mobile.css memakai !important hampir di semua aturan kerangka,
+   jadi penimpaan di sini ikut !important dan menang karena dimuat belakangan.
+   ========================================================================== */
+@media (max-width: 768px) {
+
+  /* App bar: hutan polos, tanpa blur; tombol bergaris tipis. */
+  .mobile-top-nav,
+  body.m-scrolled .mobile-top-nav {
+    background: var(--permukaan-gelap) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-bottom: 1px solid rgb(var(--rgb-putih) / 0.14) !important;
+    box-shadow: none !important;
+  }
+  .mobile-hamburger-btn,
+  .mobile-action-icon {
+    background: transparent !important;
+    border: 1px solid rgb(var(--rgb-putih) / 0.28) !important;
+  }
+  .mobile-user-avatar-tag {
+    background: var(--aksen) !important;
+    border: 1px solid rgb(var(--rgb-putih) / 0.4) !important;
+  }
+
+  /* Judul besar: hutan polos, judul serif, chip bergaris tipis. */
+  .m-largetitle {
+    background: var(--permukaan-gelap);
+    border-radius: 0 0 22px 22px;
+    padding-bottom: 24px;
+  }
+  .m-largetitle::after { display: none; }
+  .m-lt-eyebrow {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    margin-bottom: 8px;
+    font-size: 11px;
+    letter-spacing: .1em;
+    color: var(--emas-terang);
+  }
+  .m-lt-title {
+    font-family: var(--font-judul);
+    font-weight: 400;
+    font-size: 34px;
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+  }
+  .m-lt-sub { color: var(--teks-terbalik-redup); font-weight: 400; }
+  .m-chip {
+    background: transparent;
+    border: 1px solid rgb(var(--rgb-putih) / 0.3);
+    font-weight: 600;
+  }
+  .m-chip:active { background: rgb(var(--rgb-putih) / 0.1); }
+  .m-chip i { color: var(--aksen-terang); }
+  .m-chip.is-gold { background: transparent; border-color: rgb(var(--rgb-emas-terang) / 0.5); }
+
+  /* Tab bar: kertas gading, ikon tinta, tombol tengah hutan. */
+  .mobile-bottom-nav {
+    background: var(--permukaan-halaman) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-top: 1px solid var(--garis) !important;
+    box-shadow: none !important;
+  }
+  .bottom-nav-item { color: var(--teks-redup) !important; }
+  .bottom-nav-item.active { color: var(--teks-utama) !important; }
+  .bottom-nav-item.active i { color: var(--aksen) !important; }
+  .bottom-nav-item::before { background: var(--aksen); }
+  .bottom-nav-item.m-tab-center i {
+    background: var(--permukaan-gelap) !important;
+    color: var(--teks-terbalik) !important;
+    border: 3px solid var(--permukaan-halaman) !important;
+    box-shadow: var(--bayangan-2) !important;
+  }
+
+  /* Drawer: mengikuti sidebar desktop. */
+  .mobile-drawer-menu {
+    background: var(--permukaan-halaman) !important;
+    box-shadow: var(--bayangan-3) !important;
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0 !important;
+  }
+  .drawer-header-row { border-bottom: 1px solid var(--garis) !important; }
+  .m-drawer-user { background: var(--permukaan-redup); }
+  .m-drawer-user::after { display: none; }
+  .m-drawer-avatar {
+    background: var(--tindakan);
+    border: 0;
+  }
+  .m-drawer-uname { color: var(--teks-utama); font-weight: 700; }
+  .m-drawer-usub { color: var(--teks-redup); font-weight: 500; }
+  .m-drawer-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--teks-redup);
+  }
+  .mobile-drawer-menu .ref-nav-item { color: var(--teks-isi) !important; }
+  .mobile-drawer-menu .ref-nav-item.active {
+    background: var(--permukaan-redup) !important;
+    color: var(--teks-utama) !important;
+  }
+  .mobile-drawer-menu .ref-nav-item.active i { color: var(--aksen) !important; }
+
+  /* Kartu & bagian. */
+  .m-card { border: 1px solid var(--garis); box-shadow: none; }
+  .m-section-title { font-weight: 700; color: var(--teks-utama); }
+  .m-section-link { color: var(--aksen); }
+
+  /* Angka & judul serif di HP, sedikit lebih kecil dari desktop. */
+  .dy-judul { font-size: 30px; }
+  .dy-kartu-angka strong { font-size: 34px; }
+  .auth-step-title { font-size: 28px; }
+}
