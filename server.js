@@ -113,9 +113,72 @@ const MIME_TYPES = {
  * yayasan berikutnya akan langsung memakainya.
  */
 
+/*
+ * MODE DEMO LOKAL — melihat layar di balik login dengan data FIKTIF.
+ *
+ * Bukan jalan masuk. Dia tidak menjalankan logika login apa pun: server hanya
+ * menyuntikkan tools/demo/mock.js ke index.html, dan skrip itu menaruh sesi
+ * tiruan di localStorage lalu menjawab permintaan Supabase dari data karangan.
+ * Basis data sungguhan tidak tersentuh, dan semua tulisan ditolak.
+ *
+ * Tiga pagar, semuanya harus lolos:
+ *   1. server mendengar di loopback (HOST=0.0.0.0 mematikan demo),
+ *   2. permintaannya datang dari loopback,
+ *   3. NODE_ENV bukan production.
+ * Skrip demo ada di tools/, yang tidak pernah ikut ke dist/ (lihat
+ * tools/build-dist.js), jadi tidak pernah sampai ke Vercel.
+ *
+ * Pakai: npm start, lalu buka /__demo/admin, /__demo/guru, atau /__demo/wali.
+ * Keluar: /__demo/keluar.
+ */
+const LOOPBACK = new Set(['127.0.0.1', '::1', '::ffff:127.0.0.1']);
+const DEMO_AKTIF = LOOPBACK.has(HOST) && NODE_ENV !== 'production';
+const PERAN_DEMO = new Set(['admin', 'guru', 'wali']);
+const DEMO_DIR = path.join(ROOT, 'tools', 'demo');
+
+const perancDemo = (req) => (/(?:^|;\s*)perisa_demo=(admin|guru|wali)\b/.exec(req.headers.cookie || '') || [])[1] || null;
+
+/** @returns {boolean} true kalau permintaan sudah dijawab di sini. */
+function tanganiDemo(req, res, pathname) {
+  if (!DEMO_AKTIF || !LOOPBACK.has(req.socket.remoteAddress)) return false;
+
+  const teks = (status, tipe, badan, tambahan = {}) => {
+    res.writeHead(status, { 'Content-Type': tipe, 'Cache-Control': 'no-store', 'Content-Security-Policy': CSP, ...tambahan });
+    res.end(badan);
+    return true;
+  };
+
+  if (pathname === '/__demo/mock.js' || pathname === '/__demo/bersih.js') {
+    return teks(200, 'text/javascript; charset=utf-8', fs.readFileSync(path.join(DEMO_DIR, pathname.split('/').pop())));
+  }
+
+  const m = /^\/__demo\/(admin|guru|wali|keluar)$/.exec(pathname);
+  if (m) {
+    const kuki = m[1] === 'keluar'
+      ? 'perisa_demo=; Path=/; Max-Age=0; SameSite=Strict'
+      : `perisa_demo=${m[1]}; Path=/; SameSite=Strict`;
+    return teks(200, 'text/html; charset=utf-8',
+      '<!doctype html><meta charset="utf-8"><title>Mode demo</title><p>Menyiapkan mode demo…</p>'
+      + '<script src="/__demo/bersih.js"></script>',
+      { 'Set-Cookie': kuki });
+  }
+
+  // Selama demo, service worker dimatikan: index.html yang tersimpan di
+  // cache-nya tidak akan melewati penyuntikan di bawah.
+  if (perancDemo(req) && pathname === '/sw.js') {
+    return teks(200, 'text/javascript; charset=utf-8',
+      "self.addEventListener('install', () => self.skipWaiting());"
+      + "self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));",
+      { 'Service-Worker-Allowed': '/' });
+  }
+  return false;
+}
+
 const server = http.createServer((req, res) => {
   const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
   const pathname = parsedUrl.pathname;
+
+  if ((req.method === 'GET' || req.method === 'HEAD') && tanganiDemo(req, res, pathname)) return;
 
   // Tanpa CORS: halaman ini hanya dibuka dari origin-nya sendiri, dan `*`
   // membuat situs mana pun yang dibuka di peramban yang sama bisa membaca
@@ -148,6 +211,17 @@ const server = http.createServer((req, res) => {
       headers['Cache-Control'] = 'public, max-age=604800';
     } else {
       headers['Cache-Control'] = 'no-cache';
+    }
+
+    // Mode demo: suntikkan skrip tiruan ke index.html, sebelum skrip lain.
+    if (path.basename(filePath) === 'index.html' && DEMO_AKTIF && perancDemo(req)
+        && LOOPBACK.has(req.socket.remoteAddress)) {
+      let html = fs.readFileSync(filePath, 'utf8');
+      html = html.replace(/<head>/i, '<head>\n  <script src="/__demo/mock.js"></script>');
+      headers['Cache-Control'] = 'no-store';
+      res.writeHead(200, headers);
+      res.end(html);
+      return;
     }
 
     res.writeHead(200, headers);

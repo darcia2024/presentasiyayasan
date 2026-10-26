@@ -205,6 +205,26 @@ sidebar → buka materi**. Pengajar mendarat di Dashboard Guru, pengurus di Pane
 Otoritas Yayasan. Selama fase guru-first (lihat `js/ui/fase.js`), wali dan
 santri mendarat di halaman Kurikulum karena Dashboard Wali & Santri dikunci.
 
+### Melihat layar di balik login (mode demo)
+
+Untuk memeriksa tampilan dashboard, panel, atau studio tanpa memegang akun
+sungguhan, jalankan `npm start` lalu buka salah satu:
+
+- `http://localhost:3020/__demo/admin` — Super Admin (Umi Elly)
+- `http://localhost:3020/__demo/guru` — pengajar (Ustazah Nadia)
+- `http://localhost:3020/__demo/wali` — wali (Ibu Rahma Fitriani)
+- `http://localhost:3020/__demo/keluar` — keluar dari demo
+
+Ini **bukan jalan masuk**. Server hanya menyuntikkan `tools/demo/mock.js`,
+yang menaruh sesi tiruan di peramban dan menjawab permintaan ke Supabase
+dari data **fiktif**. Basis data sungguhan tidak tersentuh, dan semua
+perubahan (tambah/ubah/hapus) ditolak. Pagarnya: hanya jalan kalau server
+mendengar di localhost (`HOST=0.0.0.0` mematikannya), hanya untuk permintaan
+dari mesin yang sama, dan tidak di `NODE_ENV=production`. Skripnya ada di
+`tools/`, yang tidak pernah ikut ke `dist/`; `npm run build:dist` gagal kalau
+kode demo ada di hasil terbit. Pojok kiri bawah layar menampilkan penanda
+"MODE DEMO".
+
 > Gunakan `server.js`, bukan `python -m http.server`. Server Node menyajikan
 > `manifest.webmanifest` dengan tipe MIME yang benar dan mengirim header
 > `Service-Worker-Allowed` yang dibutuhkan agar PWA dapat dipasang.

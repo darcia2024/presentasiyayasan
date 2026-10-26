@@ -124,6 +124,19 @@ function main() {
     process.exit(1);
   }
 
+  // Mode demo lokal (tools/demo/, disuntik server.js) membuat sesi tiruan di
+  // peramban. Dia hanya aman karena tidak pernah terbit; kalau ada yang
+  // menyalin skripnya ke js/ atau menautnya dari HTML, dia ikut ke Vercel dan
+  // jadi jalan masuk palsu. Diperiksa dari ISI, bukan nama berkas.
+  const PENANDA_DEMO = ['__demo/', 'perisa_demo', 'sesi-demo-bukan-token'];
+  const demoBocor = terkumpul.filter((f) => /\.(js|html|css|webmanifest)$/i.test(f)
+    && PENANDA_DEMO.some((p) => fs.readFileSync(path.join(DIST, f), 'utf8').includes(p)));
+  if (demoBocor.length) {
+    console.error('  ✗ GAGAL — kode MODE DEMO lokal ikut ke dist/ (jalan masuk palsu):');
+    demoBocor.forEach((f) => console.error(`      ${f}`));
+    process.exit(1);
+  }
+
   if (!fs.existsSync(path.join(DIST, 'js', 'config.js'))) {
     console.error('  ✗ GAGAL — js/config.js tidak ada. Jalankan `npm run build` lebih dulu.');
     process.exit(1);
