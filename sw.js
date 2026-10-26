@@ -8,7 +8,7 @@
      • Endpoint /api/*               -> network-first + fallback cache terakhir
    ========================================================================== */
 
-const SW_VERSION   = 'perisa-v1.1.0-28707dff';
+const SW_VERSION   = 'perisa-v1.1.0-d72ec691';
 const SHELL_CACHE  = `${SW_VERSION}-shell`;
 const ASSET_CACHE  = `${SW_VERSION}-assets`;
 const CDN_CACHE    = `${SW_VERSION}-cdn`;
@@ -45,7 +45,7 @@ const SHELL_ASSETS = [
   '/js/core/csv.js',
   '/js/core/content-loader.js',
   '/js/ui/studio.js',
-  '/js/ui/studio.css?v=cff4d607',
+  '/js/ui/studio.css?v=9e589fe0',
   '/js/ui/mufrodat-cards.js',
   '/js/core/video-client.js',
   '/js/ui/video-player.js',
@@ -63,6 +63,7 @@ const SHELL_ASSETS = [
   '/js/ui/guru-dashboard.js',
   '/js/ui/pengurus-panel.js',
   '/js/ui/dashboard-yayasan.js',
+  '/js/ui/perhatian.js',
   '/js/ui/sertifikat-admin.js',
   '/js/ui/sertifikat-santri.js',
   '/js/core/onedrive.js',

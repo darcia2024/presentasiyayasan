@@ -112,7 +112,9 @@ function bagianKabar(daftarSantri, data) {
 
   const daftar = elemen('div', { kelas: 'dy-perhatian' });
   baru.forEach(({ anak, s }) => {
-    daftar.appendChild(elemen('div', { kelas: 'dy-butir is-perlu' }, [
+    // is-kabar, bukan tingkat status: sertifikat terbit adalah kabar baik,
+    // bukan pekerjaan yang menunggu (lihat js/ui/perhatian.js).
+    daftar.appendChild(elemen('div', { kelas: 'dy-butir is-kabar' }, [
       elemen('div', { kelas: 'dy-butir-ikon' }, [ikon('ph-certificate')]),
       elemen('div', { kelas: 'dy-butir-teks' }, [
         elemen('strong', { teks: `Sertifikat ${s.level ? `Level ${s.level} ` : ''}untuk ${anak.nama} telah terbit` }),

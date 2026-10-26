@@ -1,6 +1,12 @@
 # Rancangan Desain Ulang Aplikasi LMS PERISA
 
-**Dibuat:** 26 Oktober 2026. **Status:** rancangan, menunggu persetujuan. Belum ada kode yang diubah.
+**Dibuat:** 26 Oktober 2026. **Status:** rancangan, menunggu persetujuan.
+
+**Kemajuan (26 Okt 2026):**
+
+- **Fase 0 selesai.** Semua warna CSS aplikasi lewat `tokens.css`.
+- **Fase 1, bagian token: selesai.** 140 token primitif diringkas jadi palet dasar, token semantik (`--permukaan-*`, `--teks-*`, `--status-*`, …), dan nama lama sebagai alias. Penggantian **nilai** palet ke kertas gading /pitch belum dikerjakan, karena menunggu keputusan 8.1 dan 8.2.
+- **Perlu Perhatian dikerjakan lebih awal** (bagian 5, Dashboard Yayasan & Guru): kartu terang dengan garis tingkat tipis, satu gaya tombol, dan merah hanya untuk yang benar-benar mendesak. Aturan tingkatnya ada di `js/ui/perhatian.js`.
 **Acuan visual:** halaman [/pitch](https://presentasiyayasan.vercel.app/pitch) (commit `b8f4a93`).
 
 ---

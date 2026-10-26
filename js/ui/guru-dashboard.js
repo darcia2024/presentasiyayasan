@@ -20,6 +20,7 @@ import { muatKontenJenjang } from './jenjang.js';
 import { playTone, showToast } from '../core/feedback.js';
 import { elemen, ikon } from '../core/html.js';
 import { jenjangAktif } from './fase.js';
+import { URUTAN_TINGKAT, kelasHitung, judulButir } from './perhatian.js';
 import {
   daftarSantriKelas,
   daftarPertemuan,
@@ -159,8 +160,11 @@ export function olahDashboardGuru(d, hariIni) {
     const k = kelasById.get(p.kelas_id);
     const jumlahSantri = santriKelas.get(p.kelas_id)?.length || 0;
     if (jumlahSantri && !absenPertemuan.has(p.id)) {
+      // Absensi kemarin adalah pekerjaan rutin. Yang sudah lewat seminggu
+      // praktis hilang — guru tidak lagi ingat siapa yang datang — jadi
+      // baru itu yang mendesak (aturan tingkat: js/ui/perhatian.js).
       lembarBolong.push({
-        tingkat: 'mendesak', ikon: 'ph-user-list',
+        tingkat: p.tanggal < batas7Iso ? 'mendesak' : 'perlu', ikon: 'ph-user-list',
         judul: `Absensi ${tanggalPendek(p.tanggal)} belum diisi`,
         detail: `${k.nama} · ${jumlahSantri} santri belum ditandai.`,
         aksi: 'Isi Absensi', jalan: () => bukaLembarKelas(k, p.tanggal),
@@ -219,8 +223,7 @@ export function olahDashboardGuru(d, hariIni) {
     }
   });
 
-  const urutan = { mendesak: 0, perlu: 1, info: 2 };
-  butir.sort((a, b) => urutan[a.tingkat] - urutan[b.tingkat]);
+  butir.sort((a, b) => URUTAN_TINGKAT[a.tingkat] - URUTAN_TINGKAT[b.tingkat]);
 
   const rekap = { hadir: 0, izin: 0, sakit: 0, alfa: 0 };
   d.absensi.forEach((a) => { if (a.status in rekap) rekap[a.status] += 1; });
@@ -279,7 +282,7 @@ function bagianPerhatian(butir) {
   const bagian = elemen('section', { kelas: 'dy-bagian' }, [
     elemen('h3', { kelas: 'dy-h3' }, [
       'Perlu Perhatian',
-      elemen('span', { kelas: `dy-hitung${butir.length ? '' : ' is-nol'}`, teks: String(butir.length) }),
+      elemen('span', { kelas: kelasHitung(butir), teks: String(butir.length) }),
     ]),
   ]);
   if (!butir.length) {
@@ -296,7 +299,7 @@ function bagianPerhatian(butir) {
   butir.forEach((b) => {
     const isi = [
       elemen('div', { kelas: 'dy-butir-ikon' }, [ikon(b.ikon)]),
-      elemen('div', { kelas: 'dy-butir-teks' }, [elemen('strong', { teks: b.judul }), elemen('span', { teks: b.detail })]),
+      elemen('div', { kelas: 'dy-butir-teks' }, [judulButir(b), elemen('span', { teks: b.detail })]),
     ];
     if (b.aksi) {
       const tombol = elemen('button', { kelas: 'dy-aksi', atribut: { type: 'button' } }, [b.aksi, ' ', ikon('ph-arrow-right')]);

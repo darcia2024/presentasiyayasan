@@ -161,6 +161,8 @@ const SHELL_ASSETS = [
   '/js/ui/guru-dashboard.js',
   '/js/ui/pengurus-panel.js',
   '/js/ui/dashboard-yayasan.js',
+  /* Bagian "Perlu Perhatian" bersama — diimpor kedua dashboard di atas. */
+  '/js/ui/perhatian.js',
   '/js/ui/sertifikat-admin.js',
   '/js/ui/sertifikat-santri.js',
   /* Fase C3 — Pemutar PPT (link embed OneDrive). Diimpor syllabus.js,

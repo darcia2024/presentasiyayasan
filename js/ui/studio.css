@@ -1193,9 +1193,13 @@ body.ppt-player-terbuka { overflow: hidden; }
 
 /* ==========================================================================
    DASHBOARD YAYASAN (24 Okt 2026) — js/ui/dashboard-yayasan.js
-   "Perlu Perhatian" sengaja paling mencolok: berwarna, berikon besar, dan
-   bertombol tegas. Ringkasan di bawahnya tenang — angka untuk dibaca,
-   bukan untuk dikejar.
+   "Perlu Perhatian" tetap yang paling depan, tapi sejak desain ulang Fase 1
+   (26 Okt) tidak lagi berupa kotak merah/kuning bertumpuk: kartu terang,
+   garis tingkat tipis di kiri, ikon berwarna, dan SATU gaya tombol. Merah
+   hanya untuk yang mendesak (aturannya: js/ui/perhatian.js), dan selalu
+   ditemani label teks "Mendesak" — warna tidak boleh jadi satu-satunya
+   pembeda. Ringkasan di bawahnya tenang — angka untuk dibaca, bukan untuk
+   dikejar.
    ========================================================================== */
 #viewDashboardYayasan { padding: 24px 32px 40px; }
 
@@ -1221,43 +1225,53 @@ body.ppt-player-terbuka { overflow: hidden; }
 }
 .dy-h3-baris { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .dy-h3-baris .dy-h3 { margin-bottom: 12px; }
+/* Lencana hitungan berwarna menurut butir TERBERAT (js/ui/perhatian.js). */
 .dy-hitung {
   min-width: 22px; height: 22px; padding: 0 7px; border-radius: 999px;
   display: inline-flex; align-items: center; justify-content: center;
-  background: var(--status-bahaya); color: var(--teks-terbalik); font-size: 11.5px; font-weight: 800;
+  background: var(--tindakan); color: var(--teks-terbalik); font-size: 11.5px; font-weight: 800;
 }
-.dy-hitung.is-nol { background: var(--teal-light); color: var(--teal-primary); }
+.dy-hitung.is-mendesak { background: var(--status-bahaya); }
+.dy-hitung.is-perlu { background: var(--status-perlu-tua); }
+.dy-hitung.is-info { background: var(--status-info); }
+.dy-hitung.is-nol { background: var(--aksen-lembut); color: var(--aksen); }
 
 /* --- Perlu Perhatian --------------------------------------------------- */
 .dy-perhatian { display: grid; gap: 10px; }
+/* Kartu selalu terang; tingkat dibaca dari garis kiri, ikon, dan (untuk yang
+   mendesak) label teks — bukan dari latar penuh berwarna. */
 .dy-butir {
   display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px;
   padding: 14px 16px; border-radius: var(--radius-md);
-  border: 1px solid var(--border-color); border-left-width: 5px; background: var(--permukaan-kartu);
-  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--garis); border-left-width: 3px; background: var(--permukaan-kartu);
+  box-shadow: var(--bayangan-1);
 }
-.dy-butir.is-mendesak { border-left-color: var(--status-bahaya); background: var(--status-bahaya-pucat); }
-.dy-butir.is-perlu { border-left-color: var(--gold-primary); background: var(--gold-light); }
-.dy-butir.is-info { border-left-color: var(--teal-primary); }
+.dy-butir.is-mendesak { border-left-color: var(--status-bahaya); }
+.dy-butir.is-perlu { border-left-color: var(--status-perlu); }
+.dy-butir.is-info { border-left-color: var(--status-info); }
 .dy-butir-ikon {
   width: 42px; height: 42px; border-radius: 12px; font-size: 22px;
   display: flex; align-items: center; justify-content: center;
-  background: var(--permukaan-kartu); color: var(--teal-primary);
+  background: var(--status-info-lembut); color: var(--status-info);
 }
-.is-mendesak .dy-butir-ikon { color: var(--status-bahaya); }
-.is-perlu .dy-butir-ikon { color: var(--gold-dark); }
+.is-mendesak .dy-butir-ikon { background: var(--status-bahaya-lembut); color: var(--status-bahaya); }
+.is-perlu .dy-butir-ikon { background: var(--status-perlu-lembut); color: var(--status-perlu-tua); }
+.is-kabar .dy-butir-ikon { background: var(--permukaan-kartu); }
 .dy-butir-teks { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.dy-butir-teks strong { font-size: 14px; color: var(--text-main); }
-.dy-butir-teks span { font-size: 12.5px; color: var(--text-body); line-height: 1.45; }
+.dy-butir-teks strong { font-size: 14px; color: var(--teks-utama); }
+.dy-butir-teks span { font-size: 12.5px; color: var(--teks-isi); line-height: 1.45; }
+.dy-butir-teks .dy-tanda {
+  display: inline-block; vertical-align: 1px; margin-right: 6px; padding: 1px 7px; border-radius: 999px;
+  background: var(--status-bahaya-lembut); color: var(--status-bahaya-tua);
+  font-size: 10.5px; font-weight: 800; letter-spacing: .02em; text-transform: uppercase;
+}
 .dy-aksi {
   display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
   padding: 10px 14px; min-height: 40px; border: 0; border-radius: var(--radius-sm);
-  background: var(--teal-dark); color: var(--teks-terbalik);
+  background: var(--tindakan); color: var(--teks-terbalik);
   font-family: var(--font-family); font-size: 12.5px; font-weight: 700; cursor: pointer;
 }
-.dy-aksi:hover { background: var(--teal-primary); }
-.is-mendesak .dy-aksi { background: var(--status-bahaya); }
-.is-mendesak .dy-aksi:hover { background: var(--status-bahaya-tua); }
+.dy-aksi:hover { background: var(--tindakan-hover); }
 
 .dy-beres {
   display: flex; align-items: center; gap: 14px; padding: 16px 18px;
@@ -1411,8 +1425,11 @@ body.ppt-player-terbuka { overflow: hidden; }
 }
 .dw-tautan:hover { text-decoration: underline; }
 a.dy-aksi { text-decoration: none; }
-.is-perlu a.dy-aksi { background: var(--gold-dark); }
-.is-perlu a.dy-aksi:hover { background: var(--emas-gelap); }
+/* Kabar Terbaru: sertifikat terbit — kabar baik berwarna emas, bukan status. */
+.dy-butir.is-kabar { border-left-color: var(--emas); background: var(--emas-lembut); }
+.is-kabar .dy-butir-ikon { color: var(--emas-tua); }
+.is-kabar .dy-aksi { background: var(--emas-tua); }
+.is-kabar .dy-aksi:hover { background: var(--emas-gelap); }
 
 .dw-xp {
   display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 10px 16px;

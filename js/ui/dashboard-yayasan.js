@@ -23,6 +23,7 @@ import { bacaSesi } from '../core/supabase-client.js';
 import { ambilDashboardYayasan } from '../core/pengurus-client.js';
 import { elemen, ikon, kosongkan } from '../core/html.js';
 import { jenjangAktif } from './fase.js';
+import { URUTAN_TINGKAT, kelasHitung, judulButir } from './perhatian.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -145,13 +146,18 @@ export function gambarKerangka(root) {
  * Hanya hal yang bisa DIKERJAKAN pengurus. Angka yang sekadar menarik
  * (jumlah santri, sertifikat) tinggal di Ringkasan — kalau ikut di sini,
  * daftar ini tidak pernah kosong dan berhenti dibaca.
+ *
+ * Tingkat tiap butir mengikuti aturan di js/ui/perhatian.js. Di sini hanya
+ * kelas tanpa pengajar yang mendesak: kelas itu tidak muncul di dashboard
+ * guru mana pun, jadi absensinya terhenti. Infaq yang menunggu verifikasi
+ * adalah pekerjaan rutin, bukan sesuatu yang terhenti.
  */
 function daftarPerhatian(d) {
   const butir = [];
 
   if (d.infaq.pending) {
     butir.push({
-      tingkat: 'mendesak', ikon: 'ph-hand-coins',
+      tingkat: 'perlu', ikon: 'ph-hand-coins',
       judul: `${d.infaq.pending} infaq menunggu verifikasi`,
       detail: `Total ${rupiah(d.infaq.totalPending)} belum dikonfirmasi ke keluarga.`,
       aksi: 'Verifikasi Infaq', jalan: () => buka.panel('infaq'),
@@ -205,7 +211,7 @@ function daftarPerhatian(d) {
       aksi: 'Tinjau Modul', jalan: () => buka.studio('modul-list'),
     });
   }
-  return butir;
+  return butir.sort((a, b) => URUTAN_TINGKAT[a.tingkat] - URUTAN_TINGKAT[b.tingkat]);
 }
 
 function bagianPerhatian(d) {
@@ -213,7 +219,7 @@ function bagianPerhatian(d) {
   const bagian = elemen('section', { kelas: 'dy-bagian' }, [
     elemen('h3', { kelas: 'dy-h3' }, [
       'Perlu Perhatian',
-      elemen('span', { kelas: `dy-hitung${butir.length ? '' : ' is-nol'}`, teks: String(butir.length) }),
+      elemen('span', { kelas: kelasHitung(butir), teks: String(butir.length) }),
     ]),
   ]);
 
@@ -235,7 +241,7 @@ function bagianPerhatian(d) {
     daftar.appendChild(elemen('div', { kelas: `dy-butir is-${b.tingkat}` }, [
       elemen('div', { kelas: 'dy-butir-ikon' }, [ikon(b.ikon)]),
       elemen('div', { kelas: 'dy-butir-teks' }, [
-        elemen('strong', { teks: b.judul }),
+        judulButir(b),
         elemen('span', { teks: b.detail }),
       ]),
       tombol,
