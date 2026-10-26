@@ -84,6 +84,7 @@ const TIDAK_IKUT_HASH = new Set(['/js/config.js']);
 
 /* Berkas yang disajikan ke browser dan wajib ikut di-cap. */
 const VERSIONED_ASSETS = [
+  'tokens.css',
   'prototype.css',
   'prototype-mobile.css',
   'prototype-mobile.js',
@@ -100,6 +101,8 @@ const VERSIONED_ASSETS = [
 const SHELL_ASSETS = [
   '/',
   '/index.html',
+  /* Token warna — tanpa precache, aplikasi luring tampil tanpa warna. */
+  '/tokens.css',
   '/prototype.css',
   '/prototype-mobile.css',
   '/prototype-mobile.js',

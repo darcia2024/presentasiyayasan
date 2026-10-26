@@ -6,10 +6,11 @@
   "scripts": {
     "lint": "node tools/periksa-sintaks.js",
     "check:csp": "node tools/periksa-csp.js",
+    "check:token": "node tools/token-warna.js --periksa",
     "check:functions": "deno check supabase/functions/*/index.ts supabase/functions/_shared/*.ts",
     "stamp": "node tools/build-icons.js && node tools/gen-config.js && node tools/stamp-version.js",
     "start": "npm run stamp && node server.js",
-    "build": "npm run stamp && npm run check:csp",
+    "build": "npm run stamp && npm run check:csp && npm run check:token",
     "release:patch": "npm version patch --no-git-tag-version && npm run stamp",
     "release:minor": "npm version minor --no-git-tag-version && npm run stamp",
     "test:unit": "node --test tests/unit/*.test.mjs",

@@ -1,0 +1,161 @@
+/* ==========================================================================
+   PERISA AZHARIYAH — Token warna PRIMITIF
+   DIHASILKAN OLEH tools/token-warna.js (Fase 0 desain ulang, 26 Okt 2026).
+   Satu-satunya tempat warna literal di CSS aplikasi. Berkas CSS lain hanya
+   memakai var(--…); npm run build menolak warna literal di luar berkas ini.
+   Nama diturunkan dari warnanya: rumpun OKLCH + kecerahan (+ alfa).
+   ========================================================================== */
+
+:root {
+  /* emas */
+  --warna-emas-44: #6B4B02;
+  --warna-emas-51-a70: rgba(133, 94, 3, 0.7);
+  --warna-emas-51: #855E03;
+  --warna-emas-69-a35: rgba(197, 146, 27, 0.35);
+  --warna-emas-69: #C5921B;
+  --warna-emas-85-a14: rgba(240, 200, 108, 0.14);
+  --warna-emas-85-a34: rgba(240, 200, 108, 0.34);
+  --warna-emas-85: #F0C86C;
+  --warna-emas-98: #FDF7E7;
+
+  /* hutan */
+  --warna-hutan-19-a50: rgba(4, 24, 22, 0.5);
+  --warna-hutan-19-a55: rgba(4, 24, 22, 0.55);
+  --warna-hutan-22: #061F1D;
+  --warna-hutan-22-2: #0B1F1D;
+  --warna-hutan-22-3: #08201E;
+  --warna-hutan-25: #072624;
+  --warna-hutan-25-a0: rgba(7, 40, 38, 0);
+  --warna-hutan-25-a4: rgba(7, 40, 38, 0.04);
+  --warna-hutan-25-a5: rgba(7, 40, 38, 0.05);
+  --warna-hutan-25-a6: rgba(7, 40, 38, 0.055);
+  --warna-hutan-25-a6-2: rgba(7, 40, 38, 0.06);
+  --warna-hutan-25-a7: rgba(7, 40, 38, 0.07);
+  --warna-hutan-25-a8: rgba(7, 40, 38, 0.08);
+  --warna-hutan-25-a10: rgba(7, 40, 38, 0.1);
+  --warna-hutan-25-a14: rgba(7, 40, 38, 0.14);
+  --warna-hutan-25-a16: rgba(7, 40, 38, 0.16);
+  --warna-hutan-25-a18: rgba(7, 40, 38, 0.18);
+  --warna-hutan-25-a22: rgba(7, 40, 38, 0.22);
+  --warna-hutan-25-a28: rgba(7, 40, 38, 0.28);
+  --warna-hutan-25-a30: rgba(7, 40, 38, 0.3);
+  --warna-hutan-25-a36: rgba(7, 40, 38, 0.36);
+  --warna-hutan-25-a40: rgba(7, 40, 38, 0.4);
+  --warna-hutan-25-a50: rgba(7, 40, 38, 0.5);
+  --warna-hutan-25-a65: rgba(7, 40, 38, 0.65);
+  --warna-hutan-25-a72: rgba(7, 40, 38, 0.72);
+  --warna-hutan-25-a75: rgba(7, 40, 38, 0.75);
+  --warna-hutan-25-a86: rgba(7, 40, 38, 0.86);
+  --warna-hutan-25-a94: rgba(7, 40, 38, 0.94);
+  --warna-hutan-25-a96: rgba(7, 40, 38, 0.96);
+  --warna-hutan-25-a97: rgba(7, 40, 38, 0.97);
+  --warna-hutan-25-2: #072826;
+  --warna-hutan-25-a2: rgba(8, 40, 38, 0.02);
+  --warna-hutan-25-a3: rgba(8, 40, 38, 0.03);
+  --warna-hutan-25-a4-2: rgba(8, 40, 38, 0.04);
+  --warna-hutan-25-a6-3: rgba(8, 40, 38, 0.06);
+  --warna-hutan-25-a8-2: rgba(8, 40, 38, 0.08);
+  --warna-hutan-29: #0a3330;
+  --warna-hutan-31: #0A3835;
+  --warna-hutan-32: #0F3A37;
+  --warna-hutan-32-2: #0C3B37;
+  --warna-hutan-34: #0F403D;
+  --warna-hutan-35: #0C443F;
+  --warna-hutan-38: #2B4846;
+
+  /* merah */
+  --warna-merah-43: #8F1B21;
+  --warna-merah-44: #8E2F24;
+  --warna-merah-50: #A33A2E;
+  --warna-merah-50-2: #B4232A;
+  --warna-merah-55: #C43E1C;
+  --warna-merah-64: #EF4444;
+  --warna-merah-86: #F0C6C6;
+
+  /* netral */
+  --warna-netral-0-a10: rgba(0, 0, 0, 0.1);
+  --warna-netral-0-a15: rgba(0, 0, 0, 0.15);
+  --warna-netral-0-a28: rgba(0, 0, 0, 0.28);
+  --warna-netral-0-a30: rgba(0, 0, 0, 0.3);
+  --warna-netral-0-a34: rgba(0, 0, 0, 0.34);
+  --warna-netral-0-a35: rgba(0, 0, 0, 0.35);
+  --warna-netral-0-a40: rgba(0, 0, 0, 0.4);
+  --warna-netral-0-a42: rgba(0, 0, 0, 0.42);
+  --warna-netral-0-a72: rgba(0, 0, 0, 0.72);
+  --warna-netral-0: #000000;
+  --warna-netral-45: #525659;
+  --warna-netral-90: #D3E0DE;
+  --warna-netral-94: #E5EBEA;
+  --warna-netral-94-2: #E2ECEB;
+  --warna-netral-94-3: #E6EEED;
+  --warna-netral-94-4: #E4EFED;
+  --warna-netral-95: #E9EFEE;
+  --warna-netral-95-2: #FBEAEA;
+  --warna-netral-96: #EDF3F2;
+  --warna-netral-96-2: #E6F6F4;
+  --warna-netral-96-3: #FDF0EE;
+  --warna-netral-97: #F2F6F5;
+  --warna-netral-97-2: #F1F7F6;
+  --warna-netral-98: #EFFBF9;
+  --warna-netral-98-2: #F5F9F8;
+  --warna-netral-98-3: #FFF7F7;
+  --warna-netral-98-4: #F8FAFA;
+  --warna-netral-100-a6: rgba(255, 255, 255, 0.06);
+  --warna-netral-100-a8: rgba(255, 255, 255, 0.08);
+  --warna-netral-100-a9: rgba(255, 255, 255, 0.09);
+  --warna-netral-100-a10: rgba(255, 255, 255, 0.1);
+  --warna-netral-100-a12: rgba(255, 255, 255, 0.12);
+  --warna-netral-100-a13: rgba(255, 255, 255, 0.13);
+  --warna-netral-100-a14: rgba(255, 255, 255, 0.14);
+  --warna-netral-100-a15: rgba(255, 255, 255, 0.15);
+  --warna-netral-100-a16: rgba(255, 255, 255, 0.16);
+  --warna-netral-100-a18: rgba(255, 255, 255, 0.18);
+  --warna-netral-100-a20: rgba(255, 255, 255, 0.2);
+  --warna-netral-100-a30: rgba(255, 255, 255, 0.3);
+  --warna-netral-100-a40: rgba(255, 255, 255, 0.4);
+  --warna-netral-100-a50: rgba(255, 255, 255, 0.5);
+  --warna-netral-100-a60: rgba(255, 255, 255, 0.6);
+  --warna-netral-100-a70: rgba(255, 255, 255, 0.7);
+  --warna-netral-100-a75: rgba(255, 255, 255, 0.75);
+  --warna-netral-100-a90: rgba(255, 255, 255, 0.9);
+  --warna-netral-100-a92: rgba(255, 255, 255, 0.92);
+  --warna-netral-100-a96: rgba(255, 255, 255, 0.96);
+  --warna-netral-100: #FFFFFF;
+
+  /* oranye */
+  --warna-oranye-67: #D97706;
+
+  /* teal */
+  --warna-teal-48: #006D63;
+  --warna-teal-50: #007368;
+  --warna-teal-51: #00776C;
+  --warna-teal-56-a5: rgba(0, 135, 122, 0.05);
+  --warna-teal-56-a15: rgba(0, 135, 122, 0.15);
+  --warna-teal-56-a18: rgba(0, 135, 122, 0.18);
+  --warna-teal-56-a20: rgba(0, 135, 122, 0.2);
+  --warna-teal-56-a25: rgba(0, 135, 122, 0.25);
+  --warna-teal-56-a34: rgba(0, 135, 122, 0.34);
+  --warna-teal-56-a55: rgba(0, 135, 122, 0.55);
+  --warna-teal-56-a60: rgba(0, 135, 122, 0.6);
+  --warna-teal-56-a70: rgba(0, 135, 122, 0.7);
+  --warna-teal-56-a96: rgba(0, 135, 122, 0.96);
+  --warna-teal-56: #00877A;
+  --warna-teal-59: #658482;
+  --warna-teal-66: #00A896;
+  --warna-teal-70: #8AA5A2;
+  --warna-teal-78-a0: rgba(0, 210, 190, 0);
+  --warna-teal-78-a12: rgba(0, 210, 190, 0.12);
+  --warna-teal-78-a14: rgba(0, 210, 190, 0.14);
+  --warna-teal-78-a20: rgba(0, 210, 190, 0.2);
+  --warna-teal-78-a22: rgba(0, 210, 190, 0.22);
+  --warna-teal-78-a26: rgba(0, 210, 190, 0.26);
+  --warna-teal-78-a28: rgba(0, 210, 190, 0.28);
+  --warna-teal-78-a40: rgba(0, 210, 190, 0.4);
+  --warna-teal-78-a50: rgba(0, 210, 190, 0.5);
+  --warna-teal-78: #00D2BE;
+  --warna-teal-82: #7FD6CB;
+  --warna-teal-91-a40: rgba(167, 243, 236, 0.4);
+  --warna-teal-91-a50: rgba(167, 243, 236, 0.5);
+  --warna-teal-91-a86: rgba(167, 243, 236, 0.86);
+  --warna-teal-91: #A7F3EC;
+}
