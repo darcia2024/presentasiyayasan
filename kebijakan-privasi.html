@@ -56,72 +56,64 @@
      ORANG LUAR (yang memindai QR sertifikat) — kesan pertama tentang yayasan
      ini dibentuk di sini, dan dulu terasa seperti produk yang berbeda. -->
 <link rel="stylesheet" href="vendor/fonts/fonts.css">
+<link rel="stylesheet" href="tokens.css">
 <style>
-  :root {
-    --teal-primary: #00877A;
-    --teal-dark: #072826;
-    --teal-light: #E6F6F4;
-    --gold-light: #FDF7E7;
-    --gold-dark: #855E03;
-    --bg-subtle: #F8FAFA;
-    --border-color: #E2ECEB;
-    --text-main: #08201E;
-    --text-muted: #658482;
-  }
+  /* Warna & huruf serif dari tokens.css (desain ulang Fase 3, 26 Okt 2026). */
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    background: var(--bg-subtle);
+    background: var(--permukaan-halaman);
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
     color: var(--text-main);
     line-height: 1.7;
   }
   header {
-    background: linear-gradient(160deg, var(--teal-dark), #0c3d39);
-    color: #FFFFFF;
-    padding: 32px 20px;
+    background: var(--permukaan-halaman);
+    border-bottom: 1px solid var(--garis);
+    color: var(--teks-utama);
+    padding: 36px 20px 30px;
     text-align: center;
   }
-  header img { height: 40px; object-fit: contain; margin-bottom: 12px; }
-  header h1 { font-size: 20px; margin: 0 0 4px; }
-  header p { font-size: 12.5px; opacity: 0.85; margin: 0; }
+  header img { height: 40px; object-fit: contain; margin-bottom: 14px; }
+  header h1 { font-family: var(--font-judul); font-weight: 400; font-size: 36px; line-height: 1.05; letter-spacing: -0.012em; margin: 0 0 8px; }
+  header p { font-size: 13px; color: var(--text-muted); margin: 0; }
   main {
     max-width: 760px;
     margin: 0 auto;
     padding: 28px 20px 60px;
   }
   .kartu {
-    background: #FFFFFF;
-    border: 1px solid var(--border-color);
+    background: var(--permukaan-kartu);
+    border: 1px solid var(--garis);
     border-radius: 16px;
     padding: 24px 26px;
     margin-bottom: 18px;
   }
   .kartu h2 {
     font-size: 15px;
-    color: var(--teal-dark);
+    color: var(--teks-utama);
     margin: 0 0 10px;
     display: flex;
     align-items: center;
     gap: 8px;
   }
-  .kartu h2 .no { color: var(--teal-primary); }
+  .kartu h2 .no { color: var(--emas-tua); font-variant-numeric: tabular-nums; }
   .kartu p, .kartu li { font-size: 13px; color: var(--text-main); }
   .kartu ul { margin: 8px 0; padding-left: 20px; }
   .catatan {
-    background: var(--gold-light);
-    border: 1px solid #F0E0B0;
+    background: var(--emas-lembut);
+    border: 1px solid var(--emas-garis);
     border-radius: 12px;
     padding: 14px 16px;
     font-size: 12px;
-    color: var(--gold-dark);
+    color: var(--emas-tua);
     margin-bottom: 18px;
   }
   table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 8px; }
   th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border-color); vertical-align: top; }
   th { color: var(--text-muted); font-weight: 700; }
   .tanggal { font-size: 11.5px; color: var(--text-muted); text-align: center; margin-top: 24px; }
-  a { color: var(--teal-primary); }
+  a { color: var(--aksen); }
 </style>
 </head>
 <body>

@@ -24,19 +24,14 @@
      ORANG LUAR (yang memindai QR sertifikat) — kesan pertama tentang yayasan
      ini dibentuk di sini, dan dulu terasa seperti produk yang berbeda. -->
 <link rel="stylesheet" href="vendor/fonts/fonts.css">
+<!-- Warna & huruf serif dari tokens.css (desain ulang Fase 3, 26 Okt 2026):
+     halaman ini dilihat orang luar yang memindai QR sertifikat, jadi ia ikut
+     bahasa visual /pitch — kertas gading, kartu terang, judul serif. -->
+<link rel="stylesheet" href="tokens.css">
 <style>
   :root {
-    --teal-primary: #00877A;
-    --teal-dark: #072826;
-    --teal-light: #E6F6F4;
-    --gold-light: #FDF7E7;
-    --gold-dark: #855E03;
-    --bg-subtle: #F8FAFA;
-    --border-color: #E2ECEB;
-    --text-main: #08201E;
-    --text-muted: #658482;
-    --red-light: #FBEAEA;
-    --red-dark: #B4232A;
+    --red-light: var(--status-bahaya-lembut);
+    --red-dark: var(--status-bahaya-tua);
   }
   * { box-sizing: border-box; }
   body {
@@ -46,22 +41,23 @@
     align-items: center;
     justify-content: center;
     padding: 24px;
-    background: linear-gradient(160deg, var(--teal-dark), #0c3d39);
+    background: var(--permukaan-halaman);
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
     color: var(--text-main);
   }
   .kartu {
-    background: #FFFFFF;
+    background: var(--permukaan-kartu);
+    border: 1px solid var(--garis);
     border-radius: 20px;
     max-width: 420px;
     width: 100%;
-    padding: 28px 26px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    padding: 32px 28px;
+    box-shadow: var(--bayangan-2);
     text-align: center;
   }
   .logo { height: 40px; object-fit: contain; margin-bottom: 14px; }
-  h1 { font-size: 15px; font-weight: 800; color: var(--teal-dark); margin: 0 0 4px; }
-  .sub { font-size: 11.5px; color: var(--text-muted); margin: 0 0 20px; }
+  h1 { font-family: var(--font-judul); font-size: 30px; font-weight: 400; line-height: 1.05; letter-spacing: -0.012em; color: var(--teks-utama); margin: 0 0 6px; }
+  .sub { font-size: 12px; color: var(--text-muted); margin: 0 0 22px; }
   .status-badge {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 6px 14px; border-radius: 999px;
@@ -71,28 +67,32 @@
   .status-badge.invalid { background: var(--red-light); color: var(--red-dark); }
   .status-badge.loading { background: var(--bg-subtle); color: var(--text-muted); }
   .detail {
-    background: var(--bg-subtle);
-    border: 1.5px dashed var(--teal-primary);
+    background: var(--permukaan-lembut);
+    border: 1px solid var(--garis);
+    border-left: 3px solid var(--aksen);
     border-radius: 14px;
     padding: 18px;
     text-align: left;
   }
   .baris { margin-bottom: 10px; }
   .baris:last-child { margin-bottom: 0; }
-  .label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: .02em; }
+  .label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
   .nilai { font-size: 14.5px; font-weight: 700; color: var(--teal-dark); margin-top: 2px; }
   .pesan-kosong { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
   .footer { margin-top: 20px; font-size: 10.5px; color: var(--text-muted); }
   .form-kode input {
     width: 100%; margin: 14px 0 10px; padding: 12px 14px;
-    border: 1.5px solid var(--border-color); border-radius: 12px;
+    border: 1px solid var(--garis-tegas); border-radius: 12px;
+    background: var(--permukaan-kartu); color: var(--teks-utama);
     font: inherit; font-size: 15px; text-align: center; letter-spacing: .04em;
   }
+  .form-kode input:focus { outline: 2px solid var(--aksen); outline-offset: 1px; }
   .form-kode button {
-    width: 100%; padding: 12px; border: 0; border-radius: 12px;
-    background: var(--teal-primary); color: #FFFFFF;
-    font: inherit; font-size: 14px; font-weight: 800; cursor: pointer;
+    width: 100%; min-height: 48px; padding: 12px; border: 0; border-radius: 999px;
+    background: var(--aksen); color: var(--teks-terbalik);
+    font: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
   }
+  .form-kode button:hover { background: var(--aksen-hover); }
   [hidden] { display: none !important; }
 </style>
 </head>

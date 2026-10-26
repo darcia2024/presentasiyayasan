@@ -32,7 +32,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
-const BERKAS = ['prototype.css', 'prototype-mobile.css', 'js/ui/studio.css', 'js/ui/auth.css'];
+const BERKAS = ['prototype.css', 'prototype-mobile.css', 'js/ui/studio.css', 'js/ui/auth.css', 'tema.css', 'game2d.css'];
 const TOKENS = 'tokens.css';
 
 /** Palet dasar: lapis 1 tokens.css. --putih/--hitam/--rgb-* boleh dipakai di mana pun. */

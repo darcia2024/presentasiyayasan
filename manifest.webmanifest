@@ -10,8 +10,8 @@
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "orientation": "portrait",
-  "theme_color": "#072826",
-  "background_color": "#072826",
+  "theme_color": "#10271F",
+  "background_color": "#F5F1E9",
   "categories": ["education", "books", "productivity"],
   "prefer_related_applications": false,
   "icons": [

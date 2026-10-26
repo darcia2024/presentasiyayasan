@@ -4,35 +4,13 @@
    ========================================================================== */
 
 :root {
-  --teal-primary:      #00877A;
-  --teal-dark:         #072826;
-  --teal-light:        #E6F6F4;
-  --teal-hover:        #007368;
-  --teal-border:       rgba(0, 135, 122, 0.2);
-
-  --gold-primary:      #C5921B;
-  --gold-light:        #FDF7E7;
-  --gold-dark:         #855E03;
-
-  --bg-page:           #F5F8F7;
-  --bg-subtle:         #F8FAFA;
-  --border-color:      #E0ECEB;
-  --border-subtle:     #EDF3F2;
-
-  --text-main:         #08201E;
-  --text-body:         #2B4846;
-  --text-muted:        #658482;
-
+  /* Warna & bayangan: tokens.css (dimuat sebelum berkas ini). */
   --font-family:       'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --radius-xs:         6px;
   --radius-sm:         10px;
-  --radius-md:         14px;
+  --radius-md:         16px;
   --radius-lg:         20px;
   --radius-full:       9999px;
-
-  --shadow-sm:  0 1px 3px rgba(8, 40, 38, 0.04), 0 1px 2px rgba(8, 40, 38, 0.02);
-  --shadow-md:  0 4px 16px rgba(8, 40, 38, 0.06), 0 1px 4px rgba(8, 40, 38, 0.03);
-  --shadow-lg:  0 14px 40px rgba(8, 40, 38, 0.08), 0 2px 8px rgba(8, 40, 38, 0.04);
 }
 
 *, *::before, *::after {
@@ -53,12 +31,12 @@ html, body {
 /* TOPBAR */
 .hiwar-header-bar {
   background: var(--teal-dark);
-  color: #FFFFFF;
+  color: var(--teks-terbalik);
   padding: 12px 36px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgb(var(--rgb-putih) / 0.1);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -77,7 +55,7 @@ html, body {
   height: 36px;
   border-radius: var(--radius-sm);
   background: var(--teal-primary);
-  color: #FFFFFF;
+  color: var(--teks-terbalik);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -87,12 +65,12 @@ html, body {
 .brand-title-main {
   font-size: 15px;
   font-weight: 800;
-  color: #FFFFFF;
+  color: var(--teks-terbalik);
 }
 
 .brand-title-sub {
   font-size: 11px;
-  color: #A7F3EC;
+  color: var(--teks-terbalik-aksen);
 }
 
 .header-right-meta {
@@ -102,12 +80,12 @@ html, body {
 }
 
 .stat-pill-box {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgb(var(--rgb-putih) / 0.1);
+  border: 1px solid rgb(var(--rgb-putih) / 0.14);
   padding: 5px 14px;
   border-radius: var(--radius-full);
   font-size: 11.5px;
-  color: #FFFFFF;
+  color: var(--teks-terbalik);
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -115,7 +93,7 @@ html, body {
 
 .btn-return-portal {
   background: var(--teal-primary);
-  color: #FFFFFF;
+  color: var(--teks-terbalik);
   text-decoration: none;
   padding: 6px 16px;
   border-radius: var(--radius-full);
@@ -144,7 +122,7 @@ html, body {
 
 /* LEFT DIALOGUE SCREEN */
 .hiwar-dialogue-screen {
-  background: #FFFFFF;
+  background: var(--permukaan-kartu);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   display: flex;
@@ -164,7 +142,7 @@ html, body {
 
 .step-indicator {
   background: var(--teal-primary);
-  color: #FFFFFF;
+  color: var(--teks-terbalik);
   padding: 3px 10px;
   border-radius: var(--radius-full);
   font-size: 11px;
@@ -173,7 +151,7 @@ html, body {
 
 .response-mode-toggle {
   display: flex;
-  background: #FFFFFF;
+  background: var(--permukaan-kartu);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-full);
   padding: 2px;
@@ -197,7 +175,7 @@ html, body {
 
 .mode-toggle-btn.active {
   background: var(--teal-primary);
-  color: #FFFFFF;
+  color: var(--teks-terbalik);
 }
 
 /* CHAT CANVAS */
@@ -208,7 +186,7 @@ html, body {
   flex-direction: column;
   gap: 20px;
   overflow-y: auto;
-  background: #FAFCFB;
+  background: var(--permukaan-lembut);
 }
 
 .chat-message-bubble {
@@ -239,13 +217,13 @@ html, body {
 }
 
 .speaker-avatar-circle.student-avatar {
-  background: #082D2B;
-  border-color: #082D2B;
-  color: #FFFFFF;
+  background: var(--permukaan-gelap);
+  border-color: var(--permukaan-gelap);
+  color: var(--teks-terbalik);
 }
 
 .bubble-content-box {
-  background: #FFFFFF;
+  background: var(--permukaan-kartu);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 16px 20px;
@@ -315,13 +293,13 @@ html, body {
   gap: 4px;
   font-size: 11px;
   font-weight: 700;
-  color: #006D63;
+  color: var(--aksen-hover);
   margin-top: 4px;
 }
 
 /* BOTTOM DOCK */
 .dialogue-bottom-dock {
-  background: #FFFFFF;
+  background: var(--permukaan-kartu);
   border-top: 1px solid var(--border-color);
   padding: 20px 24px;
 }
@@ -354,7 +332,7 @@ html, body {
 
 .btn-record-mic {
   background: var(--teal-dark);
-  color: #FFFFFF;
+  color: var(--teks-terbalik);
   border: none;
   border-radius: var(--radius-full);
   padding: 10px 20px;
@@ -369,14 +347,14 @@ html, body {
 }
 
 .btn-record-mic.recording {
-  background: #EF4444 !important;
+  background: var(--status-bahaya) !important;
   animation: pulseMic 1.2s infinite ease-in-out;
 }
 
 @keyframes pulseMic {
-  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-  50% { transform: scale(1.03); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgb(var(--rgb-bahaya) / 0.4); }
+  50% { transform: scale(1.03); box-shadow: 0 0 0 10px rgb(var(--rgb-bahaya) / 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgb(var(--rgb-bahaya) / 0); }
 }
 
 .voice-waveform-box {
@@ -412,7 +390,7 @@ html, body {
 
 .btn-direct-submit {
   background: var(--teal-primary);
-  color: #FFFFFF;
+  color: var(--teks-terbalik);
   border: none;
   border-radius: var(--radius-full);
   padding: 10px 22px;
@@ -438,7 +416,7 @@ html, body {
 }
 
 .choice-option-card {
-  background: #FFFFFF;
+  background: var(--permukaan-kartu);
   border: 1.5px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 12px 18px;
@@ -463,7 +441,7 @@ html, body {
 }
 
 .eval-card-box {
-  background: #FFFFFF;
+  background: var(--permukaan-kartu);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 20px;
@@ -517,13 +495,13 @@ html, body {
   left: 50%;
   transform: translateX(-50%) translateY(30px);
   background: var(--teal-dark);
-  color: #FFFFFF;
+  color: var(--teks-terbalik);
   padding: 10px 24px;
   border-radius: var(--radius-full);
   font-size: 13px;
   font-weight: 700;
   box-shadow: var(--shadow-lg);
-  border: 1px solid rgba(0, 210, 190, 0.4);
+  border: 1px solid rgb(var(--rgb-teal-terang) / 0.4);
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
@@ -648,3 +626,23 @@ html, body {
     justify-content: center !important;
   }
 }
+
+/* Tombol "Ulangi Simulasi dari Awal" memakai kelas .btn-enroll-primary milik
+   aplikasi utama, yang tidak ada di berkas ini — tanpa aturan ini ia tampil
+   sebagai tombol bawaan peramban. Pil bergaris, seperti tombol sekunder
+   di aplikasi (tema.css). */
+.btn-enroll-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--teks-utama);
+  background: transparent;
+  border: 1px solid var(--garis-tegas);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+.btn-enroll-primary:hover { background: var(--permukaan-kartu); border-color: var(--teks-utama); }
