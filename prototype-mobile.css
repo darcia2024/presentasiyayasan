@@ -52,18 +52,10 @@
     --m-radius-sm:    14px;
     --m-radius-xs:    10px;
 
-    --m-canvas:       var(--warna-netral-97);
-    --m-surface:      var(--warna-netral-100);
-    --m-chrome:       var(--warna-hutan-25-2);
-    --m-chrome-soft:  var(--warna-hutan-32-2);
-
-    --m-ease:         cubic-bezier(0.32, 0.72, 0, 1);
+    /* --m-canvas, --m-surface, --m-chrome, --m-shadow-*: lihat tokens.css. */
+    --m-ease:        cubic-bezier(0.32, 0.72, 0, 1);
     --m-ease-out:     cubic-bezier(0.16, 1, 0.3, 1);
     --m-spring:       cubic-bezier(0.34, 1.42, 0.64, 1);
-
-    --m-shadow-card:  0 1px 2px var(--warna-hutan-25-a4), 0 6px 20px -8px var(--warna-hutan-25-a14);
-    --m-shadow-pop:   0 -8px 40px var(--warna-hutan-25-a18);
-    --m-shadow-raise: 0 8px 22px -6px var(--warna-teal-56-a55);
   }
 
   /* Fisika gulir & perilaku sentuh khas aplikasi native ------------------ */
@@ -149,8 +141,8 @@
     justify-content: center;
     gap: 20px;
     background:
-      radial-gradient(120% 78% at 50% 12%, var(--warna-teal-56-a34) 0%, var(--warna-hutan-25-a0) 62%),
-      linear-gradient(175deg, var(--warna-hutan-31) 0%, var(--warna-hutan-25-2) 100%);
+      radial-gradient(120% 78% at 50% 12%, rgb(var(--rgb-teal) / 0.34) 0%, rgb(var(--rgb-hutan) / 0) 62%),
+      linear-gradient(175deg, var(--permukaan-gelap-2) 0%, var(--permukaan-gelap) 100%);
     opacity: 1;
     transition: opacity 0.42s var(--m-ease-out), visibility 0.42s;
   }
@@ -165,7 +157,7 @@
     width: 104px;
     height: 104px;
     border-radius: 26px;
-    box-shadow: 0 18px 46px var(--warna-netral-0-a42);
+    box-shadow: 0 18px 46px rgb(var(--rgb-hitam) / 0.4);
     animation: mSplashIn 0.72s var(--m-spring) both;
   }
 
@@ -177,7 +169,7 @@
   .m-splash-name {
     font-size: 19px;
     font-weight: 800;
-    color: var(--warna-netral-100);
+    color: var(--teks-terbalik);
     letter-spacing: -0.01em;
     animation: mSplashIn 0.72s var(--m-spring) 0.1s both;
   }
@@ -185,7 +177,7 @@
   .m-splash-sub {
     font-size: 11.5px;
     font-weight: 600;
-    color: var(--warna-teal-91);
+    color: var(--teks-terbalik-redup);
     letter-spacing: 0.04em;
     margin-top: -14px;
     animation: mSplashIn 0.72s var(--m-spring) 0.16s both;
@@ -195,7 +187,7 @@
     width: 116px;
     height: 3px;
     border-radius: 999px;
-    background: var(--warna-netral-100-a14);
+    background: rgb(var(--rgb-putih) / 0.14);
     overflow: hidden;
     margin-top: 6px;
   }
@@ -206,7 +198,7 @@
     width: 45%;
     height: 100%;
     border-radius: 999px;
-    background: linear-gradient(90deg, var(--warna-teal-78), var(--warna-teal-91));
+    background: linear-gradient(90deg, var(--aksen-terang), var(--aksen-pucat));
     animation: mLoaderSlide 1.05s var(--m-ease) infinite;
   }
 
@@ -219,7 +211,7 @@
     position: absolute;
     bottom: calc(26px + var(--m-sab));
     font-size: 10.5px;
-    color: var(--warna-netral-100-a40);
+    color: rgb(var(--rgb-putih) / 0.4);
     font-weight: 600;
     text-align: center;
     padding: 0 30px;
@@ -240,19 +232,19 @@
     gap: 8px;
     padding: 8px 16px;
     border-radius: 999px;
-    background: var(--warna-hutan-25-a94);
+    background: rgb(var(--rgb-hutan) / 0.96);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    color: var(--warna-netral-100);
+    color: var(--teks-terbalik);
     font-size: 12px;
     font-weight: 700;
     white-space: nowrap;
-    box-shadow: 0 10px 30px var(--warna-netral-0-a28);
+    box-shadow: 0 10px 30px rgb(var(--rgb-hitam) / 0.3);
     transition: transform 0.4s var(--m-spring);
   }
 
   .m-net-banner.show { transform: translate(-50%, 0); }
-  .m-net-banner.is-online { background: var(--warna-teal-56-a96); }
+  .m-net-banner.is-online { background: rgb(var(--rgb-teal) / 0.96); }
   .m-net-banner i { font-size: 15px; }
 
   .m-install-card {
@@ -266,11 +258,11 @@
     gap: 12px;
     padding: 13px 14px;
     border-radius: var(--m-radius);
-    background: var(--warna-hutan-25-a97);
+    background: rgb(var(--rgb-hutan) / 0.96);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
-    border: 1px solid var(--warna-teal-78-a28);
-    box-shadow: 0 18px 44px var(--warna-hutan-25-a40);
+    border: 1px solid rgb(var(--rgb-teal-terang) / 0.28);
+    box-shadow: 0 18px 44px rgb(var(--rgb-hutan) / 0.4);
     transform: translateY(200%);
     opacity: 0;
     visibility: hidden;
@@ -295,7 +287,7 @@
   .m-install-title {
     font-size: 13px;
     font-weight: 800;
-    color: var(--warna-netral-100);
+    color: var(--teks-terbalik);
     line-height: 1.25;
     white-space: nowrap;
     overflow: hidden;
@@ -304,7 +296,7 @@
 
   .m-install-sub {
     font-size: 10.5px;
-    color: var(--warna-teal-91);
+    color: var(--teks-terbalik-redup);
     font-weight: 600;
     margin-top: 2px;
     line-height: 1.35;
@@ -318,8 +310,8 @@
   }
 
   .m-install-yes {
-    background: var(--warna-netral-100);
-    color: var(--warna-hutan-25-2);
+    background: var(--permukaan-kartu);
+    color: var(--teks-utama);
     border: none;
     border-radius: 999px;
     padding: 9px 15px;
@@ -335,7 +327,7 @@
   .m-install-no {
     background: transparent;
     border: none;
-    color: var(--warna-netral-100-a50);
+    color: rgb(var(--rgb-putih) / 0.5);
     font-size: 19px;
     padding: 6px;
     min-width: 34px;
@@ -359,7 +351,7 @@
     z-index: 9000 !important;
     height: calc(var(--m-appbar-h) + var(--m-sat)) !important;
     padding: var(--m-sat) 12px 0 12px !important;
-    background: var(--warna-hutan-25-a86) !important;
+    background: rgb(var(--rgb-hutan) / 0.86) !important;
     backdrop-filter: saturate(180%) blur(20px);
     -webkit-backdrop-filter: saturate(180%) blur(20px);
     align-items: center !important;
@@ -367,13 +359,13 @@
     width: 100% !important;
     box-sizing: border-box !important;
     box-shadow: none !important;
-    border-bottom: 1px solid var(--warna-netral-100-a6) !important;
+    border-bottom: 1px solid rgb(var(--rgb-putih) / 0.06) !important;
     transition: box-shadow 0.3s ease, background 0.3s ease !important;
   }
 
   body.m-scrolled .mobile-top-nav {
-    box-shadow: 0 6px 24px var(--warna-hutan-25-a28) !important;
-    background: var(--warna-hutan-25-a97) !important;
+    box-shadow: 0 6px 24px rgb(var(--rgb-hutan) / 0.3) !important;
+    background: rgb(var(--rgb-hutan) / 0.96) !important;
   }
 
   .mobile-top-left {
@@ -385,9 +377,9 @@
   }
 
   .mobile-hamburger-btn {
-    background: var(--warna-netral-100-a9) !important;
-    border: 1px solid var(--warna-netral-100-a14) !important;
-    color: var(--warna-netral-100) !important;
+    background: rgb(var(--rgb-putih) / 0.1) !important;
+    border: 1px solid rgb(var(--rgb-putih) / 0.14) !important;
+    color: var(--teks-terbalik) !important;
     width: 40px !important;
     height: 40px !important;
     border-radius: 13px !important;
@@ -418,7 +410,7 @@
     width: 32px !important;
     object-fit: contain !important;
     border-radius: 9px !important;
-    background: var(--warna-netral-100) !important;
+    background: var(--permukaan-kartu) !important;
     padding: 2px !important;
     flex-shrink: 0 !important;
   }
@@ -426,7 +418,7 @@
   .mobile-brand-text {
     font-size: 14px !important;
     font-weight: 800 !important;
-    color: var(--warna-netral-100) !important;
+    color: var(--teks-terbalik) !important;
     line-height: 1.15 !important;
     letter-spacing: -0.01em !important;
     white-space: nowrap !important;
@@ -434,7 +426,7 @@
 
   .mobile-brand-sub {
     font-size: 9.5px !important;
-    color: var(--warna-teal-82) !important;
+    color: var(--teks-terbalik-aksen) !important;
     font-weight: 600 !important;
     white-space: nowrap !important;
   }
@@ -450,7 +442,7 @@
     align-items: center;
     font-size: 14.5px;
     font-weight: 800;
-    color: var(--warna-netral-100);
+    color: var(--teks-terbalik);
     letter-spacing: -0.01em;
     white-space: nowrap;
     overflow: hidden;
@@ -483,9 +475,9 @@
     width: 38px !important;
     height: 38px !important;
     border-radius: 12px !important;
-    background: var(--warna-netral-100-a9) !important;
-    border: 1px solid var(--warna-netral-100-a13) !important;
-    color: var(--warna-teal-91) !important;
+    background: rgb(var(--rgb-putih) / 0.1) !important;
+    border: 1px solid rgb(var(--rgb-putih) / 0.14) !important;
+    color: var(--teks-terbalik-redup) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -500,14 +492,14 @@
     width: 34px !important;
     height: 34px !important;
     border-radius: 50% !important;
-    background: linear-gradient(140deg, var(--warna-teal-66), var(--warna-teal-56)) !important;
-    color: var(--warna-netral-100) !important;
+    background: linear-gradient(140deg, var(--aksen-cerah), var(--aksen)) !important;
+    color: var(--teks-terbalik) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     font-size: 11.5px !important;
     font-weight: 800 !important;
-    border: 1.5px solid var(--warna-teal-91-a50) !important;
+    border: 1.5px solid rgb(var(--rgb-teal-pucat) / 0.5) !important;
     cursor: pointer !important;
     flex-shrink: 0 !important;
     transition: transform 0.18s var(--m-ease) !important;
@@ -517,7 +509,7 @@
 
   /* --- Judul besar (large title) ala aplikasi native -------------------- */
   .m-largetitle {
-    background: linear-gradient(180deg, var(--warna-hutan-25-2) 0%, var(--warna-hutan-31) 55%, var(--warna-hutan-35) 100%);
+    background: linear-gradient(180deg, var(--permukaan-gelap) 0%, var(--permukaan-gelap-2) 55%, var(--permukaan-gelap-3) 100%);
     padding: 14px var(--m-gutter) 22px var(--m-gutter);
     margin-top: calc(var(--m-appbar-h) + var(--m-sat));
     border-radius: 0 0 26px 26px;
@@ -534,7 +526,7 @@
     width: 190px;
     height: 190px;
     border-radius: 50%;
-    background: radial-gradient(circle, var(--warna-teal-78-a22) 0%, var(--warna-teal-78-a0) 68%);
+    background: radial-gradient(circle, rgb(var(--rgb-teal-terang) / 0.22) 0%, rgb(var(--rgb-teal-terang) / 0) 68%);
     pointer-events: none;
   }
 
@@ -546,9 +538,9 @@
     font-weight: 800;
     letter-spacing: 0.09em;
     text-transform: uppercase;
-    color: var(--warna-teal-82);
-    background: var(--warna-teal-78-a12);
-    border: 1px solid var(--warna-teal-78-a26);
+    color: var(--teks-terbalik-aksen);
+    background: rgb(var(--rgb-teal-terang) / 0.14);
+    border: 1px solid rgb(var(--rgb-teal-terang) / 0.28);
     padding: 4px 11px;
     border-radius: 999px;
     margin-bottom: 9px;
@@ -557,7 +549,7 @@
   .m-lt-title {
     font-size: 25px;
     font-weight: 800;
-    color: var(--warna-netral-100);
+    color: var(--teks-terbalik);
     line-height: 1.18;
     letter-spacing: -0.025em;
     position: relative;
@@ -565,7 +557,7 @@
 
   .m-lt-sub {
     font-size: 12.5px;
-    color: var(--warna-teal-91-a86);
+    color: rgb(var(--rgb-teal-pucat) / 0.86);
     font-weight: 500;
     margin-top: 6px;
     line-height: 1.45;
@@ -596,9 +588,9 @@
     padding: 9px 14px;
     min-height: 38px;
     border-radius: 999px;
-    background: var(--warna-netral-100-a10);
-    border: 1px solid var(--warna-netral-100-a16);
-    color: var(--warna-netral-100);
+    background: rgb(var(--rgb-putih) / 0.1);
+    border: 1px solid rgb(var(--rgb-putih) / 0.18);
+    color: var(--teks-terbalik);
     font-size: 12px;
     font-weight: 700;
     white-space: nowrap;
@@ -607,15 +599,15 @@
     transition: transform 0.16s var(--m-ease), background 0.2s ease;
   }
 
-  .m-chip i { font-size: 15px; color: var(--warna-teal-82); }
-  .m-chip:active { transform: scale(0.94); background: var(--warna-netral-100-a18); }
+  .m-chip i { font-size: 15px; color: var(--teks-terbalik-aksen); }
+  .m-chip:active { transform: scale(0.94); background: rgb(var(--rgb-putih) / 0.18); }
 
   .m-chip.is-gold {
-    background: var(--warna-emas-85-a14);
-    border-color: var(--warna-emas-85-a34);
+    background: rgb(var(--rgb-emas-terang) / 0.14);
+    border-color: rgb(var(--rgb-emas-terang) / 0.34);
   }
 
-  .m-chip.is-gold i { color: var(--warna-emas-85); }
+  .m-chip.is-gold i { color: var(--emas-terang); }
 
 
   /* ======================================================================
@@ -627,7 +619,7 @@
     inset: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    background: var(--warna-hutan-19-a55) !important;
+    background: rgb(var(--rgb-hutan-pekat) / 0.55) !important;
     backdrop-filter: blur(6px) !important;
     -webkit-backdrop-filter: blur(6px) !important;
     z-index: 99000 !important;
@@ -656,7 +648,7 @@
     -webkit-overflow-scrolling: touch !important;
     overscroll-behavior: contain !important;
     transform: translateX(-102%) !important;
-    box-shadow: 12px 0 44px var(--warna-hutan-25-a30) !important;
+    box-shadow: 12px 0 44px rgb(var(--rgb-hutan) / 0.3) !important;
     border-radius: 0 26px 26px 0 !important;
     transition: transform 0.38s var(--m-ease) !important;
   }
@@ -681,7 +673,7 @@
     gap: 12px;
     padding: 13px;
     border-radius: var(--m-radius-sm);
-    background: linear-gradient(135deg, var(--warna-hutan-25-2) 0%, var(--warna-hutan-35) 100%);
+    background: linear-gradient(135deg, var(--permukaan-gelap) 0%, var(--permukaan-gelap-3) 100%);
     position: relative;
     overflow: hidden;
   }
@@ -694,34 +686,34 @@
     width: 110px;
     height: 110px;
     border-radius: 50%;
-    background: radial-gradient(circle, var(--warna-teal-78-a26) 0%, var(--warna-teal-78-a0) 70%);
+    background: radial-gradient(circle, rgb(var(--rgb-teal-terang) / 0.28) 0%, rgb(var(--rgb-teal-terang) / 0) 70%);
   }
 
   .m-drawer-avatar {
     width: 46px;
     height: 46px;
     border-radius: 15px;
-    background: linear-gradient(140deg, var(--warna-teal-66), var(--warna-teal-56));
-    color: var(--warna-netral-100);
+    background: linear-gradient(140deg, var(--aksen-cerah), var(--aksen));
+    color: var(--teks-terbalik);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 15px;
     font-weight: 800;
     flex-shrink: 0;
-    border: 1.5px solid var(--warna-teal-91-a40);
+    border: 1.5px solid rgb(var(--rgb-teal-pucat) / 0.4);
   }
 
   .m-drawer-uname {
     font-size: 14px;
     font-weight: 800;
-    color: var(--warna-netral-100);
+    color: var(--teks-terbalik);
     line-height: 1.2;
   }
 
   .m-drawer-usub {
     font-size: 10.5px;
-    color: var(--warna-teal-82);
+    color: var(--teks-terbalik-aksen);
     font-weight: 600;
     margin-top: 2px;
   }
@@ -745,10 +737,10 @@
     min-height: 46px !important;
     width: 100% !important;
     border-radius: var(--m-radius-xs) !important;
-    background: var(--warna-netral-100) !important;
+    background: var(--permukaan-kartu) !important;
     border: 1px solid var(--border-color) !important;
     color: var(--text-body) !important;
-    box-shadow: 0 1px 2px var(--warna-hutan-25-a4) !important;
+    box-shadow: 0 1px 2px rgb(var(--rgb-hutan) / 0.04) !important;
     transition: transform 0.14s var(--m-ease), background 0.18s ease !important;
   }
 
@@ -762,16 +754,16 @@
   .mobile-drawer-menu .role-btn.active {
     background: var(--teal-primary) !important;
     border-color: var(--teal-primary) !important;
-    color: var(--warna-netral-100) !important;
-    box-shadow: 0 5px 14px -5px var(--warna-teal-56-a70) !important;
+    color: var(--teks-terbalik) !important;
+    box-shadow: 0 5px 14px -5px rgb(var(--rgb-teal) / 0.7) !important;
   }
 
-  .mobile-drawer-menu .role-btn.active i { color: var(--warna-netral-100) !important; }
+  .mobile-drawer-menu .role-btn.active i { color: var(--teks-terbalik) !important; }
 
   .mobile-drawer-menu .role-btn.admin-btn.active {
     background: var(--gold-dark) !important;
     border-color: var(--gold-dark) !important;
-    box-shadow: 0 5px 14px -5px var(--warna-emas-51-a70) !important;
+    box-shadow: 0 5px 14px -5px rgb(var(--rgb-emas-tua) / 0.7) !important;
   }
 
   .mobile-drawer-menu .ref-nav-item {
@@ -815,11 +807,11 @@
     right: 0 !important;
     height: calc(var(--m-tabbar-h) + var(--m-sab)) !important;
     padding: 0 4px var(--m-sab) 4px !important;
-    background: var(--warna-netral-100-a90) !important;
+    background: rgb(var(--rgb-putih) / 0.9) !important;
     backdrop-filter: saturate(180%) blur(22px) !important;
     -webkit-backdrop-filter: saturate(180%) blur(22px) !important;
-    border-top: 1px solid var(--warna-hutan-25-a7) !important;
-    box-shadow: 0 -2px 20px var(--warna-hutan-25-a6-2) !important;
+    border-top: 1px solid rgb(var(--rgb-hutan) / 0.06) !important;
+    box-shadow: 0 -2px 20px rgb(var(--rgb-hutan) / 0.06) !important;
     z-index: 9000 !important;
     align-items: stretch !important;
     justify-content: space-around !important;
@@ -838,7 +830,7 @@
     align-items: center !important;
     justify-content: center !important;
     gap: 3px !important;
-    color: var(--warna-teal-70) !important;
+    color: var(--teks-samar) !important;
     text-decoration: none !important;
     font-size: 9.5px !important;
     font-weight: 700 !important;
@@ -893,15 +885,15 @@
     width: 50px !important;
     height: 50px !important;
     border-radius: 18px !important;
-    background: linear-gradient(140deg, var(--warna-teal-66) 0%, var(--warna-teal-51) 100%) !important;
-    color: var(--warna-netral-100) !important;
+    background: linear-gradient(140deg, var(--aksen-cerah) 0%, var(--aksen-hover) 100%) !important;
+    color: var(--teks-terbalik) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     font-size: 25px !important;
     box-shadow: var(--m-shadow-raise) !important;
     margin-top: -22px !important;
-    border: 3px solid var(--warna-netral-100-a92) !important;
+    border: 3px solid rgb(var(--rgb-putih) / 0.9) !important;
   }
 
   .bottom-nav-item.m-tab-center.active i {
@@ -984,7 +976,7 @@
 
   .m-card {
     background: var(--m-surface);
-    border: 1px solid var(--warna-hutan-25-a6);
+    border: 1px solid rgb(var(--rgb-hutan) / 0.06);
     border-radius: var(--m-radius);
     box-shadow: var(--m-shadow-card);
     padding: 15px;
@@ -1004,7 +996,7 @@
     margin-left: -19px;
     border-radius: 50%;
     background: var(--m-surface);
-    box-shadow: 0 6px 20px var(--warna-hutan-25-a18);
+    box-shadow: 0 6px 20px rgb(var(--rgb-hutan) / 0.18);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1044,8 +1036,8 @@
     z-index: 5;
     background: var(--m-surface);
     border-radius: var(--m-radius);
-    box-shadow: 0 10px 30px -10px var(--warna-hutan-25-a22);
-    border: 1px solid var(--warna-hutan-25-a5);
+    box-shadow: 0 10px 30px -10px rgb(var(--rgb-hutan) / 0.22);
+    border: 1px solid rgb(var(--rgb-hutan) / 0.04);
     padding: 15px;
     display: flex;
     align-items: center;
@@ -1061,7 +1053,7 @@
 
   .m-ring svg { transform: rotate(-90deg); display: block; }
   .m-ring circle { fill: none; stroke-linecap: round; }
-  .m-ring .m-ring-bg { stroke: var(--warna-netral-94-4); stroke-width: 7; }
+  .m-ring .m-ring-bg { stroke: var(--garis); stroke-width: 7; }
 
   .m-ring .m-ring-fg {
     stroke: url(#mRingGrad);
@@ -1115,7 +1107,7 @@
     height: 42px;
     border-radius: 14px;
     background: var(--teal-primary);
-    color: var(--warna-netral-100);
+    color: var(--teks-terbalik);
     border: none;
     display: flex;
     align-items: center;
@@ -1123,7 +1115,7 @@
     font-size: 19px;
     flex-shrink: 0;
     cursor: pointer;
-    box-shadow: 0 6px 16px -4px var(--warna-teal-56-a55);
+    box-shadow: 0 6px 16px -4px rgb(var(--rgb-teal) / 0.55);
     transition: transform 0.16s var(--m-ease);
   }
 
@@ -1140,7 +1132,7 @@
 
   .beranda-metric-card {
     background: var(--m-surface) !important;
-    border: 1px solid var(--warna-hutan-25-a6) !important;
+    border: 1px solid rgb(var(--rgb-hutan) / 0.06) !important;
     border-radius: var(--m-radius-sm) !important;
     box-shadow: var(--m-shadow-card) !important;
     padding: 13px !important;
@@ -1185,7 +1177,7 @@
   .beranda-continue-card,
   .beranda-schedule-card {
     background: var(--m-surface) !important;
-    border: 1px solid var(--warna-hutan-25-a6) !important;
+    border: 1px solid rgb(var(--rgb-hutan) / 0.06) !important;
     border-radius: var(--m-radius) !important;
     box-shadow: var(--m-shadow-card) !important;
     padding: 16px !important;
@@ -1238,7 +1230,7 @@
     scroll-snap-align: start;
     width: 152px !important;
     background: var(--m-surface) !important;
-    border: 1px solid var(--warna-hutan-25-a6-2) !important;
+    border: 1px solid rgb(var(--rgb-hutan) / 0.06) !important;
     border-radius: var(--m-radius-sm) !important;
     box-shadow: var(--m-shadow-card) !important;
     padding: 14px 13px !important;
@@ -1251,7 +1243,7 @@
 
   .m-level-card.is-active {
     border: 1.5px solid var(--teal-primary) !important;
-    background: linear-gradient(160deg, var(--warna-netral-98) 0%, var(--warna-netral-100) 100%) !important;
+    background: linear-gradient(160deg, var(--aksen-lembut) 0%, var(--permukaan-kartu) 100%) !important;
   }
 
   .m-level-arabic {
@@ -1313,9 +1305,9 @@
     min-height: 0 !important;
     overflow: hidden !important;
     position: relative !important;
-    background: linear-gradient(155deg, var(--warna-hutan-35) 0%, var(--warna-hutan-22) 100%) !important;
-    box-shadow: 0 14px 34px -12px var(--warna-hutan-25-a50) !important;
-    border: 1px solid var(--warna-teal-78-a14) !important;
+    background: linear-gradient(155deg, var(--permukaan-gelap-3) 0%, var(--permukaan-gelap) 100%) !important;
+    box-shadow: 0 14px 34px -12px rgb(var(--rgb-hutan) / 0.5) !important;
+    border: 1px solid rgb(var(--rgb-teal-terang) / 0.14) !important;
   }
 
   .video-screen-content {
@@ -1356,7 +1348,7 @@
     height: 62px !important;
     font-size: 25px !important;
     border-radius: 50% !important;
-    box-shadow: 0 8px 26px var(--warna-netral-0-a34) !important;
+    box-shadow: 0 8px 26px rgb(var(--rgb-hitam) / 0.35) !important;
   }
 
   .center-glass-play:active { transform: scale(0.9) !important; }
@@ -1394,7 +1386,7 @@
     margin: 0 var(--m-gutter) !important;
     border: none !important;
     border-radius: 999px !important;
-    background: var(--warna-netral-94-3) !important;
+    background: var(--garis) !important;
     scroll-snap-type: x proximity !important;
     -webkit-overflow-scrolling: touch !important;
   }
@@ -1419,7 +1411,7 @@
   .sub-tab-btn.active {
     background: var(--m-surface) !important;
     color: var(--teal-dark) !important;
-    box-shadow: 0 2px 8px var(--warna-hutan-25-a10) !important;
+    box-shadow: 0 2px 8px rgb(var(--rgb-hutan) / 0.1) !important;
   }
 
   .sub-tab-viewport {
@@ -1436,7 +1428,7 @@
 
   .about-course-block {
     background: var(--m-surface) !important;
-    border: 1px solid var(--warna-hutan-25-a6) !important;
+    border: 1px solid rgb(var(--rgb-hutan) / 0.06) !important;
     border-radius: var(--m-radius) !important;
     box-shadow: var(--m-shadow-card) !important;
     padding: 16px !important;
@@ -1480,7 +1472,7 @@
     padding: 15px !important;
     border-radius: var(--m-radius) !important;
     background: var(--m-surface) !important;
-    border: 1px solid var(--warna-hutan-25-a6) !important;
+    border: 1px solid rgb(var(--rgb-hutan) / 0.06) !important;
     box-shadow: var(--m-shadow-card) !important;
   }
 
@@ -1524,7 +1516,7 @@
     padding: 16px !important;
     border-radius: var(--m-radius) !important;
     box-shadow: var(--m-shadow-card) !important;
-    border: 1px solid var(--warna-hutan-25-a6) !important;
+    border: 1px solid rgb(var(--rgb-hutan) / 0.06) !important;
   }
 
   #subtab-kuis .btn-enroll-primary {
@@ -1539,7 +1531,7 @@
     padding: 15px !important;
     border-radius: var(--m-radius) !important;
     box-shadow: var(--m-shadow-card) !important;
-    border: 1px solid var(--warna-hutan-25-a6) !important;
+    border: 1px solid rgb(var(--rgb-hutan) / 0.06) !important;
     background: var(--m-surface) !important;
   }
 
@@ -1549,7 +1541,7 @@
     margin: 0 var(--m-gutter) !important;
     border-radius: var(--m-radius) !important;
     box-shadow: var(--m-shadow-card) !important;
-    border: 1px solid var(--warna-hutan-25-a6) !important;
+    border: 1px solid rgb(var(--rgb-hutan) / 0.06) !important;
     overflow: hidden !important;
   }
 
@@ -1638,7 +1630,7 @@
     font-size: 12.5px !important;
     background: var(--m-surface) !important;
     box-shadow: var(--m-shadow-card) !important;
-    border: 1px solid var(--warna-hutan-25-a6) !important;
+    border: 1px solid rgb(var(--rgb-hutan) / 0.06) !important;
     transition: transform 0.16s var(--m-ease) !important;
   }
 
@@ -1646,9 +1638,9 @@
 
   .pdf-filter-btn.active {
     background: var(--teal-primary) !important;
-    color: var(--warna-netral-100) !important;
+    color: var(--teks-terbalik) !important;
     border-color: var(--teal-primary) !important;
-    box-shadow: 0 6px 16px -5px var(--warna-teal-56-a60) !important;
+    box-shadow: 0 6px 16px -5px rgb(var(--rgb-teal) / 0.55) !important;
   }
 
   .pdf-grid {
@@ -1662,7 +1654,7 @@
     padding: 15px !important;
     border-radius: var(--m-radius) !important;
     box-shadow: var(--m-shadow-card) !important;
-    border: 1px solid var(--warna-hutan-25-a6) !important;
+    border: 1px solid rgb(var(--rgb-hutan) / 0.06) !important;
     display: grid !important;
     grid-template-columns: 58px 1fr !important;
     grid-template-areas:
@@ -1805,7 +1797,7 @@
     border-radius: var(--m-radius) !important;
     padding: 16px !important;
     box-shadow: var(--m-shadow-card) !important;
-    border: 1px solid var(--warna-hutan-25-a6) !important;
+    border: 1px solid rgb(var(--rgb-hutan) / 0.06) !important;
   }
 
   /* Tabel santri diubah jadi daftar kartu yang bisa dibaca satu tangan */
@@ -1895,7 +1887,7 @@
     align-items: flex-end !important;
     justify-content: center !important;
     padding: 0 !important;
-    background: var(--warna-hutan-19-a50) !important;
+    background: rgb(var(--rgb-hutan-pekat) / 0.5) !important;
     backdrop-filter: blur(5px) !important;
     -webkit-backdrop-filter: blur(5px) !important;
     opacity: 0;
@@ -1949,7 +1941,7 @@
     width: 40px;
     height: 4.5px;
     border-radius: 999px;
-    background: var(--warna-netral-90);
+    background: var(--garis-tegas);
   }
 
   .m-sheet-scroll {
@@ -1994,7 +1986,7 @@
 
   .pdf-reader-viewport {
     padding: 14px !important;
-    background: var(--warna-netral-95) !important;
+    background: var(--permukaan-redup) !important;
     -webkit-overflow-scrolling: touch !important;
     overscroll-behavior: contain !important;
   }
@@ -2030,15 +2022,15 @@
     transform: translateY(160%) !important;
     padding: 13px 16px !important;
     border-radius: var(--m-radius-sm) !important;
-    background: var(--warna-hutan-25-a96) !important;
+    background: rgb(var(--rgb-hutan) / 0.96) !important;
     backdrop-filter: blur(16px) !important;
     -webkit-backdrop-filter: blur(16px) !important;
-    color: var(--warna-netral-100) !important;
+    color: var(--teks-terbalik) !important;
     font-size: 12.5px !important;
     font-weight: 600 !important;
     line-height: 1.45 !important;
     text-align: left !important;
-    box-shadow: 0 14px 36px var(--warna-hutan-25-a36) !important;
+    box-shadow: 0 14px 36px rgb(var(--rgb-hutan) / 0.36) !important;
     z-index: 99700 !important;
     opacity: 0 !important;
     transition: transform 0.44s var(--m-spring), opacity 0.26s ease !important;
@@ -2054,7 +2046,7 @@
 
   /* --- Skeleton pemuatan ------------------------------------------------ */
   .m-skeleton {
-    background: linear-gradient(100deg, var(--warna-netral-95) 30%, var(--warna-netral-98-2) 50%, var(--warna-netral-95) 70%);
+    background: linear-gradient(100deg, var(--permukaan-redup) 30%, var(--permukaan-lembut) 50%, var(--permukaan-redup) 70%);
     background-size: 220% 100%;
     animation: mShimmer 1.25s linear infinite;
     border-radius: var(--m-radius-xs);
@@ -2206,7 +2198,7 @@
     gap: 0;
     border-radius: 50%;
     background: var(--teal-light);
-    border: 2px solid var(--warna-teal-56-a18);
+    border: 2px solid rgb(var(--rgb-teal) / 0.2);
   }
 
   .m-ring .m-ring-value {

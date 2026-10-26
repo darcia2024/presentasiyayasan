@@ -4,37 +4,14 @@
    ========================================================================== */
 
 :root {
-  /* Brand Tokens (Warna Resmi Yayasan PERISA) */
-  --teal-primary:      var(--warna-teal-56); /* PERISA Turquoise */
-  --teal-dark:         var(--warna-hutan-25-2); /* Deep Islamic Charcoal */
-  --teal-light:        var(--warna-netral-96-2); /* Soft Mint Tonal Surface */
-  --teal-hover:        var(--warna-teal-50);
-  --teal-border:       var(--warna-teal-56-a18);
-
-  --gold-primary:      var(--warna-emas-69); /* Warm Ochre Gold */
-  --gold-light:        var(--warna-emas-98);
-  --gold-dark:         var(--warna-emas-51);
-  --gold-border:       var(--warna-emas-69-a35);
-
-  --bg-page:           var(--warna-netral-100); /* Full-bleed clean surface */
-  --bg-subtle:         var(--warna-netral-98-4);
-  --border-color:      var(--warna-netral-94-2);
-  --border-subtle:     var(--warna-netral-96);
-
-  --text-main:         var(--warna-hutan-22-3);
-  --text-body:         var(--warna-hutan-38);
-  --text-muted:        var(--warna-teal-59);
-
-  --font-family:       'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* Warna & bayangan ada di tokens.css (token semantik + nama lama sebagai
+     alias). Di sini hanya font dan sudut. */
+  --font-family:      'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --radius-xs:         6px;
   --radius-sm:         10px;
   --radius-md:         14px;
   --radius-lg:         18px;
   --radius-full:       9999px;
-
-  --shadow-sm:  0 1px 3px var(--warna-hutan-25-a4-2), 0 1px 2px var(--warna-hutan-25-a2);
-  --shadow-md:  0 4px 16px var(--warna-hutan-25-a6-3), 0 1px 4px var(--warna-hutan-25-a3);
-  --shadow-lg:  0 14px 40px var(--warna-hutan-25-a8-2), 0 2px 8px var(--warna-hutan-25-a4-2);
 }
 
 *, *::before, *::after {
@@ -48,7 +25,7 @@ html, body {
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  background-color: var(--warna-netral-100);
+  background-color: var(--permukaan-kartu);
   color: var(--text-main);
   font-family: var(--font-family);
   -webkit-font-smoothing: antialiased;
@@ -61,14 +38,14 @@ html, body {
 .demo-control-bar {
   width: 100%;
   background: var(--teal-dark);
-  color: var(--warna-netral-100);
+  color: var(--teks-terbalik);
   padding: 9px 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   font-size: 12px;
   font-weight: 600;
-  border-bottom: 1px solid var(--warna-netral-100-a10);
+  border-bottom: 1px solid rgb(var(--rgb-putih) / 0.1);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -77,9 +54,9 @@ html, body {
 }
 
 .demo-tag-pill {
-  background: var(--warna-teal-78-a20);
-  border: 1px solid var(--warna-teal-78);
-  color: var(--warna-teal-91);
+  background: rgb(var(--rgb-teal-terang) / 0.22);
+  border: 1px solid var(--aksen-terang);
+  color: var(--teks-terbalik-redup);
   padding: 2.5px 10px;
   border-radius: var(--radius-full);
   font-size: 10.5px;
@@ -93,7 +70,7 @@ html, body {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: var(--warna-netral-100-a8);
+  background: rgb(var(--rgb-putih) / 0.1);
   padding: 3px;
   border-radius: var(--radius-full);
 }
@@ -101,7 +78,7 @@ html, body {
 .role-btn {
   background: transparent;
   border: none;
-  color: var(--warna-netral-94-2);
+  color: var(--garis);
   padding: 5px 14px;
   border-radius: var(--radius-full);
   font-family: var(--font-family);
@@ -114,9 +91,9 @@ html, body {
   transition: all 0.2s ease;
 }
 
-.role-btn:hover { color: var(--warna-netral-100); background: var(--warna-netral-100-a15); }
-.role-btn.active { background: var(--teal-primary); color: var(--warna-netral-100); }
-.role-btn.admin-btn.active { background: var(--warna-oranye-67); }
+.role-btn:hover { color: var(--teks-terbalik); background: rgb(var(--rgb-putih) / 0.14); }
+.role-btn.active { background: var(--teal-primary); color: var(--teks-terbalik); }
+.role-btn.admin-btn.active { background: var(--emas); }
 
 /* --------------------------------------------------------------------------
    FULL-BLEED APP CONTAINER (REAL FULL-SCREEN DASHBOARD)
@@ -125,14 +102,14 @@ html, body {
   width: 100%;
   min-height: calc(100vh - 46px);
   display: flex;
-  background: var(--warna-netral-100);
+  background: var(--permukaan-kartu);
 }
 
 /* FULL-HEIGHT LEFT SIDEBAR */
 .ref-sidebar {
   width: 250px;
   min-width: 250px;
-  background: var(--warna-netral-100);
+  background: var(--permukaan-kartu);
   border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
@@ -157,7 +134,7 @@ html, body {
   height: 36px;
   border-radius: var(--radius-sm);
   background: var(--teal-primary);
-  color: var(--warna-netral-100);
+  color: var(--teks-terbalik);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -202,7 +179,7 @@ html, body {
   height: 30px;
   border-radius: 50%;
   background: var(--teal-primary);
-  color: var(--warna-netral-100);
+  color: var(--teks-terbalik);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -268,7 +245,7 @@ html, body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: var(--warna-netral-100);
+  background: var(--permukaan-kartu);
   min-height: calc(100vh - 46px);
   min-width: 0;
 }
@@ -280,7 +257,7 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--warna-netral-100);
+  background: var(--permukaan-kartu);
 }
 
 .breadcrumb-trail {
@@ -329,7 +306,7 @@ html, body {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--warna-merah-64);
+  background: var(--status-bahaya);
   position: absolute;
   top: 7px;
   right: 7px;
@@ -448,7 +425,7 @@ html, body {
 
 .btn-enroll-primary {
   background: var(--teal-primary);
-  color: var(--warna-netral-100);
+  color: var(--teks-terbalik);
   border: none;
   border-radius: var(--radius-full);
   padding: 9px 20px;
@@ -456,7 +433,7 @@ html, body {
   font-size: 13px;
   font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 4px 14px var(--warna-teal-56-a25);
+  box-shadow: 0 4px 14px rgb(var(--rgb-teal) / 0.25);
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -470,7 +447,7 @@ html, body {
 
 /* Cinematic Video Player Box */
 .ref-video-player-box {
-  background: var(--warna-netral-0);
+  background: var(--hitam);
   border-radius: var(--radius-lg);
   overflow: hidden;
   height: 400px;
@@ -484,12 +461,12 @@ html, body {
 .video-screen-content {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, var(--warna-hutan-25) 0%, var(--warna-hutan-32) 100%);
+  background: linear-gradient(135deg, var(--permukaan-gelap) 0%, var(--permukaan-gelap-2) 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: var(--warna-netral-100);
+  color: var(--teks-terbalik);
   text-align: center;
   padding: 28px;
   position: relative;
@@ -497,9 +474,9 @@ html, body {
 
 .ref-video-watermark {
   position: absolute;
-  background: var(--warna-netral-0-a72);
-  border: 1px solid var(--warna-teal-78-a50);
-  color: var(--warna-teal-91);
+  background: rgb(var(--rgb-hitam) / 0.72);
+  border: 1px solid rgb(var(--rgb-teal-terang) / 0.5);
+  color: var(--teks-terbalik-redup);
   padding: 5px 12px;
   border-radius: var(--radius-xs);
   font-size: 11px;
@@ -521,7 +498,7 @@ html, body {
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: var(--warna-netral-100-a96);
+  background: rgb(var(--rgb-putih) / 0.96);
   color: var(--teal-primary);
   border: none;
   display: flex;
@@ -529,13 +506,13 @@ html, body {
   justify-content: center;
   font-size: 28px;
   cursor: pointer;
-  box-shadow: 0 6px 24px var(--warna-netral-0-a35);
+  box-shadow: 0 6px 24px rgb(var(--rgb-hitam) / 0.35);
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .center-glass-play:hover {
   transform: scale(1.1);
-  background: var(--warna-netral-100);
+  background: var(--permukaan-kartu);
 }
 
 /* Horizontal Course Sub-Tabs */
@@ -641,7 +618,7 @@ html, body {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background: var(--warna-netral-100);
+  background: var(--permukaan-kartu);
   box-shadow: var(--shadow-sm);
 }
 
@@ -675,7 +652,7 @@ html, body {
 }
 
 .section-head:hover {
-  background: var(--warna-netral-97-2);
+  background: var(--permukaan-kanvas);
 }
 
 .section-duration {
@@ -767,7 +744,7 @@ html, body {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 20px;
-  background: var(--warna-netral-100);
+  background: var(--permukaan-kartu);
   box-shadow: var(--shadow-sm);
 }
 
@@ -796,7 +773,7 @@ html, body {
   font-weight: 800;
   color: var(--teal-primary);
   font-size: 17px;
-  box-shadow: 0 2px 8px var(--warna-teal-56-a20);
+  box-shadow: 0 2px 8px rgb(var(--rgb-teal) / 0.2);
 }
 
 .author-info-side {
@@ -832,13 +809,13 @@ html, body {
   left: 50%;
   transform: translateX(-50%) translateY(30px);
   background: var(--teal-dark);
-  color: var(--warna-netral-100);
+  color: var(--teks-terbalik);
   padding: 10px 24px;
   border-radius: var(--radius-full);
   font-size: 13px;
   font-weight: 700;
   box-shadow: var(--shadow-lg);
-  border: 1px solid var(--warna-teal-78-a40);
+  border: 1px solid rgb(var(--rgb-teal-terang) / 0.4);
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
@@ -855,7 +832,7 @@ html, body {
 .modal-overlay {
   position: fixed !important;
   inset: 0 !important;
-  background: var(--warna-hutan-25-a65) !important;
+  background: rgb(var(--rgb-hutan) / 0.65) !important;
   backdrop-filter: blur(8px) !important;
   -webkit-backdrop-filter: blur(8px) !important;
   display: flex !important;
@@ -875,12 +852,12 @@ html, body {
 }
 
 .modal-box {
-  background: var(--warna-netral-100) !important;
+  background: var(--permukaan-kartu) !important;
   border-radius: 20px !important;
   padding: 26px !important;
   max-width: 600px !important;
   width: 90% !important;
-  box-shadow: 0 20px 60px var(--warna-netral-0-a35) !important;
+  box-shadow: 0 20px 60px rgb(var(--rgb-hitam) / 0.35) !important;
   border: 1px solid var(--border-color) !important;
   transform: scale(0.95) translateY(10px);
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -893,7 +870,7 @@ html, body {
 
 /* Word Card Audio Speaking State */
 .arabic-word-card {
-  background: var(--warna-netral-100);
+  background: var(--permukaan-kartu);
   border: 1.5px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 14px 18px;
@@ -913,7 +890,7 @@ html, body {
 .arabic-word-card.speaking-active {
   border-color: var(--teal-primary) !important;
   background: var(--teal-light) !important;
-  box-shadow: 0 0 0 3px var(--warna-teal-56-a20) !important;
+  box-shadow: 0 0 0 3px rgb(var(--rgb-teal) / 0.2) !important;
   transform: scale(1.01);
 }
 
@@ -940,7 +917,7 @@ html, body {
 
 .arabic-word-card.speaking-active .speaker-play-btn {
   background: var(--teal-primary);
-  color: var(--warna-netral-100);
+  color: var(--teks-terbalik);
 }
 
 
@@ -959,8 +936,8 @@ html, body {
 }
 
 .beranda-welcome-banner {
-  background: linear-gradient(135deg, var(--warna-hutan-25-2) 0%, var(--warna-hutan-34) 100%);
-  color: var(--warna-netral-100);
+  background: linear-gradient(135deg, var(--permukaan-gelap) 0%, var(--permukaan-gelap-3) 100%);
+  color: var(--teks-terbalik);
   border-radius: var(--radius-lg);
   padding: 28px 32px;
   display: flex;
@@ -975,12 +952,12 @@ html, body {
   font-size: 22px;
   font-weight: 800;
   margin-bottom: 6px;
-  color: var(--warna-netral-100);
+  color: var(--teks-terbalik);
 }
 
 .beranda-banner-sub {
   font-size: 13px;
-  color: var(--warna-teal-91);
+  color: var(--teks-terbalik-redup);
   max-width: 600px;
   line-height: 1.55;
 }
@@ -992,7 +969,7 @@ html, body {
 }
 
 .beranda-metric-card {
-  background: var(--warna-netral-100);
+  background: var(--permukaan-kartu);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 18px 20px;
@@ -1013,7 +990,7 @@ html, body {
 }
 
 .beranda-continue-card {
-  background: var(--warna-netral-100);
+  background: var(--permukaan-kartu);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 24px;
@@ -1033,7 +1010,7 @@ html, body {
 }
 
 .beranda-schedule-card {
-  background: var(--warna-netral-100);
+  background: var(--permukaan-kartu);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 24px;
@@ -1088,7 +1065,7 @@ html, body {
 }
 
 .wali-anak-card {
-  background: var(--warna-netral-100);
+  background: var(--permukaan-kartu);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 20px;
@@ -1107,7 +1084,7 @@ html, body {
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  color: var(--warna-netral-100);
+  color: var(--teks-terbalik);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1203,7 +1180,7 @@ html, body {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: var(--warna-netral-100);
+  background: var(--permukaan-kartu);
   border: 1px dashed var(--border-color);
   border-radius: var(--radius-md);
   padding: 20px;
@@ -1234,7 +1211,7 @@ html, body {
 }
 
 .pdf-card {
-  background: var(--warna-netral-100);
+  background: var(--permukaan-kartu);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 22px;
@@ -1296,26 +1273,26 @@ html, body {
    INTERACTIVE ACADEMIC PDF DOCUMENT VIEWER MODAL
    ========================================================================== */
 .pdf-reader-modal-box {
-  background: var(--warna-netral-100);
+  background: var(--permukaan-kartu);
   border-radius: var(--radius-lg);
   max-width: 900px;
   width: 95%;
   max-height: 90vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 25px 70px var(--warna-netral-0-a40);
+  box-shadow: 0 25px 70px rgb(var(--rgb-hitam) / 0.4);
   border: 1px solid var(--border-color);
   overflow: hidden;
 }
 
 .pdf-reader-topbar {
   background: var(--teal-dark);
-  color: var(--warna-netral-100);
+  color: var(--teks-terbalik);
   padding: 12px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--warna-netral-100-a10);
+  border-bottom: 1px solid rgb(var(--rgb-putih) / 0.1);
 }
 
 .pdf-reader-toolbar {
@@ -1325,9 +1302,9 @@ html, body {
 }
 
 .pdf-toolbar-btn {
-  background: var(--warna-netral-100-a10);
-  border: 1px solid var(--warna-netral-100-a20);
-  color: var(--warna-netral-100);
+  background: rgb(var(--rgb-putih) / 0.1);
+  border: 1px solid rgb(var(--rgb-putih) / 0.2);
+  color: var(--teks-terbalik);
   padding: 4px 10px;
   border-radius: var(--radius-xs);
   font-size: 11px;
@@ -1339,12 +1316,12 @@ html, body {
 }
 
 .pdf-toolbar-btn:hover {
-  background: var(--warna-netral-100-a20);
+  background: rgb(var(--rgb-putih) / 0.2);
 }
 
 .pdf-reader-viewport {
   padding: 32px 40px;
-  background: var(--warna-netral-45); /* Authentic PDF Reader Canvas */
+  background: var(--latar-pembaca-pdf); /* Authentic PDF Reader Canvas */
   overflow-y: auto;
   display: flex;
   justify-content: center;
@@ -1352,11 +1329,11 @@ html, body {
 }
 
 .pdf-sheet-paper {
-  background: var(--warna-netral-100);
+  background: var(--permukaan-kartu);
   width: 100%;
   max-width: 720px;
   min-height: 850px;
-  box-shadow: 0 4px 20px var(--warna-netral-0-a30);
+  box-shadow: 0 4px 20px rgb(var(--rgb-hitam) / 0.3);
   padding: 48px 44px;
   display: flex;
   flex-direction: column;
@@ -1372,7 +1349,7 @@ html, body {
   transform: translate(-50%, -50%) rotate(-30deg);
   font-size: 26px;
   font-weight: 800;
-  color: var(--warna-teal-56-a5);
+  color: rgb(var(--rgb-teal) / 0.05);
   pointer-events: none;
   white-space: nowrap;
   letter-spacing: 0.1em;
@@ -1480,7 +1457,7 @@ html, body {
 
 .btn-enroll-primary {
   background: var(--teal-primary);
-  color: var(--warna-netral-100);
+  color: var(--teks-terbalik);
   border: none;
   border-radius: var(--radius-full);
   padding: 9px 20px;
@@ -1488,7 +1465,7 @@ html, body {
   font-size: 13px;
   font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 4px 14px var(--warna-teal-56-a25);
+  box-shadow: 0 4px 14px rgb(var(--rgb-teal) / 0.25);
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -1526,7 +1503,7 @@ html, body {
 
 .sidebar-user-card.active {
   border-color: var(--teal-primary);
-  box-shadow: 0 0 0 3px var(--warna-teal-56-a15);
+  box-shadow: 0 0 0 3px rgb(var(--rgb-teal) / 0.15);
 }
 
 .sidebar-user-card .ph-caret-down {
@@ -1544,10 +1521,10 @@ html, body {
   top: calc(100% + 8px) !important;
   left: 0 !important;
   width: 250px !important;
-  background: var(--warna-netral-100) !important;
+  background: var(--permukaan-kartu) !important;
   border: 1px solid var(--border-color) !important;
   border-radius: var(--radius-lg) !important;
-  box-shadow: 0 12px 36px var(--warna-hutan-25-a16), 0 2px 8px var(--warna-hutan-25-a8) !important;
+  box-shadow: 0 12px 36px rgb(var(--rgb-hutan) / 0.18), 0 2px 8px rgb(var(--rgb-hutan) / 0.08) !important;
   z-index: 2000 !important;
   padding: 14px !important;
   flex-direction: column !important;
@@ -1578,7 +1555,7 @@ html, body {
   height: 38px;
   border-radius: 50%;
   background: var(--teal-primary);
-  color: var(--warna-netral-100);
+  color: var(--teks-terbalik);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1603,7 +1580,7 @@ html, body {
   transition: all 0.15s ease;
   font-size: 12px;
   color: var(--text-main);
-  background: var(--warna-netral-100);
+  background: var(--permukaan-kartu);
   border: 1px solid transparent;
 }
 
@@ -1616,7 +1593,7 @@ html, body {
   background: var(--teal-light);
   color: var(--teal-primary);
   font-weight: 700;
-  border-color: var(--warna-teal-56-a25);
+  border-color: rgb(var(--rgb-teal) / 0.25);
 }
 
 .dropdown-account-left {
@@ -1629,7 +1606,7 @@ html, body {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: var(--warna-netral-94-2);
+  background: var(--garis);
   color: var(--text-main);
   display: flex;
   align-items: center;
@@ -1640,7 +1617,7 @@ html, body {
 
 .dropdown-account-item.current .dropdown-mini-avatar {
   background: var(--teal-primary);
-  color: var(--warna-netral-100);
+  color: var(--teks-terbalik);
 }
 
 .dropdown-quick-actions {
@@ -1678,7 +1655,7 @@ html, body {
    AUTHOR PROFILE CARD (UMI ELLY)
    ========================================================================== */
 .author-profile-card {
-  background: var(--warna-netral-100);
+  background: var(--permukaan-kartu);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 20px;
@@ -1843,7 +1820,7 @@ html, body {
 
 .pdf-filter-btn.active {
   background: var(--teal-primary);
-  color: var(--warna-netral-100);
+  color: var(--teks-terbalik);
   border-color: var(--teal-primary);
 }
 
@@ -1855,7 +1832,7 @@ html, body {
 }
 
 .pdf-card {
-  background: var(--warna-netral-100);
+  background: var(--permukaan-kartu);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 20px;
@@ -1912,7 +1889,7 @@ html, body {
 .pdf-reader-overlay {
   position: fixed;
   inset: 0;
-  background: var(--warna-hutan-25-a75);
+  background: rgb(var(--rgb-hutan) / 0.75);
   backdrop-filter: blur(8px);
   z-index: 99999;
   display: flex;
@@ -1925,12 +1902,12 @@ html, body {
   width: 90%;
   max-width: 840px;
   height: 88vh;
-  background: var(--warna-netral-100);
+  background: var(--permukaan-kartu);
   border-radius: var(--radius-lg);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 50px var(--warna-netral-0-a35);
+  box-shadow: 0 20px 50px rgb(var(--rgb-hitam) / 0.35);
 }
 
 .pdf-reader-topbar {
@@ -1958,18 +1935,18 @@ html, body {
   flex: 1;
   overflow-y: auto;
   padding: 24px;
-  background: var(--warna-netral-94);
+  background: var(--garis);
   display: flex;
   justify-content: center;
 }
 
 .pdf-sheet-paper {
-  background: var(--warna-netral-100);
+  background: var(--permukaan-kartu);
   width: 100%;
   max-width: 680px;
   min-height: 600px;
   padding: 40px;
-  box-shadow: 0 4px 20px var(--warna-netral-0-a10);
+  box-shadow: 0 4px 20px rgb(var(--rgb-hitam) / 0.1);
   border-radius: var(--radius-sm);
 }
 
@@ -2027,11 +2004,11 @@ html, body {
     flex-shrink: 0 !important;
     border-right: 1px solid var(--border-color) !important;
     scrollbar-width: thin;
-    scrollbar-color: var(--warna-teal-56-a20) transparent;
+    scrollbar-color: rgb(var(--rgb-teal) / 0.2) transparent;
   }
 
   .ref-sidebar::-webkit-scrollbar { width: 5px; }
-  .ref-sidebar::-webkit-scrollbar-thumb { background: var(--warna-teal-56-a20); border-radius: 4px; }
+  .ref-sidebar::-webkit-scrollbar-thumb { background: rgb(var(--rgb-teal) / 0.2); border-radius: 4px; }
 
   /* 2. Center Workspace: Fluid Smooth Scroll */
   .ref-main-workspace {
@@ -2039,11 +2016,11 @@ html, body {
     height: 100% !important;
     overflow-y: auto !important;
     scrollbar-width: thin;
-    scrollbar-color: var(--warna-teal-56-a25) transparent;
+    scrollbar-color: rgb(var(--rgb-teal) / 0.25) transparent;
   }
 
   .ref-main-workspace::-webkit-scrollbar { width: 6px; }
-  .ref-main-workspace::-webkit-scrollbar-thumb { background: var(--warna-teal-56-a25); border-radius: 4px; }
+  .ref-main-workspace::-webkit-scrollbar-thumb { background: rgb(var(--rgb-teal) / 0.25); border-radius: 4px; }
 
   .course-main-grid {
     display: grid !important;
@@ -2062,11 +2039,11 @@ html, body {
     align-self: start !important;
     padding-right: 4px !important;
     scrollbar-width: thin;
-    scrollbar-color: var(--warna-teal-56-a20) transparent;
+    scrollbar-color: rgb(var(--rgb-teal) / 0.2) transparent;
   }
 
   .right-sidebar-column::-webkit-scrollbar { width: 5px; }
-  .right-sidebar-column::-webkit-scrollbar-thumb { background: var(--warna-teal-56-a20); border-radius: 4px; }
+  .right-sidebar-column::-webkit-scrollbar-thumb { background: rgb(var(--rgb-teal) / 0.2); border-radius: 4px; }
 
   .course-title-header {
     display: flex !important;
@@ -2114,7 +2091,7 @@ html, body {
     width: 100% !important;
     max-width: 100vw !important;
     overflow-x: hidden !important;
-    background-color: var(--warna-netral-98-4) !important;
+    background-color: var(--permukaan-lembut) !important;
     padding-bottom: 68px !important;
   }
 
@@ -2126,12 +2103,12 @@ html, body {
     z-index: 1000 !important;
     height: 56px !important;
     padding: 0 14px !important;
-    background: var(--warna-hutan-25-2) !important;
+    background: var(--permukaan-gelap) !important;
     align-items: center !important;
     justify-content: space-between !important;
     width: 100% !important;
     box-sizing: border-box !important;
-    box-shadow: 0 2px 10px var(--warna-netral-0-a15) !important;
+    box-shadow: 0 2px 10px rgb(var(--rgb-hitam) / 0.15) !important;
   }
 
   .mobile-top-left {
@@ -2141,9 +2118,9 @@ html, body {
   }
 
   .mobile-hamburger-btn {
-    background: var(--warna-netral-100-a10) !important;
-    border: 1px solid var(--warna-netral-100-a18) !important;
-    color: var(--warna-netral-100) !important;
+    background: rgb(var(--rgb-putih) / 0.1) !important;
+    border: 1px solid rgb(var(--rgb-putih) / 0.18) !important;
+    color: var(--teks-terbalik) !important;
     width: 38px !important;
     height: 38px !important;
     border-radius: 10px !important;
@@ -2172,20 +2149,20 @@ html, body {
     width: 34px !important;
     object-fit: contain !important;
     border-radius: 8px !important;
-    background: var(--warna-netral-100) !important;
+    background: var(--permukaan-kartu) !important;
     padding: 2px !important;
   }
 
   .mobile-brand-text {
     font-size: 14.5px !important;
     font-weight: 800 !important;
-    color: var(--warna-netral-100) !important;
+    color: var(--teks-terbalik) !important;
     line-height: 1.15 !important;
   }
 
   .mobile-brand-sub {
     font-size: 10px !important;
-    color: var(--warna-teal-91) !important;
+    color: var(--teks-terbalik-redup) !important;
     font-weight: 600 !important;
   }
 
@@ -2199,9 +2176,9 @@ html, body {
     width: 34px !important;
     height: 34px !important;
     border-radius: 50% !important;
-    background: var(--warna-netral-100-a8) !important;
-    border: 1px solid var(--warna-netral-100-a12) !important;
-    color: var(--warna-teal-91) !important;
+    background: rgb(var(--rgb-putih) / 0.1) !important;
+    border: 1px solid rgb(var(--rgb-putih) / 0.1) !important;
+    color: var(--teks-terbalik-redup) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -2214,13 +2191,13 @@ html, body {
     height: 30px !important;
     border-radius: 50% !important;
     background: var(--teal-primary) !important;
-    color: var(--warna-netral-100) !important;
+    color: var(--teks-terbalik) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     font-size: 11px !important;
     font-weight: 800 !important;
-    border: 1.5px solid var(--warna-netral-100-a30) !important;
+    border: 1.5px solid rgb(var(--rgb-putih) / 0.3) !important;
     cursor: pointer !important;
   }
 
@@ -2234,7 +2211,7 @@ html, body {
     bottom: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-    background: var(--warna-hutan-25-a72) !important;
+    background: rgb(var(--rgb-hutan) / 0.75) !important;
     backdrop-filter: blur(10px) !important;
     -webkit-backdrop-filter: blur(10px) !important;
     z-index: 99999 !important;
@@ -2254,12 +2231,12 @@ html, body {
     width: 84% !important;
     max-width: 320px !important;
     height: 100% !important;
-    background: var(--warna-netral-100) !important;
+    background: var(--permukaan-kartu) !important;
     padding: 20px 16px 24px 16px !important;
     display: flex !important;
     flex-direction: column !important;
     gap: 14px !important;
-    box-shadow: 10px 0 40px var(--warna-netral-0-a35) !important;
+    box-shadow: 10px 0 40px rgb(var(--rgb-hitam) / 0.35) !important;
     overflow-y: auto !important;
     box-sizing: border-box !important;
     transform: translateX(-100%) !important;
@@ -2284,7 +2261,7 @@ html, body {
     max-width: 100vw !important;
     overflow-x: hidden !important;
     display: block !important;
-    background: var(--warna-netral-98-4) !important;
+    background: var(--permukaan-lembut) !important;
   }
 
   .ref-main-workspace {
@@ -2351,8 +2328,8 @@ html, body {
 
   .btn-share-text {
     flex: 1 !important;
-    border: 1px solid var(--warna-netral-94-2) !important;
-    background: var(--warna-netral-100) !important;
+    border: 1px solid var(--garis) !important;
+    background: var(--permukaan-kartu) !important;
     color: var(--teal-dark) !important;
     padding: 8px 12px !important;
     font-size: 12px !important;
@@ -2502,9 +2479,9 @@ html, body {
     left: 0 !important;
     right: 0 !important;
     height: 60px !important;
-    background: var(--warna-netral-100) !important;
+    background: var(--permukaan-kartu) !important;
     border-top: 1px solid var(--border-color) !important;
-    box-shadow: 0 -3px 14px var(--warna-hutan-25-a6-2) !important;
+    box-shadow: 0 -3px 14px rgb(var(--rgb-hutan) / 0.06) !important;
     z-index: 1000 !important;
     align-items: center !important;
     justify-content: space-around !important;
@@ -2671,7 +2648,7 @@ html, body {
 
 .wali-anak-sedang-modul {
   font-size: 11.5px;
-  color: var(--warna-teal-48);
+  color: var(--aksen-hover);
   margin-top: 1px;
 }
 
@@ -2705,8 +2682,8 @@ html, body {
 .ref-sub-tabs-bar {
   overflow-x: auto;
   scrollbar-width: none;
-  -webkit-mask-image: linear-gradient(to right, var(--warna-netral-0) 0, var(--warna-netral-0) calc(100% - 24px), transparent 100%);
-  mask-image: linear-gradient(to right, var(--warna-netral-0) 0, var(--warna-netral-0) calc(100% - 24px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, var(--hitam) 0, var(--hitam) calc(100% - 24px), transparent 100%);
+  mask-image: linear-gradient(to right, var(--hitam) 0, var(--hitam) calc(100% - 24px), transparent 100%);
 }
 
 .ref-sub-tabs-bar::-webkit-scrollbar {
@@ -2823,7 +2800,7 @@ html, body {
 .ref-nav-subitem.active .nav-subitem-num {
   background: var(--teal-primary);
   border-color: var(--teal-primary);
-  color: var(--warna-netral-100);
+  color: var(--teks-terbalik);
 }
 
 .nav-subitem-label {
@@ -2847,12 +2824,12 @@ html, body {
 }
 
 .ref-nav-item.is-danger {
-  color: var(--warna-merah-50);
+  color: var(--status-bahaya);
 }
 
 .ref-nav-item.is-danger:hover {
-  background: var(--warna-netral-96-3);
-  color: var(--warna-merah-44);
+  background: var(--status-bahaya-pucat);
+  color: var(--status-bahaya-tua);
 }
 
 

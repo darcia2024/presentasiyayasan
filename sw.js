@@ -8,7 +8,7 @@
      • Endpoint /api/*               -> network-first + fallback cache terakhir
    ========================================================================== */
 
-const SW_VERSION   = 'perisa-v1.1.0-caf84ae7';
+const SW_VERSION   = 'perisa-v1.1.0-28707dff';
 const SHELL_CACHE  = `${SW_VERSION}-shell`;
 const ASSET_CACHE  = `${SW_VERSION}-assets`;
 const CDN_CACHE    = `${SW_VERSION}-cdn`;
@@ -20,9 +20,9 @@ const OFFLINE_URL = '/offline.html';
 const SHELL_ASSETS = [
   '/',
   '/index.html',
-  '/tokens.css?v=6c22c832',
-  '/prototype.css?v=6dfe6eb7',
-  '/prototype-mobile.css?v=3a1b30f8',
+  '/tokens.css?v=d3b1aa13',
+  '/prototype.css?v=b82e01b1',
+  '/prototype-mobile.css?v=24545f83',
   '/prototype-mobile.js?v=7ff85e4a',
   '/js/aksi-klik.js?v=c3dbd164',
   '/js/app.js?v=c722eb51',
@@ -39,13 +39,13 @@ const SHELL_ASSETS = [
   '/js/config.js',
   '/js/core/supabase-client.js',
   '/js/ui/auth.js',
-  '/js/ui/auth.css?v=3ef59f50',
+  '/js/ui/auth.css?v=8f72fe09',
   '/vendor/supabase/supabase-js.2.114.0.min.js',
   '/js/core/curriculum-client.js',
   '/js/core/csv.js',
   '/js/core/content-loader.js',
   '/js/ui/studio.js',
-  '/js/ui/studio.css?v=45ca7228',
+  '/js/ui/studio.css?v=cff4d607',
   '/js/ui/mufrodat-cards.js',
   '/js/core/video-client.js',
   '/js/ui/video-player.js',

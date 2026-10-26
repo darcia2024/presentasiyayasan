@@ -12,7 +12,7 @@
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: linear-gradient(160deg, var(--teal-dark) 0%, var(--warna-hutan-29) 55%, var(--teal-primary) 130%);
+  background: linear-gradient(160deg, var(--teal-dark) 0%, var(--permukaan-gelap-2) 55%, var(--teal-primary) 130%);
 }
 
 body.auth-gate-open {
@@ -149,7 +149,7 @@ body.auth-gate-open {
 .auth-error {
   margin-top: 8px;
   font-size: 12.5px;
-  color: var(--warna-merah-50-2);
+  color: var(--status-bahaya);
   line-height: 1.5;
 }
 
@@ -166,7 +166,7 @@ body.auth-gate-open {
   font-size: 14.5px;
   font-weight: 700;
   font-family: var(--font-family);
-  color: var(--warna-netral-100);
+  color: var(--teks-terbalik);
   background: var(--teal-primary);
   border: none;
   border-radius: var(--radius-sm);
@@ -235,7 +235,7 @@ body.auth-gate-open {
   height: 38px;
   border-radius: var(--radius-full);
   background: var(--teal-primary);
-  color: var(--warna-netral-100);
+  color: var(--teks-terbalik);
   font-weight: 700;
   font-size: 13px;
   display: flex;

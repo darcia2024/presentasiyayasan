@@ -376,7 +376,7 @@
   padding: 10px 20px;
   font-size: 13.5px;
   font-weight: 700;
-  color: var(--warna-netral-100);
+  color: var(--teks-terbalik);
   background: var(--teal-primary);
   border: none;
   border-radius: var(--radius-sm);
@@ -412,9 +412,9 @@
   padding: 9px 16px;
   font-size: 13px;
   font-weight: 700;
-  color: var(--warna-merah-50-2);
-  background: var(--warna-netral-95-2);
-  border: 1.5px solid var(--warna-merah-86);
+  color: var(--status-bahaya);
+  background: var(--status-bahaya-lembut);
+  border: 1.5px solid var(--status-bahaya-garis);
   border-radius: var(--radius-sm);
   cursor: pointer;
   margin-left: auto;
@@ -534,7 +534,7 @@
   margin: 0 0 14px;
   padding-left: 18px;
   font-size: 12px;
-  color: var(--warna-merah-50-2);
+  color: var(--status-bahaya);
   line-height: 1.7;
 }
 
@@ -597,7 +597,7 @@
   align-items: center;
   gap: 14px;
   padding: 14px 16px;
-  background: var(--warna-netral-100);
+  background: var(--permukaan-kartu);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
 }
@@ -620,7 +620,7 @@
   height: 38px;
   border-radius: 50%;
   background: var(--teal-primary);
-  color: var(--warna-netral-100);
+  color: var(--teks-terbalik);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -763,8 +763,8 @@
 @media (max-width: 768px) {
   .studio-tabs {
     position: relative;
-    -webkit-mask-image: linear-gradient(to right, var(--warna-netral-0) 0, var(--warna-netral-0) calc(100% - 26px), transparent 100%);
-    mask-image: linear-gradient(to right, var(--warna-netral-0) 0, var(--warna-netral-0) calc(100% - 26px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, var(--hitam) 0, var(--hitam) calc(100% - 26px), transparent 100%);
+    mask-image: linear-gradient(to right, var(--hitam) 0, var(--hitam) calc(100% - 26px), transparent 100%);
   }
 }
 
@@ -937,7 +937,7 @@
   white-space: nowrap;
 }
 
-.studio-ppt-embed-label .ph { color: var(--warna-merah-55); }
+.studio-ppt-embed-label .ph { color: var(--merek-powerpoint); }
 
 .studio-ppt-embed-status {
   flex: 1;
@@ -977,8 +977,8 @@ body.ppt-player-terbuka { overflow: hidden; }
   z-index: 10000;
   display: flex;
   flex-direction: column;
-  background: var(--warna-hutan-22-2);
-  color: var(--warna-netral-100);
+  background: var(--permukaan-gelap);
+  color: var(--teks-terbalik);
   font-family: var(--font-family);
 }
 
@@ -998,7 +998,7 @@ body.ppt-player-terbuka { overflow: hidden; }
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--warna-netral-100-a60);
+  color: rgb(var(--rgb-putih) / 0.6);
 }
 
 .ppt-player-judul {
@@ -1023,14 +1023,14 @@ body.ppt-player-terbuka { overflow: hidden; }
   font: inherit;
   font-size: 12.5px;
   font-weight: 700;
-  color: var(--warna-netral-100);
-  background: var(--warna-netral-100-a10);
-  border: 1px solid var(--warna-netral-100-a18);
+  color: var(--teks-terbalik);
+  background: rgb(var(--rgb-putih) / 0.1);
+  border: 1px solid rgb(var(--rgb-putih) / 0.18);
   border-radius: var(--radius-sm);
   cursor: pointer;
 }
 
-.ppt-player-btn:hover { background: var(--warna-netral-100-a18); }
+.ppt-player-btn:hover { background: rgb(var(--rgb-putih) / 0.18); }
 .ppt-player-btn .ph { font-size: 16px; }
 
 .ppt-player-panggung {
@@ -1038,7 +1038,7 @@ body.ppt-player-terbuka { overflow: hidden; }
   flex: 1;
   min-height: 0;
   margin: 0 20px;
-  background: var(--warna-netral-0);
+  background: var(--hitam);
   border-radius: 10px;
   overflow: hidden;
 }
@@ -1059,7 +1059,7 @@ body.ppt-player-terbuka { overflow: hidden; }
   display: grid;
   place-items: center;
   font-size: 13px;
-  color: var(--warna-netral-100-a70);
+  color: rgb(var(--rgb-putih) / 0.7);
 }
 
 .ppt-player-watermark {
@@ -1069,8 +1069,8 @@ body.ppt-player-terbuka { overflow: hidden; }
   padding: 3px 8px;
   font-size: 10.5px;
   font-weight: 600;
-  color: var(--warna-netral-100-a75);
-  background: var(--warna-netral-0-a35);
+  color: rgb(var(--rgb-putih) / 0.75);
+  background: rgb(var(--rgb-hitam) / 0.35);
   border-radius: 999px;
   pointer-events: none;
 }
@@ -1079,7 +1079,7 @@ body.ppt-player-terbuka { overflow: hidden; }
   padding: 10px 20px;
   padding-bottom: max(10px, env(safe-area-inset-bottom));
   font-size: 11.5px;
-  color: var(--warna-netral-100-a60);
+  color: rgb(var(--rgb-putih) / 0.6);
   text-align: center;
 }
 
@@ -1224,7 +1224,7 @@ body.ppt-player-terbuka { overflow: hidden; }
 .dy-hitung {
   min-width: 22px; height: 22px; padding: 0 7px; border-radius: 999px;
   display: inline-flex; align-items: center; justify-content: center;
-  background: var(--warna-merah-50-2); color: var(--warna-netral-100); font-size: 11.5px; font-weight: 800;
+  background: var(--status-bahaya); color: var(--teks-terbalik); font-size: 11.5px; font-weight: 800;
 }
 .dy-hitung.is-nol { background: var(--teal-light); color: var(--teal-primary); }
 
@@ -1233,18 +1233,18 @@ body.ppt-player-terbuka { overflow: hidden; }
 .dy-butir {
   display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px;
   padding: 14px 16px; border-radius: var(--radius-md);
-  border: 1px solid var(--border-color); border-left-width: 5px; background: var(--warna-netral-100);
+  border: 1px solid var(--border-color); border-left-width: 5px; background: var(--permukaan-kartu);
   box-shadow: var(--shadow-sm);
 }
-.dy-butir.is-mendesak { border-left-color: var(--warna-merah-50-2); background: var(--warna-netral-98-3); }
+.dy-butir.is-mendesak { border-left-color: var(--status-bahaya); background: var(--status-bahaya-pucat); }
 .dy-butir.is-perlu { border-left-color: var(--gold-primary); background: var(--gold-light); }
 .dy-butir.is-info { border-left-color: var(--teal-primary); }
 .dy-butir-ikon {
   width: 42px; height: 42px; border-radius: 12px; font-size: 22px;
   display: flex; align-items: center; justify-content: center;
-  background: var(--warna-netral-100); color: var(--teal-primary);
+  background: var(--permukaan-kartu); color: var(--teal-primary);
 }
-.is-mendesak .dy-butir-ikon { color: var(--warna-merah-50-2); }
+.is-mendesak .dy-butir-ikon { color: var(--status-bahaya); }
 .is-perlu .dy-butir-ikon { color: var(--gold-dark); }
 .dy-butir-teks { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .dy-butir-teks strong { font-size: 14px; color: var(--text-main); }
@@ -1252,12 +1252,12 @@ body.ppt-player-terbuka { overflow: hidden; }
 .dy-aksi {
   display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
   padding: 10px 14px; min-height: 40px; border: 0; border-radius: var(--radius-sm);
-  background: var(--teal-dark); color: var(--warna-netral-100);
+  background: var(--teal-dark); color: var(--teks-terbalik);
   font-family: var(--font-family); font-size: 12.5px; font-weight: 700; cursor: pointer;
 }
 .dy-aksi:hover { background: var(--teal-primary); }
-.is-mendesak .dy-aksi { background: var(--warna-merah-50-2); }
-.is-mendesak .dy-aksi:hover { background: var(--warna-merah-43); }
+.is-mendesak .dy-aksi { background: var(--status-bahaya); }
+.is-mendesak .dy-aksi:hover { background: var(--status-bahaya-tua); }
 
 .dy-beres {
   display: flex; align-items: center; gap: 14px; padding: 16px 18px;
@@ -1274,7 +1274,7 @@ body.ppt-player-terbuka { overflow: hidden; }
 .dy-kartu {
   display: flex; flex-direction: column; gap: 10px; text-align: left;
   padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);
-  background: var(--warna-netral-100); box-shadow: var(--shadow-sm); cursor: pointer;
+  background: var(--permukaan-kartu); box-shadow: var(--shadow-sm); cursor: pointer;
   font-family: var(--font-family); color: var(--text-main);
   transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
 }
@@ -1302,7 +1302,7 @@ body.ppt-player-terbuka { overflow: hidden; }
 }
 .dy-pertemuan {
   list-style: none; margin: 0; padding: 0; border: 1px solid var(--border-color);
-  border-radius: var(--radius-md); background: var(--warna-netral-100); overflow: hidden;
+  border-radius: var(--radius-md); background: var(--permukaan-kartu); overflow: hidden;
 }
 .dy-pertemuan li {
   display: grid; grid-template-columns: 70px 1fr auto; gap: 12px; align-items: center;
@@ -1346,7 +1346,7 @@ body.ppt-player-terbuka { overflow: hidden; }
 .dg-kelas {
   display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px;
   padding: 14px 16px; border: 1px solid var(--border-color); border-radius: var(--radius-md);
-  background: var(--warna-netral-100); box-shadow: var(--shadow-sm);
+  background: var(--permukaan-kartu); box-shadow: var(--shadow-sm);
 }
 .dg-kelas-teks { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .dg-kelas-teks strong { font-size: 14px; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -1357,7 +1357,7 @@ body.ppt-player-terbuka { overflow: hidden; }
 .dg-materi { display: grid; gap: 10px; }
 .dg-materi-baris {
   display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 14px;
-  padding: 14px 16px; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: var(--warna-netral-100);
+  padding: 14px 16px; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: var(--permukaan-kartu);
 }
 .dg-materi-teks { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .dg-materi-teks strong { font-size: 13.5px; color: var(--text-main); }
@@ -1388,7 +1388,7 @@ body.ppt-player-terbuka { overflow: hidden; }
 
 .dw-anak {
   border: 1px solid var(--border-color); border-radius: var(--radius-md);
-  background: var(--warna-netral-100); box-shadow: var(--shadow-sm); overflow: hidden;
+  background: var(--permukaan-kartu); box-shadow: var(--shadow-sm); overflow: hidden;
 }
 .dw-anak-kepala { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px; padding: 16px; }
 .dw-anak-kepala .pengurus-avatar { width: 44px; height: 44px; font-size: 15px; }
@@ -1412,7 +1412,7 @@ body.ppt-player-terbuka { overflow: hidden; }
 .dw-tautan:hover { text-decoration: underline; }
 a.dy-aksi { text-decoration: none; }
 .is-perlu a.dy-aksi { background: var(--gold-dark); }
-.is-perlu a.dy-aksi:hover { background: var(--warna-emas-44); }
+.is-perlu a.dy-aksi:hover { background: var(--emas-gelap); }
 
 .dw-xp {
   display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 10px 16px;
