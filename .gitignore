@@ -22,3 +22,6 @@ supabase/.temp/
 
 # Hasil build untuk penerbitan (dibuat ulang tiap deploy)
 dist/
+
+# Keluaran alat Playwright MCP (tangkapan uji, log)
+.playwright-mcp/

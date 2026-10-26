@@ -15,6 +15,12 @@
       "permanent": true
     }
   ],
+  "rewrites": [
+    {
+      "source": "/pitch",
+      "destination": "/pitch.html"
+    }
+  ],
   "headers": [
     {
       "source": "/sw.js",
