@@ -6,13 +6,13 @@
 <title>PERISA Azhariyah: apa yang sudah ada</title>
 <meta name="description" content="Rangkuman fitur aplikasi PERISA Azhariyah untuk Umi Elly dan tim: dashboard per peran, kurikulum, materi PPT, lembar pertemuan, dan sertifikat.">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#072826">
+<meta name="theme-color" content="#F5F1E8">
 <link rel="icon" href="icons/icon-192.png">
-<!-- Halaman presentasi untuk Umi Elly & tim PERISA (26 Okt 2026). Berdiri
-     sendiri: tidak memuat aplikasi, tidak memuat skrip. Seluruh gambar adalah
-     tangkapan layar UI ASLI aplikasi dengan DATA CONTOH fiktif, tidak ada
-     nama santri, wali, atau guru sungguhan. Setiap fitur tampil sebagai
-     pasangan: laptop (layar desktop 1440px) dan ponsel (layar HP 390px). -->
+<!-- Halaman presentasi untuk Umi Elly & tim PERISA. Berdiri sendiri: tidak
+     memuat aplikasi, tidak memuat skrip. Seluruh gambar adalah tangkapan
+     layar UI ASLI aplikasi dengan DATA CONTOH fiktif, tidak ada nama santri,
+     wali, atau guru sungguhan. -->
+<link rel="preload" href="vendor/fonts/instrument-serif-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="vendor/fonts/fonts.css">
 <link rel="stylesheet" href="pitch.css">
 </head>
@@ -23,7 +23,7 @@
 <header class="nav">
   <div class="wadah nav-dalam">
     <a class="merek" href="#atas" aria-label="PERISA Azhariyah, ke atas">
-      <img src="logo-perisa-emblem.png" alt="" width="32" height="32">
+      <img src="logo-perisa-emblem.png" alt="" width="30" height="30">
       <span>PERISA Azhariyah</span>
     </a>
     <nav aria-label="Bagian halaman">
@@ -35,270 +35,292 @@
         <li><a href="#wali">Wali</a></li>
       </ul>
     </nav>
-    <a class="tombol tombol--garis nav-aksi" href="/">Buka aplikasi</a>
+    <a class="tombol tombol--gelap nav-aksi" href="/">Buka aplikasi</a>
   </div>
 </header>
 
 <main id="isi">
 
-  <!-- 1. HERO -->
+  <!-- HERO -->
   <section class="hero" id="atas">
-    <div class="wadah hero-grid">
-      <div class="hero-teks">
-        <h1>Satu rumah untuk kelas bahasa Arab.</h1>
-        <p class="lead">Materi, kelas, dan kabar ananda kini tersusun di satu aplikasi.</p>
-        <div class="aksi">
-          <a class="tombol tombol--utama" href="/">Buka aplikasi</a>
-          <a class="tombol tombol--garis" href="#peran">Lihat isinya</a>
+    <div class="wadah">
+      <p class="pengantar">Disusun untuk Umi Elly dan tim PERISA, Oktober 2026</p>
+      <div class="hero-kepala">
+        <h1>Kelas bahasa Arab PERISA, kini dalam satu aplikasi</h1>
+        <div class="hero-samping">
+          <p class="lead">Materi, kelas, dan kabar ananda tersusun rapi, bisa dibuka di laptop maupun di HP.</p>
+          <div class="aksi">
+            <a class="tombol tombol--utama" href="/">Buka aplikasi</a>
+            <a class="tombol tombol--garis" href="#peran">Lihat isinya</a>
+          </div>
         </div>
       </div>
-      <figure class="hero-gambar">
+      <figure class="panggung panggung--hero">
         <div class="duo">
-          <div class="laptop" data-slot="hero" data-kind="product">
+          <div class="laptop">
             <div class="laptop-layar"><img src="pitch-assets/dashboard-yayasan-desktop.jpg" width="2880" height="1800" fetchpriority="high"
                  alt="Dashboard Yayasan di laptop: daftar Perlu Perhatian berisi infaq menunggu verifikasi, kelas tanpa pengajar, dan bab tanpa materi PPT, lalu ringkasan enam fitur."></div>
             <div class="laptop-alas" aria-hidden="true"></div>
           </div>
-          <div class="ponsel" data-slot="hero-hp" data-kind="product">
+          <div class="ponsel">
             <div class="ponsel-layar"><img src="pitch-assets/dashboard-yayasan-phone.jpg" width="1170" height="2532" fetchpriority="high"
                  alt="Dashboard Yayasan yang sama di ponsel, dengan sapaan untuk Umi dan bilah navigasi bawah khusus Super Admin."></div>
           </div>
         </div>
-        <figcaption>Dashboard Yayasan di laptop dan HP. Nama dan angka pada setiap gambar di halaman ini adalah contoh.</figcaption>
+        <figcaption>Dashboard Yayasan, layar pertama Super Admin. Nama dan angka di semua gambar halaman ini adalah contoh.</figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- 2. TIGA PERAN -->
-  <section class="bagian" id="peran" aria-labelledby="judul-peran">
+  <!-- SEKILAS -->
+  <section class="sekilas" aria-label="Sekilas">
     <div class="wadah">
-      <div class="kepala-bagian">
-        <h2 id="judul-peran">Tiga peran, masing-masing punya layar sendiri.</h2>
-        <p>Masuk cukup dengan nomor WhatsApp dan PIN. Sesudahnya, setiap orang langsung tiba di layar yang memang ia butuhkan, di laptop maupun di HP.</p>
-      </div>
+      <dl class="fakta">
+        <div><dt>Tiga peran</dt><dd>Super Admin, guru, dan wali, masing-masing dengan layar pertamanya sendiri.</dd></div>
+        <div><dt>Tujuh urusan</dt><dd>Santri, guru, kelas, infaq, sertifikat, dan laporan dikelola dari satu panel.</dd></div>
+        <div><dt>Dua belas level</dt><dd>Sertifikat per level, masing-masing dengan kode verifikasi publik.</dd></div>
+        <div><dt>Nomor WA dan PIN</dt><dd>Cara masuk yang sederhana, tanpa kata sandi rumit.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- 01 PERAN -->
+  <section class="bab" id="peran" aria-labelledby="judul-peran">
+    <div class="wadah">
+      <header class="bab-kepala muncul">
+        <span class="bab-nomor">01</span>
+        <h2 id="judul-peran">Setiap orang langsung tiba di layarnya sendiri</h2>
+        <p>Begitu masuk dengan nomor WhatsApp dan PIN, aplikasi membuka layar yang memang dibutuhkan orang itu.</p>
+      </header>
       <ol class="peran">
-        <li>
-          <div class="ponsel" data-slot="peran-admin" data-kind="product">
+        <li class="peran-kartu muncul">
+          <div class="peran-teks">
+            <h3>Super Admin</h3>
+            <p>Umi Elly dan Prima. Yang tampil pertama adalah urusan yang menunggu tindakan.</p>
+          </div>
+          <div class="ponsel ponsel--terpotong">
             <div class="ponsel-layar"><img src="pitch-assets/dashboard-yayasan-phone.jpg" width="1170" height="2532" loading="lazy"
                  alt="Dashboard Yayasan di ponsel dengan daftar Perlu Perhatian."></div>
           </div>
-          <h3>Super Admin</h3>
-          <p>Umi Elly dan Prima. Yang tampil pertama adalah urusan yang menunggu tindakan: infaq, kelas tanpa guru, materi yang belum lengkap.</p>
         </li>
-        <li>
-          <div class="ponsel" data-slot="peran-guru" data-kind="product">
+        <li class="peran-kartu muncul">
+          <div class="peran-teks">
+            <h3>Guru</h3>
+            <p>Absensi yang belum diisi, kelas yang diampu, dan materi yang siap ditayangkan.</p>
+          </div>
+          <div class="ponsel ponsel--terpotong">
             <div class="ponsel-layar"><img src="pitch-assets/dashboard-guru-phone.jpg" width="1170" height="2532" loading="lazy"
                  alt="Dashboard Guru di ponsel: absensi yang belum diisi, lembar tanpa cakupan materi, dan santri yang sering alfa."></div>
           </div>
-          <h3>Guru</h3>
-          <p>Absensi yang belum diisi, kelas yang ia ampu, dan materi yang siap ditayangkan hari itu.</p>
         </li>
-        <li>
-          <div class="ponsel" data-slot="peran-wali" data-kind="product">
+        <li class="peran-kartu muncul">
+          <div class="peran-teks">
+            <h3>Wali</h3>
+            <p>Kabar terbaru, sertifikat ananda, dan materi yang dipelajari di kelasnya.</p>
+          </div>
+          <div class="ponsel ponsel--terpotong">
             <div class="ponsel-layar"><img src="pitch-assets/dashboard-wali-phone.jpg" width="1170" height="2532" loading="lazy"
                  alt="Dashboard Wali di ponsel: kabar sertifikat baru dan kartu tiap anak dengan tombol Buka Materi."></div>
           </div>
-          <h3>Wali</h3>
-          <p>Kabar terbaru, sertifikat ananda, dan materi yang sedang dipelajari di kelasnya.</p>
         </li>
       </ol>
     </div>
   </section>
 
-  <!-- 3. SUPER ADMIN -->
-  <section class="bagian bagian--sumur" id="yayasan" aria-labelledby="judul-yayasan">
-    <div class="wadah">
-      <div class="kepala-bagian">
-        <h2 id="judul-yayasan">Panel Super Admin: tujuh urusan, satu tempat.</h2>
-        <p>Setiap butir di Dashboard Yayasan punya tombol yang langsung membuka tab yang tepat. Tidak perlu mencari menu.</p>
-      </div>
-      <figure class="lebar">
+  <!-- 02 SUPER ADMIN -->
+  <section class="bab" id="yayasan" aria-labelledby="judul-yayasan">
+    <div class="wadah bab-belah">
+      <header class="bab-kepala muncul">
+        <span class="bab-nomor">02</span>
+        <h2 id="judul-yayasan">Yang perlu ditangani hari ini, langsung kelihatan</h2>
+        <p>Dashboard Yayasan merangkum infaq, kelas, santri, dan materi. Setiap butir punya tombol yang langsung membuka tempat menyelesaikannya di Panel Super Admin.</p>
+        <ul class="daftar-garis">
+          <li><strong>Santri &amp; Wali</strong> Daftarkan keluarga, atur kelas dan beasiswa.</li>
+          <li><strong>Guru</strong> Daftarkan guru, internal atau guru mitra.</li>
+          <li><strong>Kelas</strong> Tugaskan pengajar, isi daftar absen sekaligus.</li>
+          <li><strong>Infaq</strong> Catat lalu verifikasi.</li>
+          <li><strong>Sertifikat</strong> Terbitkan per level, 1 sampai 12.</li>
+          <li><strong>Laporan</strong> Kehadiran per kelas, unduh sebagai CSV.</li>
+        </ul>
+      </header>
+      <figure class="panggung muncul">
         <div class="duo">
-          <div class="laptop" data-slot="panel" data-kind="product">
+          <div class="laptop">
             <div class="laptop-layar"><img src="pitch-assets/panel-santri-desktop.jpg" width="2880" height="1800" loading="lazy"
                  alt="Panel Super Admin tab Santri & Wali di laptop: daftar santri dengan wali, kelas, status beasiswa, dan tombol Daftarkan Wali & Santri."></div>
             <div class="laptop-alas" aria-hidden="true"></div>
           </div>
-          <div class="ponsel" data-slot="panel-hp" data-kind="product">
+          <div class="ponsel">
             <div class="ponsel-layar"><img src="pitch-assets/panel-guru-phone.jpg" width="1170" height="2532" loading="lazy"
                  alt="Tab Guru di ponsel: daftar Super Admin dan pengajar beserta kategorinya, dan tombol Daftarkan Guru."></div>
           </div>
         </div>
-        <figcaption>Tab Santri &amp; Wali di laptop, tab Guru di HP. Akun guru dibuat Super Admin dari sana, perannya selalu Pengajar.</figcaption>
+        <figcaption>Tab Santri &amp; Wali di laptop, tab Guru di HP.</figcaption>
       </figure>
-      <div class="lembar lembar--lebar">
-        <table class="tabel">
-          <caption>Isi Panel Super Admin</caption>
-          <thead><tr><th scope="col">Tab</th><th scope="col">Yang bisa dikerjakan</th></tr></thead>
-          <tbody>
-            <tr><th scope="row">Ringkasan</th><td>Jumlah santri aktif, wali, sertifikat, dan infaq yang menunggu.</td></tr>
-            <tr><th scope="row">Santri &amp; Wali</th><td>Daftarkan keluarga baru, atur kelas, beasiswa, dan status santri.</td></tr>
-            <tr><th scope="row">Guru</th><td>Daftarkan guru dan tentukan kategorinya: internal atau guru mitra.</td></tr>
-            <tr><th scope="row">Kelas</th><td>Buat kelas, tugaskan pengajar, daftarkan satu kelas sekaligus dari daftar absen.</td></tr>
-            <tr><th scope="row">Infaq</th><td>Catat infaq keluarga lalu verifikasi.</td></tr>
-            <tr><th scope="row">Sertifikat</th><td>Terbitkan sertifikat per level, 1 sampai 12, lengkap dengan kode verifikasi.</td></tr>
-            <tr><th scope="row">Laporan</th><td>Kehadiran tiap santri per kelas, bisa diunduh sebagai CSV.</td></tr>
-          </tbody>
-        </table>
-      </div>
     </div>
   </section>
 
-  <!-- 4. STUDIO & MATERI PPT -->
-  <section class="bagian" id="materi" aria-labelledby="judul-materi">
-    <div class="wadah">
-      <div class="kepala-bagian">
-        <h2 id="judul-materi">Umi menyusun materi, guru tinggal menayangkan.</h2>
-        <p>Studio Kurikulum menyusun modul, bab, dan mufrodat tanpa menyentuh kode. PPT ditempel sebagai link OneDrive, jadi animasinya tetap utuh saat ditayangkan di kelas.</p>
-      </div>
-      <figure class="lebar">
+  <!-- 03 MATERI -->
+  <section class="bab bab--lembut" id="materi" aria-labelledby="judul-materi">
+    <div class="wadah bab-belah bab-belah--balik">
+      <header class="bab-kepala muncul">
+        <span class="bab-nomor">03</span>
+        <h2 id="judul-materi">Umi menyusun materi, guru tinggal menayangkan</h2>
+        <p>Studio Kurikulum menyusun modul, bab, dan mufrodat tanpa menyentuh kode. PPT ditempel sebagai link OneDrive, jadi animasinya tetap utuh saat ditayangkan.</p>
+        <ul class="daftar-garis">
+          <li><strong>Materi PPT</strong> Satu layar untuk semua bab, lengkap dengan hitungan bab yang belum siap.</li>
+          <li><strong>Draf atau terbit</strong> Modul draf belum terlihat oleh wali.</li>
+          <li><strong>Impor CSV</strong> Mufrodat bisa dimasukkan sekaligus banyak.</li>
+        </ul>
+      </header>
+      <figure class="panggung muncul">
         <div class="duo">
-          <div class="laptop" data-slot="studio" data-kind="product">
+          <div class="laptop">
             <div class="laptop-layar"><img src="pitch-assets/studio-ppt-desktop.jpg" width="2880" height="1800" loading="lazy"
                  alt="Studio Kurikulum layar Materi PPT di laptop: setiap bab satu baris dengan status berkas dan link OneDrive, dan penghitung 4 dari 8 bab sudah ada materinya."></div>
             <div class="laptop-alas" aria-hidden="true"></div>
           </div>
-          <div class="ponsel" data-slot="studio-hp" data-kind="product">
+          <div class="ponsel">
             <div class="ponsel-layar"><img src="pitch-assets/studio-ppt-phone.jpg" width="1170" height="2532" loading="lazy"
                  alt="Studio Kurikulum di ponsel, layar Materi PPT Jenjang SD dengan panduan menempel link OneDrive."></div>
           </div>
         </div>
-        <figcaption>Layar Materi PPT menjawab satu pertanyaan: tinggal berapa bab lagi.</figcaption>
+        <figcaption>Layar Materi PPT di Studio Kurikulum.</figcaption>
       </figure>
-      <ul class="poin">
-        <li><h3>Modul per jenjang</h3><p>Setiap modul punya status draf atau terbit. Yang masih draf belum terlihat oleh wali.</p></li>
-        <li><h3>Mufrodat sekaligus banyak</h3><p>Kosakata bisa diisi satu per satu atau diimpor dari berkas CSV.</p></li>
-        <li><h3>Guru mitra, materi saja</h3><p>Guru TPA kerja sama melihat materi ajar, tidak melihat data santri.</p></li>
-      </ul>
     </div>
   </section>
 
-  <!-- 5. DI DEPAN KELAS -->
-  <section class="bagian bagian--sumur" id="kelas" aria-labelledby="judul-kelas">
+  <!-- 04 DI KELAS -->
+  <section class="bab" id="kelas" aria-labelledby="judul-kelas">
     <div class="wadah">
-      <div class="kepala-bagian">
-        <h2 id="judul-kelas">Di depan kelas, semuanya sudah siap.</h2>
+      <header class="bab-kepala bab-kepala--lebar muncul">
+        <span class="bab-nomor">04</span>
+        <h2 id="judul-kelas">Di depan kelas, semuanya sudah siap</h2>
         <p>Guru membuka bab hari itu, memutar pelafalan mufrodat, lalu mengajak santri berlatih percakapan dengan suara mereka sendiri.</p>
-      </div>
-      <div class="pasangan-dua">
-        <figure>
+      </header>
+      <div class="bento">
+        <figure class="panggung bento-besar muncul">
           <div class="duo">
-            <div class="laptop" data-slot="kurikulum" data-kind="product">
+            <div class="laptop">
               <div class="laptop-layar"><img src="pitch-assets/mufrodat-desktop.jpg" width="2880" height="1800" loading="lazy"
                    alt="Halaman Kurikulum di laptop: struktur silabus dengan tombol PPT per bab, profil Umi Elly sebagai penyusun, dan kartu mufrodat berhuruf Arab."></div>
               <div class="laptop-alas" aria-hidden="true"></div>
             </div>
-            <div class="ponsel" data-slot="kurikulum-hp" data-kind="product">
+            <div class="ponsel">
               <div class="ponsel-layar"><img src="pitch-assets/kurikulum-phone.jpg" width="1170" height="2532" loading="lazy"
                    alt="Halaman Kurikulum di ponsel dengan judul modul, kotak materi, dan pilihan Pelafalan Mufrodat."></div>
             </div>
           </div>
           <figcaption>Kurikulum: silabus, tombol PPT per bab, dan kartu mufrodat yang bisa diperdengarkan.</figcaption>
         </figure>
-        <figure>
-          <div class="duo">
-            <div class="laptop" data-slot="simulasi" data-kind="product">
+        <figure class="panggung bento-kecil muncul">
+          <div class="duo duo--rapat">
+            <div class="laptop">
               <div class="laptop-layar"><img src="pitch-assets/simulasi-suara-desktop.jpg" width="2880" height="1800" loading="lazy"
                    alt="Simulasi Percakapan Suara di laptop: Umi Elly menyapa dalam bahasa Arab, kalimat target untuk santri, kosakata, dan panduan makhraj."></div>
               <div class="laptop-alas" aria-hidden="true"></div>
             </div>
-            <div class="ponsel" data-slot="simulasi-hp" data-kind="product">
+            <div class="ponsel">
               <div class="ponsel-layar"><img src="pitch-assets/simulasi-suara-phone.jpg" width="1170" height="2532" loading="lazy"
                    alt="Simulasi Percakapan Suara di ponsel dengan tombol Mulai Merekam Suara."></div>
             </div>
           </div>
-          <figcaption>Simulasi percakapan: santri menjawab lewat mikrofon, langkah demi langkah.</figcaption>
+          <figcaption>Simulasi percakapan: santri menjawab lewat mikrofon.</figcaption>
         </figure>
       </div>
     </div>
   </section>
 
-  <!-- 6. GURU -->
-  <section class="bagian" id="guru" aria-labelledby="judul-guru">
-    <div class="wadah dua-kolom dua-kolom--balik">
-      <div class="kepala-bagian kepala-bagian--samping">
-        <h2 id="judul-guru">Lembar pertemuan menggantikan catatan manual.</h2>
+  <!-- 05 GURU -->
+  <section class="bab bab--lembut" id="guru" aria-labelledby="judul-guru">
+    <div class="wadah bab-belah">
+      <header class="bab-kepala muncul">
+        <span class="bab-nomor">05</span>
+        <h2 id="judul-guru">Lembar pertemuan menggantikan buku catatan</h2>
         <p>Cakupan materi, evaluasi hari itu, dan absensi tersimpan per pertemuan. Semua santri sudah ditandai hadir, guru cukup mengubah yang tidak masuk.</p>
         <p>Dashboard Guru mengingatkan absensi yang terlewat dan santri yang dua kali alfa dalam sebulan.</p>
-      </div>
-      <figure>
+      </header>
+      <figure class="panggung muncul">
         <div class="duo">
-          <div class="laptop" data-slot="lembar" data-kind="product">
+          <div class="laptop">
             <div class="laptop-layar"><img src="pitch-assets/lembar-pertemuan-desktop.jpg" width="2880" height="1800" loading="lazy"
                  alt="Lembar pertemuan Selasa 20 Oktober untuk kelas SD 1A di laptop: cakupan pembelajaran, kolom evaluasi, dan daftar absensi dengan pilihan Hadir, Izin, Sakit, Alfa."></div>
             <div class="laptop-alas" aria-hidden="true"></div>
           </div>
-          <div class="ponsel" data-slot="lembar-hp" data-kind="product">
+          <div class="ponsel">
             <div class="ponsel-layar"><img src="pitch-assets/lembar-pertemuan-phone.jpg" width="1170" height="2532" loading="lazy"
                  alt="Lembar pertemuan yang sama di ponsel, siap diisi dari kelas."></div>
           </div>
         </div>
-        <figcaption>Satu lembar, satu pertemuan. Bisa diisi dari laptop atau HP.</figcaption>
+        <figcaption>Satu lembar untuk satu pertemuan, di laptop atau HP.</figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- 7. WALI & SERTIFIKAT -->
-  <section class="bagian bagian--sumur" id="wali" aria-labelledby="judul-wali">
-    <div class="wadah dua-kolom">
-      <figure>
+  <!-- 06 WALI -->
+  <section class="bab" id="wali" aria-labelledby="judul-wali">
+    <div class="wadah bab-belah bab-belah--balik">
+      <header class="bab-kepala muncul">
+        <span class="bab-nomor">06</span>
+        <h2 id="judul-wali">Kabar sampai ke rumah, sertifikat bisa dicek siapa pun</h2>
+        <p>Begitu sertifikat terbit, kabarnya muncul di Dashboard Wali. Kode QR di lembar cetak membuka halaman verifikasi publik, tanpa perlu login.</p>
+      </header>
+      <figure class="panggung muncul">
         <div class="duo">
-          <div class="laptop" data-slot="wali" data-kind="product">
+          <div class="laptop">
             <div class="laptop-layar"><img src="pitch-assets/dashboard-wali-desktop.jpg" width="2880" height="1800" loading="lazy"
                  alt="Dashboard Wali di laptop: kabar sertifikat Level 2 yang baru terbit, kartu dua anak dengan daftar sertifikat, dan modul yang dipelajari di kelas."></div>
             <div class="laptop-alas" aria-hidden="true"></div>
           </div>
-          <div class="ponsel" data-slot="verifikasi" data-kind="product">
+          <div class="ponsel">
             <div class="ponsel-layar"><img src="pitch-assets/verifikasi-phone.jpg" width="1170" height="2532" loading="lazy"
                  alt="Halaman Verifikasi Keaslian Sertifikat di ponsel dengan status Sertifikat Asli, nama penerima, level, dan nomor seri."></div>
           </div>
         </div>
         <figcaption>Dashboard Wali di laptop, hasil pindai QR sertifikat di HP.</figcaption>
       </figure>
-      <div class="kepala-bagian kepala-bagian--samping">
-        <h2 id="judul-wali">Wali dapat kabar, sertifikat bisa dicek siapa pun.</h2>
-        <p>Begitu sertifikat terbit, kabarnya muncul di Dashboard Wali. Kode QR di lembar cetak membuka halaman verifikasi publik, tanpa perlu login.</p>
-      </div>
     </div>
   </section>
 
-  <!-- 8. FONDASI -->
-  <section class="bagian bagian--tinta" id="fondasi" aria-labelledby="judul-fondasi">
-    <div class="wadah dua-kolom dua-kolom--balik">
-      <div class="kepala-bagian kepala-bagian--samping">
-        <h2 id="judul-fondasi">Yang bekerja di balik layar.</h2>
+  <!-- 07 FONDASI -->
+  <section class="bab bab--gelap" id="fondasi" aria-labelledby="judul-fondasi">
+    <div class="wadah">
+      <header class="bab-kepala bab-kepala--lebar muncul">
+        <span class="bab-nomor">07</span>
+        <h2 id="judul-fondasi">Yang bekerja diam&#8209;diam di balik layar</h2>
         <p>Hal-hal yang tidak terlihat, tapi menentukan apakah data keluarga aman.</p>
-      </div>
-      <table class="tabel tabel--tinta">
-        <caption>Fondasi aplikasi</caption>
-        <tbody>
-          <tr><th scope="row">Masuk</th><td>Nomor WhatsApp dan PIN 6 sampai 12 angka. Terkunci 15 menit setelah 5 kali salah.</td></tr>
-          <tr><th scope="row">Hak akses</th><td>Diperiksa basis data di setiap permintaan: guru hanya melihat kelasnya, wali hanya anaknya.</td></tr>
-          <tr><th scope="row">Di HP</th><td>Bisa dipasang seperti aplikasi, dan halaman dasarnya tetap terbuka saat sinyal putus.</td></tr>
-          <tr><th scope="row">Jejak</th><td>Perubahan penting, seperti peran dan kategori guru, tercatat di log audit.</td></tr>
-          <tr><th scope="row">Halaman</th><td>Skrip dari luar diblokir oleh kebijakan keamanan konten.</td></tr>
-        </tbody>
-      </table>
+      </header>
+      <ul class="ubin">
+        <li class="muncul"><h3>Masuk</h3><p>Nomor WhatsApp dan PIN 6 sampai 12 angka. Terkunci 15 menit setelah 5 kali salah.</p></li>
+        <li class="muncul"><h3>Hak akses</h3><p>Diperiksa basis data di setiap permintaan: guru hanya melihat kelasnya, wali hanya anaknya.</p></li>
+        <li class="muncul"><h3>Di HP</h3><p>Bisa dipasang seperti aplikasi, dan halaman dasarnya tetap terbuka saat sinyal putus.</p></li>
+        <li class="muncul"><h3>Jejak</h3><p>Perubahan penting, seperti peran dan kategori guru, tercatat di log audit.</p></li>
+        <li class="muncul"><h3>Halaman</h3><p>Skrip dari luar diblokir oleh kebijakan keamanan konten.</p></li>
+      </ul>
     </div>
   </section>
 
-  <!-- 9. YANG MENUNGGU KEPUTUSAN -->
-  <section class="bagian" id="berikutnya" aria-labelledby="judul-berikutnya">
-    <div class="wadah dua-kolom dua-kolom--balik">
-      <div class="kepala-bagian kepala-bagian--samping">
-        <h2 id="judul-berikutnya">Yang menunggu keputusan bersama.</h2>
+  <!-- 08 KEPUTUSAN -->
+  <section class="bab" id="berikutnya" aria-labelledby="judul-berikutnya">
+    <div class="wadah bab-belah bab-belah--teks">
+      <header class="bab-kepala muncul">
+        <span class="bab-nomor">08</span>
+        <h2 id="judul-berikutnya">Yang masih perlu kita putuskan bersama</h2>
         <p>Aplikasinya siap dipakai. Beberapa hal tinggal menunggu jawaban Umi dan tim.</p>
-        <div class="aksi">
-          <a class="tombol tombol--utama" href="/">Buka aplikasi</a>
-        </div>
-      </div>
-      <ol class="daftar-keputusan">
-        <li>Seberapa jauh teks Arab tanpa harokat: polos sepenuhnya, atau hanya tanpa tanwin.</li>
-        <li>Apakah wali boleh melihat ringkasan kehadiran ananda.</li>
-        <li>Ujian akhir semester dicatat di aplikasi, atau tetap di buku.</li>
-        <li>Siapa yang merekam suara pelafalan mufrodat.</li>
-        <li>PPT asli Buku 1 dan foto halaman buku untuk game kelas.</li>
+      </header>
+      <ol class="keputusan">
+        <li class="muncul">Seberapa jauh teks Arab tanpa harokat: polos sepenuhnya, atau hanya tanpa tanwin.</li>
+        <li class="muncul">Apakah wali boleh melihat ringkasan kehadiran ananda.</li>
+        <li class="muncul">Ujian akhir semester dicatat di aplikasi, atau tetap di buku.</li>
+        <li class="muncul">Siapa yang merekam suara pelafalan mufrodat.</li>
+        <li class="muncul">PPT asli Buku 1 dan foto halaman buku untuk game kelas.</li>
       </ol>
+    </div>
+    <div class="wadah">
+      <div class="penutup muncul">
+        <p class="penutup-kalimat">Aplikasinya sudah siap dicoba.</p>
+        <a class="tombol tombol--utama tombol--besar" href="/">Buka aplikasi</a>
+      </div>
     </div>
   </section>
 
@@ -307,7 +329,7 @@
 <footer class="kaki">
   <div class="wadah kaki-dalam">
     <div class="merek merek--kaki">
-      <img src="logo-perisa-emblem.png" alt="" width="28" height="28">
+      <img src="logo-perisa-emblem.png" alt="" width="26" height="26">
       <span>Yayasan Peradaban Islam Azhariyah</span>
     </div>
     <ul class="kaki-tautan">
