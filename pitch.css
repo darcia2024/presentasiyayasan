@@ -1,4 +1,4 @@
-/* Hallmark · v2.0.0 · shape: feature stack, product-led · genre: editorial · theme: almanac (dealt 2/3, seed halaman-pitch-untuk-yayasan-705d·22242fd4·2026-10-26·r0), re-tokened to the PERISA brand at pre-flight · posture: restrained · nav: edge-aligned, wordmark and one action · footer: mast · hero: split, head on 1 to 5, product on 6 to 12 · signature: the real Dashboard Yayasan Perlu Perhatian list · imagery: screenshots 15, Playwright against the local app with sample data */
+/* Hallmark · v2.0.0 · shape: feature stack, product-led · genre: editorial · theme: almanac (dealt 2/3, seed halaman-pitch-untuk-yayasan-705d·22242fd4·2026-10-26·r0), re-tokened to the PERISA brand at pre-flight · posture: restrained · nav: edge-aligned, wordmark and one action · footer: mast · hero: split, head on 1 to 5, product on 6 to 12 · signature: the real Dashboard Yayasan Perlu Perhatian list · imagery: screenshots 17 in CSS laptop and phone frames, Playwright against the local app with sample data */
 /* Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V4 · weakest: E, a walkthrough of a working product risks reading as a gallery; each screen sits beside one sentence of why and the facts go into ruled tables */
 /* Hallmark · dismissed 58 · the owner asked for a complete, detailed walkthrough to present to the foundation; 627 words over nine sections, each screen one room of the product under about 90 words */
 /* Hallmark · answered F1 · fonts and palette preserved from the project: Plus Jakarta Sans self-hosted because the CSP blocks Google Fonts; teal, ink and gold from the PERISA brand */
@@ -21,6 +21,14 @@
   --color-band-ink: oklch(93% 0.012 185);
   --color-band-muted: oklch(78% 0.020 185);
   --color-band-rule: oklch(40% 0.030 190);
+
+  /* Perangkat: bingkai laptop & ponsel. */
+  --color-device: oklch(19% 0.012 200);
+  --color-device-edge: oklch(34% 0.012 200);
+  --color-metal: oklch(88% 0.006 200);
+  --color-metal-2: oklch(76% 0.008 200);
+  --color-status: oklch(22% 0.030 190);
+  --color-shadow: oklch(25% 0.040 190 / 0.18);
 
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-figure: ui-monospace, "SFMono-Regular", Consolas, monospace;
@@ -138,24 +146,61 @@ a:hover { text-decoration-thickness: 2px; }
 .hero-teks { grid-column: 1 / span 5; display: grid; gap: var(--space-lg); padding-top: var(--space-xl); }
 .hero h1 { font-size: var(--text-h1); font-weight: 800; letter-spacing: -0.035em; line-height: 0.98; }
 .lead { font-size: var(--text-lg); color: var(--color-ink-2); max-width: 26ch; }
-.hero-gambar { grid-column: 6 / span 7; margin: 0; position: relative; padding-bottom: var(--space-xl); }
-.hero-hp { position: absolute; left: -9%; bottom: 0; width: 26%; }
-.hero-gambar figcaption { margin-top: var(--space-md); padding-left: 20%; }
+.hero-gambar { grid-column: 6 / span 7; margin: 0; }
 
-/* ---------------------------------------------------------- BINGKAI */
-.bingkai {
+/* ---------------------------------------------------------- PERANGKAT
+   Atas permintaan pemilik, layar ditampilkan di bingkai laptop dan
+   ponsel. Bingkainya CSS murni (tanpa gambar), isinya tangkapan layar
+   asli. Laptop memuat layar 1440x900, ponsel layar 390x844. */
+.duo { position: relative; padding-right: 15%; padding-bottom: 9%; }
+.duo .ponsel { position: absolute; right: 0; bottom: 0; width: 23%; }
+
+.laptop { position: relative; filter: drop-shadow(0 18px 28px var(--color-shadow)); }
+.laptop-layar {
   position: relative;
-  border-radius: var(--radius-frame);
-  overflow: hidden;
-  background: var(--color-paper-2);
-  outline: var(--rule-hair) solid var(--color-rule-2);
-  outline-offset: -1px;
+  padding: 2.4% 2.4% 3.2%;
+  background: var(--color-device);
+  border-radius: 14px 14px 4px 4px;
+  box-shadow: inset 0 0 0 1px var(--color-device-edge);
 }
-.bingkai picture { display: block; width: 100%; height: 100%; }
-.bingkai img { width: 100%; height: 100%; object-fit: cover; object-position: top left; }
-.bingkai--layar { aspect-ratio: 16 / 10; }
-.bingkai--hp { aspect-ratio: 390 / 844; border-radius: calc(var(--radius-frame) * 2.5); }
-.bingkai--hp img { object-position: top center; }
+.laptop-layar::before {
+  content: ""; position: absolute; top: 1.1%; left: 50%; width: 0.7%; aspect-ratio: 1;
+  transform: translateX(-50%); border-radius: 50%; background: var(--color-device-edge);
+}
+.laptop-layar img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top left; border-radius: 2px; background: var(--color-sheet); }
+.laptop-alas {
+  position: relative; height: clamp(9px, 1.5vw, 18px); margin-inline: -6.5%;
+  background: linear-gradient(var(--color-metal), var(--color-metal-2));
+  border-radius: 2px 2px 16px 16px;
+}
+.laptop-alas::after {
+  content: ""; position: absolute; top: 0; left: 50%; width: 15%; height: 42%;
+  transform: translateX(-50%); border-radius: 0 0 10px 10px; background: var(--color-metal-2);
+}
+
+/* Bezel lewat inset, BUKAN padding: padding persen dihitung dari lebar
+   wadah induk (.duo), bukan dari ponselnya, sehingga bezel menebal dan
+   layarnya menyempit. inset absolut dihitung dari ponsel itu sendiri. */
+.ponsel {
+  position: relative; aspect-ratio: 410 / 870;
+  background: var(--color-device);
+  border-radius: 15% / 7%;
+  box-shadow: inset 0 0 0 1px var(--color-device-edge), 0 18px 30px var(--color-shadow);
+}
+.ponsel-layar {
+  position: absolute; inset: 2% 4.4%; overflow: hidden;
+  display: flex; flex-direction: column;
+  border-radius: 11% / 5.2%;
+  background: var(--color-status);
+}
+/* Bilah status: ruang untuk pulau kamera, setinggi bilah status sungguhan. */
+.ponsel-layar::after { content: ""; flex: 0 0 5.4%; order: -1; }
+/* Pulau kamera di bilah status. */
+.ponsel-layar::before {
+  content: ""; position: absolute; top: 2.2%; left: 50%; width: 30%; height: 3.4%;
+  transform: translateX(-50%); border-radius: 999px; background: var(--color-device); z-index: 1;
+}
+.ponsel-layar img { width: 100%; flex: 1 1 auto; min-height: 0; object-fit: cover; object-position: top center; }
 
 figure { margin: 0; }
 figcaption { margin-top: var(--space-sm); font-size: var(--text-sm); color: var(--color-muted); max-width: 60ch; }
@@ -191,7 +236,7 @@ figcaption { margin-top: var(--space-sm); font-size: var(--text-sm); color: var(
   display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap);
 }
 .peran li { display: grid; gap: var(--space-sm); align-content: start; }
-.peran .bingkai { margin-bottom: var(--space-xs); max-width: 320px; }
+.peran .ponsel { width: min(100%, 260px); margin-bottom: var(--space-sm); }
 .peran h3 { font-size: var(--text-lg); }
 .peran p { color: var(--color-ink-2); max-width: 34ch; }
 
@@ -205,7 +250,6 @@ figcaption { margin-top: var(--space-sm); font-size: var(--text-sm); color: var(
 .tabel tbody th { font-weight: 600; color: var(--color-ink); white-space: nowrap; width: 9.5rem; }
 .tabel td { color: var(--color-ink-2); }
 
-.hp-samping { max-width: 300px; justify-self: end; width: 100%; }
 
 .poin {
   list-style: none; margin: 0; padding: var(--space-lg) 0 0;
@@ -215,11 +259,10 @@ figcaption { margin-top: var(--space-sm); font-size: var(--text-sm); color: var(
 .poin li { display: grid; gap: var(--space-xs); align-content: start; }
 .poin h3 { font-size: var(--text-h3); }
 
-.trio { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gap); align-items: start; }
-.trio > figure { grid-column: span 2; }
-.trio > .trio-besar { grid-column: span 8; }
+/* Dua pasangan perangkat berdampingan (Kurikulum & Simulasi). */
+.pasangan-dua { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap); align-items: start; }
 
-.hp-kecil { max-width: 240px; margin-top: var(--space-lg); }
+.lembar--lebar { max-width: 52rem; }
 
 /* Pita tinta: satu-satunya di halaman. */
 .bagian--tinta { background: var(--color-band); color: var(--color-band-ink); border-top: 0; }
@@ -253,28 +296,21 @@ figcaption { margin-top: var(--space-sm); font-size: var(--text-sm); color: var(
 /* --------------------------------------------------------- RESPONSIF */
 @media (max-width: 1024px) {
   .hero-teks, .hero-gambar { grid-column: 1 / -1; }
-  .hero-gambar { margin-top: var(--space-xl); padding-bottom: 0; }
-  .hero-hp { width: 24%; left: auto; right: var(--space-md); bottom: var(--space-md); }
-  .hero-gambar figcaption { padding-left: 0; }
+  .hero-gambar { margin-top: var(--space-2xl); }
   .lead { max-width: 36ch; }
   .dua-kolom > :first-child, .dua-kolom > :last-child,
   .dua-kolom--balik > :first-child, .dua-kolom--balik > :last-child { grid-column: 1 / -1; }
-  .hp-samping { justify-self: start; }
-  .trio > .trio-besar { grid-column: 1 / -1; }
-  .trio > figure { grid-column: span 6; }
+  .pasangan-dua { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 720px) {
   .nav nav { display: none; }
   .nav-aksi { margin-left: auto; }
   .hero { padding-block: var(--space-xl) var(--space-2xl); }
-  .hero-hp { display: none; }
+  .duo { padding-right: 20%; padding-bottom: 14%; }
+  .duo .ponsel { width: 36%; }
   .bagian { padding-block: var(--space-2xl); }
-  /* Bingkai desktop memuat versi HP lewat <picture> di layar sempit:
-     tangkapan 1440px selebar 360px tidak terbaca. */
-  .bingkai--layar { aspect-ratio: 390 / 640; max-width: 320px; border-radius: calc(var(--radius-frame) * 2.5); }
-  .bingkai--layar img { object-position: top center; }
   .peran, .poin { grid-template-columns: minmax(0, 1fr); }
-  .peran .bingkai { max-width: 260px; }
+  .peran .ponsel { width: min(62vw, 240px); }
   .tabel tbody th { width: auto; white-space: normal; display: block; padding-bottom: 0; }
   .tabel tbody td { display: block; border-top: 0; padding-top: var(--space-2xs); }
   .tabel tbody tr { display: block; border-top: var(--rule-hair) solid var(--color-rule); }
