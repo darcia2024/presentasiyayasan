@@ -920,7 +920,10 @@ function barisBabPpt(bab, nomor) {
       btnLepas.hidden = false;
     } else {
       baris.classList.remove('is-terisi');
-      teks.textContent = 'Belum ada materi';
+      // Baris ini hanya soal BERKAS; link OneDrive punya barisnya sendiri di
+      // bawah. "Belum ada materi" dulu tampil tepat di atas "Link OneDrive
+      // Terpasang" dan saling bertentangan.
+      teks.textContent = 'Belum ada berkas';
       btnUnggah.textContent = 'Unggah';
       btnLepas.hidden = true;
     }

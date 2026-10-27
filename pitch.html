@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PERISA Azhariyah: apa yang sudah ada</title>
-<meta name="description" content="Rangkuman fitur aplikasi PERISA Azhariyah untuk Umi Elly dan tim: dashboard per peran, kurikulum, materi PPT, lembar pertemuan, dan sertifikat.">
+<meta name="description" content="Rangkuman fitur aplikasi PERISA Azhariyah untuk Umi Elly dan tim: dashboard per peran, kurikulum, materi PPT, latihan percakapan, permainan kosakata, lembar pertemuan, dan sertifikat.">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#F5F1E8">
 <link rel="icon" href="icons/icon-192.png">
@@ -31,6 +31,7 @@
         <li><a href="#peran">Peran</a></li>
         <li><a href="#yayasan">Super Admin</a></li>
         <li><a href="#materi">Materi</a></li>
+        <li><a href="#bermain">Bermain</a></li>
         <li><a href="#guru">Guru</a></li>
         <li><a href="#wali">Wali</a></li>
       </ul>
@@ -59,7 +60,7 @@
         <div class="duo">
           <div class="laptop">
             <div class="laptop-layar"><img src="pitch-assets/dashboard-yayasan-desktop.jpg" width="2880" height="1800" fetchpriority="high"
-                 alt="Dashboard Yayasan di laptop: daftar Perlu Perhatian berisi infaq menunggu verifikasi, kelas tanpa pengajar, dan bab tanpa materi PPT, lalu ringkasan enam fitur."></div>
+                 alt="Dashboard Yayasan di laptop: daftar Perlu Perhatian dengan kelas tanpa pengajar bertanda Mendesak di urutan teratas, lalu infaq menunggu verifikasi, santri tanpa kelas, dan bab tanpa materi PPT, disusul ringkasan enam fitur."></div>
             <div class="laptop-alas" aria-hidden="true"></div>
           </div>
           <div class="ponsel">
@@ -134,7 +135,9 @@
         <span class="bab-nomor">02</span>
         <h2 id="judul-yayasan">Yang perlu ditangani hari ini, langsung kelihatan</h2>
         <p>Dashboard Yayasan merangkum infaq, kelas, santri, dan materi. Setiap butir punya tombol yang langsung membuka tempat menyelesaikannya di Panel Super Admin.</p>
+        <p>Warna merah hanya dipakai untuk yang benar-benar menghentikan pekerjaan, misalnya kelas yang belum punya pengajar. Butir itu diberi label Mendesak dan selalu tampil paling atas. Sisanya adalah pekerjaan rutin.</p>
         <ul class="daftar-garis">
+          <li><strong>Ringkasan</strong> Aksi cepat dan daftar yang sama, langsung di dalam panel.</li>
           <li><strong>Santri &amp; Wali</strong> Daftarkan keluarga, atur kelas dan beasiswa.</li>
           <li><strong>Guru</strong> Daftarkan guru, internal atau guru mitra.</li>
           <li><strong>Kelas</strong> Tugaskan pengajar, isi daftar absen sekaligus.</li>
@@ -168,6 +171,7 @@
         <h2 id="judul-materi">Umi menyusun materi, guru tinggal menayangkan</h2>
         <p>Studio Kurikulum menyusun modul, bab, dan mufrodat tanpa menyentuh kode. PPT ditempel sebagai link OneDrive, jadi animasinya tetap utuh saat ditayangkan.</p>
         <ul class="daftar-garis">
+          <li><strong>Langsung dari Kurikulum</strong> Saat membuka bab, PPT-nya bisa disetel atau diganti di kotak pemutar itu juga.</li>
           <li><strong>Materi PPT</strong> Satu layar untuk semua bab, lengkap dengan hitungan bab yang belum siap.</li>
           <li><strong>Draf atau terbit</strong> Modul draf belum terlihat oleh wali.</li>
           <li><strong>Impor CSV</strong> Mufrodat bisa dimasukkan sekaligus banyak.</li>
@@ -176,8 +180,8 @@
       <figure class="panggung muncul">
         <div class="duo">
           <div class="laptop">
-            <div class="laptop-layar"><img src="pitch-assets/studio-ppt-desktop.jpg" width="2880" height="1800" loading="lazy"
-                 alt="Studio Kurikulum layar Materi PPT di laptop: setiap bab satu baris dengan status berkas dan link OneDrive, dan penghitung 4 dari 8 bab sudah ada materinya."></div>
+            <div class="laptop-layar"><img src="pitch-assets/kurikulum-setel-desktop.jpg" width="2880" height="1800" loading="lazy"
+                 alt="Halaman Kurikulum di laptop dengan panel Setel PPT bab terbuka: kolom link embed OneDrive yang sudah terbaca, tombol Simpan dan pratinjau, dan pilihan unggah berkas, di samping struktur silabus."></div>
             <div class="laptop-alas" aria-hidden="true"></div>
           </div>
           <div class="ponsel">
@@ -185,7 +189,7 @@
                  alt="Studio Kurikulum di ponsel, layar Materi PPT Jenjang SD dengan panduan menempel link OneDrive."></div>
           </div>
         </div>
-        <figcaption>Layar Materi PPT di Studio Kurikulum.</figcaption>
+        <figcaption>Setel PPT dari halaman Kurikulum di laptop, layar Materi PPT Studio di HP.</figcaption>
       </figure>
     </div>
   </section>
@@ -197,6 +201,7 @@
         <span class="bab-nomor">04</span>
         <h2 id="judul-kelas">Di depan kelas, semuanya sudah siap</h2>
         <p>Guru membuka bab hari itu, memutar pelafalan mufrodat, lalu mengajak santri berlatih percakapan dengan suara mereka sendiri.</p>
+        <p>Skornya menilai apakah kata-kata yang diucapkan lengkap. Makhraj dan harakat tetap dikoreksi langsung oleh guru, dan rekaman suara tidak disimpan.</p>
       </header>
       <div class="bento">
         <figure class="panggung bento-besar muncul">
@@ -216,26 +221,57 @@
         <figure class="panggung bento-kecil muncul">
           <div class="duo duo--rapat">
             <div class="laptop">
-              <div class="laptop-layar"><img src="pitch-assets/simulasi-suara-desktop.jpg" width="2880" height="1800" loading="lazy"
-                   alt="Simulasi Percakapan Suara di laptop: Umi Elly menyapa dalam bahasa Arab, kalimat target untuk santri, kosakata, dan panduan makhraj."></div>
+              <div class="laptop-layar"><img src="pitch-assets/latihan-percakapan-desktop.jpg" width="2880" height="1800" loading="lazy"
+                   alt="Latihan Percakapan Arab di laptop, langkah 1 dari 4: sapaan Umi Elly dalam bahasa Arab, kalimat jawaban untuk santri, kosakata langkah ini, catatan makhraj, dan penjelasan cara penilaian."></div>
               <div class="laptop-alas" aria-hidden="true"></div>
             </div>
             <div class="ponsel">
-              <div class="ponsel-layar"><img src="pitch-assets/simulasi-suara-phone.jpg" width="1170" height="2532" loading="lazy"
-                   alt="Simulasi Percakapan Suara di ponsel dengan tombol Mulai Merekam Suara."></div>
+              <div class="ponsel-layar"><img src="pitch-assets/latihan-percakapan-phone.jpg" width="1170" height="2532" loading="lazy"
+                   alt="Latihan Percakapan Arab di ponsel dengan pilihan Suara atau Pilihan ganda dan tombol Mulai merekam."></div>
             </div>
           </div>
-          <figcaption>Simulasi percakapan: santri menjawab lewat mikrofon.</figcaption>
+          <figcaption>Latihan percakapan: santri menjawab Umi Elly lewat mikrofon, atau memilih jawaban bila tidak ada mikrofon.</figcaption>
         </figure>
       </div>
     </div>
   </section>
 
-  <!-- 05 GURU -->
-  <section class="bab bab--lembut" id="guru" aria-labelledby="judul-guru">
+  <!-- 05 BERMAIN -->
+  <section class="bab bab--lembut" id="bermain" aria-labelledby="judul-bermain">
     <div class="wadah bab-belah">
       <header class="bab-kepala muncul">
         <span class="bab-nomor">05</span>
+        <h2 id="judul-bermain">Kosakata kelas jadi permainan di rumah</h2>
+        <p>Petualangan Kata mengajak anak bermain dengan mufrodat yang baru dipelajarinya di kelas. Kata-katanya diambil dari bab yang sudah Umi terbitkan, bukan kata karangan.</p>
+        <ul class="daftar-garis">
+          <li><strong>Tambang Pasangan</strong> Gali blok batu, cocokkan kata Arab dengan artinya.</li>
+          <li><strong>Susun Menara Kata</strong> Susun huruf Arab menjadi kata, blok demi blok.</li>
+          <li><strong>Hujan Blok</strong> Pilih arti yang benar sebelum blok katanya jatuh ke tanah.</li>
+        </ul>
+        <p>Bintang yang dikumpulkan tersimpan di perangkat dan tidak masuk nilai atau rapor. Kalau mufrodat sebuah jenjang belum cukup, permainan memakai kosakata dasar dan menyebutkannya di layar.</p>
+      </header>
+      <figure class="panggung muncul">
+        <div class="duo">
+          <div class="laptop">
+            <div class="laptop-layar"><img src="pitch-assets/permainan-desktop.jpg" width="2880" height="1800" loading="lazy"
+                 alt="Petualangan Kata di laptop: sapaan Halo, Aisyah dengan pilihan tokoh Ali atau Aisyah, pilihan pelajaran sumber kata, dan tiga mode permainan bergaya blok."></div>
+            <div class="laptop-alas" aria-hidden="true"></div>
+          </div>
+          <div class="ponsel">
+            <div class="ponsel-layar"><img src="pitch-assets/permainan-main-phone.jpg" width="1170" height="2532" loading="lazy"
+                 alt="Mode Hujan Blok di ponsel: blok bertuliskan kata Arab jatuh dari langit, tiga nyawa, tombol Dengarkan kata, dan pilihan arti."></div>
+          </div>
+        </div>
+        <figcaption>Menu permainan di laptop, mode Hujan Blok di HP.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 06 GURU -->
+  <section class="bab" id="guru" aria-labelledby="judul-guru">
+    <div class="wadah bab-belah bab-belah--balik">
+      <header class="bab-kepala muncul">
+        <span class="bab-nomor">06</span>
         <h2 id="judul-guru">Lembar pertemuan menggantikan buku catatan</h2>
         <p>Cakupan materi, evaluasi hari itu, dan absensi tersimpan per pertemuan. Semua santri sudah ditandai hadir, guru cukup mengubah yang tidak masuk.</p>
         <p>Dashboard Guru mengingatkan absensi yang terlewat dan santri yang dua kali alfa dalam sebulan.</p>
@@ -257,11 +293,11 @@
     </div>
   </section>
 
-  <!-- 06 WALI -->
-  <section class="bab" id="wali" aria-labelledby="judul-wali">
-    <div class="wadah bab-belah bab-belah--balik">
+  <!-- 07 WALI -->
+  <section class="bab bab--lembut" id="wali" aria-labelledby="judul-wali">
+    <div class="wadah bab-belah">
       <header class="bab-kepala muncul">
-        <span class="bab-nomor">06</span>
+        <span class="bab-nomor">07</span>
         <h2 id="judul-wali">Kabar sampai ke rumah, sertifikat bisa dicek siapa pun</h2>
         <p>Begitu sertifikat terbit, kabarnya muncul di Dashboard Wali. Kode QR di lembar cetak membuka halaman verifikasi publik, tanpa perlu login.</p>
       </header>
@@ -282,11 +318,11 @@
     </div>
   </section>
 
-  <!-- 07 FONDASI -->
+  <!-- 08 FONDASI -->
   <section class="bab bab--gelap" id="fondasi" aria-labelledby="judul-fondasi">
     <div class="wadah">
       <header class="bab-kepala bab-kepala--lebar muncul">
-        <span class="bab-nomor">07</span>
+        <span class="bab-nomor">08</span>
         <h2 id="judul-fondasi">Yang bekerja diam&#8209;diam di balik layar</h2>
         <p>Hal-hal yang tidak terlihat, tapi menentukan apakah data keluarga aman.</p>
       </header>
@@ -300,11 +336,11 @@
     </div>
   </section>
 
-  <!-- 08 KEPUTUSAN -->
+  <!-- 09 KEPUTUSAN -->
   <section class="bab" id="berikutnya" aria-labelledby="judul-berikutnya">
     <div class="wadah bab-belah bab-belah--teks">
       <header class="bab-kepala muncul">
-        <span class="bab-nomor">08</span>
+        <span class="bab-nomor">09</span>
         <h2 id="judul-berikutnya">Yang masih perlu kita putuskan bersama</h2>
         <p>Aplikasinya siap dipakai. Beberapa hal tinggal menunggu jawaban Umi dan tim.</p>
       </header>
@@ -313,7 +349,8 @@
         <li class="muncul">Apakah wali boleh melihat ringkasan kehadiran ananda.</li>
         <li class="muncul">Ujian akhir semester dicatat di aplikasi, atau tetap di buku.</li>
         <li class="muncul">Siapa yang merekam suara pelafalan mufrodat.</li>
-        <li class="muncul">PPT asli Buku 1 dan foto halaman buku untuk game kelas.</li>
+        <li class="muncul">PPT asli Buku 1, untuk ditempel ke setiap bab.</li>
+        <li class="muncul">Apakah bintang Petualangan Kata perlu tercatat di akun santri, atau cukup di perangkat seperti sekarang.</li>
       </ol>
     </div>
     <div class="wadah">

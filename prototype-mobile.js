@@ -414,7 +414,12 @@
     var teks = (nameEl.textContent || '').trim();
     if (!teks || teks.indexOf('…') !== -1) return;
 
-    var first = teks.split(' ')[0] || 'Santri';
+    // Nama yang diawali sapaan ("Ustazah Nadia", "Umi Elly") dipotong
+    // SESUDAH sapaannya — kalau tidak, judul berbunyi "Assalamu'alaikum,
+    // Ustazah!" tanpa nama.
+    var kata = teks.split(/\s+/);
+    var sapaan = /^(ustaz|ustazah|ustadz|ustadzah|umi|ummi|abi|bapak|pak|ibu|bu)$/i;
+    var first = (kata.length > 1 && sapaan.test(kata[0]) ? kata[0] + ' ' + kata[1] : kata[0]) || 'Santri';
     VIEW_META.beranda.title = 'Ahlan wa Sahlan, ' + first + '!';
     VIEW_META['dashboard-yayasan'].title = 'Assalamu\'alaikum, ' + first + '!';
     VIEW_META['guru-dashboard'].title = 'Assalamu\'alaikum, ' + first + '!';

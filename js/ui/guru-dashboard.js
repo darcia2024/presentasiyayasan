@@ -260,7 +260,11 @@ export function olahDashboardGuru(d, hariIni) {
 
 function kepalaBeranda() {
   const sesi = bacaSesi();
-  const nama = (sesi?.akun?.nama || 'Ustadz/Ustadzah').split(' ')[0];
+  // Kata pertama saja, kecuali bila itu sapaan ("Ustazah Nadia"): judulnya
+  // jangan sampai "Assalamu'alaikum, Ustazah" tanpa nama.
+  const kata = (sesi?.akun?.nama || 'Ustadz/Ustadzah').split(/\s+/);
+  const nama = kata.length > 1 && /^(ustaz|ustazah|ustadz|ustadzah|umi|abi|bapak|ibu)$/i.test(kata[0])
+    ? `${kata[0]} ${kata[1]}` : kata[0];
   const segarkan = elemen('button', { kelas: 'studio-btn-secondary dy-segarkan', atribut: { type: 'button' } },
     [ikon('ph-arrows-clockwise'), ' Segarkan']);
   segarkan.addEventListener('click', () => bukaGuruDashboard());
