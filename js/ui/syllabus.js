@@ -24,7 +24,10 @@ import { bukaPemutarPpt } from './ppt-player.js';
 const LESSON_STATUS = {
   siap: {
     icon: 'ph-play-circle',
-    onClick: (lesson) => showToast(`Memutar: ${lesson.name}`)
+    // Memilih bab: kotak pemutar, mufrodat, kuis, dan setelan PPT berpindah ke
+    // bab ini (js/ui/jenjang.js mendengarkan kejadiannya). Dulu hanya toast
+    // "Memutar: …" yang tidak memutar apa pun.
+    onClick: (lesson, row) => pilihBaris(lesson, row)
   },
   evaluasi: {
     icon: 'ph-check-circle',
@@ -43,6 +46,14 @@ const LESSON_STATUS = {
     }
   }
 };
+
+/** Tandai satu baris bab sebagai bab terpilih dan kabarkan ke tampilan lain. */
+function pilihBaris(lesson, row) {
+  document.querySelectorAll('.course-content-accordion-card .lesson-sub-row.active')
+    .forEach((r) => r.classList.remove('active'));
+  if (row) row.classList.add('active');
+  document.dispatchEvent(new CustomEvent('perisa:pilih-pelajaran', { detail: { lesson } }));
+}
 
 function buildLessonRow(lesson) {
   const spec = LESSON_STATUS[lesson.status] || LESSON_STATUS.siap;
@@ -72,7 +83,7 @@ function buildLessonRow(lesson) {
   }
 
   row.append(left, time);
-  row.addEventListener('click', () => spec.onClick(lesson));
+  row.addEventListener('click', () => spec.onClick(lesson, row));
 
   const ppt = tombolPpt(lesson);
   if (ppt) row.insertBefore(ppt, time);

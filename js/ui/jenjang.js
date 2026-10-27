@@ -37,6 +37,7 @@ import { muatBeranda } from './beranda.js';
 import { muatSertifikatSantri } from './sertifikat-santri.js';
 import { bacaSesi } from '../core/supabase-client.js';
 import { ikon, kosongkan } from '../core/html.js';
+import { pasangKotakPpt, bersihkanKotakPpt } from './ppt-kotak.js';
 
 const NAMA_JENJANG = { sd: 'SD', smp: 'SMP', sma: 'SMA' };
 const NAMA_PERAN_STAFF = { pengajar: 'Pengajar', pengurus: 'Super Admin', superadmin: 'Super Admin' };
@@ -55,6 +56,57 @@ const setText = (id, value) => {
  * sudah dipakai sejak audit 5 September 2026, dipertahankan apa adanya.
  */
 let giliranTerakhir = 0;
+
+/** Silabus yang sedang tampil — dipegang supaya bab yang dipilih bisa diperbarui di tempat. */
+let silabusKini = null;
+let giliranPilih = 0;
+
+/** Baca keadaan buka/tutup bagian silabus dari layar, supaya digambar ulang tidak menutup ulang semuanya. */
+function simpanKeadaanBuka() {
+  if (!silabusKini) return;
+  document.querySelectorAll('.course-content-accordion-card .accordion-section').forEach((s, i) => {
+    if (silabusKini[i]) silabusKini[i].open = !!s.querySelector('.section-head')?.classList.contains('is-open');
+  });
+}
+
+function gambarUlangSilabus() {
+  if (!silabusKini) return;
+  simpanKeadaanBuka();
+  renderSyllabus(silabusKini);
+}
+
+/**
+ * Pindah ke bab yang diklik di silabus: kotak pemutar, mufrodat, kuis, dan
+ * setelan PPT semuanya mengikuti bab itu. Dulu klik baris hanya memunculkan
+ * toast, sementara kotak selalu menampilkan bab pertama.
+ */
+async function pilihPelajaran(lesson) {
+  if (!lesson || !silabusKini) return;
+  const giliran = ++giliranPilih;
+  const giliranJenjang = giliranTerakhir;
+  const masihBerlaku = () => giliran === giliranPilih && giliranJenjang === giliranTerakhir;
+
+  silabusKini.forEach((s) => s.lessons.forEach((l) => { l.active = l === lesson; }));
+  setText('currentVideoSubtitle', lesson.name);
+  sembunyikanVideoPelajaran();
+  pasangKotakPpt(lesson, { sesudahUbah: gambarUlangSilabus });
+
+  const [mufrodat] = await Promise.all([
+    muatMufrodatPelajaran(lesson.id),
+    lesson.videoAda ? tampilkanVideoPelajaran(lesson.id) : null,
+  ]);
+  if (!masihBerlaku()) return;
+
+  if (mufrodat && mufrodat.length) {
+    renderMufrodatCards(mufrodat);
+    renderKuis(lesson.id);
+  } else {
+    tampilkanMufrodatKosong('Pelajaran ini belum punya mufrodat.');
+    tampilkanKuisKosong('Evaluasi tersedia setelah pelajarannya punya mufrodat.');
+  }
+}
+
+document.addEventListener('perisa:pilih-pelajaran', (e) => pilihPelajaran(e.detail?.lesson));
 
 /* ==========================================================================
    REMAH ROTI KURIKULUM
@@ -179,6 +231,8 @@ function tampilkanKurikulumKosong(jenjang) {
 
   setBreadcrumb('Kurikulum', `Bahasa Arab Jenjang ${label}`, 'Belum ada modul terbit');
 
+  silabusKini = null;
+  bersihkanKotakPpt();
   tampilkanSilabusKosong();
   tampilkanMufrodatKosong('Mufrodat muncul di sini begitu pelajarannya diterbitkan.');
   tampilkanKuisKosong('Evaluasi tersedia setelah materi pelajarannya diterbitkan.');
@@ -215,7 +269,12 @@ export async function muatKontenJenjang(jenjang) {
     return;
   }
 
-  renderSyllabus(hasil.syllabus);
+  giliranPilih++; // memuat jenjang baru membatalkan pilihan bab yang masih berjalan
+  silabusKini = hasil.syllabus;
+  renderSyllabus(silabusKini);
+  const babAwal = silabusKini.flatMap((s) => s.lessons).find((l) => l.active);
+  if (babAwal) pasangKotakPpt(babAwal, { sesudahUbah: gambarUlangSilabus });
+  else bersihkanKotakPpt();
 
   const label = NAMA_JENJANG[jenjang] || String(jenjang || '').toUpperCase();
   const m = hasil.modulAktif;

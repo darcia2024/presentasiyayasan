@@ -80,6 +80,9 @@ export async function muatSilabusTerbit(jenjang) {
           // Hanya PENANDA "ada/tidak", bukan path-nya. Path objek storage
           // tidak ada gunanya di klien — bucketnya privat, dan URL-nya harus
           // diminta ke Edge Function tiap kali dibuka.
+          // Penanda "ada video" saja (bukan path-nya), untuk memilih bab di
+          // kotak pemutar tanpa meminta URL video bab yang tak punya video.
+          videoAda: !!p.video_path,
           pptAda: !!p.ppt_path,
           pptNama: p.ppt_nama || null,
           // Link embed OneDrive (Fase C3) — link tayang yang dibuka langsung

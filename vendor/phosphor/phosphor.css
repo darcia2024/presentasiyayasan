@@ -1,7 +1,7 @@
 /* ==========================================================================
    PERISA AZHARIYAH — Ikon Phosphor (subset)
    DIHASILKAN OTOMATIS oleh tools/build-icons.js. Jangan disunting tangan.
-   Berisi 120 ikon dari 1530 yang tersedia.
+   Berisi 122 ikon dari 1530 yang tersedia.
    Menambah ikon di markup cukup dijalankan ulang lewat `npm run stamp`.
    ========================================================================== */
 
@@ -92,6 +92,7 @@
 .ph.ph-files:before { content: "\e710"; }
 .ph.ph-fingerprint:before { content: "\e23e"; }
 .ph.ph-flag-checkered:before { content: "\ea38"; }
+.ph.ph-floppy-disk:before { content: "\e248"; }
 .ph.ph-flow-arrow:before { content: "\e6ec"; }
 .ph.ph-game-controller:before { content: "\e26e"; }
 .ph.ph-gauge:before { content: "\e628"; }
@@ -146,6 +147,7 @@
 .ph.ph-translate:before { content: "\e4a2"; }
 .ph.ph-trend-down:before { content: "\e4ac"; }
 .ph.ph-trophy:before { content: "\e67e"; }
+.ph.ph-upload-simple:before { content: "\e4c0"; }
 .ph.ph-user-check:before { content: "\eafa"; }
 .ph.ph-user-circle-plus:before { content: "\e4ca"; }
 .ph.ph-user-list:before { content: "\e73c"; }
