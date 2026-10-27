@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2f7d32">
+  <title>Petualangan Kata — Yayasan PERISA Azhariyah</title>
+
+  <!-- Font & ikon dari repo sendiri, bukan CDN. -->
+  <link rel="stylesheet" href="vendor/fonts/fonts.css">
+  <link rel="stylesheet" href="vendor/phosphor/phosphor.css">
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="permainan.css">
+</head>
+<body>
+
+  <a class="pg-lompat" href="#layar">Langsung ke permainan</a>
+
+  <header class="pg-atas">
+    <a href="index.html" class="pg-btn pg-btn--kecil" aria-label="Kembali ke portal">
+      <i class="ph ph-arrow-left" aria-hidden="true"></i> Portal
+    </a>
+    <p class="pg-merek">Petualangan Kata</p>
+    <div class="pg-atas-kanan">
+      <span class="pg-total" title="Total bintang di perangkat ini">
+        <i class="ph ph-star" aria-hidden="true"></i>
+        <span id="pgTotalBintang">0</span>
+      </span>
+      <button type="button" class="pg-btn pg-btn--kecil pg-ikon-btn" id="pgSuara" aria-label="Matikan suara efek"></button>
+    </div>
+  </header>
+
+  <main id="layar" class="pg-layar" aria-live="polite"></main>
+
+  <!-- Klien Supabase (dipakai js/core/content-loader.js untuk mufrodat). -->
+  <script src="vendor/supabase/supabase-js.2.114.0.min.js"></script>
+  <script type="module" src="js/game/permainan.js"></script>
+</body>
+</html>
