@@ -199,7 +199,6 @@ Lalu buka:
 - `http://localhost:3020/` — aplikasi santri & wali (PWA mobile + dashboard desktop)
 - `http://localhost:3020/game2d.html` — simulasi percakapan suara
 - `http://localhost:3020/proposal.html` — dek penawaran, hanya lokal (tidak terbit)
-- `http://localhost:3020/pitch` — presentasi penawaran untuk Qohiroh Center; memakai contoh layar PERISA dengan data fiktif. Versi terbit tersedia di `/pitch`. Penyesuaian lembaga dan layanan tambahan dijelaskan sebagai usulan, tanpa harga atau jadwal yang belum disepakati.
 
 Alur aplikasinya: **masuk (nomor WhatsApp + PIN) → dashboard → pilih menu di
 sidebar → buka materi**. Pengajar mendarat di Dashboard Guru, pengurus di Panel
