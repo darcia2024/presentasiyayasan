@@ -31,17 +31,17 @@
    menunjuk token yang tidak didefinisikan.
    ========================================================================== */
 
-/* Instrument Serif (OFL, lisensi di vendor/fonts/OFL-instrument-serif.txt),
-   disajikan dari repo sendiri karena CSP memblokir Google Fonts. Hanya satu
-   bobot (400): dipakai untuk judul halaman dan angka besar, tidak untuk
-   label, tombol, atau tabel. Di sini, bukan di tema.css, supaya halaman
+/* Bricolage Grotesque (OFL, lisensi di vendor/fonts/OFL-bricolage-grotesque.txt),
+   disajikan dari repo sendiri karena CSP memblokir Google Fonts. Font
+   variabel (bobot 500-800, sumbu opsz mengikuti ukuran): dipakai untuk judul
+   halaman dan angka besar, tidak untuk label, tombol, atau tabel. Di sini, bukan di tema.css, supaya halaman
    publik yang hanya memuat tokens.css (Verifikasi, Offline) ikut bisa. */
 @font-face {
-  font-family: "Instrument Serif";
+  font-family: "Bricolage Grotesque";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 500 800;
   font-display: swap;
-  src: url("vendor/fonts/instrument-serif-400-latin.woff2") format("woff2");
+  src: url("vendor/fonts/bricolage-grotesque-latin.woff2") format("woff2");
 }
 
 :root {
@@ -183,9 +183,11 @@
   --bayangan-2: 0 1px 2px rgb(var(--rgb-hutan) / 0.04), 0 4px 14px rgb(var(--rgb-hutan) / 0.05);
   --bayangan-3: 0 18px 44px rgb(var(--rgb-hutan) / 0.14), 0 2px 8px rgb(var(--rgb-hutan) / 0.06);
 
-  /* Tipografi /pitch: serif untuk judul halaman & angka besar, sans untuk
-     sisanya. */
-  --font-judul: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+  /* Tipografi: Bricolage Grotesque untuk judul halaman & angka besar, Plus
+     Jakarta Sans untuk sisanya. */
+  --font-judul: "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
+  --judul-bobot: 700;
+  --judul-spasi: -0.02em;
 
   /* Warna milik pihak lain — sengaja di luar palet */
   --merek-powerpoint: #C43E1C;

@@ -6,8 +6,8 @@
 
 - **Fase 0 selesai.** Semua warna CSS aplikasi lewat `tokens.css`.
 - **Fase 1 selesai.** 140 token primitif diringkas jadi palet dasar, token semantik (`--permukaan-*`, `--teks-*`, `--status-*`, …), dan nama lama sebagai alias. **Nilainya kini palet /pitch**: kertas gading, tinta hutan, teal hanya aksen, emas untuk angka. Hex setara dari oklch (pitch.css) dipakai karena HP lama tidak mengenal `oklch()`.
-- **Fase 2 selesai: kerangka.** `tema.css` (dimuat terakhir) menimpa rupa sidebar (label grup kalimat biasa, menu aktif latar lembut), kepala atas & remah roti, kartu profil, toast, modal, dan di HP: app bar hutan polos, judul besar serif, chip bergaris tipis, tab bar kertas gading, drawer.
-- **Fase 3, sebagian besar selesai: layar.** Masuk, Verifikasi, Dashboard Yayasan/Guru/Wali, Kurikulum (silabus, kartu mufrodat), judul semua layar Studio & Panel, Simulasi Suara, Offline, dan Kebijakan Privasi. Serif **hanya** untuk judul halaman dan angka besar (keputusan 8.1 mengikuti saran); sidebar kertas gading (8.2 mengikuti saran).
+- **Fase 2 selesai: kerangka.** `tema.css` (dimuat terakhir) menimpa rupa sidebar (label grup kalimat biasa, menu aktif latar lembut), kepala atas & remah roti, kartu profil, toast, modal, dan di HP: app bar hutan polos, judul besar Bricolage, chip bergaris tipis, tab bar kertas gading, drawer.
+- **Fase 3, sebagian besar selesai: layar.** Masuk, Verifikasi, Dashboard Yayasan/Guru/Wali, Kurikulum (silabus, kartu mufrodat), judul semua layar Studio & Panel, Simulasi Suara, Offline, dan Kebijakan Privasi. Bricolage Grotesque **hanya** untuk judul halaman dan angka besar (keputusan 8.1 mengikuti saran); sidebar kertas gading (8.2 mengikuti saran).
 - **Perlu Perhatian** (bagian 5): kartu terang dengan garis tingkat tipis, satu gaya tombol, merah hanya untuk yang mendesak. Aturan tingkat di `js/ui/perhatian.js`.
 - **Belum:** absensi tombol segmen (keputusan 8.5, perubahan interaksi), nomor bab emas di silabus (nomornya tertulis di dalam teks judul), uji di proyektor kelas, dan seluruh Fase 4 (memindah `style=""` sebaris dan mengurangi `!important`).
 
@@ -21,8 +21,8 @@ Membawa bahasa visual /pitch ke aplikasi yang dipakai setiap hari oleh Super Adm
 
 Aplikasi berbeda dari halaman presentasi: aplikasi adalah **alat kerja**. Guru mengisi absensi 25 anak, dan Umi menyusun 60 bab materi. Karena itu:
 
-- Yang dibawa dari /pitch adalah **suasananya**: kertas gading, tinta hijau hutan, teal hanya sebagai aksen, serif untuk judul halaman, garis tipis, dan kartu lembut.
-- Yang **tidak** dibawa: butir kertas, animasi muncul saat scroll, dan judul serif raksasa. Di layar kerja, ketiganya hanya mengganggu.
+- Yang dibawa dari /pitch adalah **suasananya**: kertas gading, tinta hijau hutan, teal hanya sebagai aksen, Bricolage Grotesque untuk judul halaman, garis tipis, dan kartu lembut.
+- Yang **tidak** dibawa: butir kertas, animasi muncul saat scroll, dan judul raksasa. Di layar kerja, ketiganya hanya mengganggu.
 - **Keterbacaan dan kepadatan informasi menang** di setiap layar yang berisi data (tabel santri, lembar absensi, daftar bab).
 
 ## 2. Kondisi sekarang (diukur 26 Okt 2026)
@@ -49,7 +49,7 @@ Aplikasi berbeda dari halaman presentasi: aplikasi adalah **alat kerja**. Guru m
 | Emas | nomor & angka | lencana level, sertifikat, angka ringkasan | |
 | Hijau hutan gelap | bab Fondasi | sidebar? (lihat keputusan 8.2) | |
 | Status | merah mendesak, kuning perlu, teal info | **dipertahankan**, hanya diselaraskan nadanya | Warna status adalah informasi, bukan hiasan |
-| Judul halaman | Instrument Serif | Instrument Serif, **hanya** judul halaman & angka besar | Label, tombol, dan tabel tetap sans |
+| Judul halaman | Bricolage Grotesque | Bricolage Grotesque, **hanya** judul halaman & angka besar | Label, tombol, dan tabel tetap sans |
 | Teks & kontrol | Plus Jakarta Sans | sama | |
 | Teks Arab | Amiri | Amiri (tidak berubah) | |
 | Sudut | panggung 28px, kartu 22px | kartu 16px, kontrol 10px, tombol pil | Lebih rapat dari /pitch karena layar lebih padat |
@@ -62,7 +62,7 @@ Setiap fase bisa dirilis sendiri dan diuji sebelum fase berikutnya.
 | Fase | Isi | Ukuran | Risiko |
 |---|---|---|---|
 | **0. Fondasi token** | Satu berkas `tokens.css` berisi semua warna, jarak, sudut, dan font. Hex lama di empat berkas CSS diganti dengan token. Tampilan **belum** berubah; ini murni pindah tempat | Sedang | Rendah: diuji dengan membandingkan tangkapan layar sebelum dan sesudah, harus identik |
-| **1. Ganti palet & tipografi** | Nilai token diganti ke palet /pitch, serif masuk untuk judul halaman | Kecil | Sedang: kontras perlu dicek di setiap layar |
+| **1. Ganti palet & tipografi** | Nilai token diganti ke palet /pitch, Bricolage Grotesque masuk untuk judul halaman | Kecil | Sedang: kontras perlu dicek di setiap layar |
 | **2. Kerangka** | Sidebar, kepala atas, remah roti, drawer & tab bar mobile, toast, modal | Sedang | Sedang: dipakai semua layar |
 | **3. Layar per layar** | Lihat bagian 5, satu layar satu commit | Besar | Rendah per layar |
 | **4. Bersih-bersih** | Memindahkan `style="…"` sebaris dan `.style` di JS ke kelas CSS, mengurangi `!important` | Besar | Sedang |
@@ -77,29 +77,29 @@ Alat uji yang sudah ada: skrip tangkapan layar dengan **data contoh fiktif** yan
 |---|---|---|
 | Latar halaman | Putih | Kertas gading; permukaan kerja tetap terang |
 | Sidebar desktop | Putih, menu teal, label grup huruf kapital renggang | Kertas gading, label grup sentence case kecil, menu aktif berupa latar lembut dengan tinta hutan (bukan blok teal) |
-| Kepala atas & remah roti | Garis bawah abu, ikon bundar | Lebih tipis; remah roti satu baris kecil, judul halaman pindah ke isi sebagai judul serif |
+| Kepala atas & remah roti | Garis bawah abu, ikon bundar | Lebih tipis; remah roti satu baris kecil, judul halaman pindah ke isi sebagai judul Bricolage |
 | Kartu profil di sidebar | Kotak bergaris | Baris sederhana: inisial, nama, peran |
-| App bar mobile & judul besar | Latar gradasi teal gelap, chip pil | Latar hutan polos, judul serif, chip garis tipis |
+| App bar mobile & judul besar | Latar gradasi teal gelap, chip pil | Latar hutan polos, judul Bricolage, chip garis tipis |
 | Tab bar bawah mobile | Putih, tombol tengah teal bulat | Kertas gading, ikon tinta, tombol tengah hutan |
 | Drawer mobile | Seperti sidebar | Mengikuti sidebar baru |
 | Toast | Kotak gelap | Pil hutan, lebih kecil |
-| Modal (Ganti PIN, sertifikat) | Kotak putih berbayang | Kartu terang bersudut 16px, judul serif |
+| Modal (Ganti PIN, sertifikat) | Kotak putih berbayang | Kartu terang bersudut 16px, judul Bricolage |
 
 ### Layar
 
 | Layar | Siapa | Yang berubah |
 |---|---|---|
-| **Masuk** (gerbang login) | Semua | Latar kertas gading (bukan gradasi hijau gelap), kartu terang, judul serif "Masuk ke PERISA", tombol pil teal. Isian tetap besar untuk HP |
-| **Dashboard Yayasan** | Super Admin | Judul serif sapaan. Blok Perlu Perhatian: kartu terang dengan garis status tipis di kiri (bukan latar merah/kuning penuh) supaya tidak terasa seperti peringatan bertubi-tubi. Ringkasan fitur: angka besar serif, kartu tanpa bayangan |
+| **Masuk** (gerbang login) | Semua | Latar kertas gading (bukan gradasi hijau gelap), kartu terang, judul Bricolage "Masuk ke PERISA", tombol pil teal. Isian tetap besar untuk HP |
+| **Dashboard Yayasan** | Super Admin | Judul Bricolage sapaan. Blok Perlu Perhatian: kartu terang dengan garis status tipis di kiri (bukan latar merah/kuning penuh) supaya tidak terasa seperti peringatan bertubi-tubi. Ringkasan fitur: angka besar Bricolage, kartu tanpa bayangan |
 | **Panel Super Admin** | Super Admin | Tab jadi garis bawah tipis. Daftar santri/guru/infaq jadi **tabel bergaris** (bukan kartu bertumpuk) di desktop, dan kartu ringkas di HP. Formulir: label di atas, isian bersudut 10px, satu tombol utama |
 | **Studio Kurikulum** | Super Admin | Daftar modul dan layar Materi PPT jadi baris bergaris. Status "terpasang/belum" jadi lencana kecil. **Sekalian memperbaiki** label "Belum ada materi" pada bab yang sudah punya link OneDrive |
-| **Kurikulum (pemutar materi)** | Semua | Kotak video/materi tetap gelap (bagus untuk proyektor). Silabus di samping jadi daftar bergaris dengan nomor bab emas. Sub-tab jadi garis bawah. Profil Umi jadi kartu terang dengan judul serif |
+| **Kurikulum (pemutar materi)** | Semua | Kotak video/materi tetap gelap (bagus untuk proyektor). Silabus di samping jadi daftar bergaris dengan nomor bab emas. Sub-tab jadi garis bawah. Profil Umi jadi kartu terang dengan judul Bricolage |
 | **Kartu mufrodat** | Semua | Kartu terang lebih besar, huruf Arab Amiri lebih besar, tombol suara lingkaran garis |
 | **Pemutar PPT** | Guru | Bingkai layar penuh gelap tetap. Hanya kontrol di atasnya diselaraskan |
 | **Perpustakaan / Modul & Silabus PDF** | Semua | Kartu dokumen jadi baris bergaris dengan ikon kecil |
 | **Dashboard Guru** | Guru | Sama dengan Dashboard Yayasan. Kartu kelas jadi baris lebar dengan tombol "Catat Hari Ini" yang menonjol. **Sekalian memperbaiki** sapaan "Ustazah!" agar memakai nama |
 | **Lembar pertemuan & absensi** | Guru | Absensi jadi tabel rapat: satu baris per anak, pilihan Hadir/Izin/Sakit/Alfa sebagai tombol segmen (bukan dropdown), supaya 25 anak bisa diisi tanpa membuka menu 25 kali. Ini perubahan tampilan **dan** interaksi kecil; datanya sama |
-| **Dashboard Wali** | Wali | Kabar Terbaru jadi kartu emas lembut, kartu anak lebih lapang, judul serif |
+| **Dashboard Wali** | Wali | Kabar Terbaru jadi kartu emas lembut, kartu anak lebih lapang, judul Bricolage |
 | **Piagam / sertifikat** | Wali | Modal mengikuti modal baru |
 | **Simulasi Percakapan Suara** | Semua | Kepala gelap jadi hutan polos, kartu dialog terang, teks Arab tetap besar |
 | **Verifikasi sertifikat** (publik) | Siapa pun | Latar gading, kartu terang, status "Asli" tetap teal. Halaman pertama yang dilihat orang luar, jadi diprioritaskan |
@@ -125,7 +125,7 @@ Alat uji yang sudah ada: skrip tangkapan layar dengan **data contoh fiktif** yan
 
 ## 8. Keputusan yang dibutuhkan dari Anda
 
-1. **Serif di aplikasi:** hanya untuk judul halaman dan angka besar (saran saya), atau tidak sama sekali?
+1. **Bricolage Grotesque di aplikasi:** hanya untuk judul halaman dan angka besar (saran saya), atau tidak sama sekali?
 2. **Sidebar desktop:** kertas gading terang (saran saya, lebih tenang untuk dipakai lama) atau hijau hutan gelap seperti bab Fondasi di /pitch?
 3. **Urutan layar** di Fase 3. Saran saya:
    1. Masuk
@@ -139,3 +139,6 @@ Alat uji yang sudah ada: skrip tangkapan layar dengan **data contoh fiktif** yan
    9. Sisanya
 4. **Cara rilis:** bertahap per fase (saran saya: setiap fase bisa dicek dan dibatalkan sendiri), atau satu rilis besar di akhir?
 5. **Absensi tombol segmen** (bagian 5): setuju diubah, atau tetap dropdown?
+
+
+> Catatan 27 Okt 2026: font judul diganti dari Instrument Serif (serif) ke Bricolage Grotesque (sans variabel, bobot 700) atas permintaan pemilik. Perannya tetap: hanya judul halaman dan angka besar. Ukuran diturunkan sekitar 15% karena huruf sans lebih lebar.

@@ -1,14 +1,14 @@
-/* Hallmark · v2.0.0 · shape: chapters, product-led · genre: editorial · theme: custom, warm editorial redesign on the owner's request (ivory stock, forest ink, PERISA teal as the one accent, gold for figures) · posture: restrained · nav: edge-aligned, wordmark and one action · footer: mast · hero: stacked, serif head over a wide product stage · signature: the real Dashboard Yayasan on a laptop and phone, set on one stage · imagery: screenshots 16 in CSS laptop and phone frames, Playwright against the local app with sample data */
+/* Hallmark · v2.0.0 · shape: chapters, product-led · genre: editorial · theme: custom, warm editorial redesign on the owner's request (ivory stock, forest ink, PERISA teal as the one accent, gold for figures) · posture: restrained · nav: edge-aligned, wordmark and one action · footer: mast · hero: stacked, grotesque head over a wide product stage · signature: the real Dashboard Yayasan on a laptop and phone, set on one stage · imagery: screenshots 16 in CSS laptop and phone frames, Playwright against the local app with sample data */
 /* Hallmark · pre-emit critique: P4 H4 E4 S4 R4 V5 · weakest: S, every chapter pairs text with a device stage, so rhythm comes from alternating sides, one bento chapter, one dark chapter and a closing line set large */
 /* Hallmark · dismissed 58 · the owner asked for a complete, detailed walkthrough to present to the foundation; about 650 words over eight chapters, each one room of the product */
-/* Hallmark · answered F1 · Instrument Serif (OFL, self-hosted in vendor/fonts, download approved by the owner) for heads, Plus Jakarta Sans from the project for text; the CSP blocks Google Fonts */
+/* Hallmark · answered F1 · Bricolage Grotesque (OFL, variable, self-hosted in vendor/fonts, swapped in from Instrument Serif on the owner request) for heads, Plus Jakarta Sans from the project for text; the CSP blocks Google Fonts */
 
 @font-face {
-  font-family: "Instrument Serif";
+  font-family: "Bricolage Grotesque";
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url("vendor/fonts/instrument-serif-400-latin.woff2") format("woff2");
+  src: url("vendor/fonts/bricolage-grotesque-latin.woff2") format("woff2");
 }
 
 :root {
@@ -47,7 +47,7 @@
   --color-shadow: oklch(23% 0.025 170 / 0.16);
   --color-grain: oklch(23% 0.025 170 / 0.035);
 
-  --font-display: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --font-display: "Bricolage Grotesque", "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
 
   --radius-stage: 28px;
@@ -59,9 +59,9 @@
   --text-base: 1.0625rem;
   --text-lg: 1.1875rem;
   --text-h3: 1.5rem;
-  --text-h2: clamp(2.25rem, 1.4rem + 2.8vw, 3.75rem);
-  --text-h1: clamp(3rem, 1.6rem + 5.4vw, 6.25rem);
-  --text-penutup: clamp(2.25rem, 1.3rem + 3.4vw, 4.25rem);
+  --text-h2: clamp(2rem, 1.3rem + 2.3vw, 3.25rem);
+  --text-h1: clamp(2.5rem, 1.5rem + 4.2vw, 5rem);
+  --text-penutup: clamp(2rem, 1.2rem + 2.8vw, 3.5rem);
 
   --space-2xs: 0.375rem;
   --space-xs: 0.5rem;
@@ -111,9 +111,9 @@ h1, h2, h3 {
   margin: 0;
   color: var(--color-ink);
   font-family: var(--font-display);
-  font-weight: 400;
-  letter-spacing: -0.012em;
-  line-height: 1.02;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.06;
   overflow-wrap: break-word;
   min-width: 0;
   text-wrap: balance;
@@ -184,7 +184,7 @@ a:hover { text-decoration-thickness: 2px; }
   align-items: end;
   margin-bottom: var(--space-hero-bawah);
 }
-.hero h1 { grid-column: 1 / span 8; font-size: var(--text-h1); line-height: 0.95; letter-spacing: -0.02em; }
+.hero h1 { grid-column: 1 / span 8; font-size: var(--text-h1); line-height: 1; letter-spacing: -0.03em; }
 .hero-samping { grid-column: 9 / span 4; display: grid; gap: var(--space-lg); padding-bottom: 0.6rem; }
 .lead { font-size: var(--text-lg); color: var(--color-ink-2); }
 
@@ -265,7 +265,7 @@ a:hover { text-decoration-thickness: 2px; }
   padding-top: var(--space-lg);
 }
 .fakta div { display: grid; gap: var(--space-xs); align-content: start; }
-.fakta dt { font-family: var(--font-display); font-size: 1.75rem; line-height: 1.1; color: var(--color-ink); }
+.fakta dt { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; line-height: 1.1; color: var(--color-ink); }
 .fakta dd { margin: 0; font-size: var(--text-sm); color: var(--color-muted); max-width: 30ch; }
 
 /* --------------------------------------------------------------- BAB */
@@ -344,13 +344,13 @@ a:hover { text-decoration-thickness: 2px; }
   padding: var(--space-lg) 0; border-bottom: 1px solid var(--color-rule);
   color: var(--color-ink); font-size: var(--text-lg); line-height: 1.45;
 }
-.keputusan li::before { content: counter(k); font-family: var(--font-display); font-size: 2rem; line-height: 1; color: var(--color-gold); }
+.keputusan li::before { content: counter(k); font-family: var(--font-display); font-weight: 700; font-size: 1.75rem; line-height: 1; color: var(--color-gold); }
 .penutup {
   margin-top: var(--space-3xl);
   display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--space-lg);
   padding-top: var(--space-2xl); border-top: 1px solid var(--color-rule-2);
 }
-.penutup-kalimat { font-family: var(--font-display); font-size: var(--text-penutup); line-height: 1; color: var(--color-ink); max-width: 14ch; }
+.penutup-kalimat { font-family: var(--font-display); font-weight: 700; font-size: var(--text-penutup); line-height: 1.05; letter-spacing: -0.03em; color: var(--color-ink); max-width: 14ch; }
 
 /* -------------------------------------------------------------- KAKI */
 .kaki { border-top: 1px solid var(--color-rule-2); padding-block: var(--space-xl); }

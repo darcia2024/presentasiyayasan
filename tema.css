@@ -9,7 +9,7 @@
    sudut, huruf — ke bahasa visual halaman /pitch:
 
      kertas gading + kartu terang · tinta hijau hutan · teal hanya aksen ·
-     emas untuk angka · serif untuk judul halaman · garis tipis, bukan
+     emas untuk angka · Bricolage Grotesque untuk judul halaman · garis tipis, bukan
      bayangan · tombol pil.
 
    ATURAN YANG DIJAGA tools/token-warna.js (bagian dari npm run build):
@@ -17,7 +17,7 @@
    tokens.css yang dipakai — bukan palet dasar. Mengganti rupa aplikasi
    berarti mengubah tokens.css, bukan berkas ini.
 
-   Serif (Instrument Serif) HANYA untuk judul halaman dan angka besar.
+   Bricolage Grotesque HANYA untuk judul halaman dan angka besar.
    Label, tombol, tabel, dan isian tetap Plus Jakarta Sans: di layar kerja,
    keterbacaan menang atas suasana.
    ========================================================================== */
@@ -109,7 +109,7 @@
   box-shadow: var(--bayangan-2);
 }
 
-/* Modal (Ganti PIN, sertifikat): kartu terang, judul serif. */
+/* Modal (Ganti PIN, sertifikat): kartu terang, judul Bricolage. */
 .modal-box {
   background: var(--permukaan-kartu) !important;
   border: 1px solid var(--garis) !important;
@@ -120,10 +120,10 @@
    warna judulnya sebaris. */
 .modal-box :is(h2, h3) {
   font-family: var(--font-judul) !important;
-  font-weight: 400 !important;
-  font-size: 28px !important;
-  line-height: 1.08 !important;
-  letter-spacing: -0.01em !important;
+  font-weight: var(--judul-bobot) !important;
+  font-size: 24px !important;
+  line-height: 1.12 !important;
+  letter-spacing: var(--judul-spasi) !important;
   text-transform: none !important;
   color: var(--teks-utama) !important;
 }
@@ -138,21 +138,21 @@
    FASE 2/3 — KOMPONEN BERSAMA
    ========================================================================== */
 
-/* Judul halaman: serif. */
+/* Judul halaman: Bricolage Grotesque. */
 .dy-judul,
 .studio-title,
 .course-main-h1,
 .auth-step-title {
   font-family: var(--font-judul);
-  font-weight: 400;
-  letter-spacing: -0.012em;
-  line-height: 1.05;
+  font-weight: var(--judul-bobot);
+  letter-spacing: var(--judul-spasi);
+  line-height: 1.1;
   color: var(--teks-utama);
 }
-.dy-judul { font-size: 36px; margin: 4px 0 4px; }
-.studio-title { font-size: 32px; margin: 0 0 6px; }
-.course-main-h1 { font-size: 34px; }
-.auth-step-title { font-size: 30px; margin: 0 0 10px; }
+.dy-judul { font-size: 32px; margin: 4px 0 4px; }
+.studio-title { font-size: 28px; margin: 0 0 6px; }
+.course-main-h1 { font-size: 28px; }
+.auth-step-title { font-size: 26px; margin: 0 0 10px; }
 
 /* Judul tiap layar Studio & Panel ("Daftar Santri", "Materi PPT — Jenjang
    SD", …) dan judul Perpustakaan, yang ukurannya ditulis sebaris di
@@ -160,25 +160,25 @@
 .studio-h3,
 #viewModulPdf h2 {
   font-family: var(--font-judul);
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  line-height: 1.08;
+  font-weight: var(--judul-bobot);
+  letter-spacing: var(--judul-spasi);
+  line-height: 1.12;
   color: var(--teks-utama);
 }
-.studio-h3 { font-size: 26px; }
-h2.studio-h3 { font-size: 34px; }
-#viewModulPdf h2 { font-size: 34px !important; font-weight: 400 !important; color: var(--teks-utama) !important; }
+.studio-h3 { font-size: 22px; }
+h2.studio-h3 { font-size: 28px; }
+#viewModulPdf h2 { font-size: 28px !important; font-weight: 700 !important; color: var(--teks-utama) !important; }
 
 /* Eyebrow: emas tua, seperti nomor bab /pitch. */
 .dy-eyebrow { color: var(--emas-tua); letter-spacing: .08em; }
 
-/* Angka besar: serif. */
+/* Angka besar: Bricolage Grotesque. */
 .dy-kartu-angka strong {
   font-family: var(--font-judul);
-  font-weight: 400;
-  font-size: 40px;
+  font-weight: var(--judul-bobot);
+  font-size: 34px;
   line-height: 1;
-  letter-spacing: -0.01em;
+  letter-spacing: var(--judul-spasi);
   color: var(--teks-utama);
 }
 .dy-kartu-angka span { font-size: 12.5px; }
@@ -249,8 +249,8 @@ h2.studio-h3 { font-size: 34px; }
 /* Silabus: daftar bergaris; baris aktif = latar lembut + garis aksen di kiri. */
 .accordion-main-title {
   font-family: var(--font-judul);
-  font-weight: 400;
-  font-size: 22px;
+  font-weight: 600;
+  font-size: 20px;
   letter-spacing: -0.01em;
   color: var(--teks-utama);
 }
@@ -294,7 +294,7 @@ h2.studio-h3 { font-size: 34px; }
 
 /* ==========================================================================
    FASE 3 — MASUK (gerbang login)
-   Latar kertas gading, kartu terang, judul serif, tombol pil teal.
+   Latar kertas gading, kartu terang, judul Bricolage, tombol pil teal.
    ========================================================================== */
 .auth-gate { background: var(--permukaan-halaman); }
 .auth-card {
@@ -346,7 +346,7 @@ h2.studio-h3 { font-size: 34px; }
     border: 1px solid rgb(var(--rgb-putih) / 0.4) !important;
   }
 
-  /* Judul besar: hutan polos, judul serif, chip bergaris tipis. */
+  /* Judul besar: hutan polos, judul Bricolage, chip bergaris tipis. */
   .m-largetitle {
     background: var(--permukaan-gelap);
     border-radius: 0 0 22px 22px;
@@ -364,10 +364,10 @@ h2.studio-h3 { font-size: 34px; }
   }
   .m-lt-title {
     font-family: var(--font-judul);
-    font-weight: 400;
-    font-size: 34px;
-    line-height: 1.04;
-    letter-spacing: -0.015em;
+    font-weight: var(--judul-bobot);
+    font-size: 28px;
+    line-height: 1.1;
+    letter-spacing: var(--judul-spasi);
   }
   .m-lt-sub { color: var(--teks-terbalik-redup); font-weight: 400; }
   .m-chip {
@@ -432,8 +432,8 @@ h2.studio-h3 { font-size: 34px; }
   .m-section-title { font-weight: 700; color: var(--teks-utama); }
   .m-section-link { color: var(--aksen); }
 
-  /* Angka & judul serif di HP, sedikit lebih kecil dari desktop. */
-  .dy-judul { font-size: 30px; }
-  .dy-kartu-angka strong { font-size: 34px; }
-  .auth-step-title { font-size: 28px; }
+  /* Angka & judul di HP, sedikit lebih kecil dari desktop. */
+  .dy-judul { font-size: 26px; }
+  .dy-kartu-angka strong { font-size: 30px; }
+  .auth-step-title { font-size: 24px; }
 }
