@@ -73,11 +73,10 @@ const DIKECUALIKAN = [
     potongan: 'questionEl.innerHTML = data.question',
     alasan: 'Deck presentasi: data.question adalah konstanta di app.js sendiri, memang memuat markup.',
   },
-  {
-    berkas: 'game2d.js',
-    potongan: "getElementById('ruleReferenceText').innerHTML = data.rule",
-    alasan: 'dialogueSteps adalah konstanta di game2d.js sendiri, memang memuat markup.',
-  },
+  /*
+   * game2d.js: pengecualian ruleReferenceText dicabut 27 Oktober 2026 —
+   * halaman dirombak dan seluruh simpulnya dibangun lewat DOM, tanpa innerHTML.
+   */
 ];
 
 function dikecualikan(rel, baris) {
