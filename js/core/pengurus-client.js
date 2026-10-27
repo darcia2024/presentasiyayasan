@@ -56,22 +56,6 @@ async function panggilFungsi(nama, body) {
 
 /* ------------------------------------------------------------- RINGKASAN */
 
-export async function ambilRingkasanPengurus() {
-  const client = getSupabaseClient();
-  const [santri, sertifikat, infaqPending, wali] = await Promise.all([
-    client.from('santri').select('id', { count: 'exact', head: true }).eq('status', 'aktif'),
-    client.from('sertifikat').select('id', { count: 'exact', head: true }),
-    client.from('infaq').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
-    client.from('wali').select('id', { count: 'exact', head: true }),
-  ]);
-  return {
-    santriAktif: santri.count || 0,
-    sertifikatDiterbitkan: sertifikat.count || 0,
-    infaqPending: infaqPending.count || 0,
-    waliTerdaftar: wali.count || 0,
-  };
-}
-
 /* -------------------------------------------------------- DASHBOARD YAYASAN */
 
 /** Tanggal "hari ini" menurut WIB, YYYY-MM-DD — sama dengan _shared/waktu.ts. */

@@ -731,12 +731,27 @@
   flex-shrink: 0;
 }
 
-/* --- Ringkasan angka --- */
-.pengurus-ringkasan {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 14px;
+/* --- Ringkasan: stempel waktu & aksi cepat (27 Okt 2026) --- */
+.pengurus-stempel {
+  display: flex; align-items: center; justify-content: flex-end; gap: 12px;
+  margin: -4px 0 14px;
 }
+.pengurus-aksi {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 10px;
+}
+.pengurus-aksi-btn {
+  font: inherit; font-size: 13px; font-weight: 600; text-align: left;
+  color: var(--teks-utama); background: var(--permukaan-kartu);
+  border: 1px solid var(--garis); border-radius: 999px;
+  padding: 10px 16px; cursor: pointer;
+  display: flex; align-items: center; gap: 10px;
+  transition: border-color .15s ease, background .15s ease;
+}
+.pengurus-aksi-btn i { font-size: 18px; color: var(--aksen); flex: none; }
+.pengurus-aksi-btn:hover { border-color: var(--teks-utama); background: var(--permukaan-lembut); }
+.pengurus-aksi-btn:focus-visible { outline: 2px solid var(--aksen); outline-offset: 2px; }
 
 /* Enam tab tidak muat di area kerja ~560px (laptop 13") — tab terakhir
    ("Laporan") terpotong di luar layar. Digeser-samping memang bisa, tapi

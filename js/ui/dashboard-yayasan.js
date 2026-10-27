@@ -152,7 +152,7 @@ export function gambarKerangka(root) {
  * guru mana pun, jadi absensinya terhenti. Infaq yang menunggu verifikasi
  * adalah pekerjaan rutin, bukan sesuatu yang terhenti.
  */
-function daftarPerhatian(d) {
+export function daftarPerhatian(d, nav = buka) {
   const butir = [];
 
   if (d.infaq.pending) {
@@ -160,7 +160,7 @@ function daftarPerhatian(d) {
       tingkat: 'perlu', ikon: 'ph-hand-coins',
       judul: `${d.infaq.pending} infaq menunggu verifikasi`,
       detail: `Total ${rupiah(d.infaq.totalPending)} belum dikonfirmasi ke keluarga.`,
-      aksi: 'Verifikasi Infaq', jalan: () => buka.panel('infaq'),
+      aksi: 'Verifikasi Infaq', jalan: () => nav.panel('infaq'),
     });
   }
   if (d.kelas.tanpaPengajar.length) {
@@ -168,7 +168,7 @@ function daftarPerhatian(d) {
       tingkat: 'mendesak', ikon: 'ph-chalkboard-teacher',
       judul: `${d.kelas.tanpaPengajar.length} kelas belum punya pengajar`,
       detail: `${sebutNama(d.kelas.tanpaPengajar)}. Kelas ini tidak muncul di Dashboard Guru siapa pun.`,
-      aksi: 'Tugaskan Pengajar', jalan: () => buka.panel('kelas'),
+      aksi: 'Tugaskan Pengajar', jalan: () => nav.panel('kelas'),
     });
   }
   if (d.santri.tanpaKelas) {
@@ -176,7 +176,7 @@ function daftarPerhatian(d) {
       tingkat: 'perlu', ikon: 'ph-user-circle-plus',
       judul: `${d.santri.tanpaKelas} santri aktif belum masuk kelas`,
       detail: 'Santri tanpa kelas tidak ada di daftar absen guru mana pun.',
-      aksi: 'Atur Kelas Santri', jalan: () => buka.panel('santri'),
+      aksi: 'Atur Kelas Santri', jalan: () => nav.panel('santri'),
     });
   }
   if (d.kelas.senyap14.length) {
@@ -184,7 +184,7 @@ function daftarPerhatian(d) {
       tingkat: 'perlu', ikon: 'ph-calendar-x',
       judul: `${d.kelas.senyap14.length} kelas belum mencatat pertemuan 14 hari terakhir`,
       detail: `${sebutNama(d.kelas.senyap14)}.`,
-      aksi: 'Lihat Laporan Kelas', jalan: () => buka.panel('laporan'),
+      aksi: 'Lihat Laporan Kelas', jalan: () => nav.panel('laporan'),
     });
   }
   if (!d.kurikulum.bab) {
@@ -192,7 +192,7 @@ function daftarPerhatian(d) {
       tingkat: 'perlu', ikon: 'ph-books',
       judul: 'Kurikulum belum punya bab',
       detail: 'Buat modul dan babnya di Studio Kurikulum supaya guru punya materi untuk ditayangkan.',
-      aksi: 'Buka Studio', jalan: () => buka.studio('modul-list'),
+      aksi: 'Buka Studio', jalan: () => nav.studio('modul-list'),
     });
   } else if (d.kurikulum.babBerPpt < d.kurikulum.bab) {
     const sisa = d.kurikulum.bab - d.kurikulum.babBerPpt;
@@ -200,7 +200,7 @@ function daftarPerhatian(d) {
       tingkat: 'perlu', ikon: 'ph-presentation-chart',
       judul: `${sisa} dari ${d.kurikulum.bab} bab belum punya materi PPT`,
       detail: 'Guru tidak bisa menayangkan bab ini di kelas.',
-      aksi: 'Lengkapi Materi PPT', jalan: () => buka.studio('materi-ppt'),
+      aksi: 'Lengkapi Materi PPT', jalan: () => nav.studio('materi-ppt'),
     });
   }
   if (d.kurikulum.modulDraf) {
@@ -208,14 +208,14 @@ function daftarPerhatian(d) {
       tingkat: 'info', ikon: 'ph-file-dashed',
       judul: `${d.kurikulum.modulDraf} modul masih draf`,
       detail: 'Modul draf belum terlihat oleh wali dan santri.',
-      aksi: 'Tinjau Modul', jalan: () => buka.studio('modul-list'),
+      aksi: 'Tinjau Modul', jalan: () => nav.studio('modul-list'),
     });
   }
   return butir.sort((a, b) => URUTAN_TINGKAT[a.tingkat] - URUTAN_TINGKAT[b.tingkat]);
 }
 
-function bagianPerhatian(d) {
-  const butir = daftarPerhatian(d);
+export function bagianPerhatian(d, nav = buka) {
+  const butir = daftarPerhatian(d, nav);
   const bagian = elemen('section', { kelas: 'dy-bagian' }, [
     elemen('h3', { kelas: 'dy-h3' }, [
       'Perlu Perhatian',
@@ -275,7 +275,7 @@ function kartuFitur({ ikon: namaIkon, judul, angka, label, baris, jalan, progres
   return kartu;
 }
 
-function bagianRingkasan(d) {
+export function bagianRingkasan(d, nav = buka) {
   const persenPpt = d.kurikulum.bab ? Math.round((d.kurikulum.babBerPpt / d.kurikulum.bab) * 100) : 0;
   const st = d.sertifikat.terakhir;
 
@@ -286,32 +286,32 @@ function bagianRingkasan(d) {
         ikon: 'ph-users-three', judul: 'Santri & Wali',
         angka: d.santri.aktif, label: 'santri aktif',
         baris: `${d.santri.wali} wali terdaftar · ${d.santri.beasiswa} beasiswa`,
-        jalan: () => buka.panel('santri'),
+        jalan: () => nav.panel('santri'),
       }),
       kartuFitur({
         ikon: 'ph-chalkboard-teacher', judul: 'Guru',
         angka: d.guru.aktif, label: 'pengajar aktif',
         baris: `${d.guru.internal} internal · ${d.guru.mitra} guru mitra`,
-        jalan: () => buka.panel('guru'),
+        jalan: () => nav.panel('guru'),
       }),
       kartuFitur({
         ikon: 'ph-calendar-check', judul: 'Kelas & Pertemuan',
         angka: d.kelas.total, label: 'kelas',
         baris: `${d.pertemuan.pekanIni} pertemuan 7 hari terakhir · ${d.pertemuan.total} total`,
-        jalan: () => buka.panel('kelas'),
+        jalan: () => nav.panel('kelas'),
       }),
       kartuFitur({
         ikon: 'ph-presentation-chart', judul: 'Kurikulum & PPT',
         angka: `${persenPpt}%`, label: 'bab punya materi PPT',
         baris: `${d.kurikulum.babBerPpt}/${d.kurikulum.bab} bab · ${d.kurikulum.modulTerbit} modul terbit`,
         progres: persenPpt,
-        jalan: () => buka.studio('materi-ppt'),
+        jalan: () => nav.studio('materi-ppt'),
       }),
       kartuFitur({
         ikon: 'ph-hand-coins', judul: 'Infaq',
         angka: d.infaq.pending, label: 'menunggu verifikasi',
         baris: `${d.infaq.terverifikasi} infaq sudah terverifikasi`,
-        jalan: () => buka.panel('infaq'),
+        jalan: () => nav.panel('infaq'),
       }),
       kartuFitur({
         ikon: 'ph-certificate', judul: 'Sertifikat',
@@ -319,7 +319,7 @@ function bagianRingkasan(d) {
         baris: st
           ? `Terakhir: ${st.nama}${st.level ? ` (Level ${st.level})` : ''}, ${tanggalPendek(st.tanggal)}`
           : 'Belum ada sertifikat yang diterbitkan',
-        jalan: () => buka.panel('sertifikat'),
+        jalan: () => nav.panel('sertifikat'),
       }),
     ]),
   ]);
@@ -327,9 +327,9 @@ function bagianRingkasan(d) {
 
 /* ------------------------------------------------------ PERTEMUAN TERBARU */
 
-function bagianPertemuan(d) {
+export function bagianPertemuan(d, nav = buka) {
   const tombol = elemen('button', { kelas: 'dy-tautan', atribut: { type: 'button' } }, ['Laporan lengkap ', ikon('ph-arrow-right')]);
-  tombol.addEventListener('click', () => buka.panel('laporan'));
+  tombol.addEventListener('click', () => nav.panel('laporan'));
 
   const bagian = elemen('section', { kelas: 'dy-bagian' }, [
     elemen('div', { kelas: 'dy-h3-baris' }, [elemen('h3', { kelas: 'dy-h3', teks: 'Pertemuan Terbaru' }), tombol]),

@@ -18,8 +18,10 @@ import { bacaSesi } from '../core/supabase-client.js';
 import { playTone, showToast } from '../core/feedback.js';
 import { jenjangAktif, fiturTerkunci } from './fase.js';
 import { buatCsv } from '../core/csv.js';
+import { elemen, ikon } from '../core/html.js';
+import { bagianPerhatian, bagianRingkasan, bagianPertemuan } from './dashboard-yayasan.js';
 import {
-  ambilRingkasanPengurus,
+  ambilDashboardYayasan,
   daftarSantriAdmin,
   perbaruiSantri,
   daftarkanWaliSantri,
@@ -192,30 +194,95 @@ async function render() {
 
 /* ============================================================ RINGKASAN */
 
-async function renderRingkasan(body) {
-  body.appendChild(pesanMemuat());
-  const r = await ambilRingkasanPengurus();
-  kosongkan(body);
-
-  const grid = buatEl('div', 'pengurus-ringkasan');
-  grid.append(
-    kartuMetrik(String(r.santriAktif), 'Santri Aktif'),
-    kartuMetrik(String(r.waliTerdaftar), 'Wali Terdaftar'),
-    kartuMetrik(String(r.sertifikatDiterbitkan), 'Sertifikat Diterbitkan'),
-    kartuMetrik(String(r.infaqPending), 'Infaq Menunggu Verifikasi'),
-  );
-  body.appendChild(grid);
+/**
+ * Navigasi di DALAM panel: pindah tab (dan buka formulirnya) tanpa lewat
+ * router. Lewat router, "buka tab Infaq" dari tab yang sama malah memuat ulang
+ * seluruh panel dari tab Ringkasan.
+ */
+function keTab(tab, subLayar = null) {
+  STATE.tab = tab;
+  STATE.subLayar = subLayar;
+  STATE.kelasUntukRombongan = null;
+  render();
 }
 
-function kartuMetrik(nilai, label) {
-  const card = buatEl('div', 'beranda-metric-card');
-  const wrap = document.createElement('div');
-  wrap.appendChild(buatEl('div', null, nilai)).style.cssText = 'font-size:18px; font-weight:800; color:var(--teal-dark);';
-  const lbl = buatEl('div', null, label);
-  lbl.style.cssText = 'font-size:11px; color:var(--text-muted);';
-  wrap.appendChild(lbl);
-  card.appendChild(wrap);
-  return card;
+const NAV_PANEL = {
+  panel: (tab) => keTab(tab),
+  studio: (layar) => window.PrototypeApp?.bukaStudioDi?.(layar),
+};
+
+/** Pintasan ke pekerjaan yang paling sering dilakukan pengurus. */
+const AKSI_CEPAT = [
+  { ikon: 'ph-user-plus', label: 'Daftarkan Wali & Santri', tab: 'santri', sub: 'santri-form' },
+  { ikon: 'ph-chalkboard-teacher', label: 'Tambah Guru', tab: 'guru', sub: 'guru-form' },
+  { ikon: 'ph-chalkboard', label: 'Atur Kelas', tab: 'kelas' },
+  { ikon: 'ph-hand-coins', label: 'Catat & Verifikasi Infaq', tab: 'infaq' },
+  { ikon: 'ph-certificate', label: 'Terbitkan Sertifikat', tab: 'sertifikat' },
+  { ikon: 'ph-download-simple', label: 'Unduh Laporan Kelas', tab: 'laporan' },
+];
+
+function bagianAksiCepat() {
+  const daftar = elemen('div', { kelas: 'pengurus-aksi' });
+  AKSI_CEPAT.forEach((a) => {
+    const tombol = elemen('button', { kelas: 'pengurus-aksi-btn', atribut: { type: 'button' } }, [ikon(a.ikon), a.label]);
+    tombol.addEventListener('click', () => keTab(a.tab, a.sub || null));
+    daftar.appendChild(tombol);
+  });
+  return elemen('section', { kelas: 'dy-bagian' }, [elemen('h3', { kelas: 'dy-h3', teks: 'Aksi Cepat' }), daftar]);
+}
+
+/**
+ * Ringkasan memakai SATU pemanggilan data yang sama dengan Dashboard Yayasan
+ * (ambilDashboardYayasan), jadi angka di kedua layar tidak pernah berbeda.
+ * Dulu tab ini hanya empat angka mati; sekarang tiap angka membuka tab yang
+ * mengurusnya, dan daftar "Perlu Perhatian" menunjuk langsung ke tempat
+ * menyelesaikannya.
+ */
+async function renderRingkasan(body) {
+  body.appendChild(pesanMemuat());
+  let data = null;
+  try {
+    data = await ambilDashboardYayasan(jenjangAktif());
+  } catch (e) {
+    console.error('[pengurus-panel] ringkasan gagal dimuat:', e);
+  }
+  // Pengurus sudah pindah tab selagi data dimuat: jangan timpa tab barunya.
+  if (STATE.tab !== 'ringkasan' || !body.isConnected) return;
+  kosongkan(body);
+
+  if (!data) {
+    const gagal = pesanKosong('Ringkasan gagal dimuat. Periksa koneksi, lalu coba lagi.');
+    const ulang = buatEl('button', 'studio-btn-secondary', 'Coba lagi');
+    ulang.type = 'button';
+    ulang.style.marginTop = '12px';
+    ulang.addEventListener('click', () => render());
+    gagal.appendChild(document.createElement('br'));
+    gagal.appendChild(ulang);
+    body.appendChild(gagal);
+    return;
+  }
+
+  const waktu = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  const segarkan = elemen('button', { kelas: 'studio-btn-secondary dy-segarkan', atribut: { type: 'button' } },
+    [ikon('ph-arrows-clockwise'), ' Segarkan']);
+  segarkan.addEventListener('click', () => render());
+  body.appendChild(elemen('div', { kelas: 'pengurus-stempel' }, [
+    elemen('span', { kelas: 'dy-stempel', teks: `Diperbarui pukul ${waktu}` }),
+    segarkan,
+  ]));
+
+  body.append(
+    bagianAksiCepat(),
+    bagianPerhatian(data, NAV_PANEL),
+    bagianRingkasan(data, NAV_PANEL),
+    bagianPertemuan(data, NAV_PANEL),
+  );
+  if (data.galat.length) {
+    body.appendChild(elemen('p', {
+      kelas: 'dy-catatan',
+      teks: `Sebagian data belum bisa dimuat (${data.galat.join(', ')}). Angka di bagian itu ditampilkan nol.`,
+    }));
+  }
 }
 
 function pesanMemuat() {
