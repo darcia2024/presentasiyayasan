@@ -198,6 +198,7 @@ Lalu buka:
 
 - `http://localhost:3020/` — aplikasi santri & wali (PWA mobile + dashboard desktop)
 - `http://localhost:3020/game2d.html` — simulasi percakapan suara
+- `http://localhost:3020/tutorial` — panduan pemakaian untuk Super Admin, guru, dan wali
 - `http://localhost:3020/proposal.html` — dek penawaran, hanya lokal (tidak terbit)
 
 Alur aplikasinya: **masuk (nomor WhatsApp + PIN) → dashboard → pilih menu di

@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan Aplikasi PERISA</title>
+<meta name="description" content="Panduan langkah demi langkah memakai aplikasi PERISA Azhariyah untuk Super Admin, guru, dan wali.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#F5F1E8">
+<link rel="icon" href="icons/icon-192.png">
+<!-- Panduan pemakaian aplikasi. Seluruh gambar adalah tangkapan layar UI ASLI
+     dengan DATA CONTOH fiktif, tidak ada data santri atau wali sungguhan.
+     Memakai token, tombol, navigasi, dan kaki dari pitch.css. -->
+<link rel="preload" href="vendor/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="vendor/fonts/fonts.css">
+<link rel="stylesheet" href="pitch.css">
+<link rel="stylesheet" href="tutorial.css">
+<script src="js/tutorial.js" defer></script>
+</head>
+<body>
+
+<a class="lompat" href="#isi">Lompat ke isi</a>
+
+<header class="nav">
+  <div class="wadah nav-dalam">
+    <a class="merek" href="#atas" aria-label="Panduan PERISA, ke atas">
+      <img src="logo-perisa-emblem.png" alt="" width="30" height="30">
+      <span>Panduan PERISA</span>
+    </a>
+    <a class="tombol tombol--gelap nav-aksi tut-nav-aksi" href="/">Buka aplikasi</a>
+  </div>
+</header>
+
+<div class="tut-kepala" id="atas">
+  <div class="wadah">
+    <h1>Panduan memakai aplikasi PERISA</h1>
+    <p class="lead">Langkah demi langkah untuk Super Admin, guru, dan wali. Mulai dari peran Anda, lalu buka bagian yang sedang dibutuhkan. Tekan gambar mana pun untuk memperbesarnya.</p>
+    <ul class="tut-peran">
+      <li><a href="#super-admin"><strong>Saya Super Admin</strong><span>Mengurus santri, guru, kelas, infaq, sertifikat, dan materi.</span></a></li>
+      <li><a href="#guru"><strong>Saya guru</strong><span>Menayangkan materi, mencatat pertemuan, dan mengisi absensi.</span></a></li>
+      <li><a href="#wali"><strong>Saya wali</strong><span>Melihat kabar, sertifikat, dan materi ananda.</span></a></li>
+    </ul>
+  </div>
+</div>
+
+<div class="wadah tut-rangka">
+
+  <aside class="tut-samping">
+    <details class="tut-daftar" id="tutDaftar" open>
+      <summary>Daftar isi</summary>
+      <div class="tut-cari" hidden id="tutCariWadah">
+        <label for="tutCari">Cari topik</label>
+        <input type="search" id="tutCari" placeholder="mis. PIN, absensi, PPT" autocomplete="off">
+        <p class="tut-cari-kosong" id="tutCariKosong" hidden>Topik itu tidak ditemukan.</p>
+      </div>
+      <nav aria-label="Daftar isi panduan" id="tutNav">
+        <p class="tut-grup">Mulai</p>
+        <ul>
+          <li><a href="#masuk">Masuk ke aplikasi</a></li>
+          <li><a href="#ganti-pin">Mengganti PIN</a></li>
+          <li><a href="#menu">Mengenal menu</a></li>
+          <li><a href="#pasang-hp">Memasang di HP</a></li>
+        </ul>
+        <p class="tut-grup">Super Admin</p>
+        <ul>
+          <li><a href="#super-admin">Dashboard Yayasan</a></li>
+          <li><a href="#panel">Panel Super Admin</a></li>
+          <li><a href="#daftar-keluarga">Mendaftarkan wali &amp; santri</a></li>
+          <li><a href="#kelola-santri">Mengelola data santri</a></li>
+          <li><a href="#daftar-guru">Mendaftarkan guru</a></li>
+          <li><a href="#kelas">Membuat kelas</a></li>
+          <li><a href="#infaq">Mencatat infaq</a></li>
+          <li><a href="#sertifikat">Menerbitkan sertifikat</a></li>
+          <li><a href="#laporan">Laporan kehadiran</a></li>
+        </ul>
+        <p class="tut-grup">Studio Kurikulum</p>
+        <ul>
+          <li><a href="#studio">Modul &amp; pelajaran</a></li>
+          <li><a href="#mufrodat-studio">Mengisi mufrodat</a></li>
+          <li><a href="#terbit">Menerbitkan modul</a></li>
+          <li><a href="#ppt">Memasang PPT</a></li>
+          <li><a href="#dokumen">Dokumen PDF</a></li>
+        </ul>
+        <p class="tut-grup">Guru</p>
+        <ul>
+          <li><a href="#guru">Dashboard Guru</a></li>
+          <li><a href="#tayang">Menayangkan materi</a></li>
+          <li><a href="#lembar">Mencatat pertemuan</a></li>
+          <li><a href="#riwayat">Riwayat kelas</a></li>
+          <li><a href="#guru-mitra">Guru mitra</a></li>
+        </ul>
+        <p class="tut-grup">Wali</p>
+        <ul>
+          <li><a href="#wali">Dashboard Wali</a></li>
+          <li><a href="#materi-ananda">Materi ananda</a></li>
+        </ul>
+        <p class="tut-grup">Belajar &amp; umum</p>
+        <ul>
+          <li><a href="#percakapan">Latihan Percakapan Arab</a></li>
+          <li><a href="#permainan">Petualangan Kata</a></li>
+          <li><a href="#verifikasi">Cek keaslian sertifikat</a></li>
+          <li><a href="#masalah">Kalau ada masalah</a></li>
+        </ul>
+      </nav>
+    </details>
+  </aside>
+
+  <main id="isi" class="tut-isi">
+
+    <!-- ========================================================== MULAI -->
+    <p class="tut-bagian">Mulai</p>
+
+    <section id="masuk" class="tut-topik">
+      <h2>Masuk ke aplikasi</h2>
+      <p>Akun tidak dibuat sendiri. Super Admin yang mendaftarkan nomor WhatsApp Anda dan memberikan PIN. Santri jenjang SD memakai akun walinya.</p>
+      <ol class="langkah">
+        <li>Buka alamat aplikasi PERISA di Chrome atau Safari.</li>
+        <li>Ketik nomor WhatsApp yang terdaftar di kolom <b>Nomor WhatsApp</b>.</li>
+        <li>Ketik PIN di kolom <b>PIN</b>. Tekan ikon mata kalau ingin melihat angka yang sudah diketik.</li>
+        <li>Tekan <b>Masuk</b>. Aplikasi langsung membuka layar sesuai peran Anda.</li>
+      </ol>
+      <figure class="layar layar--sempit">
+        <a href="tutorial-assets/masuk.jpg"><img src="tutorial-assets/masuk.jpg" width="1280" height="800" alt="Halaman Masuk ke PERISA dengan kolom Nomor WhatsApp, kolom PIN, dan tombol Masuk."></a>
+        <figcaption>Satu halaman masuk untuk semua peran.</figcaption>
+      </figure>
+      <table class="tut-tabel">
+        <caption>Layar pertama sesudah masuk</caption>
+        <thead><tr><th scope="col">Peran</th><th scope="col">Layar pertama</th></tr></thead>
+        <tbody>
+          <tr><td>Super Admin</td><td>Dashboard Yayasan</td></tr>
+          <tr><td>Guru</td><td>Dashboard Guru</td></tr>
+          <tr><td>Wali</td><td>Dashboard Wali</td></tr>
+        </tbody>
+      </table>
+      <p class="catatan"><strong>Hati-hati salah PIN.</strong> Akun terkunci selama 15 menit setelah 5 kali salah. Kalau lupa PIN, jangan terus mencoba. Hubungi Super Admin.</p>
+    </section>
+
+    <section id="ganti-pin" class="tut-topik">
+      <h2>Mengganti PIN</h2>
+      <p>Sebaiknya ganti PIN awal dari Super Admin dengan PIN pilihan Anda sendiri.</p>
+      <ol class="langkah">
+        <li>Tekan <b>Ganti PIN</b> di menu samping. Di HP, menu ini ada di menu lengkap, lewat tombol garis tiga di kiri atas.</li>
+        <li>Isi <b>PIN sekarang</b>.</li>
+        <li>Isi <b>PIN baru</b> dengan 6 sampai 12 angka yang tidak berurutan dan tidak berulang.</li>
+        <li>Ketik sekali lagi di <b>Ulangi PIN baru</b>.</li>
+        <li>Tekan <b>Simpan PIN Baru</b>.</li>
+      </ol>
+      <figure class="layar layar--sempit">
+        <a href="tutorial-assets/ganti-pin.jpg"><img src="tutorial-assets/ganti-pin.jpg" width="1280" height="800" loading="lazy" alt="Jendela Ganti PIN dengan kolom PIN sekarang, PIN baru, Ulangi PIN baru, dan tombol Simpan PIN Baru."></a>
+      </figure>
+    </section>
+
+    <section id="menu" class="tut-topik">
+      <h2>Mengenal menu</h2>
+      <p>Di laptop, menu ada di sisi kiri. Di HP, menu utama ada di bilah bawah layar, dan menu lengkapnya terbuka lewat tombol garis tiga di kiri atas. Isi menu mengikuti peran Anda.</p>
+      <table class="tut-tabel">
+        <thead><tr><th scope="col">Menu</th><th scope="col">Kegunaan</th><th scope="col">Untuk</th></tr></thead>
+        <tbody>
+          <tr><td>Dashboard Yayasan</td><td>Urusan yang menunggu tindakan dan ringkasan semua fitur</td><td>Super Admin</td></tr>
+          <tr><td>Panel Otoritas Yayasan</td><td>Santri, guru, kelas, infaq, sertifikat, dan laporan</td><td>Super Admin</td></tr>
+          <tr><td>Studio Kurikulum</td><td>Menyusun modul, pelajaran, mufrodat, dan PPT</td><td>Super Admin</td></tr>
+          <tr><td>Dashboard Guru</td><td>Kelas yang diampu, absensi, dan lembar pertemuan</td><td>Guru, Super Admin</td></tr>
+          <tr><td>Dashboard Wali</td><td>Kabar, sertifikat, dan materi ananda</td><td>Wali</td></tr>
+          <tr><td>Kurikulum Bahasa Arab</td><td>Membuka materi per bab</td><td>Semua</td></tr>
+          <tr><td>Materi Saya</td><td>Jalan pintas ke tiap modul</td><td>Semua</td></tr>
+          <tr><td>Mufrodat &amp; Pelafalan</td><td>Kartu kosakata dan suaranya</td><td>Semua</td></tr>
+          <tr><td>Simulasi Percakapan Suara</td><td>Latihan berbicara bahasa Arab</td><td>Semua</td></tr>
+          <tr><td>Petualangan Kata</td><td>Permainan kosakata untuk anak</td><td>Semua</td></tr>
+          <tr><td>Modul &amp; Silabus PDF</td><td>Membaca dokumen silabus</td><td>Semua</td></tr>
+          <tr><td>Piagam Kelulusan Sanad</td><td>Melihat piagam ananda</td><td>Wali</td></tr>
+          <tr><td>Bantuan &amp; Layanan</td><td>Membuka panduan ini</td><td>Semua</td></tr>
+        </tbody>
+      </table>
+      <p>Untuk keluar dari akun, tekan <b>Keluar</b> di bagian paling bawah menu samping. Di HP, tekan <b>Keluar dari Akun</b> di bagian bawah menu lengkap. Lakukan ini setiap kali memakai perangkat bersama.</p>
+    </section>
+
+    <section id="pasang-hp" class="tut-topik">
+      <h2>Memasang di HP</h2>
+      <p>PERISA bisa dipasang di layar utama HP dan dibuka seperti aplikasi biasa, tanpa lewat toko aplikasi. Kalau kartu <b>Pasang Aplikasi</b> muncul di layar, cukup tekan <b>Pasang</b>. Kalau tidak muncul, ikuti langkah berikut.</p>
+      <div class="tut-dua">
+        <div>
+          <h3>Android (Chrome)</h3>
+          <ol class="langkah">
+            <li>Buka PERISA di Chrome.</li>
+            <li>Buka menu peramban.</li>
+            <li>Pilih <b>Pasang aplikasi</b> atau <b>Tambahkan ke layar utama</b>.</li>
+          </ol>
+        </div>
+        <div>
+          <h3>iPhone (Safari)</h3>
+          <ol class="langkah">
+            <li>Buka PERISA di Safari.</li>
+            <li>Ketuk tombol <b>Bagikan</b>.</li>
+            <li>Pilih <b>Tambahkan ke Layar Utama</b>.</li>
+          </ol>
+        </div>
+      </div>
+      <figure class="layar layar--hp">
+        <a href="tutorial-assets/hp-guru.jpg"><img src="tutorial-assets/hp-guru.jpg" width="390" height="844" loading="lazy" alt="Dashboard Guru di HP dengan kartu Pasang Aplikasi dan bilah menu bawah berisi Dashboard, Silabus, Belajar, Suara, dan Mufrodat."></a>
+        <figcaption>Kartu Pasang Aplikasi di atas bilah menu bawah.</figcaption>
+      </figure>
+      <p class="catatan"><strong>Perlu internet.</strong> Halaman dasarnya masih terbuka saat sinyal putus, tetapi pemutar PPT dan data terbaru tetap membutuhkan internet.</p>
+    </section>
+
+    <!-- ===================================================== SUPER ADMIN -->
+    <p class="tut-bagian">Super Admin</p>
+
+    <section id="super-admin" class="tut-topik">
+      <h2>Dashboard Yayasan</h2>
+      <p>Mulailah dari sini setiap kali masuk. Layar ini menjawab satu pertanyaan: apa yang perlu ditangani hari ini?</p>
+      <figure class="layar">
+        <a href="tutorial-assets/dashboard-yayasan.jpg"><img src="tutorial-assets/dashboard-yayasan.jpg" width="1280" height="800" loading="lazy" alt="Dashboard Yayasan dengan daftar Perlu Perhatian: kelas tanpa pengajar bertanda Mendesak, infaq menunggu verifikasi, santri tanpa kelas, bab tanpa PPT, dan modul draf."></a>
+        <figcaption>Setiap butir punya tombol yang langsung membuka tempat menyelesaikannya.</figcaption>
+      </figure>
+      <table class="tut-tabel">
+        <caption>Arti butir di Perlu Perhatian</caption>
+        <thead><tr><th scope="col">Butir</th><th scope="col">Dampaknya</th><th scope="col">Tombol</th></tr></thead>
+        <tbody>
+          <tr><td>Kelas belum punya pengajar <span class="lencana">Mendesak</span></td><td>Kelas tidak muncul di Dashboard Guru siapa pun</td><td>Tugaskan Pengajar</td></tr>
+          <tr><td>Infaq menunggu verifikasi</td><td>Dana belum dikonfirmasi ke keluarga</td><td>Verifikasi Infaq</td></tr>
+          <tr><td>Santri aktif belum masuk kelas</td><td>Santri tidak ada di daftar absen guru</td><td>Atur Kelas Santri</td></tr>
+          <tr><td>Bab belum punya materi PPT</td><td>Guru tidak bisa menayangkan bab itu</td><td>Lengkapi Materi PPT</td></tr>
+          <tr><td>Modul masih draf</td><td>Modul belum terlihat oleh wali dan santri</td><td>Tinjau Modul</td></tr>
+        </tbody>
+      </table>
+      <p>Di bawah daftar itu ada <b>Ringkasan Fitur</b>. Tekan salah satu kartu untuk membuka bagiannya. Tekan <b>Segarkan</b> kalau ingin mengambil angka terbaru.</p>
+    </section>
+
+    <section id="panel" class="tut-topik">
+      <h2>Panel Super Admin</h2>
+      <p>Buka lewat menu <b>Panel Otoritas Yayasan</b>. Panel ini punya tujuh tab.</p>
+      <figure class="layar">
+        <a href="tutorial-assets/panel-ringkasan.jpg"><img src="tutorial-assets/panel-ringkasan.jpg" width="1280" height="800" loading="lazy" alt="Panel Super Admin tab Ringkasan dengan tombol Aksi Cepat dan daftar Perlu Perhatian."></a>
+        <figcaption>Tab Ringkasan: tombol Aksi Cepat membuka tugas yang paling sering dikerjakan.</figcaption>
+      </figure>
+      <dl class="tut-istilah">
+        <div><dt>Ringkasan</dt><dd>Aksi cepat, urusan yang perlu perhatian, dan pertemuan terbaru.</dd></div>
+        <div><dt>Santri &amp; Wali</dt><dd>Mendaftarkan keluarga, memilih kelas, dan mengatur status.</dd></div>
+        <div><dt>Guru</dt><dd>Mendaftarkan guru dan mengatur kategorinya.</dd></div>
+        <div><dt>Kelas</dt><dd>Membuat kelas, memilih pengajar, dan mendaftarkan santri per kelas.</dd></div>
+        <div><dt>Infaq</dt><dd>Mencatat dan memverifikasi infaq.</dd></div>
+        <div><dt>Sertifikat</dt><dd>Menerbitkan sertifikat level 1 sampai 12.</dd></div>
+        <div><dt>Laporan</dt><dd>Melihat dan mengunduh kehadiran per kelas.</dd></div>
+      </dl>
+      <p class="catatan"><strong>Urutan untuk pertama kali.</strong> Daftarkan guru, buat kelas dan pilih pengajarnya, lalu daftarkan santri ke kelas tersebut.</p>
+    </section>
+
+    <section id="daftar-keluarga" class="tut-topik">
+      <h2>Mendaftarkan wali &amp; santri</h2>
+      <p class="catatan"><strong>Sebelum mulai.</strong> Pastikan wali sudah diberi tahu dan menyetujui Kebijakan Privasi. Persetujuan ini menjadi dasar yayasan mengolah data anaknya.</p>
+      <ol class="langkah">
+        <li>Buka tab <b>Santri &amp; Wali</b>.</li>
+        <li>Tekan <b>+ Daftarkan Wali &amp; Santri Baru</b>.</li>
+        <li>Isi <b>Nomor WhatsApp Wali</b> dan <b>Nama Wali</b>.</li>
+        <li>Isi <b>PIN Login</b> dengan 6 sampai 12 angka.</li>
+        <li>Isi <b>Nama Santri</b> dan pilih <b>Jenjang</b>. <b>NISN</b> boleh dikosongkan.</li>
+        <li>Centang kotak persetujuan Kebijakan Privasi.</li>
+        <li>Tekan <b>Daftarkan</b>.</li>
+        <li>Sampaikan PIN langsung kepada wali, jangan lewat pesan yang bisa diteruskan.</li>
+      </ol>
+      <figure class="layar">
+        <a href="tutorial-assets/form-wali.jpg"><img src="tutorial-assets/form-wali.jpg" width="1280" height="800" loading="lazy" alt="Formulir Daftarkan Wali dan Santri Baru: nomor WhatsApp wali, nama wali, PIN login, nama santri, jenjang, dan NISN."></a>
+      </figure>
+      <h3>Mendaftarkan anak kedua dan seterusnya</h3>
+      <p>Ulangi langkah yang sama dengan nomor WhatsApp wali yang sama. Sistem memakai akun yang sudah ada, tidak membuat akun ganda. Kolom PIN diabaikan dan PIN lama tetap berlaku.</p>
+    </section>
+
+    <section id="kelola-santri" class="tut-topik">
+      <h2>Mengelola data santri</h2>
+      <p>Setiap santri punya satu baris di tab <b>Santri &amp; Wali</b>.</p>
+      <figure class="layar">
+        <a href="tutorial-assets/panel-santri.jpg"><img src="tutorial-assets/panel-santri.jpg" width="1280" height="800" loading="lazy" alt="Daftar santri berisi nama, wali, pilihan kelas, tombol status, dan tombol Hapus."></a>
+      </figure>
+      <table class="tut-tabel">
+        <thead><tr><th scope="col">Yang ingin dilakukan</th><th scope="col">Caranya</th></tr></thead>
+        <tbody>
+          <tr><td>Memasukkan santri ke kelas</td><td>Pilih kelas pada pilihan <b>Belum ada kelas</b></td></tr>
+          <tr><td>Mengubah status aktif</td><td>Tekan tombol <b>Aktif</b> atau <b>Nonaktif</b></td></tr>
+          <tr><td>Mengatur beasiswa</td><td>Tekan tombol <b>Beasiswa</b> atau <b>Tanpa Beasiswa</b></td></tr>
+          <tr><td>Mengatur ulang PIN wali yang lupa</td><td>Tekan <b>Atur PIN</b> pada baris santrinya</td></tr>
+          <tr><td>Menghapus data atas permintaan wali</td><td>Tekan <b>Hapus</b>, lalu konfirmasi</td></tr>
+        </tbody>
+      </table>
+      <p class="catatan catatan--bahaya"><strong>Hapus bersifat permanen.</strong> Pakai hanya untuk permintaan resmi dari wali. Santri yang sudah punya sertifikat tidak bisa dihapus. Hubungi pengurus teknis untuk kasus seperti itu.</p>
+    </section>
+
+    <section id="daftar-guru" class="tut-topik">
+      <h2>Mendaftarkan guru</h2>
+      <ol class="langkah">
+        <li>Buka tab <b>Guru</b>.</li>
+        <li>Tekan <b>+ Daftarkan Guru</b>.</li>
+        <li>Isi <b>Nama Guru</b> dan <b>Nomor WhatsApp</b>. Satu nomor hanya untuk satu akun.</li>
+        <li>Isi <b>PIN Awal</b> dengan 6 sampai 12 angka.</li>
+        <li>Pilih <b>Kategori</b>.</li>
+        <li>Tekan <b>Daftarkan Guru</b>, lalu sampaikan PIN langsung kepada guru.</li>
+      </ol>
+      <figure class="layar">
+        <a href="tutorial-assets/form-guru.jpg"><img src="tutorial-assets/form-guru.jpg" width="1280" height="800" loading="lazy" alt="Formulir Daftarkan Guru: nama guru, nomor WhatsApp, PIN awal, dan kategori."></a>
+      </figure>
+      <table class="tut-tabel">
+        <thead><tr><th scope="col">Kategori</th><th scope="col">Yang bisa diakses</th></tr></thead>
+        <tbody>
+          <tr><td>Internal</td><td>Kelas, santri, absensi, dan materi</td></tr>
+          <tr><td>Mitra</td><td>Materi ajar saja, walau ditugaskan ke sebuah kelas</td></tr>
+        </tbody>
+      </table>
+      <p>Kategori guru bisa diubah kapan saja lewat pilihan di barisnya. Akun Super Admin tidak bisa dibuat dari panel, karena dibuat terpisah oleh pengembang.</p>
+    </section>
+
+    <section id="kelas" class="tut-topik">
+      <h2>Membuat kelas</h2>
+      <ol class="langkah">
+        <li>Buka tab <b>Kelas</b>.</li>
+        <li>Isi <b>Nama Kelas</b>, pilih <b>Jenjang</b>, dan isi <b>Tahun Ajaran</b>.</li>
+        <li>Tekan <b>+ Buat Kelas</b>.</li>
+        <li>Pada kartu kelasnya, pilih pengajar di pilihan <b>Belum ditugaskan</b>.</li>
+      </ol>
+      <figure class="layar">
+        <a href="tutorial-assets/panel-kelas.jpg"><img src="tutorial-assets/panel-kelas.jpg" width="1280" height="800" loading="lazy" alt="Tab Kelas dengan formulir kelas baru dan kartu tiap kelas beserta pilihan pengajar dan tombol Daftarkan Santri."></a>
+      </figure>
+      <h3>Mendaftarkan banyak santri sekaligus</h3>
+      <p>Cara ini paling cepat kalau walinya belum perlu punya akun.</p>
+      <ol class="langkah">
+        <li>Pada kartu kelas, tekan <b>+ Daftarkan Santri</b>.</li>
+        <li>Ketik nama santri, satu nama per baris.</li>
+        <li>Tekan <b>Daftarkan ke Kelas</b>.</li>
+      </ol>
+      <p>Jenjang mengikuti kelasnya. Nama yang sudah ada di kelas itu dilewati, jadi tidak terdaftar dua kali.</p>
+    </section>
+
+    <section id="infaq" class="tut-topik">
+      <h2>Mencatat infaq</h2>
+      <ol class="langkah">
+        <li>Buka tab <b>Infaq</b>.</li>
+        <li>Isi <b>Nomor WhatsApp Wali</b> dan <b>Jumlah</b>. Tulis jumlahnya sebagai angka saja, misalnya 100000.</li>
+        <li>Isi <b>Keterangan</b> kalau perlu, misalnya Infaq bulan September.</li>
+        <li>Tekan <b>+ Catat Infaq</b>. Statusnya menjadi <b>Menunggu Verifikasi</b>.</li>
+        <li>Setelah dana benar-benar diterima, tekan <b>Verifikasi</b> pada barisnya.</li>
+      </ol>
+      <figure class="layar">
+        <a href="tutorial-assets/panel-infaq.jpg"><img src="tutorial-assets/panel-infaq.jpg" width="1280" height="800" loading="lazy" alt="Tab Infaq dengan formulir pencatatan dan daftar infaq berstatus Menunggu Verifikasi atau Terverifikasi."></a>
+      </figure>
+    </section>
+
+    <section id="sertifikat" class="tut-topik">
+      <h2>Menerbitkan sertifikat</h2>
+      <p>Kelulusan level ditentukan guru dari buku latihan cetak. Aplikasi mencatat keputusan itu, tidak menghitungnya sendiri.</p>
+      <ol class="langkah">
+        <li>Buka tab <b>Sertifikat</b>.</li>
+        <li>Pilih santri di pilihan <b>Santri</b>.</li>
+        <li>Isi <b>Judul Sertifikat</b>, misalnya Kelulusan Buku 1.</li>
+        <li>Pilih <b>Level</b> 1 sampai 12, atau <b>Tanpa level</b>.</li>
+        <li>Tekan <b>Terbitkan</b>.</li>
+        <li>Tunggu beberapa detik dan jangan tutup halaman selama PDF dirangkai dan diunggah.</li>
+      </ol>
+      <figure class="layar">
+        <a href="tutorial-assets/panel-sertifikat.jpg"><img src="tutorial-assets/panel-sertifikat.jpg" width="1280" height="800" loading="lazy" alt="Tab Sertifikat dengan pilihan santri, judul, level, tombol Terbitkan, dan daftar sertifikat yang sudah terbit."></a>
+      </figure>
+      <p>PDF-nya otomatis terunduh ke perangkat Anda. Sertifikat yang terbit mendapat nomor seri dan muncul di daftar pada tab ini. Kabarnya juga tampil di Dashboard Wali.</p>
+    </section>
+
+    <section id="laporan" class="tut-topik">
+      <h2>Laporan kehadiran</h2>
+      <ol class="langkah">
+        <li>Buka tab <b>Laporan</b>.</li>
+        <li>Pilih kelas di <b>Pilih Kelas</b>.</li>
+        <li>Baca jumlah hadir, izin, sakit, alfa, dan persentase hadir tiap santri.</li>
+        <li>Tekan <b>Ekspor CSV</b> kalau ingin membuka tabelnya di Excel.</li>
+      </ol>
+      <figure class="layar">
+        <a href="tutorial-assets/panel-laporan.jpg"><img src="tutorial-assets/panel-laporan.jpg" width="1280" height="800" loading="lazy" alt="Tab Laporan dengan pilihan kelas, tombol Ekspor CSV, dan tabel kehadiran per santri."></a>
+        <figcaption>Di aplikasi, angkanya berasal dari lembar pertemuan yang dicatat guru. Pada gambar contoh ini angkanya masih nol.</figcaption>
+      </figure>
+    </section>
+
+    <!-- ======================================================== STUDIO -->
+    <p class="tut-bagian">Studio Kurikulum</p>
+
+    <section id="studio" class="tut-topik">
+      <h2>Modul &amp; pelajaran</h2>
+      <p>Materi tersusun dalam tiga tingkat: <b>modul</b> berisi <b>pelajaran</b>, dan pelajaran berisi <b>mufrodat</b>. Semuanya disusun lewat menu <b>Studio Kurikulum</b>.</p>
+      <figure class="layar">
+        <a href="tutorial-assets/studio-modul.jpg"><img src="tutorial-assets/studio-modul.jpg" width="1280" height="800" loading="lazy" alt="Studio Kurikulum: daftar modul jenjang SD per tahap, dengan status Terbit atau Draf, dan tombol Modul Baru."></a>
+      </figure>
+      <h3>Membuat modul</h3>
+      <ol class="langkah">
+        <li>Tekan <b>+ Modul Baru</b>.</li>
+        <li>Isi <b>Kode Modul</b> dan <b>Judul Modul</b>.</li>
+        <li>Pilih <b>Tahap Belajar</b>, dari Tahap 1 sampai Tahap 4.</li>
+        <li>Isi <b>Urutan</b>. Angka terkecil tampil lebih dulu.</li>
+        <li>Tekan <b>Simpan</b>.</li>
+      </ol>
+      <h3>Menambah pelajaran</h3>
+      <ol class="langkah">
+        <li>Tekan modul yang ingin diisi.</li>
+        <li>Tekan <b>+ Pelajaran Baru</b>.</li>
+        <li>Isi datanya, lalu simpan.</li>
+      </ol>
+      <figure class="layar">
+        <a href="tutorial-assets/studio-pelajaran.jpg"><img src="tutorial-assets/studio-pelajaran.jpg" width="1280" height="800" loading="lazy" alt="Isi modul: pilihan status Draf, Ditinjau, Terbit, tombol Pelajaran Baru, dan daftar pelajaran."></a>
+      </figure>
+    </section>
+
+    <section id="mufrodat-studio" class="tut-topik">
+      <h2>Mengisi mufrodat</h2>
+      <p>Tekan sebuah pelajaran untuk membuka daftar mufrodatnya.</p>
+      <figure class="layar">
+        <a href="tutorial-assets/studio-mufrodat.jpg"><img src="tutorial-assets/studio-mufrodat.jpg" width="1280" height="800" loading="lazy" alt="Daftar mufrodat satu pelajaran dengan tulisan Arab, latin, dan arti, serta tombol Impor CSV dan Mufrodat Baru."></a>
+      </figure>
+      <div class="tut-dua">
+        <div>
+          <h3>Satu per satu</h3>
+          <ol class="langkah">
+            <li>Tekan <b>+ Mufrodat Baru</b>.</li>
+            <li>Isi kata Arab, latin, dan artinya. Ketiganya wajib.</li>
+            <li>Tambahkan gambar dan audio pelafalan.</li>
+            <li>Simpan.</li>
+          </ol>
+        </div>
+        <div>
+          <h3>Banyak sekaligus</h3>
+          <ol class="langkah">
+            <li>Tekan <b>Impor CSV</b>.</li>
+            <li>Tekan <b>Unduh templat CSV kosong</b>.</li>
+            <li>Isi templat di Excel atau Sheets.</li>
+            <li>Unggah kembali, periksa pratinjaunya, lalu tekan tombol impor.</li>
+          </ol>
+        </div>
+      </div>
+      <p class="catatan"><strong>Khusus jenjang SD.</strong> Setiap mufrodat wajib punya gambar dan audio. Tanpa keduanya, modul tidak bisa diterbitkan.</p>
+    </section>
+
+    <section id="terbit" class="tut-topik">
+      <h2>Menerbitkan modul</h2>
+      <p>Status modul diubah lewat pilihan di bagian atas layar modul.</p>
+      <table class="tut-tabel">
+        <thead><tr><th scope="col">Status</th><th scope="col">Yang bisa melihat</th></tr></thead>
+        <tbody>
+          <tr><td>Draf</td><td>Hanya staf. Dipakai selama masih disiapkan.</td></tr>
+          <tr><td>Ditinjau</td><td>Hanya staf. Dipakai saat sedang diperiksa.</td></tr>
+          <tr><td>Terbit</td><td>Staf, wali, dan santri.</td></tr>
+        </tbody>
+      </table>
+      <p>Kalau modul belum memenuhi syarat, aplikasi menolak dan menampilkan daftar yang harus dilengkapi.</p>
+    </section>
+
+    <section id="ppt" class="tut-topik">
+      <h2>Memasang PPT</h2>
+      <p>PPT ditampilkan oleh PowerPoint milik Microsoft, jadi animasinya tetap utuh. Berkasnya disimpan di OneDrive yayasan, dan aplikasi hanya menyimpan link-nya.</p>
+      <h3>Di OneDrive</h3>
+      <ol class="langkah">
+        <li>Taruh berkas PPT di OneDrive yayasan.</li>
+        <li>Klik kanan berkasnya, atau tekan titik tiga <b>⋯</b>.</li>
+        <li>Pilih <b>Embed</b> (Sematkan), lalu <b>Generate</b> (Buat).</li>
+        <li>Salin kode yang muncul.</li>
+      </ol>
+      <h3>Di aplikasi</h3>
+      <ol class="langkah">
+        <li>Buka <b>Studio Kurikulum</b>, lalu <b>Materi PPT</b>.</li>
+        <li>Cari bab yang sesuai, lalu tekan <b>Tempel link</b>.</li>
+        <li>Tempel kodenya, lalu tekan <b>Simpan</b>.</li>
+        <li>Tekan <b>Pratinjau</b> untuk memastikan presentasinya tampil.</li>
+      </ol>
+      <figure class="layar">
+        <a href="tutorial-assets/studio-tempel-link.jpg"><img src="tutorial-assets/studio-tempel-link.jpg" width="1280" height="800" loading="lazy" alt="Layar Materi PPT dengan kolom tempel link OneDrive yang terbuka pada salah satu bab, beserta tombol Simpan dan Batal."></a>
+        <figcaption>Baris yang sudah siap bertuliskan “Terpasang — bisa ditayangkan guru”.</figcaption>
+      </figure>
+      <p>Layar <b>Materi PPT</b> juga menghitung bab yang sudah punya materi, jadi mudah melihat mana yang belum. Super Admin bisa pula memasang PPT langsung dari kotak pemutar di halaman Kurikulum, dengan tombol <b>Setel PPT bab ini</b> atau <b>Ganti PPT</b>.</p>
+      <p>Untuk memperbarui isi PPT, perbarui saja berkasnya di OneDrive. Link-nya tetap sama, jadi tidak perlu ditempel ulang.</p>
+      <p class="catatan catatan--bahaya"><strong>Dua hal yang perlu dijaga.</strong> Jangan memindahkan atau menghapus berkas di OneDrive, karena link-nya ikut mati. Jangan pula membagikan link embed di grup, karena siapa pun yang memegangnya bisa membukanya.</p>
+    </section>
+
+    <section id="dokumen" class="tut-topik">
+      <h2>Dokumen PDF</h2>
+      <p>Silabus dan modul PDF diunggah lewat <b>Studio Kurikulum</b>, tombol <b>Dokumen PDF</b>. Dokumen yang terbit muncul di menu <b>Modul &amp; Silabus PDF</b> dan dibaca di tempat, tidak diunduh.</p>
+    </section>
+
+    <!-- ========================================================== GURU -->
+    <p class="tut-bagian">Guru</p>
+
+    <section id="guru" class="tut-topik">
+      <h2>Dashboard Guru</h2>
+      <p>Layar ini mengingatkan pekerjaan yang terlewat dan menampilkan semua kelas yang Anda ampu.</p>
+      <figure class="layar">
+        <a href="tutorial-assets/dashboard-guru.jpg"><img src="tutorial-assets/dashboard-guru.jpg" width="1280" height="800" loading="lazy" alt="Dashboard Guru dengan daftar Perlu Perhatian: absensi belum diisi, lembar tanpa cakupan, santri sering alfa, dan kelas tanpa pertemuan."></a>
+      </figure>
+      <table class="tut-tabel">
+        <caption>Arti butir di Perlu Perhatian</caption>
+        <thead><tr><th scope="col">Butir</th><th scope="col">Yang perlu dilakukan</th><th scope="col">Tombol</th></tr></thead>
+        <tbody>
+          <tr><td>Absensi belum diisi</td><td>Tandai kehadiran santri pada tanggal itu</td><td>Isi Absensi</td></tr>
+          <tr><td>Lembar belum ada cakupan &amp; evaluasi</td><td>Lengkapi catatan pertemuan</td><td>Lengkapi Lembar</td></tr>
+          <tr><td>Santri alfa 2 kali atau lebih</td><td>Periksa riwayat, lalu hubungi walinya</td><td>Lihat Riwayat Kelas</td></tr>
+          <tr><td>Belum ada pertemuan 7 hari terakhir</td><td>Catat pertemuan hari ini</td><td>Catat Hari Ini</td></tr>
+        </tbody>
+      </table>
+      <p>Di bagian <b>Kelas Saya</b>, setiap kelas punya tiga tombol: <b>Catat Hari Ini</b>, <b>Riwayat</b>, dan <b>Buka Materi</b>. Kalau sebuah kelas tidak muncul, minta Super Admin menugaskan Anda ke kelas itu.</p>
+    </section>
+
+    <section id="tayang" class="tut-topik">
+      <h2>Menayangkan materi di kelas</h2>
+      <ol class="langkah">
+        <li>Sambungkan laptop ke layar kelas.</li>
+        <li>Buka menu <b>Kurikulum Bahasa Arab</b>, atau tekan <b>Buka Materi</b> di kartu kelas.</li>
+        <li>Pilih bab di panel <b>Struktur Silabus Pembelajaran</b>. Bab yang punya PPT memakai tanda <b>PPT</b>.</li>
+        <li>Tekan <b>Tayangkan PPT</b> di kotak pemutar.</li>
+      </ol>
+      <figure class="layar">
+        <a href="tutorial-assets/kurikulum.jpg"><img src="tutorial-assets/kurikulum.jpg" width="1280" height="800" loading="lazy" alt="Halaman Kurikulum dengan kotak pemutar berisi tombol Tayangkan PPT, dan panel Struktur Silabus Pembelajaran di sisi kanan."></a>
+      </figure>
+      <h3>Memutar pelafalan mufrodat</h3>
+      <ol class="langkah">
+        <li>Di bawah kotak pemutar, buka tab <b>Pelafalan Mufrodat</b>.</li>
+        <li>Tekan sebuah kartu untuk mendengar satu kata, atau <b>Putar Keseluruhan</b> untuk semua kata.</li>
+      </ol>
+      <figure class="layar">
+        <a href="tutorial-assets/mufrodat.jpg"><img src="tutorial-assets/mufrodat.jpg" width="1280" height="800" loading="lazy" alt="Tab Pelafalan Mufrodat dengan panduan pelafalan, tombol Putar Keseluruhan, dan kartu mufrodat."></a>
+      </figure>
+      <p>Materi yang sama bisa dibuka lewat menu <b>Mufrodat &amp; Pelafalan</b>. Tombol <b>Bagikan</b> menyalin tautan materi yang sedang dibuka.</p>
+    </section>
+
+    <section id="lembar" class="tut-topik">
+      <h2>Mencatat pertemuan</h2>
+      <p>Satu lembar berlaku untuk satu pertemuan. Isinya cakupan materi, evaluasi, dan absensi.</p>
+      <ol class="langkah">
+        <li>Di kartu kelas, tekan <b>Catat Hari Ini</b>.</li>
+        <li>Isi <b>Cakupan Pembelajaran</b>, misalnya dari Buku 1 hal. 12 sampai Buku 1 hal. 18.</li>
+        <li>Isi <b>Evaluasi Hari Ini</b> tentang jalannya kelas secara keseluruhan.</li>
+        <li>Di bagian <b>Absensi</b>, ubah hanya santri yang tidak hadir menjadi <b>Izin</b>, <b>Sakit</b>, atau <b>Alfa</b>.</li>
+        <li>Isi <b>Catatan</b> per anak kalau perlu.</li>
+        <li>Tekan <b>Simpan Lembar Pertemuan</b>.</li>
+      </ol>
+      <figure class="layar">
+        <a href="tutorial-assets/lembar-pertemuan.jpg"><img src="tutorial-assets/lembar-pertemuan.jpg" width="1280" height="800" loading="lazy" alt="Lembar pertemuan: kolom cakupan pembelajaran, evaluasi hari ini, dan daftar absensi per santri dengan pilihan kehadiran dan catatan."></a>
+      </figure>
+      <p class="catatan"><strong>Semua santri sudah ditandai hadir.</strong> Anda tidak perlu mengisi satu per satu. Kalau keliru mengubah, tekan <b>Tandai semua hadir</b> untuk mengembalikannya.</p>
+      <p>Kalau lembar dibuat pada tanggal yang salah, buka lembar itu lalu tekan <b>Hapus Lembar</b>. Absensi di dalamnya ikut terhapus.</p>
+    </section>
+
+    <section id="riwayat" class="tut-topik">
+      <h2>Riwayat kelas</h2>
+      <p>Tekan <b>Riwayat</b> di kartu kelas untuk melihat semua pertemuan. Tekan <b>Buka</b> untuk membaca atau memperbaiki sebuah lembar.</p>
+      <figure class="layar">
+        <a href="tutorial-assets/riwayat-kelas.jpg"><img src="tutorial-assets/riwayat-kelas.jpg" width="1280" height="800" loading="lazy" alt="Riwayat pertemuan kelas SD 1A dengan tanggal, cakupan, evaluasi singkat, dan tombol Buka di tiap baris."></a>
+      </figure>
+    </section>
+
+    <section id="guru-mitra" class="tut-topik">
+      <h2>Guru mitra</h2>
+      <p>Guru mitra hanya memegang materi ajar. Santri, absensi, dan sertifikat tidak terlihat, walau akunnya ditugaskan ke sebuah kelas. Bagian <a href="#tayang">Menayangkan materi</a> tetap berlaku.</p>
+    </section>
+
+    <!-- ========================================================== WALI -->
+    <p class="tut-bagian">Wali</p>
+
+    <section id="wali" class="tut-topik">
+      <h2>Dashboard Wali</h2>
+      <p>Di sini Bapak/Ibu melihat kabar terbaru, sertifikat, dan materi setiap ananda.</p>
+      <figure class="layar">
+        <a href="tutorial-assets/dashboard-wali.jpg"><img src="tutorial-assets/dashboard-wali.jpg" width="1280" height="800" loading="lazy" alt="Dashboard Wali dengan Kabar Terbaru tentang sertifikat, kartu tiap anak, dan daftar yang dipelajari di kelas."></a>
+      </figure>
+      <dl class="tut-istilah">
+        <div><dt>Kabar Terbaru</dt><dd>Pemberitahuan saat sertifikat ananda terbit.</dd></div>
+        <div><dt>Anak Saya</dt><dd>Satu kartu untuk tiap anak, berisi jenjang, sertifikat, dan level tertinggi.</dd></div>
+        <div><dt>Yang Dipelajari di Kelas</dt><dd>Daftar modul yang dipelajari pada jenjang ananda.</dd></div>
+      </dl>
+      <p>Tekan <b>Lihat Keaslian</b> atau <b>Cek keaslian</b> untuk membuka halaman verifikasi sertifikat. Piagam juga bisa dibuka lewat menu <b>Piagam Kelulusan Sanad</b>.</p>
+      <p class="catatan"><strong>Kehadiran ananda.</strong> Kehadiran dan perkembangan di kelas belum tampil di aplikasi untuk wali. Guru pengampu menyampaikannya secara langsung.</p>
+    </section>
+
+    <section id="materi-ananda" class="tut-topik">
+      <h2>Materi ananda</h2>
+      <ol class="langkah">
+        <li>Pada kartu anak, tekan <b>Buka Materi</b>.</li>
+        <li>Pilih bab di panel <b>Struktur Silabus Pembelajaran</b>.</li>
+        <li>Buka tab <b>Pelafalan Mufrodat</b> untuk mendengar kosakatanya bersama ananda.</li>
+      </ol>
+      <p>Setelah itu ananda bisa berlatih lewat <a href="#percakapan">Latihan Percakapan Arab</a> atau bermain <a href="#permainan">Petualangan Kata</a>.</p>
+    </section>
+
+    <!-- ================================================= BELAJAR & UMUM -->
+    <p class="tut-bagian">Belajar &amp; umum</p>
+
+    <section id="percakapan" class="tut-topik">
+      <h2>Latihan Percakapan Arab</h2>
+      <p>Santri menjawab sapaan Umi Elly dalam empat langkah. Buka lewat menu <b>Simulasi Percakapan Suara</b>.</p>
+      <ol class="langkah">
+        <li>Pilih cara menjawab: <b>Suara</b>, atau <b>Pilihan ganda</b> kalau tidak ada mikrofon.</li>
+        <li>Tekan <b>Dengarkan Umi Elly</b>.</li>
+        <li>Tekan <b>Dengar contoh</b> untuk mendengar jawabannya, atau <b>Pelan</b> untuk versi lambat.</li>
+        <li>Tekan <b>Mulai merekam</b>, lalu ucapkan kalimatnya.</li>
+        <li>Baca hasilnya, lalu lanjutkan ke langkah berikutnya.</li>
+      </ol>
+      <figure class="layar">
+        <a href="tutorial-assets/percakapan.jpg"><img src="tutorial-assets/percakapan.jpg" width="1280" height="800" loading="lazy" alt="Latihan Percakapan Arab langkah 1 dari 4 dengan sapaan Umi Elly, kalimat jawaban, dan tombol Mulai merekam."></a>
+      </figure>
+      <p class="catatan"><strong>Cara membaca skor.</strong> Skor menilai kelengkapan kata yang terdengar, bukan makhraj dan harakat. Keduanya tetap dikoreksi guru. PERISA tidak menyimpan rekaman, dan skor hanya tersimpan di perangkat tersebut.</p>
+    </section>
+
+    <section id="permainan" class="tut-topik">
+      <h2>Petualangan Kata</h2>
+      <p>Permainan kosakata untuk anak. Buka lewat menu <b>Petualangan Kata</b>, pilih tokoh <b>Ali</b> atau <b>Aisyah</b>, tentukan sumber kata di <b>Kata dari</b>, lalu tekan <b>Main</b> pada salah satu mode.</p>
+      <figure class="layar">
+        <a href="tutorial-assets/permainan.jpg"><img src="tutorial-assets/permainan.jpg" width="1280" height="800" loading="lazy" alt="Menu Petualangan Kata dengan pilihan tokoh, sumber kata, dan tiga mode permainan."></a>
+      </figure>
+      <dl class="tut-istilah">
+        <div><dt>Tambang Pasangan</dt><dd>Gali blok batu dan cocokkan kata Arab dengan artinya.</dd></div>
+        <div><dt>Susun Menara Kata</dt><dd>Susun huruf Arab menjadi kata yang benar.</dd></div>
+        <div><dt>Hujan Blok</dt><dd>Pilih arti yang benar sebelum blok kata jatuh ke tanah.</dd></div>
+      </dl>
+      <p>Bintang tersimpan di perangkat dan tidak masuk nilai atau rapor. Kalau mufrodat pelajaran belum cukup, permainan memakai kosakata dasar dan menyebutkannya di layar.</p>
+    </section>
+
+    <section id="verifikasi" class="tut-topik">
+      <h2>Cek keaslian sertifikat</h2>
+      <p>Siapa pun bisa memeriksa sertifikat tanpa perlu masuk.</p>
+      <ol class="langkah">
+        <li>Pindai kode QR pada sertifikat, atau buka <a href="verifikasi.html">halaman verifikasi</a>.</li>
+        <li>Kalau tidak memindai, ketik kode verifikasi yang tercetak di bawah kode QR.</li>
+        <li>Tekan <b>Periksa</b>.</li>
+      </ol>
+      <figure class="layar">
+        <a href="tutorial-assets/verifikasi.jpg"><img src="tutorial-assets/verifikasi.jpg" width="1280" height="800" loading="lazy" alt="Halaman Verifikasi Keaslian Sertifikat dengan kolom kode dan tombol Periksa."></a>
+      </figure>
+    </section>
+
+    <section id="masalah" class="tut-topik">
+      <h2>Kalau ada masalah</h2>
+      <div class="tut-tanya">
+        <details>
+          <summary>Tidak bisa masuk</summary>
+          <p>Periksa kembali nomor WhatsApp dan PIN. Kalau sudah salah beberapa kali, berhenti dulu, karena akun terkunci 15 menit setelah 5 kali salah. Lupa PIN? Hubungi Super Admin.</p>
+        </details>
+        <details>
+          <summary>Wali tidak bisa masuk (untuk Super Admin)</summary>
+          <p>Cek nomornya di tab <b>Santri &amp; Wali</b>, lalu tekan <b>Atur PIN</b> kalau perlu. Kalau masih gagal, hubungi pengurus teknis.</p>
+        </details>
+        <details>
+          <summary>Kelas tidak muncul di Dashboard Guru</summary>
+          <p>Kelas itu belum ditugaskan kepada Anda. Minta Super Admin memilih nama Anda di tab <b>Kelas</b>.</p>
+        </details>
+        <details>
+          <summary>Santri tidak ada di daftar absen</summary>
+          <p>Santri itu belum masuk kelas atau statusnya tidak aktif. Super Admin bisa mengaturnya di tab <b>Santri &amp; Wali</b>.</p>
+        </details>
+        <details>
+          <summary>PPT tampil kosong atau hitam</summary>
+          <p>Buka <b>Studio Kurikulum</b>, <b>Materi PPT</b>, lalu tekan <b>Pratinjau</b> pada bab itu. Kalau tetap kosong, berkasnya mungkin sudah dipindahkan atau link yang ditempel bukan link Embed. <a href="#ppt">Ambil link baru</a> dan tempel ulang.</p>
+        </details>
+        <details>
+          <summary>Materi yang diterbitkan tidak muncul</summary>
+          <p>Pastikan status modul benar-benar <b>Terbit</b>, bukan Draf atau Ditinjau.</p>
+        </details>
+        <details>
+          <summary>Modul tidak bisa diterbitkan</summary>
+          <p>Baca daftar yang ditampilkan aplikasi. Pada jenjang SD, penyebab yang sering muncul adalah mufrodat yang belum punya gambar atau audio.</p>
+        </details>
+        <details>
+          <summary>Mikrofon tidak berfungsi di latihan percakapan</summary>
+          <p>Izinkan akses mikrofon saat peramban memintanya. Kalau tetap tidak bisa, pakai mode <b>Pilihan ganda</b>.</p>
+        </details>
+        <details>
+          <summary>Bintang atau skor hilang</summary>
+          <p>Bintang dan skor hanya tersimpan di perangkat. Keduanya tidak terbawa ke HP lain dan bisa hilang kalau data peramban dibersihkan.</p>
+        </details>
+        <details>
+          <summary>Tampilan terasa aneh atau rusak</summary>
+          <p>Muat ulang halaman. Kalau masih terjadi, catat langkah yang dilakukan sebelum masalah muncul, lalu sampaikan kepada pengurus teknis.</p>
+        </details>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="kaki">
+  <div class="wadah kaki-dalam">
+    <div class="merek merek--kaki">
+      <img src="logo-perisa-emblem.png" alt="" width="26" height="26">
+      <span>Yayasan Peradaban Islam Azhariyah</span>
+    </div>
+    <ul class="kaki-tautan">
+      <li><a href="/">Aplikasi</a></li>
+      <li><a href="verifikasi.html">Verifikasi sertifikat</a></li>
+      <li><a href="kebijakan-privasi.html">Kebijakan privasi</a></li>
+    </ul>
+    <p class="kaki-catatan">Seluruh nama, angka, dan tanggal pada tangkapan layar adalah data contoh.</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -19,6 +19,10 @@
     {
       "source": "/pitch",
       "destination": "/pitch.html"
+    },
+    {
+      "source": "/tutorial",
+      "destination": "/tutorial.html"
     }
   ],
   "headers": [

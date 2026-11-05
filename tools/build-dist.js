@@ -56,8 +56,9 @@ const BERKAS_AKAR_TAMBAHAN = new Set(['robots.txt']);
 
 /** Folder yang ikut terbit seluruhnya. */
 // pitch-assets: tangkapan layar halaman /pitch (26 Okt 2026) — UI asli
-// dengan data contoh, tidak memuat data santri sungguhan.
-const FOLDER = ['js', 'icons', 'vendor', 'pitch-assets'];
+// dengan data contoh, tidak memuat data santri sungguhan. tutorial-assets:
+// sama, untuk halaman /tutorial, diambil dari mode demo lokal.
+const FOLDER = ['js', 'icons', 'vendor', 'pitch-assets', 'tutorial-assets'];
 
 /** Berkas di dalam folder di atas yang tetap tidak boleh terbit. */
 const KECUALI_ISI = new Set([

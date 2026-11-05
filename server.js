@@ -49,14 +49,14 @@ const CSP = (() => {
 const AKHIRAN_AKAR = new Set(['.html', '.css', '.js', '.png', '.svg', '.ico', '.webmanifest']);
 const KECUALI_AKAR = new Set(['server.js']);
 const BERKAS_AKAR_TAMBAHAN = new Set(['robots.txt']);
-const FOLDER = new Set(['js', 'icons', 'vendor', 'pitch-assets']);
+const FOLDER = new Set(['js', 'icons', 'vendor', 'pitch-assets', 'tutorial-assets']);
 
 /** @returns {string|null} path absolut berkas yang boleh disajikan, atau null. */
 function berkasYangBoleh(pathname) {
   let rel;
   try {
-    // /pitch: sama dengan rewrite di vercel.json.
-    const alias = { '/': '/index.html', '/pitch': '/pitch.html' };
+    // /pitch dan /tutorial: sama dengan rewrite di vercel.json.
+    const alias = { '/': '/index.html', '/pitch': '/pitch.html', '/tutorial': '/tutorial.html' };
     rel = decodeURIComponent(alias[pathname] || pathname);
   } catch (_) {
     return null;
