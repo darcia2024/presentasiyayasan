@@ -327,10 +327,12 @@ h2.studio-h3 { font-size: 28px; }
    ========================================================================== */
 @media (max-width: 768px) {
 
-  /* App bar: hutan polos, tanpa blur; tombol bergaris tipis. */
+  /* App bar: teal aksen polos (sama dengan tombol utama), tanpa blur;
+     tombol bergaris tipis. Dulu hutan gelap — 12 Nov 2026 diseragamkan
+     dengan hijau tombol atas permintaan pemilik. */
   .mobile-top-nav,
   body.m-scrolled .mobile-top-nav {
-    background: var(--permukaan-gelap) !important;
+    background: var(--aksen) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     border-bottom: 1px solid rgb(var(--rgb-putih) / 0.14) !important;
@@ -342,13 +344,13 @@ h2.studio-h3 { font-size: 28px; }
     border: 1px solid rgb(var(--rgb-putih) / 0.28) !important;
   }
   .mobile-user-avatar-tag {
-    background: var(--aksen) !important;
+    background: var(--aksen-hover) !important;
     border: 1px solid rgb(var(--rgb-putih) / 0.4) !important;
   }
 
-  /* Judul besar: hutan polos, judul Bricolage, chip bergaris tipis. */
+  /* Judul besar: teal aksen polos, judul Bricolage, chip bergaris tipis. */
   .m-largetitle {
-    background: var(--permukaan-gelap);
+    background: var(--aksen);
     border-radius: 0 0 22px 22px;
     padding-bottom: 24px;
   }
@@ -369,7 +371,8 @@ h2.studio-h3 { font-size: 28px; }
     line-height: 1.1;
     letter-spacing: var(--judul-spasi);
   }
-  .m-lt-sub { color: var(--teks-terbalik-redup); font-weight: 400; }
+  /* Abu hangat redup terlalu pucat di atas teal (kontras < 3:1). */
+  .m-lt-sub { color: rgb(var(--rgb-putih) / 0.86); font-weight: 400; }
   .m-chip {
     background: transparent;
     border: 1px solid rgb(var(--rgb-putih) / 0.3);
@@ -379,7 +382,7 @@ h2.studio-h3 { font-size: 28px; }
   .m-chip i { color: var(--aksen-terang); }
   .m-chip.is-gold { background: transparent; border-color: rgb(var(--rgb-emas-terang) / 0.5); }
 
-  /* Tab bar: kertas gading, ikon tinta, tombol tengah hutan. */
+  /* Tab bar: kertas gading, ikon tinta, tombol tengah teal aksen. */
   .mobile-bottom-nav {
     background: var(--permukaan-halaman) !important;
     backdrop-filter: none !important;
@@ -392,7 +395,7 @@ h2.studio-h3 { font-size: 28px; }
   .bottom-nav-item.active i { color: var(--aksen) !important; }
   .bottom-nav-item::before { background: var(--aksen); }
   .bottom-nav-item.m-tab-center i {
-    background: var(--permukaan-gelap) !important;
+    background: var(--aksen) !important;
     color: var(--teks-terbalik) !important;
     border: 3px solid var(--permukaan-halaman) !important;
     box-shadow: var(--bayangan-2) !important;

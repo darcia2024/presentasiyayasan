@@ -1336,7 +1336,9 @@ function renderImporCsv(body) {
 
 function renderDaftarDokumen(body) {
   const tabs = buatEl('div', 'studio-tabs');
-  Object.keys(NAMA_JENJANG).forEach((j) => {
+  // Sama dengan daftar modul dan Materi PPT: hanya jenjang yang terbuka di
+  // fase ini. Dokumen SMP/SMA yang diunggah sekarang tidak tampil di mana pun.
+  jenjangAktif().forEach((j) => {
     const btn = buatEl('button', `studio-tab${j === STATE.jenjang ? ' studio-tab--active' : ''}`, NAMA_JENJANG[j]);
     btn.type = 'button';
     btn.addEventListener('click', () =>
